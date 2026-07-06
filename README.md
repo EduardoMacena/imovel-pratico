@@ -1,2 +1,20 @@
-# imovel-pratico
-Plataforma de Inteligência para Captação Imobiliária
+# Imóvel Prático
+
+Plataforma SaaS para Inteligência de Captação Imobiliária.
+
+## Tecnologias
+
+- Next.js
+- Fastify
+- PostgreSQL
+- Prisma
+- Redis
+- BullMQ
+- Playwright
+- Docker
+
+## Estrutura
+
+/apps
+/packages
+/infra
