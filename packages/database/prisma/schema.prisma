@@ -1,0 +1,193 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum ClienteStatus {
+  ATIVO
+  INATIVO
+  SUSPENSO
+}
+
+enum UsuarioRole {
+  ADMIN
+  GERENTE
+  OPERADOR
+}
+
+enum TarefaStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  ERROR
+  CANCELED
+}
+
+enum ResultadoStatus {
+  SUCCESS
+  ERROR
+}
+
+enum CacheStatus {
+  VALID
+  EXPIRED
+  UPDATING
+  ERROR
+}
+
+model Cliente {
+  id     String        @id @default(uuid())
+  nome   String
+  slug   String        @unique
+  status ClienteStatus @default(ATIVO)
+
+  workerUrl         String?
+  intervaloSegundos Int     @default(30)
+  limiteDiario      Int     @default(300)
+
+  usuarios      Usuario[]
+  tarefas       Tarefa[]
+  imoveisCache  ImovelCache[]
+  consultasLogs ConsultaLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("clientes")
+}
+
+model Usuario {
+  id        String      @id @default(uuid())
+  clienteId String
+
+  nome  String
+  email String @unique
+  senha String
+  role  UsuarioRole @default(OPERADOR)
+
+  ativo Boolean @default(true)
+
+  cliente Cliente @relation(fields: [clienteId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([clienteId])
+  @@map("usuarios")
+}
+
+model Tarefa {
+  id        String       @id @default(uuid())
+  clienteId String
+  status    TarefaStatus @default(PENDING)
+
+  logradouro String
+  numero     String
+
+  mesAnoInicio      String
+  mesAnoFinal       String
+  intervaloSegundos Int     @default(30)
+  forceRefresh      Boolean @default(false)
+
+  total   Int @default(0)
+  current Int @default(0)
+
+  erro String?
+
+  cliente    Cliente           @relation(fields: [clienteId], references: [id])
+  resultados TarefaResultado[]
+
+  createdAt   DateTime  @default(now())
+  startedAt   DateTime?
+  completedAt DateTime?
+  updatedAt   DateTime  @updatedAt
+
+  @@index([clienteId])
+  @@index([status])
+  @@map("tarefas")
+}
+
+model TarefaResultado {
+  id       String          @id @default(uuid())
+  tarefaId String
+  status   ResultadoStatus
+
+  logradouro      String
+  numero          String
+  complemento     String?
+  indiceCadastral String
+
+  nome     String?
+  cpf      String?
+  endereco String?
+  telefone String?
+  email    String?
+
+  erro String?
+
+  tarefa Tarefa @relation(fields: [tarefaId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([tarefaId])
+  @@index([indiceCadastral])
+  @@map("tarefa_resultados")
+}
+
+model ImovelCache {
+  id        String @id @default(uuid())
+  clienteId String
+
+  logradouro      String
+  numero          String
+  complemento     String?
+  indiceCadastral String
+
+  nome     String?
+  cpf      String?
+  endereco String?
+  telefone String?
+  email    String?
+
+  status CacheStatus @default(VALID)
+
+  ultimaConsultaEm DateTime
+  expiraEm         DateTime
+
+  cliente Cliente @relation(fields: [clienteId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([clienteId, indiceCadastral])
+  @@index([clienteId])
+  @@index([indiceCadastral])
+  @@index([expiraEm])
+  @@map("imoveis_cache")
+}
+
+model ConsultaLog {
+  id        String  @id @default(uuid())
+  clienteId String?
+
+  fonte String
+  acao  String
+
+  sucesso   Boolean
+  duracaoMs Int?
+
+  mensagemErro String?
+
+  cliente Cliente? @relation(fields: [clienteId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@index([clienteId])
+  @@index([fonte])
+  @@index([createdAt])
+  @@map("consultas_logs")
+}
