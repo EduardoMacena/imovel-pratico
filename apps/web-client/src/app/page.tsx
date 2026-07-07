@@ -1,6 +1,8 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
+import { AppHeader } from "../components/AppHeader";
+import { useRequireAuth } from "../hooks/useRequireAuth";
 import Link from "next/link";
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
@@ -31,6 +33,8 @@ import {
 } from "./page.styles";
 
 export default function HomePage() {
+	const { isCheckingAuth } = useRequireAuth();
+
 	const [logradouro, setLogradouro] = useState(
 		"RUA DESEMBARGADOR JORGE FONTANA"
 	);
@@ -122,116 +126,124 @@ export default function HomePage() {
 		};
 	}, [jobId, isFinalizado]);
 
+	if (isCheckingAuth) {
+		return null;
+	}
+
 	return (
-		<PageContainer>
-			<Header>
-				<ProductBadge>Imóvel Prático</ProductBadge>
+		<>
+			<AppHeader />
 
-				<Title>Captação inteligente de imóveis</Title>
+			<PageContainer>
+				<Header>
+					<ProductBadge>Imóvel Prático</ProductBadge>
 
-				<Subtitle>
-					Inicie uma busca por endereço, acompanhe o progresso da tarefa e veja
-					os proprietários encontrados automaticamente.
-				</Subtitle>
+					<Title>Captação inteligente de imóveis</Title>
 
-				<HeaderActions>
-					<Link href="/historico" passHref legacyBehavior>
-						<HeaderLink>Ver histórico de buscas</HeaderLink>
-					</Link>
-				</HeaderActions>
-			</Header>
+					<Subtitle>
+						Inicie uma busca por endereço, acompanhe o progresso da tarefa e
+						veja os proprietários encontrados automaticamente.
+					</Subtitle>
 
-			<Card>
-				<form onSubmit={criarTarefa}>
-					<FormGrid>
-						<Input
-							label="Logradouro"
-							value={logradouro}
-							onChange={(event) => setLogradouro(event.target.value)}
-							placeholder="Ex: Rua Desembargador Jorge Fontana"
-							required
+					<HeaderActions>
+						<Link href="/historico" passHref legacyBehavior>
+							<HeaderLink>Ver histórico de buscas</HeaderLink>
+						</Link>
+					</HeaderActions>
+				</Header>
+
+				<Card>
+					<form onSubmit={criarTarefa}>
+						<FormGrid>
+							<Input
+								label="Logradouro"
+								value={logradouro}
+								onChange={(event) => setLogradouro(event.target.value)}
+								placeholder="Ex: Rua Desembargador Jorge Fontana"
+								required
+							/>
+
+							<Input
+								label="Número"
+								value={numero}
+								onChange={(event) => setNumero(event.target.value)}
+								placeholder="Ex: 200"
+								required
+							/>
+
+							<Input
+								label="Mês/Ano inicial"
+								value={mesAnoInicio}
+								onChange={(event) => setMesAnoInicio(event.target.value)}
+								placeholder="Ex: 01/2026"
+								required
+							/>
+
+							<Input
+								label="Mês/Ano final"
+								value={mesAnoFinal}
+								onChange={(event) => setMesAnoFinal(event.target.value)}
+								placeholder="Ex: 06/2026"
+								required
+							/>
+
+							<Input
+								label="Intervalo entre consultas em segundos"
+								type="number"
+								min={5}
+								max={300}
+								value={intervaloSegundos}
+								onChange={(event) =>
+									setIntervaloSegundos(Number(event.target.value))
+								}
+								required
+							/>
+						</FormGrid>
+
+						<Actions>
+							<Button type="submit" disabled={isLoading}>
+								{isLoading ? "Criando tarefa..." : "Iniciar busca"}
+							</Button>
+
+							{progresso?.status && <StatusBadge status={progresso.status} />}
+
+							{jobId && <TaskId>Tarefa: {jobId}</TaskId>}
+						</Actions>
+					</form>
+
+					{erro && <ErrorBox>{erro}</ErrorBox>}
+
+					{progresso && (
+						<ProgressBar
+							status={progresso.status}
+							total={progresso.progress.total}
+							current={progresso.progress.current}
+							percentage={progresso.progress.percentage}
 						/>
+					)}
 
-						<Input
-							label="Número"
-							value={numero}
-							onChange={(event) => setNumero(event.target.value)}
-							placeholder="Ex: 200"
-							required
-						/>
+					{jobId && !progresso && !erro && (
+						<EmptyState>Carregando progresso da tarefa...</EmptyState>
+					)}
 
-						<Input
-							label="Mês/Ano inicial"
-							value={mesAnoInicio}
-							onChange={(event) => setMesAnoInicio(event.target.value)}
-							placeholder="Ex: 01/2026"
-							required
-						/>
+					{progresso?.resultados && progresso.resultados.length > 0 && (
+						<ResultsSection>
+							<ResultsHeader>
+								<ResultsTitle>Resultados encontrados</ResultsTitle>
+								<ResultsCount>
+									{progresso.resultados.length} resultado(s)
+								</ResultsCount>
+							</ResultsHeader>
 
-						<Input
-							label="Mês/Ano final"
-							value={mesAnoFinal}
-							onChange={(event) => setMesAnoFinal(event.target.value)}
-							placeholder="Ex: 06/2026"
-							required
-						/>
-
-						<Input
-							label="Intervalo entre consultas em segundos"
-							type="number"
-							min={5}
-							max={300}
-							value={intervaloSegundos}
-							onChange={(event) =>
-								setIntervaloSegundos(Number(event.target.value))
-							}
-							required
-						/>
-					</FormGrid>
-
-					<Actions>
-						<Button type="submit" disabled={isLoading}>
-							{isLoading ? "Criando tarefa..." : "Iniciar busca"}
-						</Button>
-
-						{progresso?.status && <StatusBadge status={progresso.status} />}
-
-						{jobId && <TaskId>Tarefa: {jobId}</TaskId>}
-					</Actions>
-				</form>
-
-				{erro && <ErrorBox>{erro}</ErrorBox>}
-
-				{progresso && (
-					<ProgressBar
-						status={progresso.status}
-						total={progresso.progress.total}
-						current={progresso.progress.current}
-						percentage={progresso.progress.percentage}
-					/>
-				)}
-
-				{jobId && !progresso && !erro && (
-					<EmptyState>Carregando progresso da tarefa...</EmptyState>
-				)}
-
-				{progresso?.resultados && progresso.resultados.length > 0 && (
-					<ResultsSection>
-						<ResultsHeader>
-							<ResultsTitle>Resultados encontrados</ResultsTitle>
-							<ResultsCount>
-								{progresso.resultados.length} resultado(s)
-							</ResultsCount>
-						</ResultsHeader>
-
-						<ResultsList>
-							{progresso.resultados.map((resultado) => (
-								<ResultCard key={resultado.id} resultado={resultado} />
-							))}
-						</ResultsList>
-					</ResultsSection>
-				)}
-			</Card>
-		</PageContainer>
+							<ResultsList>
+								{progresso.resultados.map((resultado) => (
+									<ResultCard key={resultado.id} resultado={resultado} />
+								))}
+							</ResultsList>
+						</ResultsSection>
+					)}
+				</Card>
+			</PageContainer>
+		</>
 	);
 }
