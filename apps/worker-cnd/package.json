@@ -14,7 +14,8 @@
     "@imovel-pratico/database": "workspace:*",
     "@imovel-pratico/queue": "workspace:*",
     "bullmq": "latest",
-    "dotenv": "latest"
+    "dotenv": "latest",
+    "playwright": "^1.61.1"
   },
   "devDependencies": {
     "@types/node": "latest",
