@@ -18,6 +18,7 @@ enum ClienteStatus {
 }
 
 enum UsuarioRole {
+  SUPER_ADMIN
   ADMIN
   GERENTE
   OPERADOR
