@@ -86,3 +86,72 @@ export async function buscarTarefaPorId(id: string) {
 
   return tarefa;
 }
+
+export async function buscarProgressoTarefaPorId(id: string) {
+  const tarefa = await prisma.tarefa.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      cliente: {
+        select: {
+          id: true,
+          nome: true,
+          slug: true,
+        },
+      },
+      resultados: {
+        orderBy: {
+          createdAt: "asc",
+        },
+      },
+    },
+  });
+
+  if (!tarefa) {
+    return null;
+  }
+
+  const percentage =
+    tarefa.total > 0 ? Math.round((tarefa.current / tarefa.total) * 100) : 0;
+
+  return {
+    id: tarefa.id,
+    status: tarefa.status,
+    cliente: tarefa.cliente,
+    endereco: {
+      logradouro: tarefa.logradouro,
+      numero: tarefa.numero,
+    },
+    periodo: {
+      mesAnoInicio: tarefa.mesAnoInicio,
+      mesAnoFinal: tarefa.mesAnoFinal,
+    },
+    progress: {
+      total: tarefa.total,
+      current: tarefa.current,
+      percentage,
+    },
+    erro: tarefa.erro,
+    resultados: tarefa.resultados.map(resultado => ({
+      id: resultado.id,
+      status: resultado.status,
+      logradouro: resultado.logradouro,
+      numero: resultado.numero,
+      complemento: resultado.complemento,
+      indiceCadastral: resultado.indiceCadastral,
+      proprietario: {
+        nome: resultado.nome,
+        cpf: resultado.cpf,
+        endereco: resultado.endereco,
+        telefone: resultado.telefone,
+        email: resultado.email,
+      },
+      erro: resultado.erro,
+      createdAt: resultado.createdAt,
+    })),
+    createdAt: tarefa.createdAt,
+    startedAt: tarefa.startedAt,
+    completedAt: tarefa.completedAt,
+  };
+}
