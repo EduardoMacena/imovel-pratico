@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import styled from "styled-components";
 
 export const PageContainer = styled.main`
@@ -13,58 +14,83 @@ export const Header = styled.header`
   margin-bottom: ${({ theme }) => theme.spacing["2xl"]};
 `;
 
-export const ProductBadge = styled.div`
+export const BackLink = styled(Link)`
   display: inline-flex;
-  padding: 6px 12px;
-  border-radius: ${({ theme }) => theme.radii.pill};
-  background: ${({ theme }) => theme.colors.primary};
-  color: ${({ theme }) => theme.colors.white};
-  font-size: 13px;
   margin-bottom: ${({ theme }) => theme.spacing.md};
-  font-weight: 700;
-`;
+  color: ${({ theme }) => theme.colors.textMuted};
+  font-size: 14px;
+  cursor: pointer;
 
-export const Title = styled.h1`
-  font-size: 38px;
-  line-height: 1.1;
-  margin: 0;
-  color: ${({ theme }) => theme.colors.text};
-
-  @media (max-width: 720px) {
-    font-size: 30px;
+  &:hover {
+    color: ${({ theme }) => theme.colors.text};
   }
 `;
 
-export const Subtitle = styled.p`
-  margin-top: ${({ theme }) => theme.spacing.md};
-  color: ${({ theme }) => theme.colors.textSoft};
-  font-size: 16px;
-  line-height: 1.6;
-  max-width: 720px;
-`;
-
-export const FormGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: ${({ theme }) => theme.spacing.lg};
+export const HeaderTop = styled.div`
+  display: flex;
+  justify-content: space-between;
+  gap: ${({ theme }) => theme.spacing.md};
+  align-items: flex-start;
 
   @media (max-width: 720px) {
+    flex-direction: column;
+  }
+`;
+
+export const TitleGroup = styled.div`
+  display: grid;
+  gap: ${({ theme }) => theme.spacing.sm};
+`;
+
+export const Title = styled.h1`
+  font-size: 34px;
+  margin: 0;
+  color: ${({ theme }) => theme.colors.text};
+`;
+
+export const Subtitle = styled.p`
+  color: ${({ theme }) => theme.colors.textSoft};
+  line-height: 1.6;
+  margin: 0;
+`;
+
+export const TaskId = styled.div`
+  color: ${({ theme }) => theme.colors.textMuted};
+  font-size: 13px;
+  word-break: break-all;
+`;
+
+export const SummaryGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: ${({ theme }) => theme.spacing.md};
+  margin-top: ${({ theme }) => theme.spacing.xl};
+
+  @media (max-width: 960px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (max-width: 560px) {
     grid-template-columns: 1fr;
   }
 `;
 
-export const Actions = styled.div`
-  margin-top: ${({ theme }) => theme.spacing.xl};
-  display: flex;
-  gap: ${({ theme }) => theme.spacing.md};
-  align-items: center;
-  flex-wrap: wrap;
+export const SummaryBox = styled.div`
+  background: ${({ theme }) => theme.colors.surfaceMuted};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.radii.md};
+  padding: ${({ theme }) => theme.spacing.md};
 `;
 
-export const TaskId = styled.span`
+export const SummaryLabel = styled.div`
   color: ${({ theme }) => theme.colors.textMuted};
-  font-size: 14px;
-  word-break: break-all;
+  font-size: 12px;
+  margin-bottom: 6px;
+`;
+
+export const SummaryValue = styled.div`
+  font-weight: 800;
+  color: ${({ theme }) => theme.colors.text};
 `;
 
 export const ErrorBox = styled.div`
@@ -109,34 +135,10 @@ export const ResultsList = styled.div`
 `;
 
 export const EmptyState = styled.div`
-  margin-top: ${({ theme }) => theme.spacing.xl};
   padding: ${({ theme }) => theme.spacing.xl};
   border: 1px dashed ${({ theme }) => theme.colors.borderStrong};
   border-radius: ${({ theme }) => theme.radii.lg};
-  color: ${({ theme }) => theme.colors.textMuted};
   text-align: center;
-  background: ${({ theme }) => theme.colors.surfaceMuted};
-`;
-
-export const HeaderActions = styled.div`
-  margin-top: ${({ theme }) => theme.spacing.lg};
-`;
-
-export const HeaderLink = styled.a`
-  display: inline-flex;
-  height: 42px;
-  align-items: center;
-  justify-content: center;
-  padding: 0 16px;
-  border-radius: ${({ theme }) => theme.radii.md};
+  color: ${({ theme }) => theme.colors.textMuted};
   background: ${({ theme }) => theme.colors.surface};
-  color: ${({ theme }) => theme.colors.text};
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  font-weight: 800;
-  font-size: 14px;
-  box-shadow: ${({ theme }) => theme.shadows.soft};
-
-  &:hover {
-    border-color: ${({ theme }) => theme.colors.borderStrong};
-  }
 `;

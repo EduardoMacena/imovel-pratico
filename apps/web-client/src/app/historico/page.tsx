@@ -6,8 +6,10 @@ import { StatusBadge } from "../../components/StatusBadge";
 import { listarTarefas } from "../../features/busca/api";
 import type { TarefaResumo } from "../../features/busca/types";
 import {
+  Actions,
   Address,
   BackLink,
+  DetailsLink,
   EmptyState,
   ErrorBox,
   Header,
@@ -122,6 +124,12 @@ export default function HistoricoPage() {
                   <InfoValue>{formatDate(tarefa.createdAt)}</InfoValue>
                 </InfoBox>
               </InfoGrid>
+
+              <Actions>
+                <Link href={`/historico/${tarefa.id}`} passHref legacyBehavior>
+                  <DetailsLink>Ver detalhes</DetailsLink>
+                </Link>
+              </Actions>
             </Item>
           ))}
         </List>

@@ -104,3 +104,27 @@ export const ErrorBox = styled.div`
   color: ${({ theme }) => theme.colors.danger};
   border: 1px solid ${({ theme }) => theme.colors.dangerBorder};
 `;
+
+export const Actions = styled.div`
+  margin-top: ${({ theme }) => theme.spacing.lg};
+  display: flex;
+  justify-content: flex-end;
+`;
+
+export const DetailsLink = styled.a`
+  display: inline-flex;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  border-radius: ${({ theme }) => theme.radii.md};
+  background: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.white};
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+
+  &:hover {
+    background: ${({ theme }) => theme.colors.primaryHover};
+  }
+`;
