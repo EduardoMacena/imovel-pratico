@@ -3,22 +3,18 @@ import { adicionarBuscaProprietariosNaFila } from "@imovel-pratico/queue";
 import type { BuscarProprietariosInput } from "./imovel.schemas.js";
 
 export async function criarTarefaBuscaProprietarios(
+  clienteId: string,
   data: BuscarProprietariosInput
 ) {
-  const cliente = await prisma.cliente.upsert({
+  const cliente = await prisma.cliente.findUnique({
     where: {
-      slug: "twa-investimentos",
-    },
-    update: {
-      intervaloSegundos: data.intervaloSegundos,
-    },
-    create: {
-      nome: "TWA Investimentos",
-      slug: "twa-investimentos",
-      intervaloSegundos: data.intervaloSegundos,
-      limiteDiario: 300,
+      id: clienteId,
     },
   });
+
+  if (!cliente) {
+    throw new Error("Cliente não encontrado");
+  }
 
   const tarefa = await prisma.tarefa.create({
     data: {
@@ -67,10 +63,11 @@ export async function criarTarefaBuscaProprietarios(
   };
 }
 
-export async function buscarTarefaPorId(id: string) {
-  const tarefa = await prisma.tarefa.findUnique({
+export async function buscarTarefaPorId(clienteId: string, id: string) {
+  const tarefa = await prisma.tarefa.findFirst({
     where: {
       id,
+      clienteId,
     },
     include: {
       cliente: {
@@ -87,10 +84,14 @@ export async function buscarTarefaPorId(id: string) {
   return tarefa;
 }
 
-export async function buscarProgressoTarefaPorId(id: string) {
-  const tarefa = await prisma.tarefa.findUnique({
+export async function buscarProgressoTarefaPorId(
+  clienteId: string,
+  id: string
+) {
+  const tarefa = await prisma.tarefa.findFirst({
     where: {
       id,
+      clienteId,
     },
     include: {
       cliente: {
@@ -156,8 +157,11 @@ export async function buscarProgressoTarefaPorId(id: string) {
   };
 }
 
-export async function listarTarefasRecentes() {
+export async function listarTarefasRecentes(clienteId: string) {
   const tarefas = await prisma.tarefa.findMany({
+    where: {
+      clienteId,
+    },
     orderBy: {
       createdAt: "desc",
     },
