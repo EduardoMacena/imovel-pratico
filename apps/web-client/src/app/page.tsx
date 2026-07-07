@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
 import { Input } from "../components/Input";
@@ -133,6 +134,8 @@ export default function HomePage() {
           Inicie uma busca por endereço, acompanhe o progresso da tarefa e veja
           os proprietários encontrados automaticamente.
         </Subtitle>
+        
+        <Link href="/historico">Ver histórico de buscas</Link>
       </Header>
 
       <Card>

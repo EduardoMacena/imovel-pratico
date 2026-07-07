@@ -57,3 +57,35 @@ export type ProgressoTarefaResponse = {
   startedAt?: string | null;
   completedAt?: string | null;
 };
+
+export type TarefaResumo = {
+  id: string;
+  status: "PENDING" | "PROCESSING" | "COMPLETED" | "ERROR" | "CANCELED";
+  cliente: {
+    id: string;
+    nome: string;
+    slug: string;
+  };
+  endereco: {
+    logradouro: string;
+    numero: string;
+  };
+  periodo: {
+    mesAnoInicio: string;
+    mesAnoFinal: string;
+  };
+  progress: {
+    total: number;
+    current: number;
+    percentage: number;
+  };
+  totalResultados: number;
+  erro: string | null;
+  createdAt: string;
+  startedAt: string | null;
+  completedAt: string | null;
+};
+
+export type ListarTarefasResponse = {
+  tarefas: TarefaResumo[];
+};

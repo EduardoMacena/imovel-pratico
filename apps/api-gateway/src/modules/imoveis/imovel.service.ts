@@ -155,3 +155,55 @@ export async function buscarProgressoTarefaPorId(id: string) {
     completedAt: tarefa.completedAt,
   };
 }
+
+export async function listarTarefasRecentes() {
+  const tarefas = await prisma.tarefa.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: 50,
+    include: {
+      cliente: {
+        select: {
+          id: true,
+          nome: true,
+          slug: true,
+        },
+      },
+      _count: {
+        select: {
+          resultados: true,
+        },
+      },
+    },
+  });
+
+  return tarefas.map(tarefa => {
+    const percentage =
+      tarefa.total > 0 ? Math.round((tarefa.current / tarefa.total) * 100) : 0;
+
+    return {
+      id: tarefa.id,
+      status: tarefa.status,
+      cliente: tarefa.cliente,
+      endereco: {
+        logradouro: tarefa.logradouro,
+        numero: tarefa.numero,
+      },
+      periodo: {
+        mesAnoInicio: tarefa.mesAnoInicio,
+        mesAnoFinal: tarefa.mesAnoFinal,
+      },
+      progress: {
+        total: tarefa.total,
+        current: tarefa.current,
+        percentage,
+      },
+      totalResultados: tarefa._count.resultados,
+      erro: tarefa.erro,
+      createdAt: tarefa.createdAt,
+      startedAt: tarefa.startedAt,
+      completedAt: tarefa.completedAt,
+    };
+  });
+}

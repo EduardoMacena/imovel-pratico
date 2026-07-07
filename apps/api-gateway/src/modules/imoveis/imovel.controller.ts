@@ -5,6 +5,7 @@ import {
 	buscarProgressoTarefaPorId,
 	buscarTarefaPorId,
 	criarTarefaBuscaProprietarios,
+  listarTarefasRecentes,
 } from "./imovel.service.js";
 
 export async function buscarProprietariosController(
@@ -60,4 +61,15 @@ export async function buscarProgressoTarefaController(
 	}
 
 	return reply.status(200).send(tarefa);
+}
+
+export async function listarTarefasController(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  const tarefas = await listarTarefasRecentes();
+
+  return reply.status(200).send({
+    tarefas,
+  });
 }
