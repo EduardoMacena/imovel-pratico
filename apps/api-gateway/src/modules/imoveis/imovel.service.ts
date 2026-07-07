@@ -1,4 +1,5 @@
 import { prisma } from "@imovel-pratico/database";
+import { adicionarBuscaProprietariosNaFila } from "@imovel-pratico/queue";
 import type { BuscarProprietariosInput } from "./imovel.schemas.js";
 
 export async function criarTarefaBuscaProprietarios(
@@ -8,7 +9,9 @@ export async function criarTarefaBuscaProprietarios(
     where: {
       slug: "twa-investimentos",
     },
-    update: {},
+    update: {
+      intervaloSegundos: data.intervaloSegundos,
+    },
     create: {
       nome: "TWA Investimentos",
       slug: "twa-investimentos",
@@ -30,10 +33,21 @@ export async function criarTarefaBuscaProprietarios(
     },
   });
 
+  await adicionarBuscaProprietariosNaFila({
+    tarefaId: tarefa.id,
+    clienteId: cliente.id,
+    logradouro: tarefa.logradouro,
+    numero: tarefa.numero,
+    mesAnoInicio: tarefa.mesAnoInicio,
+    mesAnoFinal: tarefa.mesAnoFinal,
+    intervaloSegundos: tarefa.intervaloSegundos,
+    forceRefresh: tarefa.forceRefresh,
+  });
+
   return {
     jobId: tarefa.id,
     status: tarefa.status,
-    message: "Tarefa criada com sucesso",
+    message: "Tarefa criada e adicionada na fila com sucesso",
     cliente: {
       id: cliente.id,
       nome: cliente.nome,
