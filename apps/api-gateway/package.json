@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@fastify/cors": "latest",
+    "@imovel-pratico/database": "workspace:*",
     "dotenv": "latest",
     "fastify": "latest",
     "pino": "latest",
