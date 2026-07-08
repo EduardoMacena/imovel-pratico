@@ -1,73 +1,87 @@
-import { prisma } from "@imovel-pratico/database";
+import { Prisma, prisma } from "@imovel-pratico/database";
 
 type BuscarCacheInput = {
-  indiceCadastral: string;
-  forceRefresh?: boolean;
+	indiceCadastral: string;
+	forceRefresh?: boolean;
 };
 
 type SalvarCacheInput = {
-  logradouro: string;
-  numero: string;
-  complemento?: string | null;
-  indiceCadastral: string;
-  nome?: string | null;
-  cpf?: string | null;
-  endereco?: string | null;
-  telefone?: string | null;
-  email?: string | null;
+	logradouro: string;
+	numero: string;
+	complemento?: string | null;
+	indiceCadastral: string;
+	nome?: string | null;
+	cpf?: string | null;
+	endereco?: string | null;
+	telefone?: string | null;
+	email?: string | null;
+	fonteContato?: string | null;
+	dadosContato?: Record<string, unknown> | null;
 };
 
 function adicionarDias(date: Date, dias: number) {
-  const nextDate = new Date(date);
+	const nextDate = new Date(date);
 
-  nextDate.setDate(nextDate.getDate() + dias);
+	nextDate.setDate(nextDate.getDate() + dias);
 
-  return nextDate;
+	return nextDate;
+}
+
+function toPrismaJson(
+  value: Record<string, unknown> | null | undefined
+): Prisma.InputJsonValue | undefined {
+  if (!value) {
+    return undefined;
+  }
+
+  return JSON.parse(JSON.stringify(value)) as Prisma.InputJsonValue;
 }
 
 export async function buscarImovelCacheValido({
-  indiceCadastral,
-  forceRefresh,
+	indiceCadastral,
+	forceRefresh,
 }: BuscarCacheInput) {
-  if (forceRefresh) {
-    return null;
-  }
+	if (forceRefresh) {
+		return null;
+	}
 
-  const cache = await prisma.imovelCache.findFirst({
-    where: {
-      indiceCadastral,
-      status: "VALID",
-      expiraEm: {
-        gt: new Date(),
-      },
-    },
-  });
+	const cache = await prisma.imovelCache.findFirst({
+		where: {
+			indiceCadastral,
+			status: "VALID",
+			expiraEm: {
+				gt: new Date(),
+			},
+		},
+	});
 
-  if (!cache) {
-    return null;
-  }
+	if (!cache) {
+		return null;
+	}
 
-  return cache;
+	return cache;
 }
 
 export async function salvarImovelCache({
-  logradouro,
-  numero,
-  complemento,
-  indiceCadastral,
-  nome,
-  cpf,
-  endereco,
-  telefone,
-  email,
+	logradouro,
+	numero,
+	complemento,
+	indiceCadastral,
+	nome,
+	cpf,
+	endereco,
+	telefone,
+	email,
+	fonteContato,
+	dadosContato,
 }: SalvarCacheInput) {
-  const agora = new Date();
+	const agora = new Date();
 
-  return prisma.imovelCache.upsert({
-    where: {
-      indiceCadastral,
-    },
-    update: {
+	return prisma.imovelCache.upsert({
+		where: {
+			indiceCadastral,
+		},
+		update: {
       logradouro,
       numero,
       complemento,
@@ -76,6 +90,8 @@ export async function salvarImovelCache({
       endereco,
       telefone,
       email,
+      fonteContato,
+      dadosContato: toPrismaJson(dadosContato),
       status: "VALID",
       ultimaConsultaEm: agora,
       expiraEm: adicionarDias(agora, 90),
@@ -90,9 +106,11 @@ export async function salvarImovelCache({
       endereco,
       telefone,
       email,
+      fonteContato,
+      dadosContato: toPrismaJson(dadosContato),
       status: "VALID",
       ultimaConsultaEm: agora,
       expiraEm: adicionarDias(agora, 90),
     },
-  });
+	});
 }

@@ -35,6 +35,7 @@ export type ImovelCacheMinAggregateOutputType = {
   endereco: string | null
   telefone: string | null
   email: string | null
+  fonteContato: string | null
   status: $Enums.CacheStatus | null
   ultimaConsultaEm: Date | null
   expiraEm: Date | null
@@ -53,6 +54,7 @@ export type ImovelCacheMaxAggregateOutputType = {
   endereco: string | null
   telefone: string | null
   email: string | null
+  fonteContato: string | null
   status: $Enums.CacheStatus | null
   ultimaConsultaEm: Date | null
   expiraEm: Date | null
@@ -71,6 +73,8 @@ export type ImovelCacheCountAggregateOutputType = {
   endereco: number
   telefone: number
   email: number
+  fonteContato: number
+  dadosContato: number
   status: number
   ultimaConsultaEm: number
   expiraEm: number
@@ -91,6 +95,7 @@ export type ImovelCacheMinAggregateInputType = {
   endereco?: true
   telefone?: true
   email?: true
+  fonteContato?: true
   status?: true
   ultimaConsultaEm?: true
   expiraEm?: true
@@ -109,6 +114,7 @@ export type ImovelCacheMaxAggregateInputType = {
   endereco?: true
   telefone?: true
   email?: true
+  fonteContato?: true
   status?: true
   ultimaConsultaEm?: true
   expiraEm?: true
@@ -127,6 +133,8 @@ export type ImovelCacheCountAggregateInputType = {
   endereco?: true
   telefone?: true
   email?: true
+  fonteContato?: true
+  dadosContato?: true
   status?: true
   ultimaConsultaEm?: true
   expiraEm?: true
@@ -218,6 +226,8 @@ export type ImovelCacheGroupByOutputType = {
   endereco: string | null
   telefone: string | null
   email: string | null
+  fonteContato: string | null
+  dadosContato: runtime.JsonValue | null
   status: $Enums.CacheStatus
   ultimaConsultaEm: Date
   expiraEm: Date
@@ -257,6 +267,8 @@ export type ImovelCacheWhereInput = {
   endereco?: Prisma.StringNullableFilter<"ImovelCache"> | string | null
   telefone?: Prisma.StringNullableFilter<"ImovelCache"> | string | null
   email?: Prisma.StringNullableFilter<"ImovelCache"> | string | null
+  fonteContato?: Prisma.StringNullableFilter<"ImovelCache"> | string | null
+  dadosContato?: Prisma.JsonNullableFilter<"ImovelCache">
   status?: Prisma.EnumCacheStatusFilter<"ImovelCache"> | $Enums.CacheStatus
   ultimaConsultaEm?: Prisma.DateTimeFilter<"ImovelCache"> | Date | string
   expiraEm?: Prisma.DateTimeFilter<"ImovelCache"> | Date | string
@@ -275,6 +287,8 @@ export type ImovelCacheOrderByWithRelationInput = {
   endereco?: Prisma.SortOrderInput | Prisma.SortOrder
   telefone?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
+  fonteContato?: Prisma.SortOrderInput | Prisma.SortOrder
+  dadosContato?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   ultimaConsultaEm?: Prisma.SortOrder
   expiraEm?: Prisma.SortOrder
@@ -296,6 +310,8 @@ export type ImovelCacheWhereUniqueInput = Prisma.AtLeast<{
   endereco?: Prisma.StringNullableFilter<"ImovelCache"> | string | null
   telefone?: Prisma.StringNullableFilter<"ImovelCache"> | string | null
   email?: Prisma.StringNullableFilter<"ImovelCache"> | string | null
+  fonteContato?: Prisma.StringNullableFilter<"ImovelCache"> | string | null
+  dadosContato?: Prisma.JsonNullableFilter<"ImovelCache">
   status?: Prisma.EnumCacheStatusFilter<"ImovelCache"> | $Enums.CacheStatus
   ultimaConsultaEm?: Prisma.DateTimeFilter<"ImovelCache"> | Date | string
   expiraEm?: Prisma.DateTimeFilter<"ImovelCache"> | Date | string
@@ -314,6 +330,8 @@ export type ImovelCacheOrderByWithAggregationInput = {
   endereco?: Prisma.SortOrderInput | Prisma.SortOrder
   telefone?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
+  fonteContato?: Prisma.SortOrderInput | Prisma.SortOrder
+  dadosContato?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   ultimaConsultaEm?: Prisma.SortOrder
   expiraEm?: Prisma.SortOrder
@@ -338,6 +356,8 @@ export type ImovelCacheScalarWhereWithAggregatesInput = {
   endereco?: Prisma.StringNullableWithAggregatesFilter<"ImovelCache"> | string | null
   telefone?: Prisma.StringNullableWithAggregatesFilter<"ImovelCache"> | string | null
   email?: Prisma.StringNullableWithAggregatesFilter<"ImovelCache"> | string | null
+  fonteContato?: Prisma.StringNullableWithAggregatesFilter<"ImovelCache"> | string | null
+  dadosContato?: Prisma.JsonNullableWithAggregatesFilter<"ImovelCache">
   status?: Prisma.EnumCacheStatusWithAggregatesFilter<"ImovelCache"> | $Enums.CacheStatus
   ultimaConsultaEm?: Prisma.DateTimeWithAggregatesFilter<"ImovelCache"> | Date | string
   expiraEm?: Prisma.DateTimeWithAggregatesFilter<"ImovelCache"> | Date | string
@@ -356,6 +376,8 @@ export type ImovelCacheCreateInput = {
   endereco?: string | null
   telefone?: string | null
   email?: string | null
+  fonteContato?: string | null
+  dadosContato?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.CacheStatus
   ultimaConsultaEm: Date | string
   expiraEm: Date | string
@@ -374,6 +396,8 @@ export type ImovelCacheUncheckedCreateInput = {
   endereco?: string | null
   telefone?: string | null
   email?: string | null
+  fonteContato?: string | null
+  dadosContato?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.CacheStatus
   ultimaConsultaEm: Date | string
   expiraEm: Date | string
@@ -392,6 +416,8 @@ export type ImovelCacheUpdateInput = {
   endereco?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   telefone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fonteContato?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dadosContato?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumCacheStatusFieldUpdateOperationsInput | $Enums.CacheStatus
   ultimaConsultaEm?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiraEm?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -410,6 +436,8 @@ export type ImovelCacheUncheckedUpdateInput = {
   endereco?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   telefone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fonteContato?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dadosContato?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumCacheStatusFieldUpdateOperationsInput | $Enums.CacheStatus
   ultimaConsultaEm?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiraEm?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -428,6 +456,8 @@ export type ImovelCacheCreateManyInput = {
   endereco?: string | null
   telefone?: string | null
   email?: string | null
+  fonteContato?: string | null
+  dadosContato?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.CacheStatus
   ultimaConsultaEm: Date | string
   expiraEm: Date | string
@@ -446,6 +476,8 @@ export type ImovelCacheUpdateManyMutationInput = {
   endereco?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   telefone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fonteContato?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dadosContato?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumCacheStatusFieldUpdateOperationsInput | $Enums.CacheStatus
   ultimaConsultaEm?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiraEm?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -464,6 +496,8 @@ export type ImovelCacheUncheckedUpdateManyInput = {
   endereco?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   telefone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fonteContato?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dadosContato?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumCacheStatusFieldUpdateOperationsInput | $Enums.CacheStatus
   ultimaConsultaEm?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiraEm?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -482,6 +516,8 @@ export type ImovelCacheCountOrderByAggregateInput = {
   endereco?: Prisma.SortOrder
   telefone?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  fonteContato?: Prisma.SortOrder
+  dadosContato?: Prisma.SortOrder
   status?: Prisma.SortOrder
   ultimaConsultaEm?: Prisma.SortOrder
   expiraEm?: Prisma.SortOrder
@@ -500,6 +536,7 @@ export type ImovelCacheMaxOrderByAggregateInput = {
   endereco?: Prisma.SortOrder
   telefone?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  fonteContato?: Prisma.SortOrder
   status?: Prisma.SortOrder
   ultimaConsultaEm?: Prisma.SortOrder
   expiraEm?: Prisma.SortOrder
@@ -518,6 +555,7 @@ export type ImovelCacheMinOrderByAggregateInput = {
   endereco?: Prisma.SortOrder
   telefone?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  fonteContato?: Prisma.SortOrder
   status?: Prisma.SortOrder
   ultimaConsultaEm?: Prisma.SortOrder
   expiraEm?: Prisma.SortOrder
@@ -542,6 +580,8 @@ export type ImovelCacheSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   endereco?: boolean
   telefone?: boolean
   email?: boolean
+  fonteContato?: boolean
+  dadosContato?: boolean
   status?: boolean
   ultimaConsultaEm?: boolean
   expiraEm?: boolean
@@ -560,6 +600,8 @@ export type ImovelCacheSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   endereco?: boolean
   telefone?: boolean
   email?: boolean
+  fonteContato?: boolean
+  dadosContato?: boolean
   status?: boolean
   ultimaConsultaEm?: boolean
   expiraEm?: boolean
@@ -578,6 +620,8 @@ export type ImovelCacheSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   endereco?: boolean
   telefone?: boolean
   email?: boolean
+  fonteContato?: boolean
+  dadosContato?: boolean
   status?: boolean
   ultimaConsultaEm?: boolean
   expiraEm?: boolean
@@ -596,6 +640,8 @@ export type ImovelCacheSelectScalar = {
   endereco?: boolean
   telefone?: boolean
   email?: boolean
+  fonteContato?: boolean
+  dadosContato?: boolean
   status?: boolean
   ultimaConsultaEm?: boolean
   expiraEm?: boolean
@@ -603,7 +649,7 @@ export type ImovelCacheSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ImovelCacheOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "logradouro" | "numero" | "complemento" | "indiceCadastral" | "nome" | "cpf" | "endereco" | "telefone" | "email" | "status" | "ultimaConsultaEm" | "expiraEm" | "createdAt" | "updatedAt", ExtArgs["result"]["imovelCache"]>
+export type ImovelCacheOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "logradouro" | "numero" | "complemento" | "indiceCadastral" | "nome" | "cpf" | "endereco" | "telefone" | "email" | "fonteContato" | "dadosContato" | "status" | "ultimaConsultaEm" | "expiraEm" | "createdAt" | "updatedAt", ExtArgs["result"]["imovelCache"]>
 
 export type $ImovelCachePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "ImovelCache"
@@ -619,6 +665,8 @@ export type $ImovelCachePayload<ExtArgs extends runtime.Types.Extensions.Interna
     endereco: string | null
     telefone: string | null
     email: string | null
+    fonteContato: string | null
+    dadosContato: runtime.JsonValue | null
     status: $Enums.CacheStatus
     ultimaConsultaEm: Date
     expiraEm: Date
@@ -1057,6 +1105,8 @@ export interface ImovelCacheFieldRefs {
   readonly endereco: Prisma.FieldRef<"ImovelCache", 'String'>
   readonly telefone: Prisma.FieldRef<"ImovelCache", 'String'>
   readonly email: Prisma.FieldRef<"ImovelCache", 'String'>
+  readonly fonteContato: Prisma.FieldRef<"ImovelCache", 'String'>
+  readonly dadosContato: Prisma.FieldRef<"ImovelCache", 'Json'>
   readonly status: Prisma.FieldRef<"ImovelCache", 'CacheStatus'>
   readonly ultimaConsultaEm: Prisma.FieldRef<"ImovelCache", 'DateTime'>
   readonly expiraEm: Prisma.FieldRef<"ImovelCache", 'DateTime'>

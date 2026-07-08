@@ -13,6 +13,7 @@ import {
 } from "../../../features/admin/api";
 import type { BuscarTarefaAdminResponse } from "../../../features/admin/types";
 import { useRequireSuperAdmin } from "../../../hooks/useRequireSuperAdmin";
+import { OwnerDetails } from "../../../components/OwnerDetails";
 import {
 	Actions,
 	BackLink,
@@ -407,7 +408,10 @@ export default function DetalheTarefaPage() {
 													</InfoValue>
 												</InfoBox>
 											</InfoGrid>
-
+											<OwnerDetails
+												fonteContato={resultado.fonteContato}
+												dadosContato={resultado.dadosContato}
+											/>
 											{resultado.erro && <ErrorBox>{resultado.erro}</ErrorBox>}
 										</ResultItem>
 									))}

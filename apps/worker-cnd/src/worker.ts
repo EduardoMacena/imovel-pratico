@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { Worker } from "bullmq";
-import { prisma } from "@imovel-pratico/database";
+import { Prisma, prisma } from "@imovel-pratico/database";
 import {
 	QUEUE_NAMES,
 	redisConnection,
@@ -8,6 +8,16 @@ import {
 } from "@imovel-pratico/queue";
 import { buscarProprietariosPorEndereco } from "./services/buscarProprietariosPorEndereco.js";
 import { closeBrowser } from "./playwright/browser.js";
+
+function toPrismaJson(
+  value: Record<string, unknown> | null | undefined
+): Prisma.InputJsonValue | undefined {
+  if (!value) {
+    return undefined;
+  }
+
+  return JSON.parse(JSON.stringify(value)) as Prisma.InputJsonValue;
+}
 
 function getDataExpiracaoCache() {
 	const date = new Date();
@@ -100,8 +110,11 @@ const worker = new Worker<BuscarProprietariosJobData>(
 							nome: item.proprietario?.nome ?? null,
 							cpf: item.proprietario?.cpf ?? null,
 							endereco: item.proprietario?.endereco ?? null,
-							telefone: null,
-							email: null,
+							telefone: item.telefone ?? null,
+							email: item.email ?? null,
+
+							fonteContato: item.fonteContato ?? null,
+							dadosContato: toPrismaJson(item.dadosContato),
 
 							erro: item.error ?? null,
 						},
@@ -124,8 +137,8 @@ const worker = new Worker<BuscarProprietariosJobData>(
 
 						await prisma.imovelCache.upsert({
 							where: {
-                indiceCadastral: item.indiceCadastral,
-              },
+								indiceCadastral: item.indiceCadastral,
+							},
 							update: {
 								logradouro: item.logradouro,
 								numero: item.numero,

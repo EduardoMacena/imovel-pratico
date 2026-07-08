@@ -512,315 +512,317 @@ export async function buscarDashboardAdmin() {
 }
 
 export async function buscarTarefaAdminPorId(id: string) {
-  const tarefa = await prisma.tarefa.findUnique({
-    where: {
-      id,
-    },
-    include: {
-      cliente: {
-        select: {
-          id: true,
-          nome: true,
-          slug: true,
-          status: true,
-        },
-      },
-      resultados: {
-        orderBy: {
-          createdAt: "asc",
-        },
-      },
-    },
-  });
+	const tarefa = await prisma.tarefa.findUnique({
+		where: {
+			id,
+		},
+		include: {
+			cliente: {
+				select: {
+					id: true,
+					nome: true,
+					slug: true,
+					status: true,
+				},
+			},
+			resultados: {
+				orderBy: {
+					createdAt: "asc",
+				},
+			},
+		},
+	});
 
-  if (!tarefa) {
-    return null;
-  }
+	if (!tarefa) {
+		return null;
+	}
 
-  const percentage =
-    tarefa.total > 0 ? Math.round((tarefa.current / tarefa.total) * 100) : 0;
+	const percentage =
+		tarefa.total > 0 ? Math.round((tarefa.current / tarefa.total) * 100) : 0;
 
-  return {
-    id: tarefa.id,
-    status: tarefa.status,
-    cliente: tarefa.cliente,
-    endereco: {
-      logradouro: tarefa.logradouro,
-      numero: tarefa.numero,
-    },
-    periodo: {
-      mesAnoInicio: tarefa.mesAnoInicio,
-      mesAnoFinal: tarefa.mesAnoFinal,
-    },
-    configuracao: {
-      intervaloSegundos: tarefa.intervaloSegundos,
-      forceRefresh: tarefa.forceRefresh,
-    },
-    progress: {
-      total: tarefa.total,
-      current: tarefa.current,
-      percentage,
-    },
-    erro: tarefa.erro,
-    resultados: tarefa.resultados.map(resultado => ({
-      id: resultado.id,
-      status: resultado.status,
-      logradouro: resultado.logradouro,
-      numero: resultado.numero,
-      complemento: resultado.complemento,
-      indiceCadastral: resultado.indiceCadastral,
-      proprietario: {
-        nome: resultado.nome,
-        cpf: resultado.cpf,
-        endereco: resultado.endereco,
-        telefone: resultado.telefone,
-        email: resultado.email,
-      },
-      erro: resultado.erro,
-      createdAt: resultado.createdAt,
-    })),
-    createdAt: tarefa.createdAt,
-    startedAt: tarefa.startedAt,
-    completedAt: tarefa.completedAt,
-  };
+	return {
+		id: tarefa.id,
+		status: tarefa.status,
+		cliente: tarefa.cliente,
+		endereco: {
+			logradouro: tarefa.logradouro,
+			numero: tarefa.numero,
+		},
+		periodo: {
+			mesAnoInicio: tarefa.mesAnoInicio,
+			mesAnoFinal: tarefa.mesAnoFinal,
+		},
+		configuracao: {
+			intervaloSegundos: tarefa.intervaloSegundos,
+			forceRefresh: tarefa.forceRefresh,
+		},
+		progress: {
+			total: tarefa.total,
+			current: tarefa.current,
+			percentage,
+		},
+		erro: tarefa.erro,
+		resultados: tarefa.resultados.map((resultado) => ({
+			id: resultado.id,
+			status: resultado.status,
+			logradouro: resultado.logradouro,
+			numero: resultado.numero,
+			complemento: resultado.complemento,
+			indiceCadastral: resultado.indiceCadastral,
+			proprietario: {
+				nome: resultado.nome,
+				cpf: resultado.cpf,
+				endereco: resultado.endereco,
+				telefone: resultado.telefone,
+				email: resultado.email,
+			},
+			fonteContato: resultado.fonteContato,
+			dadosContato: resultado.dadosContato,
+			erro: resultado.erro,
+			createdAt: resultado.createdAt,
+		})),
+		createdAt: tarefa.createdAt,
+		startedAt: tarefa.startedAt,
+		completedAt: tarefa.completedAt,
+	};
 }
 
 export async function cancelarTarefaAdmin(id: string) {
-  const tarefa = await prisma.tarefa.findUnique({
-    where: {
-      id,
-    },
-  });
+	const tarefa = await prisma.tarefa.findUnique({
+		where: {
+			id,
+		},
+	});
 
-  if (!tarefa) {
-    throw new Error("Tarefa não encontrada");
-  }
+	if (!tarefa) {
+		throw new Error("Tarefa não encontrada");
+	}
 
-  if (["COMPLETED", "ERROR", "CANCELED"].includes(tarefa.status)) {
-    throw new Error("Essa tarefa não pode mais ser cancelada");
-  }
+	if (["COMPLETED", "ERROR", "CANCELED"].includes(tarefa.status)) {
+		throw new Error("Essa tarefa não pode mais ser cancelada");
+	}
 
-  let queueResult = {
-    removed: false,
-    reason: "Cancelamento registrado no banco. A fila não foi alterada.",
-  };
+	let queueResult = {
+		removed: false,
+		reason: "Cancelamento registrado no banco. A fila não foi alterada.",
+	};
 
-  try {
-    queueResult = await removerBuscaProprietariosDaFila(id);
-  } catch (error) {
-    console.error("Erro ao tentar remover job da fila:", error);
+	try {
+		queueResult = await removerBuscaProprietariosDaFila(id);
+	} catch (error) {
+		console.error("Erro ao tentar remover job da fila:", error);
 
-    queueResult = {
-      removed: false,
-      reason:
-        "Não foi possível remover o job da fila, mas a tarefa foi marcada como cancelada.",
-    };
-  }
+		queueResult = {
+			removed: false,
+			reason:
+				"Não foi possível remover o job da fila, mas a tarefa foi marcada como cancelada.",
+		};
+	}
 
-  const tarefaAtualizada = await prisma.tarefa.update({
-    where: {
-      id,
-    },
-    data: {
-      status: "CANCELED",
-      erro: "Tarefa cancelada pelo administrador",
-      completedAt: new Date(),
-    },
-    select: {
-      id: true,
-      status: true,
-    },
-  });
+	const tarefaAtualizada = await prisma.tarefa.update({
+		where: {
+			id,
+		},
+		data: {
+			status: "CANCELED",
+			erro: "Tarefa cancelada pelo administrador",
+			completedAt: new Date(),
+		},
+		select: {
+			id: true,
+			status: true,
+		},
+	});
 
-  return {
-    tarefa: tarefaAtualizada,
-    queue: queueResult,
-    message: "Tarefa cancelada com sucesso",
-  };
+	return {
+		tarefa: tarefaAtualizada,
+		queue: queueResult,
+		message: "Tarefa cancelada com sucesso",
+	};
 }
 
 export async function reprocessarTarefaAdmin(id: string) {
-  const tarefa = await prisma.tarefa.findUnique({
-    where: {
-      id,
-    },
-    include: {
-      cliente: true,
-    },
-  });
+	const tarefa = await prisma.tarefa.findUnique({
+		where: {
+			id,
+		},
+		include: {
+			cliente: true,
+		},
+	});
 
-  if (!tarefa) {
-    throw new Error("Tarefa não encontrada");
-  }
+	if (!tarefa) {
+		throw new Error("Tarefa não encontrada");
+	}
 
-  if (tarefa.status === "PROCESSING") {
-    throw new Error("Não é possível reprocessar uma tarefa em processamento");
-  }
+	if (tarefa.status === "PROCESSING") {
+		throw new Error("Não é possível reprocessar uma tarefa em processamento");
+	}
 
-  await removerBuscaProprietariosDaFila(id);
+	await removerBuscaProprietariosDaFila(id);
 
-  await prisma.tarefaResultado.deleteMany({
-    where: {
-      tarefaId: id,
-    },
-  });
+	await prisma.tarefaResultado.deleteMany({
+		where: {
+			tarefaId: id,
+		},
+	});
 
-  const tarefaAtualizada = await prisma.tarefa.update({
-    where: {
-      id,
-    },
-    data: {
-      status: "PENDING",
-      total: 0,
-      current: 0,
-      erro: null,
-      startedAt: null,
-      completedAt: null,
-    },
-  });
+	const tarefaAtualizada = await prisma.tarefa.update({
+		where: {
+			id,
+		},
+		data: {
+			status: "PENDING",
+			total: 0,
+			current: 0,
+			erro: null,
+			startedAt: null,
+			completedAt: null,
+		},
+	});
 
-  await adicionarBuscaProprietariosNaFila({
-    tarefaId: tarefaAtualizada.id,
-    clienteId: tarefaAtualizada.clienteId,
-    logradouro: tarefaAtualizada.logradouro,
-    numero: tarefaAtualizada.numero,
-    mesAnoInicio: tarefaAtualizada.mesAnoInicio,
-    mesAnoFinal: tarefaAtualizada.mesAnoFinal,
-    intervaloSegundos: tarefaAtualizada.intervaloSegundos,
-    forceRefresh: true,
-  });
+	await adicionarBuscaProprietariosNaFila({
+		tarefaId: tarefaAtualizada.id,
+		clienteId: tarefaAtualizada.clienteId,
+		logradouro: tarefaAtualizada.logradouro,
+		numero: tarefaAtualizada.numero,
+		mesAnoInicio: tarefaAtualizada.mesAnoInicio,
+		mesAnoFinal: tarefaAtualizada.mesAnoFinal,
+		intervaloSegundos: tarefaAtualizada.intervaloSegundos,
+		forceRefresh: true,
+	});
 
-  return {
-    tarefa: tarefaAtualizada,
-    message: "Tarefa reenviada para processamento",
-  };
+	return {
+		tarefa: tarefaAtualizada,
+		message: "Tarefa reenviada para processamento",
+	};
 }
 
 export async function exportarResultadosTarefaAdminCsv(id: string) {
-  const tarefa = await prisma.tarefa.findUnique({
-    where: {
-      id,
-    },
-    include: {
-      cliente: {
-        select: {
-          nome: true,
-          slug: true,
-        },
-      },
-      resultados: {
-        orderBy: {
-          createdAt: "asc",
-        },
-      },
-    },
-  });
+	const tarefa = await prisma.tarefa.findUnique({
+		where: {
+			id,
+		},
+		include: {
+			cliente: {
+				select: {
+					nome: true,
+					slug: true,
+				},
+			},
+			resultados: {
+				orderBy: {
+					createdAt: "asc",
+				},
+			},
+		},
+	});
 
-  if (!tarefa) {
-    return null;
-  }
+	if (!tarefa) {
+		return null;
+	}
 
-  const rows = tarefa.resultados.map(resultado => ({
-    cliente: tarefa.cliente.nome,
-    tarefaId: tarefa.id,
-    statusTarefa: tarefa.status,
-    logradouroBusca: tarefa.logradouro,
-    numeroBusca: tarefa.numero,
-    mesAnoInicio: tarefa.mesAnoInicio,
-    mesAnoFinal: tarefa.mesAnoFinal,
-    statusResultado: resultado.status,
-    indiceCadastral: resultado.indiceCadastral,
-    logradouro: resultado.logradouro,
-    numero: resultado.numero,
-    complemento: resultado.complemento,
-    nome: resultado.nome,
-    cpf: resultado.cpf,
-    endereco: resultado.endereco,
-    telefone: resultado.telefone,
-    email: resultado.email,
-    erro: resultado.erro,
-    consultadoEm: resultado.createdAt.toISOString(),
-  }));
+	const rows = tarefa.resultados.map((resultado) => ({
+		cliente: tarefa.cliente.nome,
+		tarefaId: tarefa.id,
+		statusTarefa: tarefa.status,
+		logradouroBusca: tarefa.logradouro,
+		numeroBusca: tarefa.numero,
+		mesAnoInicio: tarefa.mesAnoInicio,
+		mesAnoFinal: tarefa.mesAnoFinal,
+		statusResultado: resultado.status,
+		indiceCadastral: resultado.indiceCadastral,
+		logradouro: resultado.logradouro,
+		numero: resultado.numero,
+		complemento: resultado.complemento,
+		nome: resultado.nome,
+		cpf: resultado.cpf,
+		endereco: resultado.endereco,
+		telefone: resultado.telefone,
+		email: resultado.email,
+		erro: resultado.erro,
+		consultadoEm: resultado.createdAt.toISOString(),
+	}));
 
-  const csv = buildCsv(
-    rows.length > 0
-      ? rows
-      : [
-          {
-            cliente: tarefa.cliente.nome,
-            tarefaId: tarefa.id,
-            statusTarefa: tarefa.status,
-            mensagem: "Nenhum resultado encontrado para esta tarefa",
-          },
-        ]
-  );
+	const csv = buildCsv(
+		rows.length > 0
+			? rows
+			: [
+					{
+						cliente: tarefa.cliente.nome,
+						tarefaId: tarefa.id,
+						statusTarefa: tarefa.status,
+						mensagem: "Nenhum resultado encontrado para esta tarefa",
+					},
+				]
+	);
 
-  return {
-    filename: `resultados-admin-${tarefa.cliente.slug}-${tarefa.id}.csv`,
-    csv,
-  };
+	return {
+		filename: `resultados-admin-${tarefa.cliente.slug}-${tarefa.id}.csv`,
+		csv,
+	};
 }
 
 export async function exportarResultadosTarefaAdminExcel(id: string) {
-  const tarefa = await prisma.tarefa.findUnique({
-    where: {
-      id,
-    },
-    include: {
-      cliente: {
-        select: {
-          nome: true,
-          slug: true,
-        },
-      },
-      resultados: {
-        orderBy: {
-          createdAt: "asc",
-        },
-      },
-    },
-  });
+	const tarefa = await prisma.tarefa.findUnique({
+		where: {
+			id,
+		},
+		include: {
+			cliente: {
+				select: {
+					nome: true,
+					slug: true,
+				},
+			},
+			resultados: {
+				orderBy: {
+					createdAt: "asc",
+				},
+			},
+		},
+	});
 
-  if (!tarefa) {
-    return null;
-  }
+	if (!tarefa) {
+		return null;
+	}
 
-  const rows =
-    tarefa.resultados.length > 0
-      ? tarefa.resultados.map(resultado => ({
-          cliente: tarefa.cliente.nome,
-          tarefaId: tarefa.id,
-          statusTarefa: tarefa.status,
-          logradouroBusca: tarefa.logradouro,
-          numeroBusca: tarefa.numero,
-          mesAnoInicio: tarefa.mesAnoInicio,
-          mesAnoFinal: tarefa.mesAnoFinal,
-          statusResultado: resultado.status,
-          indiceCadastral: resultado.indiceCadastral,
-          logradouro: resultado.logradouro,
-          numero: resultado.numero,
-          complemento: resultado.complemento,
-          nome: resultado.nome,
-          cpf: resultado.cpf,
-          endereco: resultado.endereco,
-          telefone: resultado.telefone,
-          email: resultado.email,
-          erro: resultado.erro,
-          consultadoEm: resultado.createdAt.toISOString(),
-        }))
-      : [
-          {
-            cliente: tarefa.cliente.nome,
-            tarefaId: tarefa.id,
-            statusTarefa: tarefa.status,
-            mensagem: "Nenhum resultado encontrado para esta tarefa",
-          },
-        ];
+	const rows =
+		tarefa.resultados.length > 0
+			? tarefa.resultados.map((resultado) => ({
+					cliente: tarefa.cliente.nome,
+					tarefaId: tarefa.id,
+					statusTarefa: tarefa.status,
+					logradouroBusca: tarefa.logradouro,
+					numeroBusca: tarefa.numero,
+					mesAnoInicio: tarefa.mesAnoInicio,
+					mesAnoFinal: tarefa.mesAnoFinal,
+					statusResultado: resultado.status,
+					indiceCadastral: resultado.indiceCadastral,
+					logradouro: resultado.logradouro,
+					numero: resultado.numero,
+					complemento: resultado.complemento,
+					nome: resultado.nome,
+					cpf: resultado.cpf,
+					endereco: resultado.endereco,
+					telefone: resultado.telefone,
+					email: resultado.email,
+					erro: resultado.erro,
+					consultadoEm: resultado.createdAt.toISOString(),
+				}))
+			: [
+					{
+						cliente: tarefa.cliente.nome,
+						tarefaId: tarefa.id,
+						statusTarefa: tarefa.status,
+						mensagem: "Nenhum resultado encontrado para esta tarefa",
+					},
+				];
 
-  const buffer = await buildExcelBuffer(rows, "Resultados");
+	const buffer = await buildExcelBuffer(rows, "Resultados");
 
-  return {
-    filename: `resultados-admin-${tarefa.cliente.slug}-${tarefa.id}.xlsx`,
-    buffer,
-  };
+	return {
+		filename: `resultados-admin-${tarefa.cliente.slug}-${tarefa.id}.xlsx`,
+		buffer,
+	};
 }

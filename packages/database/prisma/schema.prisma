@@ -131,6 +131,9 @@ model TarefaResultado {
   telefone String?
   email    String?
 
+  fonteContato String?
+  dadosContato Json?
+
   erro String?
 
   tarefa Tarefa @relation(fields: [tarefaId], references: [id])
@@ -156,6 +159,9 @@ model ImovelCache {
   endereco String?
   telefone String?
   email    String?
+
+  fonteContato String?
+  dadosContato Json?
 
   status CacheStatus @default(VALID)
 

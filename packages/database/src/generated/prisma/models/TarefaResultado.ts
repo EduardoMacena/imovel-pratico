@@ -37,6 +37,7 @@ export type TarefaResultadoMinAggregateOutputType = {
   endereco: string | null
   telefone: string | null
   email: string | null
+  fonteContato: string | null
   erro: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -55,6 +56,7 @@ export type TarefaResultadoMaxAggregateOutputType = {
   endereco: string | null
   telefone: string | null
   email: string | null
+  fonteContato: string | null
   erro: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -73,6 +75,8 @@ export type TarefaResultadoCountAggregateOutputType = {
   endereco: number
   telefone: number
   email: number
+  fonteContato: number
+  dadosContato: number
   erro: number
   createdAt: number
   updatedAt: number
@@ -93,6 +97,7 @@ export type TarefaResultadoMinAggregateInputType = {
   endereco?: true
   telefone?: true
   email?: true
+  fonteContato?: true
   erro?: true
   createdAt?: true
   updatedAt?: true
@@ -111,6 +116,7 @@ export type TarefaResultadoMaxAggregateInputType = {
   endereco?: true
   telefone?: true
   email?: true
+  fonteContato?: true
   erro?: true
   createdAt?: true
   updatedAt?: true
@@ -129,6 +135,8 @@ export type TarefaResultadoCountAggregateInputType = {
   endereco?: true
   telefone?: true
   email?: true
+  fonteContato?: true
+  dadosContato?: true
   erro?: true
   createdAt?: true
   updatedAt?: true
@@ -220,6 +228,8 @@ export type TarefaResultadoGroupByOutputType = {
   endereco: string | null
   telefone: string | null
   email: string | null
+  fonteContato: string | null
+  dadosContato: runtime.JsonValue | null
   erro: string | null
   createdAt: Date
   updatedAt: Date
@@ -259,6 +269,8 @@ export type TarefaResultadoWhereInput = {
   endereco?: Prisma.StringNullableFilter<"TarefaResultado"> | string | null
   telefone?: Prisma.StringNullableFilter<"TarefaResultado"> | string | null
   email?: Prisma.StringNullableFilter<"TarefaResultado"> | string | null
+  fonteContato?: Prisma.StringNullableFilter<"TarefaResultado"> | string | null
+  dadosContato?: Prisma.JsonNullableFilter<"TarefaResultado">
   erro?: Prisma.StringNullableFilter<"TarefaResultado"> | string | null
   createdAt?: Prisma.DateTimeFilter<"TarefaResultado"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TarefaResultado"> | Date | string
@@ -278,6 +290,8 @@ export type TarefaResultadoOrderByWithRelationInput = {
   endereco?: Prisma.SortOrderInput | Prisma.SortOrder
   telefone?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
+  fonteContato?: Prisma.SortOrderInput | Prisma.SortOrder
+  dadosContato?: Prisma.SortOrderInput | Prisma.SortOrder
   erro?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -300,6 +314,8 @@ export type TarefaResultadoWhereUniqueInput = Prisma.AtLeast<{
   endereco?: Prisma.StringNullableFilter<"TarefaResultado"> | string | null
   telefone?: Prisma.StringNullableFilter<"TarefaResultado"> | string | null
   email?: Prisma.StringNullableFilter<"TarefaResultado"> | string | null
+  fonteContato?: Prisma.StringNullableFilter<"TarefaResultado"> | string | null
+  dadosContato?: Prisma.JsonNullableFilter<"TarefaResultado">
   erro?: Prisma.StringNullableFilter<"TarefaResultado"> | string | null
   createdAt?: Prisma.DateTimeFilter<"TarefaResultado"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TarefaResultado"> | Date | string
@@ -319,6 +335,8 @@ export type TarefaResultadoOrderByWithAggregationInput = {
   endereco?: Prisma.SortOrderInput | Prisma.SortOrder
   telefone?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
+  fonteContato?: Prisma.SortOrderInput | Prisma.SortOrder
+  dadosContato?: Prisma.SortOrderInput | Prisma.SortOrder
   erro?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -343,6 +361,8 @@ export type TarefaResultadoScalarWhereWithAggregatesInput = {
   endereco?: Prisma.StringNullableWithAggregatesFilter<"TarefaResultado"> | string | null
   telefone?: Prisma.StringNullableWithAggregatesFilter<"TarefaResultado"> | string | null
   email?: Prisma.StringNullableWithAggregatesFilter<"TarefaResultado"> | string | null
+  fonteContato?: Prisma.StringNullableWithAggregatesFilter<"TarefaResultado"> | string | null
+  dadosContato?: Prisma.JsonNullableWithAggregatesFilter<"TarefaResultado">
   erro?: Prisma.StringNullableWithAggregatesFilter<"TarefaResultado"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"TarefaResultado"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"TarefaResultado"> | Date | string
@@ -360,6 +380,8 @@ export type TarefaResultadoCreateInput = {
   endereco?: string | null
   telefone?: string | null
   email?: string | null
+  fonteContato?: string | null
+  dadosContato?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   erro?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -379,6 +401,8 @@ export type TarefaResultadoUncheckedCreateInput = {
   endereco?: string | null
   telefone?: string | null
   email?: string | null
+  fonteContato?: string | null
+  dadosContato?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   erro?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -396,6 +420,8 @@ export type TarefaResultadoUpdateInput = {
   endereco?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   telefone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fonteContato?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dadosContato?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -415,6 +441,8 @@ export type TarefaResultadoUncheckedUpdateInput = {
   endereco?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   telefone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fonteContato?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dadosContato?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -433,6 +461,8 @@ export type TarefaResultadoCreateManyInput = {
   endereco?: string | null
   telefone?: string | null
   email?: string | null
+  fonteContato?: string | null
+  dadosContato?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   erro?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -450,6 +480,8 @@ export type TarefaResultadoUpdateManyMutationInput = {
   endereco?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   telefone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fonteContato?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dadosContato?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -468,6 +500,8 @@ export type TarefaResultadoUncheckedUpdateManyInput = {
   endereco?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   telefone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fonteContato?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dadosContato?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -496,6 +530,8 @@ export type TarefaResultadoCountOrderByAggregateInput = {
   endereco?: Prisma.SortOrder
   telefone?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  fonteContato?: Prisma.SortOrder
+  dadosContato?: Prisma.SortOrder
   erro?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -514,6 +550,7 @@ export type TarefaResultadoMaxOrderByAggregateInput = {
   endereco?: Prisma.SortOrder
   telefone?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  fonteContato?: Prisma.SortOrder
   erro?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -532,6 +569,7 @@ export type TarefaResultadoMinOrderByAggregateInput = {
   endereco?: Prisma.SortOrder
   telefone?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  fonteContato?: Prisma.SortOrder
   erro?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -595,6 +633,8 @@ export type TarefaResultadoCreateWithoutTarefaInput = {
   endereco?: string | null
   telefone?: string | null
   email?: string | null
+  fonteContato?: string | null
+  dadosContato?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   erro?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -612,6 +652,8 @@ export type TarefaResultadoUncheckedCreateWithoutTarefaInput = {
   endereco?: string | null
   telefone?: string | null
   email?: string | null
+  fonteContato?: string | null
+  dadosContato?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   erro?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -659,6 +701,8 @@ export type TarefaResultadoScalarWhereInput = {
   endereco?: Prisma.StringNullableFilter<"TarefaResultado"> | string | null
   telefone?: Prisma.StringNullableFilter<"TarefaResultado"> | string | null
   email?: Prisma.StringNullableFilter<"TarefaResultado"> | string | null
+  fonteContato?: Prisma.StringNullableFilter<"TarefaResultado"> | string | null
+  dadosContato?: Prisma.JsonNullableFilter<"TarefaResultado">
   erro?: Prisma.StringNullableFilter<"TarefaResultado"> | string | null
   createdAt?: Prisma.DateTimeFilter<"TarefaResultado"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TarefaResultado"> | Date | string
@@ -676,6 +720,8 @@ export type TarefaResultadoCreateManyTarefaInput = {
   endereco?: string | null
   telefone?: string | null
   email?: string | null
+  fonteContato?: string | null
+  dadosContato?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   erro?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -693,6 +739,8 @@ export type TarefaResultadoUpdateWithoutTarefaInput = {
   endereco?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   telefone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fonteContato?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dadosContato?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -710,6 +758,8 @@ export type TarefaResultadoUncheckedUpdateWithoutTarefaInput = {
   endereco?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   telefone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fonteContato?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dadosContato?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -727,6 +777,8 @@ export type TarefaResultadoUncheckedUpdateManyWithoutTarefaInput = {
   endereco?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   telefone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fonteContato?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dadosContato?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -747,6 +799,8 @@ export type TarefaResultadoSelect<ExtArgs extends runtime.Types.Extensions.Inter
   endereco?: boolean
   telefone?: boolean
   email?: boolean
+  fonteContato?: boolean
+  dadosContato?: boolean
   erro?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -766,6 +820,8 @@ export type TarefaResultadoSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   endereco?: boolean
   telefone?: boolean
   email?: boolean
+  fonteContato?: boolean
+  dadosContato?: boolean
   erro?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -785,6 +841,8 @@ export type TarefaResultadoSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   endereco?: boolean
   telefone?: boolean
   email?: boolean
+  fonteContato?: boolean
+  dadosContato?: boolean
   erro?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -804,12 +862,14 @@ export type TarefaResultadoSelectScalar = {
   endereco?: boolean
   telefone?: boolean
   email?: boolean
+  fonteContato?: boolean
+  dadosContato?: boolean
   erro?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type TarefaResultadoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tarefaId" | "status" | "logradouro" | "numero" | "complemento" | "indiceCadastral" | "nome" | "cpf" | "endereco" | "telefone" | "email" | "erro" | "createdAt" | "updatedAt", ExtArgs["result"]["tarefaResultado"]>
+export type TarefaResultadoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tarefaId" | "status" | "logradouro" | "numero" | "complemento" | "indiceCadastral" | "nome" | "cpf" | "endereco" | "telefone" | "email" | "fonteContato" | "dadosContato" | "erro" | "createdAt" | "updatedAt", ExtArgs["result"]["tarefaResultado"]>
 export type TarefaResultadoInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tarefa?: boolean | Prisma.TarefaDefaultArgs<ExtArgs>
 }
@@ -838,6 +898,8 @@ export type $TarefaResultadoPayload<ExtArgs extends runtime.Types.Extensions.Int
     endereco: string | null
     telefone: string | null
     email: string | null
+    fonteContato: string | null
+    dadosContato: runtime.JsonValue | null
     erro: string | null
     createdAt: Date
     updatedAt: Date
@@ -1277,6 +1339,8 @@ export interface TarefaResultadoFieldRefs {
   readonly endereco: Prisma.FieldRef<"TarefaResultado", 'String'>
   readonly telefone: Prisma.FieldRef<"TarefaResultado", 'String'>
   readonly email: Prisma.FieldRef<"TarefaResultado", 'String'>
+  readonly fonteContato: Prisma.FieldRef<"TarefaResultado", 'String'>
+  readonly dadosContato: Prisma.FieldRef<"TarefaResultado", 'Json'>
   readonly erro: Prisma.FieldRef<"TarefaResultado", 'String'>
   readonly createdAt: Prisma.FieldRef<"TarefaResultado", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"TarefaResultado", 'DateTime'>
