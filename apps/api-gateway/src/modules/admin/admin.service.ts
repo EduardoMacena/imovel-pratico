@@ -287,3 +287,60 @@ export async function listarTarefasDoCliente(clienteId: string) {
     }),
   };
 }
+
+export async function buscarClientePorId(id: string) {
+  const cliente = await prisma.cliente.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      _count: {
+        select: {
+          usuarios: true,
+          tarefas: true,
+        },
+      },
+    },
+  });
+
+  if (!cliente) {
+    return null;
+  }
+
+  return {
+    id: cliente.id,
+    nome: cliente.nome,
+    slug: cliente.slug,
+    status: cliente.status,
+    workerUrl: cliente.workerUrl,
+    intervaloSegundos: cliente.intervaloSegundos,
+    limiteDiario: cliente.limiteDiario,
+    totalUsuarios: cliente._count.usuarios,
+    totalTarefas: cliente._count.tarefas,
+    createdAt: cliente.createdAt,
+    updatedAt: cliente.updatedAt,
+  };
+}
+
+export async function buscarUsuarioPorId(id: string) {
+  const usuario = await prisma.usuario.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      cliente: {
+        select: {
+          id: true,
+          nome: true,
+          slug: true,
+        },
+      },
+    },
+  });
+
+  if (!usuario) {
+    return null;
+  }
+
+  return removerSenhaUsuario(usuario);
+}

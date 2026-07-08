@@ -91,3 +91,42 @@ export type ListarTarefasDoClienteResponse = {
   };
   tarefas: TarefaClienteResumo[];
 };
+
+export type BuscarClienteResponse = {
+  cliente: ClienteResumo;
+};
+
+export type AtualizarClienteRequest = {
+  nome?: string;
+  slug?: string;
+  status?: ClienteStatus;
+  workerUrl?: string | null;
+  intervaloSegundos?: number;
+  limiteDiario?: number;
+};
+
+export type AtualizarClienteResponse = {
+  cliente: ClienteResumo;
+};
+
+export type BuscarUsuarioResponse = {
+  usuario: UsuarioResumo & {
+    cliente?: {
+      id: string;
+      nome: string;
+      slug: string;
+    };
+  };
+};
+
+export type AtualizarUsuarioRequest = {
+  nome?: string;
+  email?: string;
+  senha?: string;
+  role?: UsuarioRole;
+  ativo?: boolean;
+};
+
+export type AtualizarUsuarioResponse = {
+  usuario: UsuarioResumo;
+};

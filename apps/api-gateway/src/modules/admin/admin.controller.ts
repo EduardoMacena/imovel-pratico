@@ -11,6 +11,8 @@ import {
 import {
   atualizarCliente,
   atualizarUsuario,
+  buscarClientePorId,
+  buscarUsuarioPorId,
   criarCliente,
   criarUsuario,
   listarClientes,
@@ -140,4 +142,44 @@ export async function listarTarefasDoClienteController(
           : "Erro ao listar tarefas do cliente",
     });
   }
+}
+
+export async function buscarClienteController(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  const { id } = clienteIdParamsSchema.parse(request.params);
+
+  const cliente = await buscarClientePorId(id);
+
+  if (!cliente) {
+    return reply.status(404).send({
+      error: "NotFound",
+      message: "Cliente não encontrado",
+    });
+  }
+
+  return reply.status(200).send({
+    cliente,
+  });
+}
+
+export async function buscarUsuarioController(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  const { id } = usuarioIdParamsSchema.parse(request.params);
+
+  const usuario = await buscarUsuarioPorId(id);
+
+  if (!usuario) {
+    return reply.status(404).send({
+      error: "NotFound",
+      message: "Usuário não encontrado",
+    });
+  }
+
+  return reply.status(200).send({
+    usuario,
+  });
 }

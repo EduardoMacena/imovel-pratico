@@ -101,3 +101,25 @@ export const EmptyState = styled.div`
   color: ${({ theme }) => theme.colors.textMuted};
   background: ${({ theme }) => theme.colors.surface};
 `;
+
+export const Actions = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin-top: ${({ theme }) => theme.spacing.lg};
+`;
+
+export const EditLink = styled.a`
+  display: inline-flex;
+  height: 40px;
+  align-items: center;
+  padding: 0 16px;
+  border-radius: ${({ theme }) => theme.radii.md};
+  background: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.white};
+  font-size: 14px;
+  font-weight: 800;
+
+  &:hover {
+    background: ${({ theme }) => theme.colors.primaryHover};
+  }
+`;

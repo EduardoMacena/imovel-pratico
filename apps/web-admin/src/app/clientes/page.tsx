@@ -197,6 +197,10 @@ export default function ClientesPage() {
 										</InfoGrid>
 
 										<Actions>
+											<DetailsLink href={`/clientes/${cliente.id}/editar`}>
+												Editar cliente
+											</DetailsLink>
+
 											<DetailsLink href={`/clientes/${cliente.id}/usuarios`}>
 												Gerenciar usuários
 											</DetailsLink>

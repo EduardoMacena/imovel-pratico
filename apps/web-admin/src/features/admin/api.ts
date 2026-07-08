@@ -1,5 +1,11 @@
 import { apiRequest } from "../../lib/api";
 import type {
+	AtualizarClienteRequest,
+	AtualizarClienteResponse,
+	AtualizarUsuarioRequest,
+	AtualizarUsuarioResponse,
+	BuscarClienteResponse,
+	BuscarUsuarioResponse,
 	CriarClienteRequest,
 	CriarClienteResponse,
 	CriarUsuarioRequest,
@@ -40,4 +46,32 @@ export function listarTarefasDoCliente(clienteId: string) {
 	return apiRequest<ListarTarefasDoClienteResponse>(
 		`/admin/clientes/${clienteId}/tarefas`
 	);
+}
+
+export function buscarCliente(clienteId: string) {
+	return apiRequest<BuscarClienteResponse>(`/admin/clientes/${clienteId}`);
+}
+
+export function atualizarCliente(
+	clienteId: string,
+	data: AtualizarClienteRequest
+) {
+	return apiRequest<AtualizarClienteResponse>(`/admin/clientes/${clienteId}`, {
+		method: "PATCH",
+		body: JSON.stringify(data),
+	});
+}
+
+export function buscarUsuario(usuarioId: string) {
+	return apiRequest<BuscarUsuarioResponse>(`/admin/usuarios/${usuarioId}`);
+}
+
+export function atualizarUsuario(
+	usuarioId: string,
+	data: AtualizarUsuarioRequest
+) {
+	return apiRequest<AtualizarUsuarioResponse>(`/admin/usuarios/${usuarioId}`, {
+		method: "PATCH",
+		body: JSON.stringify(data),
+	});
 }
