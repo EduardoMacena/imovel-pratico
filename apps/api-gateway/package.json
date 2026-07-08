@@ -16,6 +16,7 @@
     "@imovel-pratico/queue": "workspace:*",
     "bcryptjs": "^3.0.3",
     "dotenv": "latest",
+    "exceljs": "^4.4.0",
     "fastify": "latest",
     "jsonwebtoken": "^9.0.3",
     "pino": "latest",

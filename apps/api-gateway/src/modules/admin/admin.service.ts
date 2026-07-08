@@ -11,6 +11,7 @@ import type {
 	CriarUsuarioInput,
 } from "./admin.schemas.js";
 import { buildCsv } from "../../utils/csv.js";
+import { buildExcelBuffer } from "../../utils/excel.js";
 
 function gerarSlugBase(value: string) {
 	return value
@@ -757,5 +758,69 @@ export async function exportarResultadosTarefaAdminCsv(id: string) {
   return {
     filename: `resultados-admin-${tarefa.cliente.slug}-${tarefa.id}.csv`,
     csv,
+  };
+}
+
+export async function exportarResultadosTarefaAdminExcel(id: string) {
+  const tarefa = await prisma.tarefa.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      cliente: {
+        select: {
+          nome: true,
+          slug: true,
+        },
+      },
+      resultados: {
+        orderBy: {
+          createdAt: "asc",
+        },
+      },
+    },
+  });
+
+  if (!tarefa) {
+    return null;
+  }
+
+  const rows =
+    tarefa.resultados.length > 0
+      ? tarefa.resultados.map(resultado => ({
+          cliente: tarefa.cliente.nome,
+          tarefaId: tarefa.id,
+          statusTarefa: tarefa.status,
+          logradouroBusca: tarefa.logradouro,
+          numeroBusca: tarefa.numero,
+          mesAnoInicio: tarefa.mesAnoInicio,
+          mesAnoFinal: tarefa.mesAnoFinal,
+          statusResultado: resultado.status,
+          indiceCadastral: resultado.indiceCadastral,
+          logradouro: resultado.logradouro,
+          numero: resultado.numero,
+          complemento: resultado.complemento,
+          nome: resultado.nome,
+          cpf: resultado.cpf,
+          endereco: resultado.endereco,
+          telefone: resultado.telefone,
+          email: resultado.email,
+          erro: resultado.erro,
+          consultadoEm: resultado.createdAt.toISOString(),
+        }))
+      : [
+          {
+            cliente: tarefa.cliente.nome,
+            tarefaId: tarefa.id,
+            statusTarefa: tarefa.status,
+            mensagem: "Nenhum resultado encontrado para esta tarefa",
+          },
+        ];
+
+  const buffer = await buildExcelBuffer(rows, "Resultados");
+
+  return {
+    filename: `resultados-admin-${tarefa.cliente.slug}-${tarefa.id}.xlsx`,
+    buffer,
   };
 }

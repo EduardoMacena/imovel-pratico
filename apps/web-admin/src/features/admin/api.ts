@@ -111,3 +111,10 @@ export function exportarResultadosTarefaAdmin(tarefaId: string) {
     `resultados-admin-tarefa-${tarefaId}.csv`
   );
 }
+
+export function exportarResultadosTarefaAdminExcel(tarefaId: string) {
+  return apiDownload(
+    `/admin/tarefas/${tarefaId}/exportar-excel`,
+    `resultados-admin-tarefa-${tarefaId}.xlsx`
+  );
+}

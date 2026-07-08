@@ -6,6 +6,7 @@ import {
   buscarTarefaPorId,
   criarTarefaBuscaProprietarios,
   exportarResultadosTarefaCsv,
+  exportarResultadosTarefaExcel,
   listarTarefasRecentes,
 } from "./imovel.service.js";
 
@@ -105,4 +106,40 @@ export async function exportarResultadosTarefaController(
     )
     .status(200)
     .send(result.csv);
+}
+
+export async function exportarResultadosTarefaExcelController(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  const paramsSchema = z.object({
+    id: z.string().uuid(),
+  });
+
+  const { id } = paramsSchema.parse(request.params);
+
+  const result = await exportarResultadosTarefaExcel(
+    request.auth.clienteId,
+    id
+  );
+
+  if (!result) {
+    return reply.status(404).send({
+      error: "NotFound",
+      message: "Tarefa não encontrada",
+    });
+  }
+
+  return reply
+    .header(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+    .header(
+      "Content-Disposition",
+      `attachment; filename="${result.filename}"`
+    )
+    .header("Content-Length", result.buffer.length)
+    .status(200)
+    .send(result.buffer);
 }

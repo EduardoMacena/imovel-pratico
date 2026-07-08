@@ -8,6 +8,7 @@ import {
 	buscarTarefaAdmin,
 	cancelarTarefaAdmin,
 	exportarResultadosTarefaAdmin,
+	exportarResultadosTarefaAdminExcel,
 	reprocessarTarefaAdmin,
 } from "../../../features/admin/api";
 import type { BuscarTarefaAdminResponse } from "../../../features/admin/types";
@@ -67,7 +68,9 @@ export default function DetalheTarefaPage() {
 	const [isActionLoading, setIsActionLoading] = useState(false);
 	const [erro, setErro] = useState<string | null>(null);
 	const [sucesso, setSucesso] = useState<string | null>(null);
+
 	const [isExporting, setIsExporting] = useState(false);
+	const [isExportingExcel, setIsExportingExcel] = useState(false);
 
 	const podeCancelar = useMemo(() => {
 		return tarefa?.status === "PENDING" || tarefa?.status === "PROCESSING";
@@ -80,6 +83,26 @@ export default function DetalheTarefaPage() {
 			tarefa?.status === "CANCELED"
 		);
 	}, [tarefa?.status]);
+
+	async function handleExportarExcel() {
+		setIsExportingExcel(true);
+		setErro(null);
+		setSucesso(null);
+
+		try {
+			await exportarResultadosTarefaAdminExcel(tarefaId);
+
+			setSucesso("Excel exportado com sucesso.");
+		} catch (error) {
+			setErro(
+				error instanceof Error
+					? error.message
+					: "Erro desconhecido ao exportar Excel"
+			);
+		} finally {
+			setIsExportingExcel(false);
+		}
+	}
 
 	async function handleExportarCsv() {
 		setIsExporting(true);
@@ -231,47 +254,56 @@ export default function DetalheTarefaPage() {
 										{tarefa.cliente.nome} • {tarefa.endereco.logradouro},{" "}
 										{tarefa.endereco.numero}
 									</Subtitle>
+									<Actions>
+										<ActionButton
+											type="button"
+											onClick={() =>
+												router.push(`/clientes/${tarefa.cliente.id}/tarefas`)
+											}
+										>
+											Tarefas do cliente
+										</ActionButton>
+
+										<ActionButton
+											type="button"
+											disabled={isExporting}
+											onClick={handleExportarCsv}
+										>
+											{isExporting ? "Exportando..." : "Exportar CSV"}
+										</ActionButton>
+
+										<ActionButton
+											type="button"
+											disabled={isExportingExcel}
+											onClick={handleExportarExcel}
+										>
+											{isExportingExcel ? "Exportando..." : "Exportar Excel"}
+										</ActionButton>
+
+										{podeCancelar && (
+											<DangerButton
+												type="button"
+												disabled={isActionLoading}
+												onClick={handleCancelar}
+											>
+												{isActionLoading ? "Aguarde..." : "Cancelar"}
+											</DangerButton>
+										)}
+
+										{podeReprocessar && (
+											<ActionButton
+												type="button"
+												disabled={isActionLoading}
+												onClick={handleReprocessar}
+											>
+												{isActionLoading ? "Aguarde..." : "Reprocessar"}
+											</ActionButton>
+										)}
+									</Actions>
 								</TitleGroup>
 
 								<Actions>
 									<StatusBadge status={tarefa.status} />
-
-									<ActionButton
-										type="button"
-										onClick={() =>
-											router.push(`/clientes/${tarefa.cliente.id}/tarefas`)
-										}
-									>
-										Tarefas do cliente
-									</ActionButton>
-
-									<ActionButton
-										type="button"
-										disabled={isExporting}
-										onClick={handleExportarCsv}
-									>
-										{isExporting ? "Exportando..." : "Exportar CSV"}
-									</ActionButton>
-
-									{podeCancelar && (
-										<DangerButton
-											type="button"
-											disabled={isActionLoading}
-											onClick={handleCancelar}
-										>
-											{isActionLoading ? "Aguarde..." : "Cancelar"}
-										</DangerButton>
-									)}
-
-									{podeReprocessar && (
-										<ActionButton
-											type="button"
-											disabled={isActionLoading}
-											onClick={handleReprocessar}
-										>
-											{isActionLoading ? "Aguarde..." : "Reprocessar"}
-										</ActionButton>
-									)}
 								</Actions>
 							</HeaderTop>
 						</Header>

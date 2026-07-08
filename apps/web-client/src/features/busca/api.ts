@@ -29,3 +29,10 @@ export function exportarResultadosTarefa(tarefaId: string) {
     `resultados-tarefa-${tarefaId}.csv`
   );
 }
+
+export function exportarResultadosTarefaExcel(tarefaId: string) {
+  return apiDownload(
+    `/imoveis/tarefas/${tarefaId}/exportar-excel`,
+    `resultados-tarefa-${tarefaId}.xlsx`
+  );
+}

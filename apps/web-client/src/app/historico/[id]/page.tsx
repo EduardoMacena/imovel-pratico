@@ -11,6 +11,7 @@ import { StatusBadge } from "../../../components/StatusBadge";
 import {
 	buscarProgressoTarefa,
 	exportarResultadosTarefa,
+	exportarResultadosTarefaExcel,
 } from "../../../features/busca/api";
 import type { ProgressoTarefaResponse } from "../../../features/busca/types";
 import {
@@ -58,14 +59,32 @@ export default function DetalheHistoricoPage() {
 
 	const tarefaId = params.id;
 
-	const [tarefa, setTarefa] = useState<ProgressoTarefaResponse | null>(null);
 	const [isExporting, setIsExporting] = useState(false);
+	const [isExportingExcel, setIsExportingExcel] = useState(false);
+
+	const [tarefa, setTarefa] = useState<ProgressoTarefaResponse | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const [erro, setErro] = useState<string | null>(null);
 
 	const isFinalizado = useMemo(() => {
 		return isFinalStatus(tarefa?.status);
 	}, [tarefa?.status]);
+
+	async function handleExportarExcel() {
+		setIsExportingExcel(true);
+
+		try {
+			await exportarResultadosTarefaExcel(tarefaId);
+		} catch (error) {
+			setErro(
+				error instanceof Error
+					? error.message
+					: "Erro desconhecido ao exportar Excel"
+			);
+		} finally {
+			setIsExportingExcel(false);
+		}
+	}
 
 	async function handleExportarCsv() {
 		setIsExporting(true);
@@ -154,6 +173,13 @@ export default function DetalheHistoricoPage() {
 								onClick={handleExportarCsv}
 							>
 								{isExporting ? "Exportando..." : "Exportar CSV"}
+							</Button>
+							<Button
+								type="button"
+								disabled={isExportingExcel}
+								onClick={handleExportarExcel}
+							>
+								{isExportingExcel ? "Exportando..." : "Exportar Excel"}
 							</Button>
 						</TitleGroup>
 

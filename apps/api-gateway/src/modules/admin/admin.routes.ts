@@ -12,6 +12,7 @@ import {
 	criarClienteController,
 	criarUsuarioController,
 	exportarResultadosTarefaAdminController,
+	exportarResultadosTarefaAdminExcelController,
 	listarClientesController,
 	listarTarefasDoClienteController,
 	listarUsuariosDoClienteController,
@@ -29,6 +30,11 @@ export async function adminRoutes(app: FastifyInstance) {
 	app.get(
 		"/admin/tarefas/:id/exportar",
 		exportarResultadosTarefaAdminController
+	);
+
+	app.get(
+		"/admin/tarefas/:id/exportar-excel",
+		exportarResultadosTarefaAdminExcelController
 	);
 
 	app.post("/admin/tarefas/:id/cancelar", cancelarTarefaAdminController);

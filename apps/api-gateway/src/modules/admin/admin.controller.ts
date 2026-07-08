@@ -19,6 +19,7 @@ import {
   criarCliente,
   criarUsuario,
   exportarResultadosTarefaAdminCsv,
+  exportarResultadosTarefaAdminExcel,
   listarClientes,
   listarTarefasDoCliente,
   listarUsuariosDoCliente,
@@ -281,4 +282,33 @@ export async function exportarResultadosTarefaAdminController(
     )
     .status(200)
     .send(result.csv);
+}
+
+export async function exportarResultadosTarefaAdminExcelController(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  const { id } = clienteIdParamsSchema.parse(request.params);
+
+  const result = await exportarResultadosTarefaAdminExcel(id);
+
+  if (!result) {
+    return reply.status(404).send({
+      error: "NotFound",
+      message: "Tarefa não encontrada",
+    });
+  }
+
+  return reply
+    .header(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+    .header(
+      "Content-Disposition",
+      `attachment; filename="${result.filename}"`
+    )
+    .header("Content-Length", result.buffer.length)
+    .status(200)
+    .send(result.buffer);
 }

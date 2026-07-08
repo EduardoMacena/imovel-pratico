@@ -5,6 +5,7 @@ import {
 	buscarProprietariosController,
 	buscarTarefaController,
 	exportarResultadosTarefaController,
+	exportarResultadosTarefaExcelController,
 	listarTarefasController,
 } from "./imovel.controller.js";
 
@@ -14,8 +15,13 @@ export async function imovelRoutes(app: FastifyInstance) {
 	app.post("/imoveis/buscar-proprietarios", buscarProprietariosController);
 
 	app.get("/imoveis/tarefas", listarTarefasController);
-  
+
 	app.get("/imoveis/tarefas/:id/exportar", exportarResultadosTarefaController);
+  
+	app.get(
+		"/imoveis/tarefas/:id/exportar-excel",
+		exportarResultadosTarefaExcelController
+	);
 
 	app.get("/imoveis/tarefas/:id", buscarTarefaController);
 
