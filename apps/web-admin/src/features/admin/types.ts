@@ -58,3 +58,36 @@ export type CriarUsuarioRequest = {
 export type CriarUsuarioResponse = {
   usuario: UsuarioResumo;
 };
+
+export type TarefaClienteResumo = {
+  id: string;
+  status: "PENDING" | "PROCESSING" | "COMPLETED" | "ERROR" | "CANCELED";
+  endereco: {
+    logradouro: string;
+    numero: string;
+  };
+  periodo: {
+    mesAnoInicio: string;
+    mesAnoFinal: string;
+  };
+  progress: {
+    total: number;
+    current: number;
+    percentage: number;
+  };
+  totalResultados: number;
+  erro: string | null;
+  createdAt: string;
+  startedAt: string | null;
+  completedAt: string | null;
+};
+
+export type ListarTarefasDoClienteResponse = {
+  cliente: {
+    id: string;
+    nome: string;
+    slug: string;
+    status: ClienteStatus;
+  };
+  tarefas: TarefaClienteResumo[];
+};

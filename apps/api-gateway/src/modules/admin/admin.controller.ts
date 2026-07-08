@@ -14,6 +14,7 @@ import {
   criarCliente,
   criarUsuario,
   listarClientes,
+  listarTarefasDoCliente,
   listarUsuariosDoCliente,
 } from "./admin.service.js";
 
@@ -116,6 +117,27 @@ export async function atualizarUsuarioController(
       error: "BadRequest",
       message:
         error instanceof Error ? error.message : "Erro ao atualizar usuário",
+    });
+  }
+}
+
+export async function listarTarefasDoClienteController(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  const { clienteId } = clienteUsuariosParamsSchema.parse(request.params);
+
+  try {
+    const result = await listarTarefasDoCliente(clienteId);
+
+    return reply.status(200).send(result);
+  } catch (error) {
+    return reply.status(404).send({
+      error: "NotFound",
+      message:
+        error instanceof Error
+          ? error.message
+          : "Erro ao listar tarefas do cliente",
     });
   }
 }

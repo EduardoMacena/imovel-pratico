@@ -219,3 +219,71 @@ export async function atualizarUsuario(id: string, data: AtualizarUsuarioInput) 
 
   return removerSenhaUsuario(usuario);
 }
+
+export async function listarTarefasDoCliente(clienteId: string) {
+  const cliente = await prisma.cliente.findUnique({
+    where: {
+      id: clienteId,
+    },
+    select: {
+      id: true,
+      nome: true,
+      slug: true,
+      status: true,
+    },
+  });
+
+  if (!cliente) {
+    throw new Error("Cliente não encontrado");
+  }
+
+  const tarefas = await prisma.tarefa.findMany({
+    where: {
+      clienteId,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: 100,
+    include: {
+      _count: {
+        select: {
+          resultados: true,
+        },
+      },
+    },
+  });
+
+  return {
+    cliente,
+    tarefas: tarefas.map(tarefa => {
+      const percentage =
+        tarefa.total > 0
+          ? Math.round((tarefa.current / tarefa.total) * 100)
+          : 0;
+
+      return {
+        id: tarefa.id,
+        status: tarefa.status,
+        endereco: {
+          logradouro: tarefa.logradouro,
+          numero: tarefa.numero,
+        },
+        periodo: {
+          mesAnoInicio: tarefa.mesAnoInicio,
+          mesAnoFinal: tarefa.mesAnoFinal,
+        },
+        progress: {
+          total: tarefa.total,
+          current: tarefa.current,
+          percentage,
+        },
+        totalResultados: tarefa._count.resultados,
+        erro: tarefa.erro,
+        createdAt: tarefa.createdAt,
+        startedAt: tarefa.startedAt,
+        completedAt: tarefa.completedAt,
+      };
+    }),
+  };
+}
