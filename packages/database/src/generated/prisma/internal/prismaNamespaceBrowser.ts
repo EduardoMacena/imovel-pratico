@@ -150,7 +150,6 @@ export type TarefaResultadoScalarFieldEnum = (typeof TarefaResultadoScalarFieldE
 
 export const ImovelCacheScalarFieldEnum = {
   id: 'id',
-  clienteId: 'clienteId',
   logradouro: 'logradouro',
   numero: 'numero',
   complemento: 'complemento',

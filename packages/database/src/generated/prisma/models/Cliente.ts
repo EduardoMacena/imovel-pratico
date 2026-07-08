@@ -254,7 +254,6 @@ export type ClienteWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Cliente"> | Date | string
   usuarios?: Prisma.UsuarioListRelationFilter
   tarefas?: Prisma.TarefaListRelationFilter
-  imoveisCache?: Prisma.ImovelCacheListRelationFilter
   consultasLogs?: Prisma.ConsultaLogListRelationFilter
 }
 
@@ -270,7 +269,6 @@ export type ClienteOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   usuarios?: Prisma.UsuarioOrderByRelationAggregateInput
   tarefas?: Prisma.TarefaOrderByRelationAggregateInput
-  imoveisCache?: Prisma.ImovelCacheOrderByRelationAggregateInput
   consultasLogs?: Prisma.ConsultaLogOrderByRelationAggregateInput
 }
 
@@ -289,7 +287,6 @@ export type ClienteWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Cliente"> | Date | string
   usuarios?: Prisma.UsuarioListRelationFilter
   tarefas?: Prisma.TarefaListRelationFilter
-  imoveisCache?: Prisma.ImovelCacheListRelationFilter
   consultasLogs?: Prisma.ConsultaLogListRelationFilter
 }, "id" | "slug">
 
@@ -337,7 +334,6 @@ export type ClienteCreateInput = {
   updatedAt?: Date | string
   usuarios?: Prisma.UsuarioCreateNestedManyWithoutClienteInput
   tarefas?: Prisma.TarefaCreateNestedManyWithoutClienteInput
-  imoveisCache?: Prisma.ImovelCacheCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogCreateNestedManyWithoutClienteInput
 }
 
@@ -353,7 +349,6 @@ export type ClienteUncheckedCreateInput = {
   updatedAt?: Date | string
   usuarios?: Prisma.UsuarioUncheckedCreateNestedManyWithoutClienteInput
   tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutClienteInput
-  imoveisCache?: Prisma.ImovelCacheUncheckedCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogUncheckedCreateNestedManyWithoutClienteInput
 }
 
@@ -369,7 +364,6 @@ export type ClienteUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usuarios?: Prisma.UsuarioUpdateManyWithoutClienteNestedInput
   tarefas?: Prisma.TarefaUpdateManyWithoutClienteNestedInput
-  imoveisCache?: Prisma.ImovelCacheUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUpdateManyWithoutClienteNestedInput
 }
 
@@ -385,7 +379,6 @@ export type ClienteUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usuarios?: Prisma.UsuarioUncheckedUpdateManyWithoutClienteNestedInput
   tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutClienteNestedInput
-  imoveisCache?: Prisma.ImovelCacheUncheckedUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUncheckedUpdateManyWithoutClienteNestedInput
 }
 
@@ -533,20 +526,6 @@ export type ClienteUpdateOneRequiredWithoutTarefasNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ClienteUpdateToOneWithWhereWithoutTarefasInput, Prisma.ClienteUpdateWithoutTarefasInput>, Prisma.ClienteUncheckedUpdateWithoutTarefasInput>
 }
 
-export type ClienteCreateNestedOneWithoutImoveisCacheInput = {
-  create?: Prisma.XOR<Prisma.ClienteCreateWithoutImoveisCacheInput, Prisma.ClienteUncheckedCreateWithoutImoveisCacheInput>
-  connectOrCreate?: Prisma.ClienteCreateOrConnectWithoutImoveisCacheInput
-  connect?: Prisma.ClienteWhereUniqueInput
-}
-
-export type ClienteUpdateOneRequiredWithoutImoveisCacheNestedInput = {
-  create?: Prisma.XOR<Prisma.ClienteCreateWithoutImoveisCacheInput, Prisma.ClienteUncheckedCreateWithoutImoveisCacheInput>
-  connectOrCreate?: Prisma.ClienteCreateOrConnectWithoutImoveisCacheInput
-  upsert?: Prisma.ClienteUpsertWithoutImoveisCacheInput
-  connect?: Prisma.ClienteWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.ClienteUpdateToOneWithWhereWithoutImoveisCacheInput, Prisma.ClienteUpdateWithoutImoveisCacheInput>, Prisma.ClienteUncheckedUpdateWithoutImoveisCacheInput>
-}
-
 export type ClienteCreateNestedOneWithoutConsultasLogsInput = {
   create?: Prisma.XOR<Prisma.ClienteCreateWithoutConsultasLogsInput, Prisma.ClienteUncheckedCreateWithoutConsultasLogsInput>
   connectOrCreate?: Prisma.ClienteCreateOrConnectWithoutConsultasLogsInput
@@ -574,7 +553,6 @@ export type ClienteCreateWithoutUsuariosInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tarefas?: Prisma.TarefaCreateNestedManyWithoutClienteInput
-  imoveisCache?: Prisma.ImovelCacheCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogCreateNestedManyWithoutClienteInput
 }
 
@@ -589,7 +567,6 @@ export type ClienteUncheckedCreateWithoutUsuariosInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutClienteInput
-  imoveisCache?: Prisma.ImovelCacheUncheckedCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogUncheckedCreateNestedManyWithoutClienteInput
 }
 
@@ -620,7 +597,6 @@ export type ClienteUpdateWithoutUsuariosInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tarefas?: Prisma.TarefaUpdateManyWithoutClienteNestedInput
-  imoveisCache?: Prisma.ImovelCacheUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUpdateManyWithoutClienteNestedInput
 }
 
@@ -635,7 +611,6 @@ export type ClienteUncheckedUpdateWithoutUsuariosInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutClienteNestedInput
-  imoveisCache?: Prisma.ImovelCacheUncheckedUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUncheckedUpdateManyWithoutClienteNestedInput
 }
 
@@ -650,7 +625,6 @@ export type ClienteCreateWithoutTarefasInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   usuarios?: Prisma.UsuarioCreateNestedManyWithoutClienteInput
-  imoveisCache?: Prisma.ImovelCacheCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogCreateNestedManyWithoutClienteInput
 }
 
@@ -665,7 +639,6 @@ export type ClienteUncheckedCreateWithoutTarefasInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   usuarios?: Prisma.UsuarioUncheckedCreateNestedManyWithoutClienteInput
-  imoveisCache?: Prisma.ImovelCacheUncheckedCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogUncheckedCreateNestedManyWithoutClienteInput
 }
 
@@ -696,7 +669,6 @@ export type ClienteUpdateWithoutTarefasInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usuarios?: Prisma.UsuarioUpdateManyWithoutClienteNestedInput
-  imoveisCache?: Prisma.ImovelCacheUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUpdateManyWithoutClienteNestedInput
 }
 
@@ -711,83 +683,6 @@ export type ClienteUncheckedUpdateWithoutTarefasInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usuarios?: Prisma.UsuarioUncheckedUpdateManyWithoutClienteNestedInput
-  imoveisCache?: Prisma.ImovelCacheUncheckedUpdateManyWithoutClienteNestedInput
-  consultasLogs?: Prisma.ConsultaLogUncheckedUpdateManyWithoutClienteNestedInput
-}
-
-export type ClienteCreateWithoutImoveisCacheInput = {
-  id?: string
-  nome: string
-  slug: string
-  status?: $Enums.ClienteStatus
-  workerUrl?: string | null
-  intervaloSegundos?: number
-  limiteDiario?: number
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  usuarios?: Prisma.UsuarioCreateNestedManyWithoutClienteInput
-  tarefas?: Prisma.TarefaCreateNestedManyWithoutClienteInput
-  consultasLogs?: Prisma.ConsultaLogCreateNestedManyWithoutClienteInput
-}
-
-export type ClienteUncheckedCreateWithoutImoveisCacheInput = {
-  id?: string
-  nome: string
-  slug: string
-  status?: $Enums.ClienteStatus
-  workerUrl?: string | null
-  intervaloSegundos?: number
-  limiteDiario?: number
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  usuarios?: Prisma.UsuarioUncheckedCreateNestedManyWithoutClienteInput
-  tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutClienteInput
-  consultasLogs?: Prisma.ConsultaLogUncheckedCreateNestedManyWithoutClienteInput
-}
-
-export type ClienteCreateOrConnectWithoutImoveisCacheInput = {
-  where: Prisma.ClienteWhereUniqueInput
-  create: Prisma.XOR<Prisma.ClienteCreateWithoutImoveisCacheInput, Prisma.ClienteUncheckedCreateWithoutImoveisCacheInput>
-}
-
-export type ClienteUpsertWithoutImoveisCacheInput = {
-  update: Prisma.XOR<Prisma.ClienteUpdateWithoutImoveisCacheInput, Prisma.ClienteUncheckedUpdateWithoutImoveisCacheInput>
-  create: Prisma.XOR<Prisma.ClienteCreateWithoutImoveisCacheInput, Prisma.ClienteUncheckedCreateWithoutImoveisCacheInput>
-  where?: Prisma.ClienteWhereInput
-}
-
-export type ClienteUpdateToOneWithWhereWithoutImoveisCacheInput = {
-  where?: Prisma.ClienteWhereInput
-  data: Prisma.XOR<Prisma.ClienteUpdateWithoutImoveisCacheInput, Prisma.ClienteUncheckedUpdateWithoutImoveisCacheInput>
-}
-
-export type ClienteUpdateWithoutImoveisCacheInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  nome?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.EnumClienteStatusFieldUpdateOperationsInput | $Enums.ClienteStatus
-  workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
-  limiteDiario?: Prisma.IntFieldUpdateOperationsInput | number
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  usuarios?: Prisma.UsuarioUpdateManyWithoutClienteNestedInput
-  tarefas?: Prisma.TarefaUpdateManyWithoutClienteNestedInput
-  consultasLogs?: Prisma.ConsultaLogUpdateManyWithoutClienteNestedInput
-}
-
-export type ClienteUncheckedUpdateWithoutImoveisCacheInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  nome?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.EnumClienteStatusFieldUpdateOperationsInput | $Enums.ClienteStatus
-  workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
-  limiteDiario?: Prisma.IntFieldUpdateOperationsInput | number
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  usuarios?: Prisma.UsuarioUncheckedUpdateManyWithoutClienteNestedInput
-  tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUncheckedUpdateManyWithoutClienteNestedInput
 }
 
@@ -803,7 +698,6 @@ export type ClienteCreateWithoutConsultasLogsInput = {
   updatedAt?: Date | string
   usuarios?: Prisma.UsuarioCreateNestedManyWithoutClienteInput
   tarefas?: Prisma.TarefaCreateNestedManyWithoutClienteInput
-  imoveisCache?: Prisma.ImovelCacheCreateNestedManyWithoutClienteInput
 }
 
 export type ClienteUncheckedCreateWithoutConsultasLogsInput = {
@@ -818,7 +712,6 @@ export type ClienteUncheckedCreateWithoutConsultasLogsInput = {
   updatedAt?: Date | string
   usuarios?: Prisma.UsuarioUncheckedCreateNestedManyWithoutClienteInput
   tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutClienteInput
-  imoveisCache?: Prisma.ImovelCacheUncheckedCreateNestedManyWithoutClienteInput
 }
 
 export type ClienteCreateOrConnectWithoutConsultasLogsInput = {
@@ -849,7 +742,6 @@ export type ClienteUpdateWithoutConsultasLogsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usuarios?: Prisma.UsuarioUpdateManyWithoutClienteNestedInput
   tarefas?: Prisma.TarefaUpdateManyWithoutClienteNestedInput
-  imoveisCache?: Prisma.ImovelCacheUpdateManyWithoutClienteNestedInput
 }
 
 export type ClienteUncheckedUpdateWithoutConsultasLogsInput = {
@@ -864,7 +756,6 @@ export type ClienteUncheckedUpdateWithoutConsultasLogsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usuarios?: Prisma.UsuarioUncheckedUpdateManyWithoutClienteNestedInput
   tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutClienteNestedInput
-  imoveisCache?: Prisma.ImovelCacheUncheckedUpdateManyWithoutClienteNestedInput
 }
 
 
@@ -875,14 +766,12 @@ export type ClienteUncheckedUpdateWithoutConsultasLogsInput = {
 export type ClienteCountOutputType = {
   usuarios: number
   tarefas: number
-  imoveisCache: number
   consultasLogs: number
 }
 
 export type ClienteCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   usuarios?: boolean | ClienteCountOutputTypeCountUsuariosArgs
   tarefas?: boolean | ClienteCountOutputTypeCountTarefasArgs
-  imoveisCache?: boolean | ClienteCountOutputTypeCountImoveisCacheArgs
   consultasLogs?: boolean | ClienteCountOutputTypeCountConsultasLogsArgs
 }
 
@@ -913,13 +802,6 @@ export type ClienteCountOutputTypeCountTarefasArgs<ExtArgs extends runtime.Types
 /**
  * ClienteCountOutputType without action
  */
-export type ClienteCountOutputTypeCountImoveisCacheArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.ImovelCacheWhereInput
-}
-
-/**
- * ClienteCountOutputType without action
- */
 export type ClienteCountOutputTypeCountConsultasLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ConsultaLogWhereInput
 }
@@ -937,7 +819,6 @@ export type ClienteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   updatedAt?: boolean
   usuarios?: boolean | Prisma.Cliente$usuariosArgs<ExtArgs>
   tarefas?: boolean | Prisma.Cliente$tarefasArgs<ExtArgs>
-  imoveisCache?: boolean | Prisma.Cliente$imoveisCacheArgs<ExtArgs>
   consultasLogs?: boolean | Prisma.Cliente$consultasLogsArgs<ExtArgs>
   _count?: boolean | Prisma.ClienteCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["cliente"]>
@@ -982,7 +863,6 @@ export type ClienteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
 export type ClienteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   usuarios?: boolean | Prisma.Cliente$usuariosArgs<ExtArgs>
   tarefas?: boolean | Prisma.Cliente$tarefasArgs<ExtArgs>
-  imoveisCache?: boolean | Prisma.Cliente$imoveisCacheArgs<ExtArgs>
   consultasLogs?: boolean | Prisma.Cliente$consultasLogsArgs<ExtArgs>
   _count?: boolean | Prisma.ClienteCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -994,7 +874,6 @@ export type $ClientePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   objects: {
     usuarios: Prisma.$UsuarioPayload<ExtArgs>[]
     tarefas: Prisma.$TarefaPayload<ExtArgs>[]
-    imoveisCache: Prisma.$ImovelCachePayload<ExtArgs>[]
     consultasLogs: Prisma.$ConsultaLogPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1403,7 +1282,6 @@ export interface Prisma__ClienteClient<T, Null = never, ExtArgs extends runtime.
   readonly [Symbol.toStringTag]: "PrismaPromise"
   usuarios<T extends Prisma.Cliente$usuariosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cliente$usuariosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UsuarioPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   tarefas<T extends Prisma.Cliente$tarefasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cliente$tarefasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TarefaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  imoveisCache<T extends Prisma.Cliente$imoveisCacheArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cliente$imoveisCacheArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ImovelCachePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   consultasLogs<T extends Prisma.Cliente$consultasLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cliente$consultasLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ConsultaLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1881,30 +1759,6 @@ export type Cliente$tarefasArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.TarefaScalarFieldEnum | Prisma.TarefaScalarFieldEnum[]
-}
-
-/**
- * Cliente.imoveisCache
- */
-export type Cliente$imoveisCacheArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the ImovelCache
-   */
-  select?: Prisma.ImovelCacheSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the ImovelCache
-   */
-  omit?: Prisma.ImovelCacheOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ImovelCacheInclude<ExtArgs> | null
-  where?: Prisma.ImovelCacheWhereInput
-  orderBy?: Prisma.ImovelCacheOrderByWithRelationInput | Prisma.ImovelCacheOrderByWithRelationInput[]
-  cursor?: Prisma.ImovelCacheWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.ImovelCacheScalarFieldEnum | Prisma.ImovelCacheScalarFieldEnum[]
 }
 
 /**

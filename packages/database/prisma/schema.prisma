@@ -56,7 +56,6 @@ model Cliente {
 
   usuarios      Usuario[]
   tarefas       Tarefa[]
-  imoveisCache  ImovelCache[]
   consultasLogs ConsultaLog[]
 
   createdAt DateTime @default(now())
@@ -145,13 +144,12 @@ model TarefaResultado {
 }
 
 model ImovelCache {
-  id        String @id @default(uuid())
-  clienteId String
+  id String @id @default(uuid())
 
   logradouro      String
   numero          String
   complemento     String?
-  indiceCadastral String
+  indiceCadastral String @unique
 
   nome     String?
   cpf      String?
@@ -164,13 +162,9 @@ model ImovelCache {
   ultimaConsultaEm DateTime
   expiraEm         DateTime
 
-  cliente Cliente @relation(fields: [clienteId], references: [id])
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([clienteId, indiceCadastral])
-  @@index([clienteId])
   @@index([indiceCadastral])
   @@index([expiraEm])
   @@map("imoveis_cache")

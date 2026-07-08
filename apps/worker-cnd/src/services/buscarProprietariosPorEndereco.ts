@@ -3,6 +3,10 @@ import {
     type ImovelEncontrado,
   } from "./buscarIndiceCadastral.js";
   import { buscarCpf, type ProprietarioEncontrado } from "./buscarCpf.js";
+  import {
+    buscarImovelCacheValido,
+    salvarImovelCache,
+  } from "./cache/imovel-cache.service.js";
   
   type StatusResultado = "success" | "error";
   
@@ -13,6 +17,7 @@ import {
     indiceCadastral: string;
     proprietario: ProprietarioEncontrado | null;
     status: StatusResultado;
+    fromCache?: boolean;
     error?: string;
   };
   
@@ -22,6 +27,7 @@ import {
     mesAnoInicio: string;
     mesAnoFinal: string;
     intervaloSegundos: number;
+    forceRefresh?: boolean;
     onProgress?: (data: {
       total: number;
       current: number;
@@ -40,14 +46,58 @@ import {
     numero: string;
     mesAnoInicio: string;
     mesAnoFinal: string;
+    forceRefresh?: boolean;
   }): Promise<ResultadoBuscaProprietario> {
-    const { imovel, logradouro, numero, mesAnoInicio, mesAnoFinal } = params;
+    const {
+      imovel,
+      logradouro,
+      numero,
+      mesAnoInicio,
+      mesAnoFinal,
+      forceRefresh,
+    } = params;
   
     try {
+      const cache = await buscarImovelCacheValido({
+        indiceCadastral: imovel.indiceCadastral,
+        forceRefresh,
+      });
+  
+      if (cache) {
+        const proprietario = {
+          nome: cache.nome,
+          cpf: cache.cpf,
+          endereco: cache.endereco,
+          indiceCadastral: cache.indiceCadastral,
+        } as ProprietarioEncontrado;
+  
+        return {
+          logradouro,
+          numero,
+          imovel: imovel.imovel,
+          indiceCadastral: imovel.indiceCadastral,
+          proprietario,
+          status: "success",
+          fromCache: true,
+        };
+      }
+  
       const proprietario = await buscarCpf({
         indiceCadastral: imovel.indiceCadastral,
         mesAnoInicio,
         mesAnoFinal,
+      });
+  
+      await salvarImovelCache({
+        logradouro,
+        numero,
+        complemento: null,
+        indiceCadastral: imovel.indiceCadastral,
+        nome: proprietario.nome ?? null,
+        cpf: proprietario.cpf ?? null,
+        endereco: proprietario.endereco ?? null,
+        telefone: null,
+        email: null,
       });
   
       return {
@@ -57,6 +107,7 @@ import {
         indiceCadastral: imovel.indiceCadastral,
         proprietario,
         status: "success",
+        fromCache: false,
       };
     } catch (error) {
       return {
@@ -66,6 +117,7 @@ import {
         indiceCadastral: imovel.indiceCadastral,
         proprietario: null,
         status: "error",
+        fromCache: false,
         error:
           error instanceof Error
             ? error.message
@@ -80,6 +132,7 @@ import {
     mesAnoInicio,
     mesAnoFinal,
     intervaloSegundos,
+    forceRefresh = false,
     onProgress,
   }: BuscarProprietariosParams) {
     const imoveis = await buscarIndiceCadastral(logradouro, numero);
@@ -102,6 +155,7 @@ import {
         numero,
         mesAnoInicio,
         mesAnoFinal,
+        forceRefresh,
       });
   
       resultados.push(item);
@@ -113,7 +167,14 @@ import {
         resultados,
       });
   
-      if (index < imoveis.length - 1) {
+      /**
+       * Se veio do cache, não precisa esperar intervalo da CND.
+       * O intervalo só é necessário quando houve consulta real na CND.
+       */
+      const deveAguardarIntervalo =
+        index < imoveis.length - 1 && !item.fromCache;
+  
+      if (deveAguardarIntervalo) {
         await sleep(intervaloMs);
       }
     }

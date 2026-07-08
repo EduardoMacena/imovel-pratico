@@ -56,6 +56,7 @@ const worker = new Worker<BuscarProprietariosJobData>(
 				mesAnoInicio: data.mesAnoInicio,
 				mesAnoFinal: data.mesAnoFinal,
 				intervaloSegundos: data.intervaloSegundos,
+				forceRefresh: data.forceRefresh,
 				onProgress: async ({ total, current, item }) => {
 					const tarefaAtual = await prisma.tarefa.findUnique({
 						where: {
@@ -90,21 +91,28 @@ const worker = new Worker<BuscarProprietariosJobData>(
 						data: {
 							tarefaId: data.tarefaId,
 							status: isSuccess ? "SUCCESS" : "ERROR",
+
 							logradouro: item.logradouro,
 							numero: item.numero,
 							complemento: item.imovel,
 							indiceCadastral: item.indiceCadastral,
+
 							nome: item.proprietario?.nome ?? null,
 							cpf: item.proprietario?.cpf ?? null,
 							endereco: item.proprietario?.endereco ?? null,
+							telefone: null,
+							email: null,
+
 							erro: item.error ?? null,
 						},
 					});
 
+					const fromCache = item?.fromCache ?? false;
+
 					await prisma.consultaLog.create({
 						data: {
 							clienteId: data.clienteId,
-							fonte: "CND_PBH",
+							fonte: fromCache ? "CACHE" : "CND",
 							acao: "BUSCAR_PROPRIETARIO",
 							sucesso: isSuccess,
 							mensagemErro: item.error ?? null,
@@ -116,11 +124,8 @@ const worker = new Worker<BuscarProprietariosJobData>(
 
 						await prisma.imovelCache.upsert({
 							where: {
-								clienteId_indiceCadastral: {
-									clienteId: data.clienteId,
-									indiceCadastral: item.indiceCadastral,
-								},
-							},
+                indiceCadastral: item.indiceCadastral,
+              },
 							update: {
 								logradouro: item.logradouro,
 								numero: item.numero,
@@ -133,7 +138,6 @@ const worker = new Worker<BuscarProprietariosJobData>(
 								expiraEm: getDataExpiracaoCache(),
 							},
 							create: {
-								clienteId: data.clienteId,
 								logradouro: item.logradouro,
 								numero: item.numero,
 								complemento: item.imovel,
