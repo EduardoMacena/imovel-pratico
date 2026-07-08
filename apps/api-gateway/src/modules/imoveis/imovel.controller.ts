@@ -5,6 +5,7 @@ import {
   buscarProgressoTarefaPorId,
   buscarTarefaPorId,
   criarTarefaBuscaProprietarios,
+  exportarResultadosTarefaCsv,
   listarTarefasRecentes,
 } from "./imovel.service.js";
 
@@ -75,4 +76,33 @@ export async function listarTarefasController(
   return reply.status(200).send({
     tarefas,
   });
+}
+
+export async function exportarResultadosTarefaController(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  const paramsSchema = z.object({
+    id: z.string().uuid(),
+  });
+
+  const { id } = paramsSchema.parse(request.params);
+
+  const result = await exportarResultadosTarefaCsv(request.auth.clienteId, id);
+
+  if (!result) {
+    return reply.status(404).send({
+      error: "NotFound",
+      message: "Tarefa não encontrada",
+    });
+  }
+
+  return reply
+    .header("Content-Type", "text/csv; charset=utf-8")
+    .header(
+      "Content-Disposition",
+      `attachment; filename="${result.filename}"`
+    )
+    .status(200)
+    .send(result.csv);
 }

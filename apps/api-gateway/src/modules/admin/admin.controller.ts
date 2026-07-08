@@ -18,6 +18,7 @@ import {
   cancelarTarefaAdmin,
   criarCliente,
   criarUsuario,
+  exportarResultadosTarefaAdminCsv,
   listarClientes,
   listarTarefasDoCliente,
   listarUsuariosDoCliente,
@@ -255,4 +256,29 @@ export async function reprocessarTarefaAdminController(
         error instanceof Error ? error.message : "Erro ao reprocessar tarefa",
     });
   }
+}
+
+export async function exportarResultadosTarefaAdminController(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  const { id } = clienteIdParamsSchema.parse(request.params);
+
+  const result = await exportarResultadosTarefaAdminCsv(id);
+
+  if (!result) {
+    return reply.status(404).send({
+      error: "NotFound",
+      message: "Tarefa não encontrada",
+    });
+  }
+
+  return reply
+    .header("Content-Type", "text/csv; charset=utf-8")
+    .header(
+      "Content-Disposition",
+      `attachment; filename="${result.filename}"`
+    )
+    .status(200)
+    .send(result.csv);
 }

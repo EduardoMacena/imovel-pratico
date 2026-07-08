@@ -1,6 +1,7 @@
 import { prisma } from "@imovel-pratico/database";
 import { adicionarBuscaProprietariosNaFila } from "@imovel-pratico/queue";
 import type { BuscarProprietariosInput } from "./imovel.schemas.js";
+import { buildCsv } from "../../utils/csv.js";
 
 export async function criarTarefaBuscaProprietarios(
   clienteId: string,
@@ -210,4 +211,73 @@ export async function listarTarefasRecentes(clienteId: string) {
       completedAt: tarefa.completedAt,
     };
   });
+}
+
+export async function exportarResultadosTarefaCsv(
+  clienteId: string,
+  id: string
+) {
+  const tarefa = await prisma.tarefa.findFirst({
+    where: {
+      id,
+      clienteId,
+    },
+    include: {
+      cliente: {
+        select: {
+          nome: true,
+          slug: true,
+        },
+      },
+      resultados: {
+        orderBy: {
+          createdAt: "asc",
+        },
+      },
+    },
+  });
+
+  if (!tarefa) {
+    return null;
+  }
+
+  const rows = tarefa.resultados.map(resultado => ({
+    cliente: tarefa.cliente.nome,
+    tarefaId: tarefa.id,
+    statusTarefa: tarefa.status,
+    logradouroBusca: tarefa.logradouro,
+    numeroBusca: tarefa.numero,
+    mesAnoInicio: tarefa.mesAnoInicio,
+    mesAnoFinal: tarefa.mesAnoFinal,
+    statusResultado: resultado.status,
+    indiceCadastral: resultado.indiceCadastral,
+    logradouro: resultado.logradouro,
+    numero: resultado.numero,
+    complemento: resultado.complemento,
+    nome: resultado.nome,
+    cpf: resultado.cpf,
+    endereco: resultado.endereco,
+    telefone: resultado.telefone,
+    email: resultado.email,
+    erro: resultado.erro,
+    consultadoEm: resultado.createdAt.toISOString(),
+  }));
+
+  const csv = buildCsv(
+    rows.length > 0
+      ? rows
+      : [
+          {
+            cliente: tarefa.cliente.nome,
+            tarefaId: tarefa.id,
+            statusTarefa: tarefa.status,
+            mensagem: "Nenhum resultado encontrado para esta tarefa",
+          },
+        ]
+  );
+
+  return {
+    filename: `resultados-${tarefa.cliente.slug}-${tarefa.id}.csv`,
+    csv,
+  };
 }

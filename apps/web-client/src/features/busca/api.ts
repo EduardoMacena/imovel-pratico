@@ -1,4 +1,4 @@
-import { apiRequest } from "../../lib/api";
+import { apiDownload, apiRequest } from "../../lib/api";
 import type {
   CriarTarefaRequest,
   CriarTarefaResponse,
@@ -21,4 +21,11 @@ export function buscarProgressoTarefa(tarefaId: string) {
 
 export function listarTarefas() {
   return apiRequest<ListarTarefasResponse>("/imoveis/tarefas");
+}
+
+export function exportarResultadosTarefa(tarefaId: string) {
+  return apiDownload(
+    `/imoveis/tarefas/${tarefaId}/exportar`,
+    `resultados-tarefa-${tarefaId}.csv`
+  );
 }

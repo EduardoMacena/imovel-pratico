@@ -1,4 +1,4 @@
-import { apiRequest } from "../../lib/api";
+import { apiDownload, apiRequest } from "../../lib/api";
 import type {
 	AcaoTarefaAdminResponse,
 	AtualizarClienteRequest,
@@ -103,4 +103,11 @@ export function reprocessarTarefaAdmin(tarefaId: string) {
 			method: "POST",
 		}
 	);
+}
+
+export function exportarResultadosTarefaAdmin(tarefaId: string) {
+  return apiDownload(
+    `/admin/tarefas/${tarefaId}/exportar`,
+    `resultados-admin-tarefa-${tarefaId}.csv`
+  );
 }

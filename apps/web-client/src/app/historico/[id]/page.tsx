@@ -8,7 +8,10 @@ import { Card } from "../../../components/Card";
 import { ProgressBar } from "../../../components/ProgressBar";
 import { ResultCard } from "../../../components/ResultCard";
 import { StatusBadge } from "../../../components/StatusBadge";
-import { buscarProgressoTarefa } from "../../../features/busca/api";
+import {
+	buscarProgressoTarefa,
+	exportarResultadosTarefa,
+} from "../../../features/busca/api";
 import type { ProgressoTarefaResponse } from "../../../features/busca/types";
 import {
 	BackLink,
@@ -31,6 +34,7 @@ import {
 	Title,
 	TitleGroup,
 } from "./page.styles";
+import { Button } from "../../../components/Button";
 
 function formatDate(value?: string | null) {
 	if (!value) {
@@ -55,12 +59,29 @@ export default function DetalheHistoricoPage() {
 	const tarefaId = params.id;
 
 	const [tarefa, setTarefa] = useState<ProgressoTarefaResponse | null>(null);
+	const [isExporting, setIsExporting] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
 	const [erro, setErro] = useState<string | null>(null);
 
 	const isFinalizado = useMemo(() => {
 		return isFinalStatus(tarefa?.status);
 	}, [tarefa?.status]);
+
+	async function handleExportarCsv() {
+		setIsExporting(true);
+
+		try {
+			await exportarResultadosTarefa(tarefaId);
+		} catch (error) {
+			setErro(
+				error instanceof Error
+					? error.message
+					: "Erro desconhecido ao exportar CSV"
+			);
+		} finally {
+			setIsExporting(false);
+		}
+	}
 
 	useEffect(() => {
 		let isMounted = true;
@@ -127,6 +148,13 @@ export default function DetalheHistoricoPage() {
 							</Subtitle>
 
 							<TaskId>Tarefa: {tarefaId}</TaskId>
+							<Button
+								type="button"
+								disabled={isExporting}
+								onClick={handleExportarCsv}
+							>
+								{isExporting ? "Exportando..." : "Exportar CSV"}
+							</Button>
 						</TitleGroup>
 
 						{tarefa?.status && <StatusBadge status={tarefa.status} />}

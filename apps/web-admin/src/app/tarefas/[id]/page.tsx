@@ -7,6 +7,7 @@ import { StatusBadge } from "../../../components/StatusBadge";
 import {
 	buscarTarefaAdmin,
 	cancelarTarefaAdmin,
+	exportarResultadosTarefaAdmin,
 	reprocessarTarefaAdmin,
 } from "../../../features/admin/api";
 import type { BuscarTarefaAdminResponse } from "../../../features/admin/types";
@@ -66,6 +67,7 @@ export default function DetalheTarefaPage() {
 	const [isActionLoading, setIsActionLoading] = useState(false);
 	const [erro, setErro] = useState<string | null>(null);
 	const [sucesso, setSucesso] = useState<string | null>(null);
+	const [isExporting, setIsExporting] = useState(false);
 
 	const podeCancelar = useMemo(() => {
 		return tarefa?.status === "PENDING" || tarefa?.status === "PROCESSING";
@@ -78,6 +80,26 @@ export default function DetalheTarefaPage() {
 			tarefa?.status === "CANCELED"
 		);
 	}, [tarefa?.status]);
+
+	async function handleExportarCsv() {
+		setIsExporting(true);
+		setErro(null);
+		setSucesso(null);
+
+		try {
+			await exportarResultadosTarefaAdmin(tarefaId);
+
+			setSucesso("CSV exportado com sucesso.");
+		} catch (error) {
+			setErro(
+				error instanceof Error
+					? error.message
+					: "Erro desconhecido ao exportar CSV"
+			);
+		} finally {
+			setIsExporting(false);
+		}
+	}
 
 	async function carregarTarefa() {
 		try {
@@ -221,6 +243,14 @@ export default function DetalheTarefaPage() {
 										}
 									>
 										Tarefas do cliente
+									</ActionButton>
+
+									<ActionButton
+										type="button"
+										disabled={isExporting}
+										onClick={handleExportarCsv}
+									>
+										{isExporting ? "Exportando..." : "Exportar CSV"}
 									</ActionButton>
 
 									{podeCancelar && (
