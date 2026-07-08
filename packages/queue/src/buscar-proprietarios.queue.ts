@@ -32,3 +32,29 @@ export async function adicionarBuscaProprietariosNaFila(
     jobId: data.tarefaId,
   });
 }
+
+export async function removerBuscaProprietariosDaFila(tarefaId: string) {
+  const job = await buscarProprietariosQueue.getJob(tarefaId);
+
+  if (!job) {
+    return {
+      removed: false,
+      reason: "Job não encontrado na fila",
+    };
+  }
+
+  try {
+    await job.remove();
+
+    return {
+      removed: true,
+      reason: "Job removido da fila",
+    };
+  } catch {
+    return {
+      removed: false,
+      reason:
+        "Job não pôde ser removido da fila. Ele pode já estar em processamento.",
+    };
+  }
+}

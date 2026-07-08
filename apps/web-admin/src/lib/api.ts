@@ -18,7 +18,11 @@ export async function apiRequest<TResponse>(
 
   const headers = new Headers(options?.headers);
 
-  headers.set("Content-Type", "application/json");
+  const hasBody = Boolean(options?.body);
+
+  if (hasBody) {
+    headers.set("Content-Type", "application/json");
+  }
 
   if (options?.auth !== false && token) {
     headers.set("Authorization", `Bearer ${token}`);

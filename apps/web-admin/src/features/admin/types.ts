@@ -180,3 +180,68 @@ export type DashboardAdminResponse = {
     completedAt: string | null;
   }[];
 };
+
+export type ResultadoTarefaAdmin = {
+  id: string;
+  status: "SUCCESS" | "ERROR";
+  logradouro: string;
+  numero: string;
+  complemento: string | null;
+  indiceCadastral: string;
+  proprietario: {
+    nome: string | null;
+    cpf: string | null;
+    endereco: string | null;
+    telefone: string | null;
+    email: string | null;
+  };
+  erro: string | null;
+  createdAt: string;
+};
+
+export type BuscarTarefaAdminResponse = {
+  tarefa: {
+    id: string;
+    status: "PENDING" | "PROCESSING" | "COMPLETED" | "ERROR" | "CANCELED";
+    cliente: {
+      id: string;
+      nome: string;
+      slug: string;
+      status: ClienteStatus;
+    };
+    endereco: {
+      logradouro: string;
+      numero: string;
+    };
+    periodo: {
+      mesAnoInicio: string;
+      mesAnoFinal: string;
+    };
+    configuracao: {
+      intervaloSegundos: number;
+      forceRefresh: boolean;
+    };
+    progress: {
+      total: number;
+      current: number;
+      percentage: number;
+    };
+    erro: string | null;
+    resultados: ResultadoTarefaAdmin[];
+    createdAt: string;
+    startedAt: string | null;
+    completedAt: string | null;
+  };
+};
+
+export type AcaoTarefaAdminResponse = {
+  tarefa: {
+    id: string;
+    status: "PENDING" | "PROCESSING" | "COMPLETED" | "ERROR" | "CANCELED";
+  };
+  message?: string;
+  queue?: {
+    removed: boolean;
+    reason: string;
+  };
+};

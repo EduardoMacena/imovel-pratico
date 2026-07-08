@@ -11,14 +11,17 @@ import {
 import {
   atualizarCliente,
   atualizarUsuario,
-  buscarDashboardAdmin,
   buscarClientePorId,
+  buscarDashboardAdmin,
+  buscarTarefaAdminPorId,
   buscarUsuarioPorId,
+  cancelarTarefaAdmin,
   criarCliente,
   criarUsuario,
   listarClientes,
   listarTarefasDoCliente,
   listarUsuariosDoCliente,
+  reprocessarTarefaAdmin,
 } from "./admin.service.js";
 
 export async function listarClientesController(
@@ -192,4 +195,64 @@ export async function buscarDashboardAdminController(
   const dashboard = await buscarDashboardAdmin();
 
   return reply.status(200).send(dashboard);
+}
+
+export async function buscarTarefaAdminController(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  const { id } = clienteIdParamsSchema.parse(request.params);
+
+  const tarefa = await buscarTarefaAdminPorId(id);
+
+  if (!tarefa) {
+    return reply.status(404).send({
+      error: "NotFound",
+      message: "Tarefa não encontrada",
+    });
+  }
+
+  return reply.status(200).send({
+    tarefa,
+  });
+}
+
+export async function cancelarTarefaAdminController(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  const { id } = clienteIdParamsSchema.parse(request.params);
+
+  try {
+    const result = await cancelarTarefaAdmin(id);
+
+    return reply.status(200).send(result);
+  } catch (error) {
+    console.error("Erro ao cancelar tarefa:", error);
+
+    return reply.status(400).send({
+      error: "BadRequest",
+      message:
+        error instanceof Error ? error.message : "Erro ao cancelar tarefa",
+    });
+  }
+}
+
+export async function reprocessarTarefaAdminController(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  const { id } = clienteIdParamsSchema.parse(request.params);
+
+  try {
+    const result = await reprocessarTarefaAdmin(id);
+
+    return reply.status(200).send(result);
+  } catch (error) {
+    return reply.status(400).send({
+      error: "BadRequest",
+      message:
+        error instanceof Error ? error.message : "Erro ao reprocessar tarefa",
+    });
+  }
 }

@@ -183,3 +183,15 @@ export const EmptyState = styled.div`
   color: ${({ theme }) => theme.colors.textMuted};
   background: ${({ theme }) => theme.colors.surface};
 `;
+
+export const TaskLink = styled(Link)`
+  display: inline-flex;
+  margin-top: ${({ theme }) => theme.spacing.sm};
+  color: ${({ theme }) => theme.colors.text};
+  font-size: 14px;
+  font-weight: 900;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
