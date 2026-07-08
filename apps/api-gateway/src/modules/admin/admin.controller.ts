@@ -11,6 +11,7 @@ import {
 import {
   atualizarCliente,
   atualizarUsuario,
+  buscarDashboardAdmin,
   buscarClientePorId,
   buscarUsuarioPorId,
   criarCliente,
@@ -182,4 +183,13 @@ export async function buscarUsuarioController(
   return reply.status(200).send({
     usuario,
   });
+}
+
+export async function buscarDashboardAdminController(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  const dashboard = await buscarDashboardAdmin();
+
+  return reply.status(200).send(dashboard);
 }

@@ -4,6 +4,7 @@ import { adminMiddleware } from "./admin.middleware.js";
 import {
   atualizarClienteController,
   atualizarUsuarioController,
+  buscarDashboardAdminController,
   buscarClienteController,
   buscarUsuarioController,
   criarClienteController,
@@ -16,6 +17,8 @@ import {
 export async function adminRoutes(app: FastifyInstance) {
   app.addHook("preHandler", authMiddleware);
   app.addHook("preHandler", adminMiddleware);
+
+  app.get("/admin/dashboard", buscarDashboardAdminController);
 
   app.get("/admin/clientes", listarClientesController);
   app.post("/admin/clientes", criarClienteController);

@@ -130,3 +130,53 @@ export type AtualizarUsuarioRequest = {
 export type AtualizarUsuarioResponse = {
   usuario: UsuarioResumo;
 };
+
+export type DashboardAdminResponse = {
+  indicadores: {
+    totalClientes: number;
+    clientesAtivos: number;
+    clientesInativos: number;
+    tarefasTotal: number;
+    tarefasUltimos30Dias: number;
+    tarefasPendentes: number;
+    tarefasProcessando: number;
+    tarefasConcluidas: number;
+    tarefasComErro: number;
+    resultadosTotal: number;
+  };
+  clientesPorUso: {
+    id: string;
+    nome: string;
+    slug: string;
+    status: ClienteStatus;
+    totalUsuarios: number;
+    totalTarefas: number;
+  }[];
+  ultimasTarefas: {
+    id: string;
+    status: "PENDING" | "PROCESSING" | "COMPLETED" | "ERROR" | "CANCELED";
+    cliente: {
+      id: string;
+      nome: string;
+      slug: string;
+    };
+    endereco: {
+      logradouro: string;
+      numero: string;
+    };
+    periodo: {
+      mesAnoInicio: string;
+      mesAnoFinal: string;
+    };
+    progress: {
+      total: number;
+      current: number;
+      percentage: number;
+    };
+    totalResultados: number;
+    erro: string | null;
+    createdAt: string;
+    startedAt: string | null;
+    completedAt: string | null;
+  }[];
+};

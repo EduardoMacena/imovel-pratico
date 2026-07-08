@@ -10,6 +10,7 @@ import type {
 	CriarClienteResponse,
 	CriarUsuarioRequest,
 	CriarUsuarioResponse,
+	DashboardAdminResponse,
 	ListarClientesResponse,
 	ListarTarefasDoClienteResponse,
 	ListarUsuariosResponse,
@@ -74,4 +75,8 @@ export function atualizarUsuario(
 		method: "PATCH",
 		body: JSON.stringify(data),
 	});
+}
+
+export function buscarDashboardAdmin() {
+	return apiRequest<DashboardAdminResponse>("/admin/dashboard");
 }

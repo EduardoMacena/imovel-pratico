@@ -344,3 +344,157 @@ export async function buscarUsuarioPorId(id: string) {
 
   return removerSenhaUsuario(usuario);
 }
+
+export async function buscarDashboardAdmin() {
+  const inicioUltimos30Dias = new Date();
+
+  inicioUltimos30Dias.setDate(inicioUltimos30Dias.getDate() - 30);
+
+  const [
+    clientes,
+    totalClientes,
+    clientesAtivos,
+    tarefasTotal,
+    tarefasUltimos30Dias,
+    tarefasPendentes,
+    tarefasProcessando,
+    tarefasConcluidas,
+    tarefasComErro,
+    resultadosTotal,
+    ultimasTarefas,
+  ] = await prisma.$transaction([
+    prisma.cliente.findMany({
+      include: {
+        _count: {
+          select: {
+            usuarios: true,
+            tarefas: true,
+          },
+        },
+      },
+    }),
+
+    prisma.cliente.count(),
+
+    prisma.cliente.count({
+      where: {
+        status: "ATIVO",
+      },
+    }),
+
+    prisma.tarefa.count(),
+
+    prisma.tarefa.count({
+      where: {
+        createdAt: {
+          gte: inicioUltimos30Dias,
+        },
+      },
+    }),
+
+    prisma.tarefa.count({
+      where: {
+        status: "PENDING",
+      },
+    }),
+
+    prisma.tarefa.count({
+      where: {
+        status: "PROCESSING",
+      },
+    }),
+
+    prisma.tarefa.count({
+      where: {
+        status: "COMPLETED",
+      },
+    }),
+
+    prisma.tarefa.count({
+      where: {
+        status: "ERROR",
+      },
+    }),
+
+    prisma.tarefaResultado.count(),
+
+    prisma.tarefa.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: 10,
+      include: {
+        cliente: {
+          select: {
+            id: true,
+            nome: true,
+            slug: true,
+          },
+        },
+        _count: {
+          select: {
+            resultados: true,
+          },
+        },
+      },
+    }),
+  ]);
+
+  const clientesPorUso = clientes
+    .map(cliente => ({
+      id: cliente.id,
+      nome: cliente.nome,
+      slug: cliente.slug,
+      status: cliente.status,
+      totalUsuarios: cliente._count.usuarios,
+      totalTarefas: cliente._count.tarefas,
+    }))
+    .sort((a, b) => b.totalTarefas - a.totalTarefas)
+    .slice(0, 10);
+
+  return {
+    indicadores: {
+      totalClientes,
+      clientesAtivos,
+      clientesInativos: totalClientes - clientesAtivos,
+      tarefasTotal,
+      tarefasUltimos30Dias,
+      tarefasPendentes,
+      tarefasProcessando,
+      tarefasConcluidas,
+      tarefasComErro,
+      resultadosTotal,
+    },
+    clientesPorUso,
+    ultimasTarefas: ultimasTarefas.map(tarefa => {
+      const percentage =
+        tarefa.total > 0
+          ? Math.round((tarefa.current / tarefa.total) * 100)
+          : 0;
+
+      return {
+        id: tarefa.id,
+        status: tarefa.status,
+        cliente: tarefa.cliente,
+        endereco: {
+          logradouro: tarefa.logradouro,
+          numero: tarefa.numero,
+        },
+        periodo: {
+          mesAnoInicio: tarefa.mesAnoInicio,
+          mesAnoFinal: tarefa.mesAnoFinal,
+        },
+        progress: {
+          total: tarefa.total,
+          current: tarefa.current,
+          percentage,
+        },
+        totalResultados: tarefa._count.resultados,
+        erro: tarefa.erro,
+        createdAt: tarefa.createdAt,
+        startedAt: tarefa.startedAt,
+        completedAt: tarefa.completedAt,
+      };
+    }),
+  };
+}

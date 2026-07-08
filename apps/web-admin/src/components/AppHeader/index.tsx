@@ -3,48 +3,53 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
-  getAuthUser,
-  removeAuthToken,
-  type AuthUser,
+	getAuthUser,
+	removeAuthToken,
+	type AuthUser,
 } from "../../lib/auth-storage";
 import {
-  Brand,
-  HeaderContent,
-  HeaderWrapper,
-  LogoutButton,
-  Nav,
-  NavLink,
-  UserInfo,
+	Brand,
+	HeaderContent,
+	HeaderWrapper,
+	LogoutButton,
+	Nav,
+	NavLink,
+	UserInfo,
 } from "./styles";
 
 export function AppHeader() {
-  const router = useRouter();
-  const [user, setUser] = useState<AuthUser | null>(null);
+	const router = useRouter();
+	const [user, setUser] = useState<AuthUser | null>(null);
 
-  useEffect(() => {
-    setUser(getAuthUser());
-  }, []);
+	useEffect(() => {
+		setUser(getAuthUser());
+	}, []);
 
-  function handleLogout() {
-    removeAuthToken();
-    router.replace("/login");
-  }
+	function handleLogout() {
+		removeAuthToken();
+		router.replace("/login");
+	}
 
-  return (
-    <HeaderWrapper>
-      <HeaderContent>
-        <Brand href="/clientes">Imóvel Prático Admin</Brand>
+	return (
+		<HeaderWrapper>
+			<HeaderContent>
+				<Brand href="/clientes">Imóvel Prático Admin</Brand>
 
-        <Nav>
-          <NavLink href="/clientes">Clientes</NavLink>
+				<Nav>
+					<NavLink href="/dashboard">Dashboard</NavLink>
+					<NavLink href="/clientes">Clientes</NavLink>
 
-          {user && <UserInfo>{user.nome} • {user.role}</UserInfo>}
+					{user && (
+						<UserInfo>
+							{user.nome} • {user.role}
+						</UserInfo>
+					)}
 
-          <LogoutButton type="button" onClick={handleLogout}>
-            Sair
-          </LogoutButton>
-        </Nav>
-      </HeaderContent>
-    </HeaderWrapper>
-  );
+					<LogoutButton type="button" onClick={handleLogout}>
+						Sair
+					</LogoutButton>
+				</Nav>
+			</HeaderContent>
+		</HeaderWrapper>
+	);
 }
