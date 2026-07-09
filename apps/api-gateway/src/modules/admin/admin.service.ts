@@ -625,7 +625,10 @@ export async function cancelarTarefaAdmin(id: string) {
 	};
 
 	try {
-		queueResult = await removerBuscaProprietariosDaFila(id);
+		queueResult = await removerBuscaProprietariosDaFila({
+      clienteId: tarefa.clienteId,
+      tarefaId: id,
+    });
 	} catch (error) {
 		console.error("Erro ao tentar remover job da fila:", error);
 
@@ -676,7 +679,10 @@ export async function reprocessarTarefaAdmin(id: string) {
 		throw new Error("Não é possível reprocessar uma tarefa em processamento");
 	}
 
-	await removerBuscaProprietariosDaFila(id);
+	await removerBuscaProprietariosDaFila({
+    clienteId: tarefa.clienteId,
+    tarefaId: id,
+  });
 
 	await prisma.tarefaResultado.deleteMany({
 		where: {

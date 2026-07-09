@@ -4,7 +4,7 @@ import { QUEUE_NAMES } from "./queue-names.js";
 import { redisConnection } from "./redis.js";
 
 async function main() {
-  const queue = new Queue(QUEUE_NAMES.BUSCAR_PROPRIETARIOS, {
+  const queue = new Queue(QUEUE_NAMES.BUSCAR_PROPRIETARIOS_BASE, {
     connection: redisConnection,
   });
 
