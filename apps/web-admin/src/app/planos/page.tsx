@@ -169,6 +169,7 @@ export default function PlanosPage() {
                   setLimiteMensalConsultas(Number(event.target.value))
                 }
               >
+                <option value={10}>10 consultas/mês</option>
                 <option value={300}>300 consultas/mês</option>
                 <option value={500}>500 consultas/mês</option>
                 <option value={1000}>1000 consultas/mês</option>

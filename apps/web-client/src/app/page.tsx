@@ -107,6 +107,8 @@ export default function HomePage() {
 
 	useEffect(() => {
 		if (!isCheckingAuth) {
+      carregarAssinatura();
+
 			if (!jobId || isFinalizado) {
 				return;
 			}
@@ -135,7 +137,6 @@ export default function HomePage() {
 				}
 			}
 
-			carregarAssinatura();
 			carregarProgresso();
 
 			const interval = window.setInterval(carregarProgresso, 3000);
@@ -160,9 +161,9 @@ export default function HomePage() {
 	return (
 		<>
 			<AppHeader />
-			{assinatura && <SubscriptionSummary assinatura={assinatura} />}
 
 			<PageContainer>
+			{assinatura && <SubscriptionSummary assinatura={assinatura} />}
 				<Header>
 					<ProductBadge>Imóvel Prático</ProductBadge>
 
