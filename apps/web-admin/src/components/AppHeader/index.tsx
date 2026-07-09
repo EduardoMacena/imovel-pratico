@@ -38,6 +38,7 @@ export function AppHeader() {
 				<Nav>
 					<NavLink href="/dashboard">Dashboard</NavLink>
 					<NavLink href="/clientes">Clientes</NavLink>
+          <NavLink href="/planos">Planos</NavLink>
 
 					{user && (
 						<UserInfo>
