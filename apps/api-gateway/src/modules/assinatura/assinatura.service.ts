@@ -12,6 +12,16 @@ function getFimMesAtual() {
 	return new Date(now.getFullYear(), now.getMonth() + 1, 1);
 }
 
+function pagamentoEstaVencido(pagamentoVenceEm: Date | null) {
+	if (!pagamentoVenceEm) {
+		return false;
+	}
+
+	const agora = new Date();
+
+	return pagamentoVenceEm < agora;
+}
+
 export async function buscarUsoMensalCliente(clienteId: string) {
 	const inicioMes = getInicioMesAtual();
 	const fimMes = getFimMesAtual();
@@ -53,16 +63,20 @@ export async function validarClientePodeCriarBusca(clienteId: string) {
 		throw new Error("Cliente inativo ou suspenso");
 	}
 
-	if (cliente.pagamentoStatus !== "PAGO") {
-		throw new Error("Pagamento do plano pendente ou vencido");
-	}
-
 	if (!cliente.plano) {
 		throw new Error("Cliente sem plano contratado");
 	}
 
 	if (cliente.plano.status !== "ATIVO") {
 		throw new Error("Plano contratado está inativo");
+	}
+
+	if (cliente.pagamentoStatus !== "PAGO") {
+		throw new Error("Pagamento do plano pendente ou vencido");
+	}
+
+	if (pagamentoEstaVencido(cliente.pagamentoVenceEm)) {
+		throw new Error("Pagamento do plano está vencido");
 	}
 
 	const uso = await buscarUsoMensalCliente(clienteId);
@@ -75,6 +89,7 @@ export async function validarClientePodeCriarBusca(clienteId: string) {
 
 	return {
 		cliente,
+		plano: cliente.plano,
 		uso: {
 			consultasUsadas: uso.consultasUsadas,
 			limiteMensal,
@@ -111,27 +126,22 @@ export async function buscarMinhaAssinatura(clienteId: string) {
 		},
 	});
 
-	if (!cliente) {
-		return null;
-	}
-
 	if (!cliente?.plano) {
 		return null;
 	}
 
 	const uso = await buscarUsoMensalCliente(clienteId);
 
-	const consultasRestantes = Math.max(
-		cliente.plano.limiteMensalConsultas - uso.consultasUsadas,
-		0
-	);
+	const limiteMensal = cliente.plano.limiteMensalConsultas;
+
+	const consultasRestantes = Math.max(limiteMensal - uso.consultasUsadas, 0);
 
 	return {
 		cliente,
-    plano: cliente.plano,
+		plano: cliente.plano,
 		uso: {
 			consultasUsadas: uso.consultasUsadas,
-			limiteMensal: cliente.limiteMensalConsultas,
+			limiteMensal,
 			consultasRestantes,
 			inicioMes: uso.inicioMes,
 			fimMes: uso.fimMes,

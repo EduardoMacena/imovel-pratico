@@ -10,13 +10,13 @@ import { buscarProprietariosPorEndereco } from "./services/buscarProprietariosPo
 import { closeBrowser } from "./playwright/browser.js";
 
 function toPrismaJson(
-  value: Record<string, unknown> | null | undefined
+	value: Record<string, unknown> | null | undefined
 ): Prisma.InputJsonValue | undefined {
-  if (!value) {
-    return undefined;
-  }
+	if (!value) {
+		return undefined;
+	}
 
-  return JSON.parse(JSON.stringify(value)) as Prisma.InputJsonValue;
+	return JSON.parse(JSON.stringify(value)) as Prisma.InputJsonValue;
 }
 
 function getDataExpiracaoCache() {
@@ -67,7 +67,7 @@ const worker = new Worker<BuscarProprietariosJobData>(
 				mesAnoFinal: data.mesAnoFinal,
 				intervaloSegundos: data.intervaloSegundos,
 				forceRefresh: data.forceRefresh,
-        clienteId: data.clienteId,
+				clienteId: data.clienteId,
 				onProgress: async ({ total, current, item }) => {
 					const tarefaAtual = await prisma.tarefa.findUnique({
 						where: {

@@ -22,9 +22,7 @@ export async function criarTarefaBuscaProprietarios(
 	clienteId: string,
 	data: BuscarProprietariosInput
 ) {
-	const { cliente } = await validarClientePodeCriarBusca(clienteId);
-
-  const intervaloSegundos = cliente.plano?.intervaloSegundos ?? 60;
+	const { cliente, plano, uso } = await validarClientePodeCriarBusca(clienteId);
 
 	if (!cliente) {
 		throw new Error("Cliente não encontrado");
@@ -38,12 +36,12 @@ export async function criarTarefaBuscaProprietarios(
 			numero: data.numero,
 			mesAnoInicio: getMesAnoInicioAtual(),
 			mesAnoFinal: getMesAnoFinalAtual(),
-			intervaloSegundos,
+			intervaloSegundos: plano.intervaloSegundos,
 			forceRefresh: data.forceRefresh,
 		},
 	});
 
-	await adicionarBuscaProprietariosNaFila({
+	const job = await adicionarBuscaProprietariosNaFila({
 		tarefaId: tarefa.id,
 		clienteId: cliente.id,
 		logradouro: tarefa.logradouro,
@@ -55,7 +53,7 @@ export async function criarTarefaBuscaProprietarios(
 	});
 
 	return {
-		jobId: tarefa.id,
+		jobId: job.id,
 		status: tarefa.status,
 		message: "Tarefa criada e adicionada na fila com sucesso",
 		cliente: {
@@ -63,6 +61,13 @@ export async function criarTarefaBuscaProprietarios(
 			nome: cliente.nome,
 			slug: cliente.slug,
 		},
+    plano: {
+      id: plano.id,
+      nome: plano.nome,
+      limiteMensalConsultas: plano.limiteMensalConsultas,
+      intervaloSegundos: plano.intervaloSegundos,
+    },
+    uso,
 		tarefa: {
 			id: tarefa.id,
 			status: tarefa.status,

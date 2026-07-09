@@ -125,3 +125,31 @@ export type DadosContato = {
 	dataNascimento?: string | null;
 	rendaFaixaSalarial?: string | null;
 };
+
+export type MinhaAssinaturaResponse = {
+  cliente: {
+    id: string;
+    nome: string;
+    slug: string;
+    status: "ATIVO" | "INATIVO" | "SUSPENSO";
+    pagamentoStatus: "PAGO" | "PENDENTE" | "VENCIDO" | "CANCELADO";
+    pagamentoVenceEm: string | null;
+  };
+  plano: {
+    id: string;
+    nome: string;
+    slug: string;
+    descricao: string | null;
+    limiteMensalConsultas: number;
+    intervaloSegundos: number;
+    precoCentavos: number;
+    status: "ATIVO" | "INATIVO";
+  };
+  uso: {
+    consultasUsadas: number;
+    limiteMensal: number;
+    consultasRestantes: number;
+    inicioMes: string;
+    fimMes: string;
+  };
+};

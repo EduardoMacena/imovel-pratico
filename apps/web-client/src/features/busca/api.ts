@@ -3,6 +3,7 @@ import type {
   CriarTarefaRequest,
   CriarTarefaResponse,
   ListarTarefasResponse,
+  MinhaAssinaturaResponse,
   ProgressoTarefaResponse,
 } from "./types";
 
@@ -35,4 +36,8 @@ export function exportarResultadosTarefaExcel(tarefaId: string) {
     `/imoveis/tarefas/${tarefaId}/exportar-excel`,
     `resultados-tarefa-${tarefaId}.xlsx`
   );
+}
+
+export function buscarMinhaAssinatura() {
+  return apiRequest<MinhaAssinaturaResponse>("/imoveis/minha-assinatura");
 }

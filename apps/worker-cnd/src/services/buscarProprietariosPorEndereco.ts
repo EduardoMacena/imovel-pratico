@@ -47,6 +47,48 @@ function sleep(ms: number) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+async function validarLimiteMensalAntesDeSalvarResultado(clienteId: string) {
+	const inicioMes = new Date();
+	inicioMes.setDate(1);
+	inicioMes.setHours(0, 0, 0, 0);
+
+	const fimMes = new Date(inicioMes);
+	fimMes.setMonth(fimMes.getMonth() + 1);
+
+	const cliente = await prisma.cliente.findUnique({
+		where: {
+			id: clienteId,
+		},
+		include: {
+			plano: true,
+		},
+	});
+
+	if (!cliente) {
+		throw new Error("CLIENTE_NAO_ENCONTRADO");
+	}
+
+	if (!cliente.plano) {
+		throw new Error("CLIENTE_SEM_PLANO");
+	}
+
+	const consultasUsadas = await prisma.tarefaResultado.count({
+		where: {
+			tarefa: {
+				clienteId,
+			},
+			createdAt: {
+				gte: inicioMes,
+				lt: fimMes,
+			},
+		},
+	});
+
+	if (consultasUsadas >= cliente.plano.limiteMensalConsultas) {
+		throw new Error("LIMITE_MENSAL_ATINGIDO");
+	}
+}
+
 async function buscarProprietarioDoImovel(params: {
 	imovel: ImovelEncontrado;
 	logradouro: string;
@@ -67,37 +109,7 @@ async function buscarProprietarioDoImovel(params: {
 	} = params;
 
 	try {
-		const inicioMes = new Date();
-		inicioMes.setDate(1);
-		inicioMes.setHours(0, 0, 0, 0);
-
-		const fimMes = new Date(inicioMes);
-		fimMes.setMonth(fimMes.getMonth() + 1);
-
-		const cliente = await prisma.cliente.findUnique({
-			where: {
-				id: clienteId,
-			},
-			select: {
-				limiteMensalConsultas: true,
-			},
-		});
-
-		const consultasUsadas = await prisma.tarefaResultado.count({
-			where: {
-				tarefa: {
-					clienteId: clienteId,
-				},
-				createdAt: {
-					gte: inicioMes,
-					lt: fimMes,
-				},
-			},
-		});
-
-		if (cliente && consultasUsadas >= cliente.limiteMensalConsultas) {
-			throw new Error("LIMITE_MENSAL_ATINGIDO");
-		}
+		await validarLimiteMensalAntesDeSalvarResultado(clienteId);
 
 		const cache = await buscarImovelCacheValido({
 			indiceCadastral: imovel.indiceCadastral,

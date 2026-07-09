@@ -10,8 +10,15 @@ import { Input } from "../components/Input";
 import { ProgressBar } from "../components/ProgressBar";
 import { ResultCard } from "../components/ResultCard";
 import { StatusBadge } from "../components/StatusBadge";
-import { buscarProgressoTarefa, criarTarefaBusca } from "../features/busca/api";
-import type { ProgressoTarefaResponse } from "../features/busca/types";
+import {
+	buscarProgressoTarefa,
+	criarTarefaBusca,
+	buscarMinhaAssinatura,
+} from "../features/busca/api";
+import type {
+	ProgressoTarefaResponse,
+	MinhaAssinaturaResponse,
+} from "../features/busca/types";
 import {
 	Actions,
 	EmptyState,
@@ -31,6 +38,7 @@ import {
 	HeaderActions,
 	HeaderLink,
 } from "./page.styles";
+import { SubscriptionSummary } from "../components/SubscriptionSummary";
 
 export default function HomePage() {
 	const { isCheckingAuth } = useRequireAuth();
@@ -39,6 +47,10 @@ export default function HomePage() {
 		"RUA DESEMBARGADOR JORGE FONTANA"
 	);
 	const [numero, setNumero] = useState("200");
+
+	const [assinatura, setAssinatura] = useState<MinhaAssinaturaResponse | null>(
+		null
+	);
 
 	const [jobId, setJobId] = useState<string | null>(null);
 	const [progresso, setProgresso] = useState<ProgressoTarefaResponse | null>(
@@ -54,6 +66,18 @@ export default function HomePage() {
 			progresso?.status === "CANCELED"
 		);
 	}, [progresso?.status]);
+
+	async function carregarAssinatura() {
+		try {
+			const data = await buscarMinhaAssinatura();
+
+			setAssinatura(data);
+		} catch (error) {
+			setErro(
+				error instanceof Error ? error.message : "Erro ao carregar assinatura"
+			);
+		}
+	}
 
 	async function criarTarefa(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
@@ -82,51 +106,61 @@ export default function HomePage() {
 	}
 
 	useEffect(() => {
-		if (!jobId || isFinalizado) {
-			return;
-		}
-
-		let isMounted = true;
-
-		async function carregarProgresso() {
-			if (!jobId) {
+		if (!isCheckingAuth) {
+			if (!jobId || isFinalizado) {
 				return;
 			}
 
-			try {
-				const data = await buscarProgressoTarefa(jobId);
+			let isMounted = true;
 
-				if (isMounted) {
-					setProgresso(data);
+			async function carregarProgresso() {
+				if (!jobId) {
+					return;
 				}
-			} catch (error) {
-				if (isMounted) {
-					setErro(
-						error instanceof Error
-							? error.message
-							: "Erro desconhecido ao buscar progresso"
-					);
+
+				try {
+					const data = await buscarProgressoTarefa(jobId);
+
+					if (isMounted) {
+						setProgresso(data);
+					}
+				} catch (error) {
+					if (isMounted) {
+						setErro(
+							error instanceof Error
+								? error.message
+								: "Erro desconhecido ao buscar progresso"
+						);
+					}
 				}
 			}
+
+			carregarAssinatura();
+			carregarProgresso();
+
+			const interval = window.setInterval(carregarProgresso, 3000);
+
+			return () => {
+				isMounted = false;
+				window.clearInterval(interval);
+			};
 		}
-
-		carregarProgresso();
-
-		const interval = window.setInterval(carregarProgresso, 3000);
-
-		return () => {
-			isMounted = false;
-			window.clearInterval(interval);
-		};
-	}, [jobId, isFinalizado]);
+	}, [jobId, isFinalizado, isCheckingAuth]);
 
 	if (isCheckingAuth) {
 		return null;
 	}
 
+	const buscaBloqueada =
+		assinatura?.cliente.pagamentoStatus !== "PAGO" ||
+		assinatura?.cliente.status !== "ATIVO" ||
+		assinatura?.plano.status !== "ATIVO" ||
+		assinatura?.uso.consultasRestantes === 0;
+
 	return (
 		<>
 			<AppHeader />
+			{assinatura && <SubscriptionSummary assinatura={assinatura} />}
 
 			<PageContainer>
 				<Header>
@@ -147,6 +181,13 @@ export default function HomePage() {
 				</Header>
 
 				<Card>
+					{buscaBloqueada && assinatura && (
+						<ErrorBox>
+							{assinatura.cliente.pagamentoStatus !== "PAGO"
+								? "Seu plano está pendente ou vencido. Regularize o pagamento para iniciar novas buscas."
+								: "Você atingiu o limite mensal de consultas do seu plano."}
+						</ErrorBox>
+					)}
 					<form onSubmit={criarTarefa}>
 						<FormGrid>
 							<Input
@@ -167,7 +208,7 @@ export default function HomePage() {
 						</FormGrid>
 
 						<Actions>
-							<Button type="submit" disabled={isLoading}>
+							<Button type="submit" disabled={isLoading || buscaBloqueada}>
 								{isLoading ? "Criando tarefa..." : "Iniciar busca"}
 							</Button>
 
