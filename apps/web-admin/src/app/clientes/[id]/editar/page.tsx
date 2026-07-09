@@ -7,15 +7,18 @@ import { Button } from "../../../../components/Button";
 import { Card } from "../../../../components/Card";
 import { Input } from "../../../../components/Input";
 import { Select } from "../../../../components/Select";
+import { ClientConsumptionCard } from "../../../../components/ClientConsumptionCard";
 import {
 	atualizarCliente,
 	buscarCliente,
-  listarPlanos
+	listarPlanos,
+	buscarConsumoCliente,
 } from "../../../../features/admin/api";
 import type {
 	ClienteStatus,
 	PagamentoStatus,
-  PlanoResumo
+	PlanoResumo,
+	ConsumoClienteResumo,
 } from "../../../../features/admin/types";
 import { useRequireSuperAdmin } from "../../../../hooks/useRequireSuperAdmin";
 import {
@@ -54,6 +57,8 @@ export default function EditarClientePage() {
 
 	const clienteId = params.id;
 
+	const [consumo, setConsumo] = useState<ConsumoClienteResumo | null>(null);
+
 	const [planos, setPlanos] = useState<PlanoResumo[]>([]);
 	const [planoId, setPlanoId] = useState("");
 
@@ -70,6 +75,16 @@ export default function EditarClientePage() {
 	const [isSaving, setIsSaving] = useState(false);
 	const [erro, setErro] = useState<string | null>(null);
 	const [sucesso, setSucesso] = useState<string | null>(null);
+
+	async function carregarConsumoCliente() {
+		try {
+			const data = await buscarConsumoCliente(clienteId);
+
+			setConsumo(data.consumo);
+		} catch (error) {
+			console.error("Erro ao carregar consumo do cliente:", error);
+		}
+	}
 
 	async function carregarPlanos() {
 		const data = await listarPlanos();
@@ -88,8 +103,8 @@ export default function EditarClientePage() {
 			setStatus(data.cliente.status);
 			setWorkerUrl(data.cliente.workerUrl ?? "");
 			setPlanoId(data.cliente.planoId ?? "");
-      setPagamentoStatus(data.cliente.pagamentoStatus);
-      setPagamentoVenceEm(toDateInput(data.cliente.pagamentoVenceEm));
+			setPagamentoStatus(data.cliente.pagamentoStatus);
+			setPagamentoVenceEm(toDateInput(data.cliente.pagamentoVenceEm));
 		} catch (error) {
 			setErro(
 				error instanceof Error
@@ -114,11 +129,12 @@ export default function EditarClientePage() {
 				slug,
 				status,
 				workerUrl: workerUrl.trim() || null,
-        pagamentoStatus,
-        pagamentoVenceEm: fromDateInput(pagamentoVenceEm),
-        planoId,
+				pagamentoStatus,
+				pagamentoVenceEm: fromDateInput(pagamentoVenceEm),
+				planoId,
 			});
 
+			await carregarConsumoCliente();
 			setSucesso("Cliente atualizado com sucesso.");
 		} catch (error) {
 			setErro(
@@ -135,6 +151,7 @@ export default function EditarClientePage() {
 		if (!isCheckingAuth) {
 			carregarPlanos();
 			carregarCliente();
+			carregarConsumoCliente();
 		}
 	}, [isCheckingAuth]);
 
@@ -160,92 +177,100 @@ export default function EditarClientePage() {
 				{isLoading && <EmptyState>Carregando cliente...</EmptyState>}
 
 				{!isLoading && (
-					<Card>
-						<Form onSubmit={handleSubmit}>
-							<Input
-								label="Nome"
-								value={nome}
-								onChange={(event) => setNome(event.target.value)}
-								required
-							/>
+					<>
+						<div style={{ marginBottom: 24 }}>
+							{consumo && <ClientConsumptionCard consumo={consumo} />}
+						</div>
+            
+						<Card>
+							<Form onSubmit={handleSubmit}>
+								<Input
+									label="Nome"
+									value={nome}
+									onChange={(event) => setNome(event.target.value)}
+									required
+								/>
 
-							<Input
-								label="Slug"
-								value={slug}
-								onChange={(event) => setSlug(event.target.value)}
-								required
-							/>
+								<Input
+									label="Slug"
+									value={slug}
+									onChange={(event) => setSlug(event.target.value)}
+									required
+								/>
 
-							<Select
-								label="Status do cliente"
-								value={status}
-								onChange={(event) =>
-									setStatus(event.target.value as ClienteStatus)
-								}
-							>
-								<option value="ATIVO">ATIVO</option>
-								<option value="INATIVO">INATIVO</option>
-								<option value="SUSPENSO">SUSPENSO</option>
-							</Select>
-
-							<Select
-								label="Plano contratado"
-								value={planoId}
-								onChange={(event) => setPlanoId(event.target.value)}
-								required
-							>
-								{planos.map((plano) => (
-									<option key={plano.id} value={plano.id}>
-										{plano.nome} — {plano.limiteMensalConsultas} consultas —{" "}
-										{plano.intervaloSegundos}s — {plano.status}
-									</option>
-								))}
-							</Select>
-
-              <Select
-                label="Status do pagamento"
-                value={pagamentoStatus}
-                onChange={event =>
-                  setPagamentoStatus(event.target.value as PagamentoStatus)
-                }
-              >
-                <option value="PAGO">PAGO</option>
-                <option value="PENDENTE">PENDENTE</option>
-                <option value="VENCIDO">VENCIDO</option>
-                <option value="CANCELADO">CANCELADO</option>
-              </Select>
-
-							<Input
-								label="Vencimento do pagamento"
-								type="date"
-								value={pagamentoVenceEm}
-								onChange={(event) => setPagamentoVenceEm(event.target.value)}
-							/>
-
-							<Input
-								label="Worker URL"
-								value={workerUrl}
-								onChange={(event) => setWorkerUrl(event.target.value)}
-								placeholder="Opcional"
-							/>
-
-							{erro && <ErrorBox>{erro}</ErrorBox>}
-							{sucesso && <SuccessBox>{sucesso}</SuccessBox>}
-
-							<Actions>
-								<Button type="submit" disabled={isSaving}>
-									{isSaving ? "Salvando..." : "Salvar alterações"}
-								</Button>
-
-								<Button
-									type="button"
-									onClick={() => router.push(`/clientes/${clienteId}/usuarios`)}
+								<Select
+									label="Status do cliente"
+									value={status}
+									onChange={(event) =>
+										setStatus(event.target.value as ClienteStatus)
+									}
 								>
-									Gerenciar usuários
-								</Button>
-							</Actions>
-						</Form>
-					</Card>
+									<option value="ATIVO">ATIVO</option>
+									<option value="INATIVO">INATIVO</option>
+									<option value="SUSPENSO">SUSPENSO</option>
+								</Select>
+
+								<Select
+									label="Plano contratado"
+									value={planoId}
+									onChange={(event) => setPlanoId(event.target.value)}
+									required
+								>
+									{planos.map((plano) => (
+										<option key={plano.id} value={plano.id}>
+											{plano.nome} — {plano.limiteMensalConsultas} consultas —{" "}
+											{plano.intervaloSegundos}s — {plano.status}
+										</option>
+									))}
+								</Select>
+
+								<Select
+									label="Status do pagamento"
+									value={pagamentoStatus}
+									onChange={(event) =>
+										setPagamentoStatus(event.target.value as PagamentoStatus)
+									}
+								>
+									<option value="PAGO">PAGO</option>
+									<option value="PENDENTE">PENDENTE</option>
+									<option value="VENCIDO">VENCIDO</option>
+									<option value="CANCELADO">CANCELADO</option>
+								</Select>
+
+								<Input
+									label="Vencimento do pagamento"
+									type="date"
+									value={pagamentoVenceEm}
+									onChange={(event) => setPagamentoVenceEm(event.target.value)}
+								/>
+
+								<Input
+									label="Worker URL"
+									value={workerUrl}
+									onChange={(event) => setWorkerUrl(event.target.value)}
+									placeholder="Opcional"
+								/>
+
+								{erro && <ErrorBox>{erro}</ErrorBox>}
+								{sucesso && <SuccessBox>{sucesso}</SuccessBox>}
+
+								<Actions>
+									<Button type="submit" disabled={isSaving}>
+										{isSaving ? "Salvando..." : "Salvar alterações"}
+									</Button>
+
+									<Button
+										type="button"
+										onClick={() =>
+											router.push(`/clientes/${clienteId}/usuarios`)
+										}
+									>
+										Gerenciar usuários
+									</Button>
+								</Actions>
+							</Form>
+						</Card>
+					</>
 				)}
 			</PageContainer>
 		</>

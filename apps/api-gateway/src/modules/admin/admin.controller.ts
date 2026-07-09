@@ -31,6 +31,8 @@ import {
 	buscarPlanoPorId,
 	criarPlano,
 	listarPlanos,
+	buscarConsumoClienteAdmin,
+	listarConsumoClientesAdmin,
 } from "./admin.service.js";
 
 export async function listarClientesController(
@@ -314,74 +316,105 @@ export async function exportarResultadosTarefaAdminExcelController(
 }
 
 export async function listarPlanosController(
-  request: FastifyRequest,
-  reply: FastifyReply
+	request: FastifyRequest,
+	reply: FastifyReply
 ) {
-  const planos = await listarPlanos();
+	const planos = await listarPlanos();
 
-  return reply.status(200).send({
-    planos,
-  });
+	return reply.status(200).send({
+		planos,
+	});
 }
 
 export async function buscarPlanoController(
+	request: FastifyRequest,
+	reply: FastifyReply
+) {
+	const { id } = planoIdParamsSchema.parse(request.params);
+
+	const plano = await buscarPlanoPorId(id);
+
+	if (!plano) {
+		return reply.status(404).send({
+			error: "NotFound",
+			message: "Plano não encontrado",
+		});
+	}
+
+	return reply.status(200).send({
+		plano,
+	});
+}
+
+export async function criarPlanoController(
+	request: FastifyRequest,
+	reply: FastifyReply
+) {
+	const body = criarPlanoSchema.parse(request.body);
+
+	try {
+		const plano = await criarPlano(body);
+
+		return reply.status(201).send({
+			plano,
+		});
+	} catch (error) {
+		return reply.status(400).send({
+			error: "BadRequest",
+			message: error instanceof Error ? error.message : "Erro ao criar plano",
+		});
+	}
+}
+
+export async function atualizarPlanoController(
+	request: FastifyRequest,
+	reply: FastifyReply
+) {
+	const { id } = planoIdParamsSchema.parse(request.params);
+	const body = atualizarPlanoSchema.parse(request.body);
+
+	try {
+		const plano = await atualizarPlano(id, body);
+
+		return reply.status(200).send({
+			plano,
+		});
+	} catch (error) {
+		return reply.status(400).send({
+			error: "BadRequest",
+			message:
+				error instanceof Error ? error.message : "Erro ao atualizar plano",
+		});
+	}
+}
+
+export async function listarConsumoClientesController(
   request: FastifyRequest,
   reply: FastifyReply
 ) {
-  const { id } = planoIdParamsSchema.parse(request.params);
+  const consumos = await listarConsumoClientesAdmin();
 
-  const plano = await buscarPlanoPorId(id);
+  return reply.status(200).send({
+    consumos,
+  });
+}
 
-  if (!plano) {
+export async function buscarConsumoClienteController(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  const { id } = clienteIdParamsSchema.parse(request.params);
+
+  const consumo = await buscarConsumoClienteAdmin(id);
+
+  if (!consumo) {
     return reply.status(404).send({
       error: "NotFound",
-      message: "Plano não encontrado",
+      message: "Cliente não encontrado",
     });
   }
 
   return reply.status(200).send({
-    plano,
+    consumo,
   });
-}
-
-export async function criarPlanoController(
-  request: FastifyRequest,
-  reply: FastifyReply
-) {
-  const body = criarPlanoSchema.parse(request.body);
-
-  try {
-    const plano = await criarPlano(body);
-
-    return reply.status(201).send({
-      plano,
-    });
-  } catch (error) {
-    return reply.status(400).send({
-      error: "BadRequest",
-      message: error instanceof Error ? error.message : "Erro ao criar plano",
-    });
-  }
-}
-
-export async function atualizarPlanoController(
-  request: FastifyRequest,
-  reply: FastifyReply
-) {
-  const { id } = planoIdParamsSchema.parse(request.params);
-  const body = atualizarPlanoSchema.parse(request.body);
-
-  try {
-    const plano = await atualizarPlano(id, body);
-
-    return reply.status(200).send({
-      plano,
-    });
-  } catch (error) {
-    return reply.status(400).send({
-      error: "BadRequest",
-      message:
-        error instanceof Error ? error.message : "Erro ao atualizar plano",
-    });
-  }
 }

@@ -22,6 +22,8 @@ import type {
 	CriarPlanoRequest,
 	CriarPlanoResponse,
 	ListarPlanosResponse,
+	BuscarConsumoClienteResponse,
+	ListarConsumoClientesResponse,
 } from "./types";
 
 export function listarClientes() {
@@ -126,23 +128,33 @@ export function exportarResultadosTarefaAdminExcel(tarefaId: string) {
 }
 
 export function listarPlanos() {
-  return apiRequest<ListarPlanosResponse>("/admin/planos");
+	return apiRequest<ListarPlanosResponse>("/admin/planos");
 }
 
 export function buscarPlano(planoId: string) {
-  return apiRequest<BuscarPlanoResponse>(`/admin/planos/${planoId}`);
+	return apiRequest<BuscarPlanoResponse>(`/admin/planos/${planoId}`);
 }
 
 export function criarPlano(data: CriarPlanoRequest) {
-  return apiRequest<CriarPlanoResponse>("/admin/planos", {
-    method: "POST",
-    body: JSON.stringify(data),
-  });
+	return apiRequest<CriarPlanoResponse>("/admin/planos", {
+		method: "POST",
+		body: JSON.stringify(data),
+	});
 }
 
 export function atualizarPlano(planoId: string, data: AtualizarPlanoRequest) {
-  return apiRequest<AtualizarPlanoResponse>(`/admin/planos/${planoId}`, {
-    method: "PATCH",
-    body: JSON.stringify(data),
-  });
+	return apiRequest<AtualizarPlanoResponse>(`/admin/planos/${planoId}`, {
+		method: "PATCH",
+		body: JSON.stringify(data),
+	});
+}
+
+export function listarConsumoClientes() {
+	return apiRequest<ListarConsumoClientesResponse>("/admin/consumo/clientes");
+}
+
+export function buscarConsumoCliente(clienteId: string) {
+	return apiRequest<BuscarConsumoClienteResponse>(
+		`/admin/consumo/clientes/${clienteId}`
+	);
 }

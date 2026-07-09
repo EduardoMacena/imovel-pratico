@@ -941,3 +941,168 @@ async function gerarSlugUnicoPlano(nome: string, slugInformado?: string) {
 		slug = `${base}-${contador}`;
 	}
 }
+
+function getInicioMesAtual() {
+  const now = new Date();
+
+  return new Date(now.getFullYear(), now.getMonth(), 1);
+}
+
+function getFimMesAtual() {
+  const now = new Date();
+
+  return new Date(now.getFullYear(), now.getMonth() + 1, 1);
+}
+
+function calcularPercentualUsado(usadas: number, limite: number) {
+  if (limite <= 0) {
+    return 0;
+  }
+
+  return Math.min(Math.round((usadas / limite) * 100), 100);
+}
+
+function pagamentoEstaVencido(pagamentoVenceEm: Date | null) {
+  if (!pagamentoVenceEm) {
+    return false;
+  }
+
+  const hoje = new Date();
+
+  return pagamentoVenceEm < hoje;
+}
+
+async function contarConsultasUsadasNoMes(clienteId: string) {
+  const inicioMes = getInicioMesAtual();
+  const fimMes = getFimMesAtual();
+
+  return prisma.tarefaResultado.count({
+    where: {
+      tarefa: {
+        clienteId,
+      },
+      createdAt: {
+        gte: inicioMes,
+        lt: fimMes,
+      },
+    },
+  });
+}
+
+async function contarTarefasPorStatus(clienteId: string) {
+  const grupos = await prisma.tarefa.groupBy({
+    by: ["status"],
+    where: {
+      clienteId,
+    },
+    _count: {
+      _all: true,
+    },
+  });
+
+  const resumo = {
+    pending: 0,
+    processing: 0,
+    completed: 0,
+    error: 0,
+    canceled: 0,
+  };
+
+  for (const grupo of grupos) {
+    if (grupo.status === "PENDING") {
+      resumo.pending = grupo._count._all;
+    }
+
+    if (grupo.status === "PROCESSING") {
+      resumo.processing = grupo._count._all;
+    }
+
+    if (grupo.status === "COMPLETED") {
+      resumo.completed = grupo._count._all;
+    }
+
+    if (grupo.status === "ERROR") {
+      resumo.error = grupo._count._all;
+    }
+
+    if (grupo.status === "CANCELED") {
+      resumo.canceled = grupo._count._all;
+    }
+  }
+
+  return resumo;
+}
+
+export async function buscarConsumoClienteAdmin(clienteId: string) {
+  const cliente = await prisma.cliente.findUnique({
+    where: {
+      id: clienteId,
+    },
+    include: {
+      plano: true,
+    },
+  });
+
+  if (!cliente) {
+    return null;
+  }
+
+  const consultasUsadas = await contarConsultasUsadasNoMes(cliente.id);
+  const tarefas = await contarTarefasPorStatus(cliente.id);
+
+  const limiteMensal = cliente.plano?.limiteMensalConsultas ?? 0;
+  const consultasRestantes = Math.max(limiteMensal - consultasUsadas, 0);
+  const percentualUsado = calcularPercentualUsado(
+    consultasUsadas,
+    limiteMensal
+  );
+
+  return {
+    cliente: {
+      id: cliente.id,
+      nome: cliente.nome,
+      slug: cliente.slug,
+      status: cliente.status,
+      pagamentoStatus: cliente.pagamentoStatus,
+      pagamentoVenceEm: cliente.pagamentoVenceEm,
+      pagamentoVencido: pagamentoEstaVencido(cliente.pagamentoVenceEm),
+    },
+    plano: cliente.plano
+      ? {
+          id: cliente.plano.id,
+          nome: cliente.plano.nome,
+          slug: cliente.plano.slug,
+          limiteMensalConsultas: cliente.plano.limiteMensalConsultas,
+          intervaloSegundos: cliente.plano.intervaloSegundos,
+          precoCentavos: cliente.plano.precoCentavos,
+          status: cliente.plano.status,
+        }
+      : null,
+    uso: {
+      consultasUsadas,
+      limiteMensal,
+      consultasRestantes,
+      percentualUsado,
+      inicioMes: getInicioMesAtual(),
+      fimMes: getFimMesAtual(),
+    },
+    tarefas,
+  };
+}
+
+export async function listarConsumoClientesAdmin() {
+  const clientes = await prisma.cliente.findMany({
+    include: {
+      plano: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  const consumos = await Promise.all(
+    clientes.map(cliente => buscarConsumoClienteAdmin(cliente.id))
+  );
+
+  return consumos.filter(Boolean);
+}

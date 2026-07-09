@@ -16,8 +16,8 @@ export type ClienteResumo = {
 	totalTarefas: number;
 	planoId: string | null;
 	plano: PlanoResumo | null;
-  pagamentoStatus: PagamentoStatus;
-  pagamentoVenceEm: string | null;
+	pagamentoStatus: PagamentoStatus;
+	pagamentoVenceEm: string | null;
 	createdAt: string;
 	updatedAt: string;
 };
@@ -32,7 +32,7 @@ export type CriarClienteRequest = {
 	workerUrl?: string | null;
 	intervaloSegundos: number;
 	limiteDiario: number;
-  planoId: string;
+	planoId: string;
 };
 
 export type CriarClienteResponse = {
@@ -110,9 +110,9 @@ export type AtualizarClienteRequest = {
 	workerUrl?: string | null;
 	intervaloSegundos?: number;
 	limiteDiario?: number;
-  planoId?: string;
-  pagamentoStatus?: PagamentoStatus;
-  pagamentoVenceEm?: string | null;
+	planoId?: string;
+	pagamentoStatus?: PagamentoStatus;
+	pagamentoVenceEm?: string | null;
 };
 
 export type AtualizarClienteResponse = {
@@ -336,4 +336,40 @@ export type AtualizarPlanoRequest = Partial<CriarPlanoRequest>;
 
 export type AtualizarPlanoResponse = {
 	plano: PlanoResumo;
+};
+
+export type ConsumoClienteResumo = {
+	cliente: {
+		id: string;
+		nome: string;
+		slug: string;
+		status: ClienteStatus;
+		pagamentoStatus: PagamentoStatus;
+		pagamentoVenceEm: string | null;
+		pagamentoVencido: boolean;
+	};
+	plano: PlanoResumo | null;
+	uso: {
+		consultasUsadas: number;
+		limiteMensal: number;
+		consultasRestantes: number;
+		percentualUsado: number;
+		inicioMes: string;
+		fimMes: string;
+	};
+	tarefas: {
+		pending: number;
+		processing: number;
+		completed: number;
+		error: number;
+		canceled: number;
+	};
+};
+
+export type ListarConsumoClientesResponse = {
+	consumos: ConsumoClienteResumo[];
+};
+
+export type BuscarConsumoClienteResponse = {
+	consumo: ConsumoClienteResumo;
 };

@@ -6,12 +6,18 @@ import { Button } from "../../components/Button";
 import { Card } from "../../components/Card";
 import { Input } from "../../components/Input";
 import { StatusBadge } from "../../components/StatusBadge";
+import { ClientConsumptionCard } from "../../components/ClientConsumptionCard";
 import {
 	criarCliente,
 	listarClientes,
 	listarPlanos,
+	listarConsumoClientes,
 } from "../../features/admin/api";
-import type { ClienteResumo, PlanoResumo } from "../../features/admin/types";
+import type {
+	ClienteResumo,
+	PlanoResumo,
+	ConsumoClienteResumo,
+} from "../../features/admin/types";
 import { useRequireSuperAdmin } from "../../hooks/useRequireSuperAdmin";
 import { Select } from "../../components/Select";
 import {
@@ -43,12 +49,26 @@ export default function ClientesPage() {
 
 	const [clientes, setClientes] = useState<ClienteResumo[]>([]);
 	const [nome, setNome] = useState("");
-	const [intervaloSegundos, setIntervaloSegundos] = useState(30);
-	const [limiteDiario, setLimiteDiario] = useState(300);
+
+	const [consumos, setConsumos] = useState<ConsumoClienteResumo[]>([]);
 
 	const [isLoading, setIsLoading] = useState(true);
 	const [isCreating, setIsCreating] = useState(false);
 	const [erro, setErro] = useState<string | null>(null);
+
+	function getConsumoCliente(clienteId: string) {
+		return consumos.find((consumo) => consumo.cliente.id === clienteId) ?? null;
+	}
+
+	async function carregarConsumosClientes() {
+		try {
+			const data = await listarConsumoClientes();
+
+			setConsumos(data.consumos);
+		} catch (error) {
+			console.error("Erro ao carregar consumo dos clientes:", error);
+		}
+	}
 
 	async function carregarPlanos() {
 		const data = await listarPlanos();
@@ -97,10 +117,9 @@ export default function ClientesPage() {
 			});
 
 			setNome("");
-			setIntervaloSegundos(30);
-			setLimiteDiario(300);
 
 			await carregarClientes();
+			await carregarConsumosClientes();
 		} catch (error) {
 			setErro(
 				error instanceof Error
@@ -116,6 +135,7 @@ export default function ClientesPage() {
 		if (!isCheckingAuth) {
 			carregarClientes();
 			carregarPlanos();
+			carregarConsumosClientes();
 		}
 	}, [isCheckingAuth]);
 
@@ -178,61 +198,70 @@ export default function ClientesPage() {
 
 						{!isLoading && clientes.length > 0 && (
 							<List>
-								{clientes.map((cliente) => (
-									<ClientItem key={cliente.id}>
-										<ClientTop>
-											<div>
-												<ClientName>{cliente.nome}</ClientName>
-												<div>{cliente.slug}</div>
-											</div>
+								{clientes.map((cliente) => {
+									const consumo = getConsumoCliente(cliente.id);
 
-											<StatusBadge status={cliente.status} />
-										</ClientTop>
+									return (
+										<ClientItem key={cliente.id}>
+											<ClientTop>
+												<div>
+													<ClientName>{cliente.nome}</ClientName>
+													<div>{cliente.slug}</div>
+												</div>
 
-										<InfoGrid>
-											<InfoBox>
-												<InfoLabel>Usuários</InfoLabel>
-												<InfoValue>{cliente.totalUsuarios}</InfoValue>
-											</InfoBox>
+												<StatusBadge status={cliente.status} />
+											</ClientTop>
 
-											<InfoBox>
-												<InfoLabel>Tarefas</InfoLabel>
-												<InfoValue>{cliente.totalTarefas}</InfoValue>
-											</InfoBox>
+											<InfoGrid>
+												<InfoBox>
+													<InfoLabel>Usuários</InfoLabel>
+													<InfoValue>{cliente.totalUsuarios}</InfoValue>
+												</InfoBox>
 
-											<InfoBox>
-												<InfoLabel>Intervalo</InfoLabel>
-												<InfoValue>{cliente.plano?.intervaloSegundos}s</InfoValue>
-											</InfoBox>
+												<InfoBox>
+													<InfoLabel>Tarefas</InfoLabel>
+													<InfoValue>{cliente.totalTarefas}</InfoValue>
+												</InfoBox>
 
-											<InfoBox>
-												<InfoLabel>Plano</InfoLabel>
-												<InfoValue>{cliente.plano?.nome ?? "-"}</InfoValue>
-											</InfoBox>
+												<InfoBox>
+													<InfoLabel>Intervalo</InfoLabel>
+													<InfoValue>
+														{cliente.plano?.intervaloSegundos}s
+													</InfoValue>
+												</InfoBox>
 
-											<InfoBox>
-												<InfoLabel>Limite mensal</InfoLabel>
-												<InfoValue>
-													{cliente.plano?.limiteMensalConsultas ?? "-"}
-												</InfoValue>
-											</InfoBox>
-										</InfoGrid>
+												<InfoBox>
+													<InfoLabel>Plano</InfoLabel>
+													<InfoValue>{cliente.plano?.nome ?? "-"}</InfoValue>
+												</InfoBox>
 
-										<Actions>
-											<DetailsLink href={`/clientes/${cliente.id}/editar`}>
-												Editar cliente
-											</DetailsLink>
+												<InfoBox>
+													<InfoLabel>Limite mensal</InfoLabel>
+													<InfoValue>
+														{cliente.plano?.limiteMensalConsultas ?? "-"}
+													</InfoValue>
+												</InfoBox>
+											</InfoGrid>
+											{consumo && (
+												<ClientConsumptionCard consumo={consumo} compact />
+											)}
 
-											<DetailsLink href={`/clientes/${cliente.id}/usuarios`}>
-												Gerenciar usuários
-											</DetailsLink>
+											<Actions>
+												<DetailsLink href={`/clientes/${cliente.id}/editar`}>
+													Editar cliente
+												</DetailsLink>
 
-											<DetailsLink href={`/clientes/${cliente.id}/tarefas`}>
-												Ver tarefas
-											</DetailsLink>
-										</Actions>
-									</ClientItem>
-								))}
+												<DetailsLink href={`/clientes/${cliente.id}/usuarios`}>
+													Gerenciar usuários
+												</DetailsLink>
+
+												<DetailsLink href={`/clientes/${cliente.id}/tarefas`}>
+													Ver tarefas
+												</DetailsLink>
+											</Actions>
+										</ClientItem>
+									);
+								})}
 							</List>
 						)}
 					</div>
