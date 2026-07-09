@@ -16,6 +16,8 @@ export type ClienteResumo = {
 	totalTarefas: number;
 	planoId: string | null;
 	plano: PlanoResumo | null;
+  pagamentoStatus: PagamentoStatus;
+  pagamentoVenceEm: string | null;
 	createdAt: string;
 	updatedAt: string;
 };
@@ -109,6 +111,8 @@ export type AtualizarClienteRequest = {
 	intervaloSegundos?: number;
 	limiteDiario?: number;
   planoId?: string;
+  pagamentoStatus?: PagamentoStatus;
+  pagamentoVenceEm?: string | null;
 };
 
 export type AtualizarClienteResponse = {

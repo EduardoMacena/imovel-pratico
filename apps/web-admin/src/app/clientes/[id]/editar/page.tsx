@@ -61,9 +61,7 @@ export default function EditarClientePage() {
 	const [slug, setSlug] = useState("");
 	const [status, setStatus] = useState<ClienteStatus>("ATIVO");
 	const [workerUrl, setWorkerUrl] = useState("");
-	const [intervaloSegundos, setIntervaloSegundos] = useState(60);
 
-	const [limiteMensalConsultas, setLimiteMensalConsultas] = useState(300);
 	const [pagamentoStatus, setPagamentoStatus] =
 		useState<PagamentoStatus>("PENDENTE");
 	const [pagamentoVenceEm, setPagamentoVenceEm] = useState("");
@@ -90,6 +88,8 @@ export default function EditarClientePage() {
 			setStatus(data.cliente.status);
 			setWorkerUrl(data.cliente.workerUrl ?? "");
 			setPlanoId(data.cliente.planoId ?? "");
+      setPagamentoStatus(data.cliente.pagamentoStatus);
+      setPagamentoVenceEm(toDateInput(data.cliente.pagamentoVenceEm));
 		} catch (error) {
 			setErro(
 				error instanceof Error
@@ -114,6 +114,9 @@ export default function EditarClientePage() {
 				slug,
 				status,
 				workerUrl: workerUrl.trim() || null,
+        pagamentoStatus,
+        pagamentoVenceEm: fromDateInput(pagamentoVenceEm),
+        planoId,
 			});
 
 			setSucesso("Cliente atualizado com sucesso.");
@@ -199,23 +202,24 @@ export default function EditarClientePage() {
 								))}
 							</Select>
 
+              <Select
+                label="Status do pagamento"
+                value={pagamentoStatus}
+                onChange={event =>
+                  setPagamentoStatus(event.target.value as PagamentoStatus)
+                }
+              >
+                <option value="PAGO">PAGO</option>
+                <option value="PENDENTE">PENDENTE</option>
+                <option value="VENCIDO">VENCIDO</option>
+                <option value="CANCELADO">CANCELADO</option>
+              </Select>
+
 							<Input
 								label="Vencimento do pagamento"
 								type="date"
 								value={pagamentoVenceEm}
 								onChange={(event) => setPagamentoVenceEm(event.target.value)}
-							/>
-
-							<Input
-								label="Intervalo entre consultas em segundos"
-								type="number"
-								min={40}
-								max={300}
-								value={intervaloSegundos}
-								onChange={(event) =>
-									setIntervaloSegundos(Number(event.target.value))
-								}
-								required
 							/>
 
 							<Input

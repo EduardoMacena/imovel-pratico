@@ -151,6 +151,8 @@ export async function atualizarCliente(
 			status: data.status,
 			workerUrl: data.workerUrl,
 			planoId: data.planoId,
+      pagamentoStatus: data.pagamentoStatus,
+      pagamentoVenceEm: data.pagamentoVenceEm ? new Date(data.pagamentoVenceEm) : null,
 		},
 	});
 
