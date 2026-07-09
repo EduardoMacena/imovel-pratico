@@ -673,10 +673,6 @@ export type EnumTarefaStatusFieldUpdateOperationsInput = {
   set?: $Enums.TarefaStatus
 }
 
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
-}
-
 export type TarefaCreateNestedOneWithoutResultadosInput = {
   create?: Prisma.XOR<Prisma.TarefaCreateWithoutResultadosInput, Prisma.TarefaUncheckedCreateWithoutResultadosInput>
   connectOrCreate?: Prisma.TarefaCreateOrConnectWithoutResultadosInput

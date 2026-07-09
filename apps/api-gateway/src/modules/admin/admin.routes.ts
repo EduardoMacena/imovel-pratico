@@ -17,6 +17,10 @@ import {
 	listarTarefasDoClienteController,
 	listarUsuariosDoClienteController,
 	reprocessarTarefaAdminController,
+	atualizarPlanoController,
+	buscarPlanoController,
+	criarPlanoController,
+	listarPlanosController,
 } from "./admin.controller.js";
 
 export async function adminRoutes(app: FastifyInstance) {
@@ -24,6 +28,11 @@ export async function adminRoutes(app: FastifyInstance) {
 	app.addHook("preHandler", adminMiddleware);
 
 	app.get("/admin/dashboard", buscarDashboardAdminController);
+
+	app.get("/admin/planos", listarPlanosController);
+	app.post("/admin/planos", criarPlanoController);
+	app.get("/admin/planos/:id", buscarPlanoController);
+	app.patch("/admin/planos/:id", atualizarPlanoController);
 
 	app.get("/admin/tarefas/:id", buscarTarefaAdminController);
 

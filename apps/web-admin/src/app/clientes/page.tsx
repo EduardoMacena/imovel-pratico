@@ -6,9 +6,14 @@ import { Button } from "../../components/Button";
 import { Card } from "../../components/Card";
 import { Input } from "../../components/Input";
 import { StatusBadge } from "../../components/StatusBadge";
-import { criarCliente, listarClientes } from "../../features/admin/api";
-import type { ClienteResumo } from "../../features/admin/types";
+import {
+	criarCliente,
+	listarClientes,
+	listarPlanos,
+} from "../../features/admin/api";
+import type { ClienteResumo, PlanoResumo } from "../../features/admin/types";
 import { useRequireSuperAdmin } from "../../hooks/useRequireSuperAdmin";
+import { Select } from "../../components/Select";
 import {
 	Actions,
 	ClientItem,
@@ -33,6 +38,9 @@ import {
 export default function ClientesPage() {
 	const { isCheckingAuth } = useRequireSuperAdmin();
 
+	const [planos, setPlanos] = useState<PlanoResumo[]>([]);
+	const [planoId, setPlanoId] = useState("");
+
 	const [clientes, setClientes] = useState<ClienteResumo[]>([]);
 	const [nome, setNome] = useState("");
 	const [intervaloSegundos, setIntervaloSegundos] = useState(30);
@@ -41,6 +49,20 @@ export default function ClientesPage() {
 	const [isLoading, setIsLoading] = useState(true);
 	const [isCreating, setIsCreating] = useState(false);
 	const [erro, setErro] = useState<string | null>(null);
+
+	async function carregarPlanos() {
+		const data = await listarPlanos();
+
+		const planosAtivos = data.planos.filter(
+			(plano) => plano.status === "ATIVO"
+		);
+
+		setPlanos(planosAtivos);
+
+		if (!planoId && planosAtivos[0]) {
+			setPlanoId(planosAtivos[0].id);
+		}
+	}
 
 	async function carregarClientes() {
 		try {
@@ -69,8 +91,9 @@ export default function ClientesPage() {
 		try {
 			await criarCliente({
 				nome,
-				intervaloSegundos,
-				limiteDiario,
+				planoId,
+				intervaloSegundos: 60,
+				limiteDiario: 300,
 			});
 
 			setNome("");
@@ -92,6 +115,7 @@ export default function ClientesPage() {
 	useEffect(() => {
 		if (!isCheckingAuth) {
 			carregarClientes();
+			carregarPlanos();
 		}
 	}, [isCheckingAuth]);
 
@@ -123,28 +147,19 @@ export default function ClientesPage() {
 								required
 							/>
 
-							<Input
-								label="Intervalo em segundos"
-								type="number"
-								min={5}
-								max={300}
-								value={intervaloSegundos}
-								onChange={(event) =>
-									setIntervaloSegundos(Number(event.target.value))
-								}
+							<Select
+								label="Plano"
+								value={planoId}
+								onChange={(event) => setPlanoId(event.target.value)}
 								required
-							/>
-
-							<Input
-								label="Limite diário"
-								type="number"
-								min={1}
-								value={limiteDiario}
-								onChange={(event) =>
-									setLimiteDiario(Number(event.target.value))
-								}
-								required
-							/>
+							>
+								{planos.map((plano) => (
+									<option key={plano.id} value={plano.id}>
+										{plano.nome} — {plano.limiteMensalConsultas} consultas —{" "}
+										{plano.intervaloSegundos}s
+									</option>
+								))}
+							</Select>
 
 							<Button type="submit" disabled={isCreating}>
 								{isCreating ? "Criando..." : "Criar cliente"}
@@ -187,12 +202,19 @@ export default function ClientesPage() {
 
 											<InfoBox>
 												<InfoLabel>Intervalo</InfoLabel>
-												<InfoValue>{cliente.intervaloSegundos}s</InfoValue>
+												<InfoValue>{cliente.plano?.intervaloSegundos}s</InfoValue>
 											</InfoBox>
 
 											<InfoBox>
-												<InfoLabel>Limite diário</InfoLabel>
-												<InfoValue>{cliente.limiteDiario}</InfoValue>
+												<InfoLabel>Plano</InfoLabel>
+												<InfoValue>{cliente.plano?.nome ?? "-"}</InfoValue>
+											</InfoBox>
+
+											<InfoBox>
+												<InfoLabel>Limite mensal</InfoLabel>
+												<InfoValue>
+													{cliente.plano?.limiteMensalConsultas ?? "-"}
+												</InfoValue>
 											</InfoBox>
 										</InfoGrid>
 

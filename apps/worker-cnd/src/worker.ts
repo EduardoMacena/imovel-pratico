@@ -67,6 +67,7 @@ const worker = new Worker<BuscarProprietariosJobData>(
 				mesAnoFinal: data.mesAnoFinal,
 				intervaloSegundos: data.intervaloSegundos,
 				forceRefresh: data.forceRefresh,
+        clienteId: data.clienteId,
 				onProgress: async ({ total, current, item }) => {
 					const tarefaAtual = await prisma.tarefa.findUnique({
 						where: {

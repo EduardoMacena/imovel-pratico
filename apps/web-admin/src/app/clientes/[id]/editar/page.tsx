@@ -8,197 +8,242 @@ import { Card } from "../../../../components/Card";
 import { Input } from "../../../../components/Input";
 import { Select } from "../../../../components/Select";
 import {
-  atualizarCliente,
-  buscarCliente,
+	atualizarCliente,
+	buscarCliente,
+  listarPlanos
 } from "../../../../features/admin/api";
-import type { ClienteStatus } from "../../../../features/admin/types";
+import type {
+	ClienteStatus,
+	PagamentoStatus,
+  PlanoResumo
+} from "../../../../features/admin/types";
 import { useRequireSuperAdmin } from "../../../../hooks/useRequireSuperAdmin";
 import {
-  Actions,
-  BackLink,
-  EmptyState,
-  ErrorBox,
-  Form,
-  Header,
-  PageContainer,
-  Subtitle,
-  SuccessBox,
-  Title,
+	Actions,
+	BackLink,
+	EmptyState,
+	ErrorBox,
+	Form,
+	Header,
+	PageContainer,
+	Subtitle,
+	SuccessBox,
+	Title,
 } from "./page.styles";
 
+function toDateInput(value?: string | null) {
+	if (!value) {
+		return "";
+	}
+
+	return new Date(value).toISOString().slice(0, 10);
+}
+
+function fromDateInput(value: string) {
+	if (!value) {
+		return null;
+	}
+
+	return new Date(`${value}T00:00:00.000Z`).toISOString();
+}
+
 export default function EditarClientePage() {
-  const { isCheckingAuth } = useRequireSuperAdmin();
-  const params = useParams<{ id: string }>();
-  const router = useRouter();
+	const { isCheckingAuth } = useRequireSuperAdmin();
+	const params = useParams<{ id: string }>();
+	const router = useRouter();
 
-  const clienteId = params.id;
+	const clienteId = params.id;
 
-  const [nome, setNome] = useState("");
-  const [slug, setSlug] = useState("");
-  const [status, setStatus] = useState<ClienteStatus>("ATIVO");
-  const [workerUrl, setWorkerUrl] = useState("");
-  const [intervaloSegundos, setIntervaloSegundos] = useState(30);
-  const [limiteDiario, setLimiteDiario] = useState(300);
+	const [planos, setPlanos] = useState<PlanoResumo[]>([]);
+	const [planoId, setPlanoId] = useState("");
 
-  const [isLoading, setIsLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
-  const [erro, setErro] = useState<string | null>(null);
-  const [sucesso, setSucesso] = useState<string | null>(null);
+	const [nome, setNome] = useState("");
+	const [slug, setSlug] = useState("");
+	const [status, setStatus] = useState<ClienteStatus>("ATIVO");
+	const [workerUrl, setWorkerUrl] = useState("");
+	const [intervaloSegundos, setIntervaloSegundos] = useState(60);
 
-  async function carregarCliente() {
-    try {
-      setErro(null);
+	const [limiteMensalConsultas, setLimiteMensalConsultas] = useState(300);
+	const [pagamentoStatus, setPagamentoStatus] =
+		useState<PagamentoStatus>("PENDENTE");
+	const [pagamentoVenceEm, setPagamentoVenceEm] = useState("");
 
-      const data = await buscarCliente(clienteId);
+	const [isLoading, setIsLoading] = useState(true);
+	const [isSaving, setIsSaving] = useState(false);
+	const [erro, setErro] = useState<string | null>(null);
+	const [sucesso, setSucesso] = useState<string | null>(null);
 
-      setNome(data.cliente.nome);
-      setSlug(data.cliente.slug);
-      setStatus(data.cliente.status);
-      setWorkerUrl(data.cliente.workerUrl ?? "");
-      setIntervaloSegundos(data.cliente.intervaloSegundos);
-      setLimiteDiario(data.cliente.limiteDiario);
-    } catch (error) {
-      setErro(
-        error instanceof Error
-          ? error.message
-          : "Erro desconhecido ao carregar cliente"
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  }
+	async function carregarPlanos() {
+		const data = await listarPlanos();
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+		setPlanos(data.planos);
+	}
 
-    setErro(null);
-    setSucesso(null);
-    setIsSaving(true);
+	async function carregarCliente() {
+		try {
+			setErro(null);
 
-    try {
-      await atualizarCliente(clienteId, {
-        nome,
-        slug,
-        status,
-        workerUrl: workerUrl.trim() || null,
-        intervaloSegundos,
-        limiteDiario,
-      });
+			const data = await buscarCliente(clienteId);
 
-      setSucesso("Cliente atualizado com sucesso.");
-    } catch (error) {
-      setErro(
-        error instanceof Error
-          ? error.message
-          : "Erro desconhecido ao atualizar cliente"
-      );
-    } finally {
-      setIsSaving(false);
-    }
-  }
+			setNome(data.cliente.nome);
+			setSlug(data.cliente.slug);
+			setStatus(data.cliente.status);
+			setWorkerUrl(data.cliente.workerUrl ?? "");
+			setPlanoId(data.cliente.planoId ?? "");
+		} catch (error) {
+			setErro(
+				error instanceof Error
+					? error.message
+					: "Erro desconhecido ao carregar cliente"
+			);
+		} finally {
+			setIsLoading(false);
+		}
+	}
 
-  useEffect(() => {
-    if (!isCheckingAuth) {
-      carregarCliente();
-    }
-  }, [isCheckingAuth]);
+	async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+		event.preventDefault();
 
-  if (isCheckingAuth) {
-    return null;
-  }
+		setErro(null);
+		setSucesso(null);
+		setIsSaving(true);
 
-  return (
-    <>
-      <AppHeader />
+		try {
+			await atualizarCliente(clienteId, {
+				nome,
+				slug,
+				status,
+				workerUrl: workerUrl.trim() || null,
+			});
 
-      <PageContainer>
-        <BackLink href="/clientes">← Voltar para clientes</BackLink>
+			setSucesso("Cliente atualizado com sucesso.");
+		} catch (error) {
+			setErro(
+				error instanceof Error
+					? error.message
+					: "Erro desconhecido ao atualizar cliente"
+			);
+		} finally {
+			setIsSaving(false);
+		}
+	}
 
-        <Header>
-          <Title>Editar cliente</Title>
-          <Subtitle>
-            Atualize os dados, limites e configurações operacionais do cliente.
-          </Subtitle>
-        </Header>
+	useEffect(() => {
+		if (!isCheckingAuth) {
+			carregarPlanos();
+			carregarCliente();
+		}
+	}, [isCheckingAuth]);
 
-        {isLoading && <EmptyState>Carregando cliente...</EmptyState>}
+	if (isCheckingAuth) {
+		return null;
+	}
 
-        {!isLoading && (
-          <Card>
-            <Form onSubmit={handleSubmit}>
-              <Input
-                label="Nome"
-                value={nome}
-                onChange={event => setNome(event.target.value)}
-                required
-              />
+	return (
+		<>
+			<AppHeader />
 
-              <Input
-                label="Slug"
-                value={slug}
-                onChange={event => setSlug(event.target.value)}
-                required
-              />
+			<PageContainer>
+				<BackLink href="/clientes">← Voltar para clientes</BackLink>
 
-              <Select
-                label="Status"
-                value={status}
-                onChange={event =>
-                  setStatus(event.target.value as ClienteStatus)
-                }
-              >
-                <option value="ATIVO">ATIVO</option>
-                <option value="INATIVO">INATIVO</option>
-                <option value="SUSPENSO">SUSPENSO</option>
-              </Select>
+				<Header>
+					<Title>Editar cliente</Title>
+					<Subtitle>
+						Configure plano, pagamento, intervalo de processamento e status do
+						cliente.
+					</Subtitle>
+				</Header>
 
-              <Input
-                label="Worker URL"
-                value={workerUrl}
-                onChange={event => setWorkerUrl(event.target.value)}
-                placeholder="Opcional"
-              />
+				{isLoading && <EmptyState>Carregando cliente...</EmptyState>}
 
-              <Input
-                label="Intervalo em segundos"
-                type="number"
-                min={5}
-                max={300}
-                value={intervaloSegundos}
-                onChange={event =>
-                  setIntervaloSegundos(Number(event.target.value))
-                }
-                required
-              />
+				{!isLoading && (
+					<Card>
+						<Form onSubmit={handleSubmit}>
+							<Input
+								label="Nome"
+								value={nome}
+								onChange={(event) => setNome(event.target.value)}
+								required
+							/>
 
-              <Input
-                label="Limite diário"
-                type="number"
-                min={1}
-                value={limiteDiario}
-                onChange={event => setLimiteDiario(Number(event.target.value))}
-                required
-              />
+							<Input
+								label="Slug"
+								value={slug}
+								onChange={(event) => setSlug(event.target.value)}
+								required
+							/>
 
-              {erro && <ErrorBox>{erro}</ErrorBox>}
-              {sucesso && <SuccessBox>{sucesso}</SuccessBox>}
+							<Select
+								label="Status do cliente"
+								value={status}
+								onChange={(event) =>
+									setStatus(event.target.value as ClienteStatus)
+								}
+							>
+								<option value="ATIVO">ATIVO</option>
+								<option value="INATIVO">INATIVO</option>
+								<option value="SUSPENSO">SUSPENSO</option>
+							</Select>
 
-              <Actions>
-                <Button type="submit" disabled={isSaving}>
-                  {isSaving ? "Salvando..." : "Salvar alterações"}
-                </Button>
+							<Select
+								label="Plano contratado"
+								value={planoId}
+								onChange={(event) => setPlanoId(event.target.value)}
+								required
+							>
+								{planos.map((plano) => (
+									<option key={plano.id} value={plano.id}>
+										{plano.nome} — {plano.limiteMensalConsultas} consultas —{" "}
+										{plano.intervaloSegundos}s — {plano.status}
+									</option>
+								))}
+							</Select>
 
-                <Button
-                  type="button"
-                  onClick={() => router.push(`/clientes/${clienteId}/usuarios`)}
-                >
-                  Gerenciar usuários
-                </Button>
-              </Actions>
-            </Form>
-          </Card>
-        )}
-      </PageContainer>
-    </>
-  );
+							<Input
+								label="Vencimento do pagamento"
+								type="date"
+								value={pagamentoVenceEm}
+								onChange={(event) => setPagamentoVenceEm(event.target.value)}
+							/>
+
+							<Input
+								label="Intervalo entre consultas em segundos"
+								type="number"
+								min={40}
+								max={300}
+								value={intervaloSegundos}
+								onChange={(event) =>
+									setIntervaloSegundos(Number(event.target.value))
+								}
+								required
+							/>
+
+							<Input
+								label="Worker URL"
+								value={workerUrl}
+								onChange={(event) => setWorkerUrl(event.target.value)}
+								placeholder="Opcional"
+							/>
+
+							{erro && <ErrorBox>{erro}</ErrorBox>}
+							{sucesso && <SuccessBox>{sucesso}</SuccessBox>}
+
+							<Actions>
+								<Button type="submit" disabled={isSaving}>
+									{isSaving ? "Salvando..." : "Salvar alterações"}
+								</Button>
+
+								<Button
+									type="button"
+									onClick={() => router.push(`/clientes/${clienteId}/usuarios`)}
+								>
+									Gerenciar usuários
+								</Button>
+							</Actions>
+						</Form>
+					</Card>
+				)}
+			</PageContainer>
+		</>
+	);
 }

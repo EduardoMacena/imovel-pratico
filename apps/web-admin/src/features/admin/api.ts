@@ -16,6 +16,12 @@ import type {
 	ListarClientesResponse,
 	ListarTarefasDoClienteResponse,
 	ListarUsuariosResponse,
+	AtualizarPlanoRequest,
+	AtualizarPlanoResponse,
+	BuscarPlanoResponse,
+	CriarPlanoRequest,
+	CriarPlanoResponse,
+	ListarPlanosResponse,
 } from "./types";
 
 export function listarClientes() {
@@ -106,15 +112,37 @@ export function reprocessarTarefaAdmin(tarefaId: string) {
 }
 
 export function exportarResultadosTarefaAdmin(tarefaId: string) {
-  return apiDownload(
-    `/admin/tarefas/${tarefaId}/exportar`,
-    `resultados-admin-tarefa-${tarefaId}.csv`
-  );
+	return apiDownload(
+		`/admin/tarefas/${tarefaId}/exportar`,
+		`resultados-admin-tarefa-${tarefaId}.csv`
+	);
 }
 
 export function exportarResultadosTarefaAdminExcel(tarefaId: string) {
-  return apiDownload(
-    `/admin/tarefas/${tarefaId}/exportar-excel`,
-    `resultados-admin-tarefa-${tarefaId}.xlsx`
-  );
+	return apiDownload(
+		`/admin/tarefas/${tarefaId}/exportar-excel`,
+		`resultados-admin-tarefa-${tarefaId}.xlsx`
+	);
+}
+
+export function listarPlanos() {
+  return apiRequest<ListarPlanosResponse>("/admin/planos");
+}
+
+export function buscarPlano(planoId: string) {
+  return apiRequest<BuscarPlanoResponse>(`/admin/planos/${planoId}`);
+}
+
+export function criarPlano(data: CriarPlanoRequest) {
+  return apiRequest<CriarPlanoResponse>("/admin/planos", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export function atualizarPlano(planoId: string, data: AtualizarPlanoRequest) {
+  return apiRequest<AtualizarPlanoResponse>(`/admin/planos/${planoId}`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
 }

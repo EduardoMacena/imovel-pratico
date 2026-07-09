@@ -2,6 +2,8 @@ export type ClienteStatus = "ATIVO" | "INATIVO" | "SUSPENSO";
 
 export type UsuarioRole = "SUPER_ADMIN" | "ADMIN" | "GERENTE" | "OPERADOR";
 
+export type PagamentoStatus = "PAGO" | "PENDENTE" | "VENCIDO" | "CANCELADO";
+
 export type ClienteResumo = {
 	id: string;
 	nome: string;
@@ -12,6 +14,8 @@ export type ClienteResumo = {
 	limiteDiario: number;
 	totalUsuarios: number;
 	totalTarefas: number;
+	planoId: string | null;
+	plano: PlanoResumo | null;
 	createdAt: string;
 	updatedAt: string;
 };
@@ -26,6 +30,7 @@ export type CriarClienteRequest = {
 	workerUrl?: string | null;
 	intervaloSegundos: number;
 	limiteDiario: number;
+  planoId: string;
 };
 
 export type CriarClienteResponse = {
@@ -103,6 +108,7 @@ export type AtualizarClienteRequest = {
 	workerUrl?: string | null;
 	intervaloSegundos?: number;
 	limiteDiario?: number;
+  planoId?: string;
 };
 
 export type AtualizarClienteResponse = {
@@ -283,4 +289,47 @@ export type DadosContato = {
 	rendaEstimada?: string | null;
 	dataNascimento?: string | null;
 	rendaFaixaSalarial?: string | null;
+};
+
+export type PlanoStatus = "ATIVO" | "INATIVO";
+
+export type PlanoResumo = {
+	id: string;
+	nome: string;
+	slug: string;
+	descricao: string | null;
+	limiteMensalConsultas: number;
+	intervaloSegundos: number;
+	precoCentavos: number;
+	status: PlanoStatus;
+	createdAt: string;
+	updatedAt: string;
+};
+
+export type ListarPlanosResponse = {
+	planos: PlanoResumo[];
+};
+
+export type BuscarPlanoResponse = {
+	plano: PlanoResumo;
+};
+
+export type CriarPlanoRequest = {
+	nome: string;
+	slug?: string;
+	descricao?: string | null;
+	limiteMensalConsultas: number;
+	intervaloSegundos: number;
+	precoCentavos: number;
+	status: PlanoStatus;
+};
+
+export type CriarPlanoResponse = {
+	plano: PlanoResumo;
+};
+
+export type AtualizarPlanoRequest = Partial<CriarPlanoRequest>;
+
+export type AtualizarPlanoResponse = {
+	plano: PlanoResumo;
 };

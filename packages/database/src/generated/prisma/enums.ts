@@ -55,3 +55,21 @@ export const CacheStatus = {
 } as const
 
 export type CacheStatus = (typeof CacheStatus)[keyof typeof CacheStatus]
+
+
+export const PagamentoStatus = {
+  PAGO: 'PAGO',
+  PENDENTE: 'PENDENTE',
+  VENCIDO: 'VENCIDO',
+  CANCELADO: 'CANCELADO'
+} as const
+
+export type PagamentoStatus = (typeof PagamentoStatus)[keyof typeof PagamentoStatus]
+
+
+export const PlanoStatus = {
+  ATIVO: 'ATIVO',
+  INATIVO: 'INATIVO'
+} as const
+
+export type PlanoStatus = (typeof PlanoStatus)[keyof typeof PlanoStatus]

@@ -44,15 +44,55 @@ enum CacheStatus {
   ERROR
 }
 
+enum PagamentoStatus {
+  PAGO
+  PENDENTE
+  VENCIDO
+  CANCELADO
+}
+
+enum PlanoStatus {
+  ATIVO
+  INATIVO
+}
+
+model Plano {
+  id   String @id @default(uuid())
+  nome String
+  slug String @unique
+
+  descricao String?
+
+  limiteMensalConsultas Int
+  intervaloSegundos     Int
+  precoCentavos         Int
+
+  status PlanoStatus @default(ATIVO)
+
+  clientes Cliente[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("planos")
+}
+
 model Cliente {
   id     String        @id @default(uuid())
   nome   String
   slug   String        @unique
   status ClienteStatus @default(ATIVO)
 
+  planoId String?
+  plano   Plano? @relation(fields: [planoId], references: [id])
+
   workerUrl         String?
-  intervaloSegundos Int     @default(30)
-  limiteDiario      Int     @default(300)
+  intervaloSegundos Int @default(60)
+
+  limiteDiario            Int @default(300)
+  limiteMensalConsultas   Int @default(300)
+  pagamentoStatus         PagamentoStatus @default(PENDENTE)
+  pagamentoVenceEm        DateTime?
 
   usuarios      Usuario[]
   tarefas       Tarefa[]
@@ -61,6 +101,7 @@ model Cliente {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([planoId])
   @@map("clientes")
 }
 

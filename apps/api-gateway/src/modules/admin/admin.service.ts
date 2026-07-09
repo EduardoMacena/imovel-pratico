@@ -6,8 +6,10 @@ import {
 } from "@imovel-pratico/queue";
 import type {
 	AtualizarClienteInput,
+	AtualizarPlanoInput,
 	AtualizarUsuarioInput,
 	CriarClienteInput,
+	CriarPlanoInput,
 	CriarUsuarioInput,
 } from "./admin.schemas.js";
 import { buildCsv } from "../../utils/csv.js";
@@ -60,6 +62,7 @@ export async function listarClientes() {
 			createdAt: "desc",
 		},
 		include: {
+			plano: true,
 			_count: {
 				select: {
 					usuarios: true,
@@ -79,6 +82,17 @@ export async function listarClientes() {
 		limiteDiario: cliente.limiteDiario,
 		totalUsuarios: cliente._count.usuarios,
 		totalTarefas: cliente._count.tarefas,
+		plano: cliente.plano
+			? {
+					id: cliente.plano.id,
+					nome: cliente.plano.nome,
+					slug: cliente.plano.slug,
+					limiteMensalConsultas: cliente.plano.limiteMensalConsultas,
+					intervaloSegundos: cliente.plano.intervaloSegundos,
+					precoCentavos: cliente.plano.precoCentavos,
+					status: cliente.plano.status,
+				}
+			: null,
 		createdAt: cliente.createdAt,
 		updatedAt: cliente.updatedAt,
 	}));
@@ -92,8 +106,7 @@ export async function criarCliente(data: CriarClienteInput) {
 			nome: data.nome,
 			slug,
 			workerUrl: data.workerUrl ?? null,
-			intervaloSegundos: data.intervaloSegundos,
-			limiteDiario: data.limiteDiario,
+			planoId: data.planoId,
 		},
 	});
 
@@ -137,8 +150,7 @@ export async function atualizarCliente(
 			slug,
 			status: data.status,
 			workerUrl: data.workerUrl,
-			intervaloSegundos: data.intervaloSegundos,
-			limiteDiario: data.limiteDiario,
+			planoId: data.planoId,
 		},
 	});
 
@@ -306,6 +318,7 @@ export async function buscarClientePorId(id: string) {
 			id,
 		},
 		include: {
+			plano: true,
 			_count: {
 				select: {
 					usuarios: true,
@@ -329,6 +342,8 @@ export async function buscarClientePorId(id: string) {
 		limiteDiario: cliente.limiteDiario,
 		totalUsuarios: cliente._count.usuarios,
 		totalTarefas: cliente._count.tarefas,
+		planoId: cliente.planoId,
+		plano: cliente.plano,
 		createdAt: cliente.createdAt,
 		updatedAt: cliente.updatedAt,
 	};
@@ -825,4 +840,102 @@ export async function exportarResultadosTarefaAdminExcel(id: string) {
 		filename: `resultados-admin-${tarefa.cliente.slug}-${tarefa.id}.xlsx`,
 		buffer,
 	};
+}
+
+export async function listarPlanos() {
+	return prisma.plano.findMany({
+		orderBy: {
+			limiteMensalConsultas: "asc",
+		},
+	});
+}
+
+export async function buscarPlanoPorId(id: string) {
+	return prisma.plano.findUnique({
+		where: {
+			id,
+		},
+	});
+}
+
+export async function criarPlano(data: CriarPlanoInput) {
+	const slug = await gerarSlugUnicoPlano(data.nome, data.slug);
+
+	return prisma.plano.create({
+		data: {
+			nome: data.nome,
+			slug,
+			descricao: data.descricao ?? null,
+			limiteMensalConsultas: data.limiteMensalConsultas,
+			intervaloSegundos: data.intervaloSegundos,
+			precoCentavos: data.precoCentavos,
+			status: data.status,
+		},
+	});
+}
+
+export async function atualizarPlano(id: string, data: AtualizarPlanoInput) {
+	let slug = data.slug;
+
+	if (slug) {
+		const slugNormalizado = gerarSlugBase(slug);
+
+		const existente = await prisma.plano.findFirst({
+			where: {
+				slug: slugNormalizado,
+				NOT: {
+					id,
+				},
+			},
+			select: {
+				id: true,
+			},
+		});
+
+		if (existente) {
+			throw new Error("Já existe um plano com esse slug");
+		}
+
+		slug = slugNormalizado;
+	}
+
+	return prisma.plano.update({
+		where: {
+			id,
+		},
+		data: {
+			nome: data.nome,
+			slug,
+			descricao: data.descricao,
+			limiteMensalConsultas: data.limiteMensalConsultas,
+			intervaloSegundos: data.intervaloSegundos,
+			precoCentavos: data.precoCentavos,
+			status: data.status,
+		},
+	});
+}
+
+async function gerarSlugUnicoPlano(nome: string, slugInformado?: string) {
+	const base = gerarSlugBase(slugInformado || nome);
+
+	let slug = base;
+	let contador = 1;
+
+	while (true) {
+		const existente = await prisma.plano.findUnique({
+			where: {
+				slug,
+			},
+			select: {
+				id: true,
+			},
+		});
+
+		if (!existente) {
+			return slug;
+		}
+
+		contador += 1;
+		slug = `${base}-${contador}`;
+	}
 }

@@ -3,16 +3,28 @@ import { adicionarBuscaProprietariosNaFila } from "@imovel-pratico/queue";
 import type { BuscarProprietariosInput } from "./imovel.schemas.js";
 import { buildCsv } from "../../utils/csv.js";
 import { buildExcelBuffer } from "../../utils/excel.js";
+import { validarClientePodeCriarBusca } from "../assinatura/assinatura.service.js";
+
+function getMesAnoInicioAtual() {
+	const now = new Date();
+
+	return `01/${now.getFullYear()}`;
+}
+
+function getMesAnoFinalAtual() {
+	const now = new Date();
+	const mes = String(now.getMonth() + 1).padStart(2, "0");
+
+	return `${mes}/${now.getFullYear()}`;
+}
 
 export async function criarTarefaBuscaProprietarios(
 	clienteId: string,
 	data: BuscarProprietariosInput
 ) {
-	const cliente = await prisma.cliente.findUnique({
-		where: {
-			id: clienteId,
-		},
-	});
+	const { cliente } = await validarClientePodeCriarBusca(clienteId);
+
+  const intervaloSegundos = cliente.plano?.intervaloSegundos ?? 60;
 
 	if (!cliente) {
 		throw new Error("Cliente não encontrado");
@@ -24,9 +36,9 @@ export async function criarTarefaBuscaProprietarios(
 			status: "PENDING",
 			logradouro: data.logradouro,
 			numero: data.numero,
-			mesAnoInicio: data.mesAnoInicio,
-			mesAnoFinal: data.mesAnoFinal,
-			intervaloSegundos: data.intervaloSegundos,
+			mesAnoInicio: getMesAnoInicioAtual(),
+			mesAnoFinal: getMesAnoFinalAtual(),
+			intervaloSegundos,
 			forceRefresh: data.forceRefresh,
 		},
 	});

@@ -8,6 +8,7 @@ import {
 	salvarImovelCache,
 } from "./cache/imovel-cache.service.js";
 import { buscarContatoPorCpf } from "./contatos/buscarContatoPorCpf.js";
+import { prisma } from "@imovel-pratico/database";
 
 type StatusResultado = "success" | "error";
 
@@ -33,6 +34,7 @@ type BuscarProprietariosParams = {
 	mesAnoFinal: string;
 	intervaloSegundos: number;
 	forceRefresh?: boolean;
+	clienteId: string;
 	onProgress?: (data: {
 		total: number;
 		current: number;
@@ -52,6 +54,7 @@ async function buscarProprietarioDoImovel(params: {
 	mesAnoInicio: string;
 	mesAnoFinal: string;
 	forceRefresh?: boolean;
+	clienteId: string;
 }): Promise<ResultadoBuscaProprietario> {
 	const {
 		imovel,
@@ -60,9 +63,42 @@ async function buscarProprietarioDoImovel(params: {
 		mesAnoInicio,
 		mesAnoFinal,
 		forceRefresh,
+		clienteId,
 	} = params;
 
 	try {
+		const inicioMes = new Date();
+		inicioMes.setDate(1);
+		inicioMes.setHours(0, 0, 0, 0);
+
+		const fimMes = new Date(inicioMes);
+		fimMes.setMonth(fimMes.getMonth() + 1);
+
+		const cliente = await prisma.cliente.findUnique({
+			where: {
+				id: clienteId,
+			},
+			select: {
+				limiteMensalConsultas: true,
+			},
+		});
+
+		const consultasUsadas = await prisma.tarefaResultado.count({
+			where: {
+				tarefa: {
+					clienteId: clienteId,
+				},
+				createdAt: {
+					gte: inicioMes,
+					lt: fimMes,
+				},
+			},
+		});
+
+		if (cliente && consultasUsadas >= cliente.limiteMensalConsultas) {
+			throw new Error("LIMITE_MENSAL_ATINGIDO");
+		}
+
 		const cache = await buscarImovelCacheValido({
 			indiceCadastral: imovel.indiceCadastral,
 			forceRefresh,
@@ -167,6 +203,19 @@ async function buscarProprietarioDoImovel(params: {
 			fromCache: false,
 		};
 	} catch (error) {
+		if (error instanceof Error && error.message === "LIMITE_MENSAL_ATINGIDO") {
+			return {
+				logradouro,
+				numero,
+				imovel: imovel.imovel,
+				indiceCadastral: imovel.indiceCadastral,
+				proprietario: null,
+				status: "error",
+				fromCache: false,
+				error: "Limite mensal de consultas atingido durante o processamento",
+			};
+		}
+
 		return {
 			logradouro,
 			numero,
@@ -188,6 +237,7 @@ export async function buscarProprietariosPorEndereco({
 	mesAnoFinal,
 	intervaloSegundos,
 	forceRefresh = false,
+	clienteId,
 	onProgress,
 }: BuscarProprietariosParams) {
 	const imoveis = await buscarIndiceCadastral(logradouro, numero);
@@ -211,6 +261,7 @@ export async function buscarProprietariosPorEndereco({
 			mesAnoInicio,
 			mesAnoFinal,
 			forceRefresh,
+			clienteId,
 		});
 
 		resultados.push(item);

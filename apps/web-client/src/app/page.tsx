@@ -39,9 +39,6 @@ export default function HomePage() {
 		"RUA DESEMBARGADOR JORGE FONTANA"
 	);
 	const [numero, setNumero] = useState("200");
-	const [mesAnoInicio, setMesAnoInicio] = useState("01/2026");
-	const [mesAnoFinal, setMesAnoFinal] = useState("06/2026");
-	const [intervaloSegundos, setIntervaloSegundos] = useState(30);
 
 	const [jobId, setJobId] = useState<string | null>(null);
 	const [progresso, setProgresso] = useState<ProgressoTarefaResponse | null>(
@@ -70,9 +67,6 @@ export default function HomePage() {
 			const data = await criarTarefaBusca({
 				logradouro,
 				numero,
-				mesAnoInicio,
-				mesAnoFinal,
-				intervaloSegundos,
 			});
 
 			setJobId(data.jobId);
@@ -168,34 +162,6 @@ export default function HomePage() {
 								value={numero}
 								onChange={(event) => setNumero(event.target.value)}
 								placeholder="Ex: 200"
-								required
-							/>
-
-							<Input
-								label="Mês/Ano inicial"
-								value={mesAnoInicio}
-								onChange={(event) => setMesAnoInicio(event.target.value)}
-								placeholder="Ex: 01/2026"
-								required
-							/>
-
-							<Input
-								label="Mês/Ano final"
-								value={mesAnoFinal}
-								onChange={(event) => setMesAnoFinal(event.target.value)}
-								placeholder="Ex: 06/2026"
-								required
-							/>
-
-							<Input
-								label="Intervalo entre consultas em segundos"
-								type="number"
-								min={5}
-								max={300}
-								value={intervaloSegundos}
-								onChange={(event) =>
-									setIntervaloSegundos(Number(event.target.value))
-								}
 								required
 							/>
 						</FormGrid>

@@ -29,11 +29,13 @@ export type AggregateCliente = {
 export type ClienteAvgAggregateOutputType = {
   intervaloSegundos: number | null
   limiteDiario: number | null
+  limiteMensalConsultas: number | null
 }
 
 export type ClienteSumAggregateOutputType = {
   intervaloSegundos: number | null
   limiteDiario: number | null
+  limiteMensalConsultas: number | null
 }
 
 export type ClienteMinAggregateOutputType = {
@@ -41,9 +43,13 @@ export type ClienteMinAggregateOutputType = {
   nome: string | null
   slug: string | null
   status: $Enums.ClienteStatus | null
+  planoId: string | null
   workerUrl: string | null
   intervaloSegundos: number | null
   limiteDiario: number | null
+  limiteMensalConsultas: number | null
+  pagamentoStatus: $Enums.PagamentoStatus | null
+  pagamentoVenceEm: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -53,9 +59,13 @@ export type ClienteMaxAggregateOutputType = {
   nome: string | null
   slug: string | null
   status: $Enums.ClienteStatus | null
+  planoId: string | null
   workerUrl: string | null
   intervaloSegundos: number | null
   limiteDiario: number | null
+  limiteMensalConsultas: number | null
+  pagamentoStatus: $Enums.PagamentoStatus | null
+  pagamentoVenceEm: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -65,9 +75,13 @@ export type ClienteCountAggregateOutputType = {
   nome: number
   slug: number
   status: number
+  planoId: number
   workerUrl: number
   intervaloSegundos: number
   limiteDiario: number
+  limiteMensalConsultas: number
+  pagamentoStatus: number
+  pagamentoVenceEm: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -77,11 +91,13 @@ export type ClienteCountAggregateOutputType = {
 export type ClienteAvgAggregateInputType = {
   intervaloSegundos?: true
   limiteDiario?: true
+  limiteMensalConsultas?: true
 }
 
 export type ClienteSumAggregateInputType = {
   intervaloSegundos?: true
   limiteDiario?: true
+  limiteMensalConsultas?: true
 }
 
 export type ClienteMinAggregateInputType = {
@@ -89,9 +105,13 @@ export type ClienteMinAggregateInputType = {
   nome?: true
   slug?: true
   status?: true
+  planoId?: true
   workerUrl?: true
   intervaloSegundos?: true
   limiteDiario?: true
+  limiteMensalConsultas?: true
+  pagamentoStatus?: true
+  pagamentoVenceEm?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -101,9 +121,13 @@ export type ClienteMaxAggregateInputType = {
   nome?: true
   slug?: true
   status?: true
+  planoId?: true
   workerUrl?: true
   intervaloSegundos?: true
   limiteDiario?: true
+  limiteMensalConsultas?: true
+  pagamentoStatus?: true
+  pagamentoVenceEm?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -113,9 +137,13 @@ export type ClienteCountAggregateInputType = {
   nome?: true
   slug?: true
   status?: true
+  planoId?: true
   workerUrl?: true
   intervaloSegundos?: true
   limiteDiario?: true
+  limiteMensalConsultas?: true
+  pagamentoStatus?: true
+  pagamentoVenceEm?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -212,9 +240,13 @@ export type ClienteGroupByOutputType = {
   nome: string
   slug: string
   status: $Enums.ClienteStatus
+  planoId: string | null
   workerUrl: string | null
   intervaloSegundos: number
   limiteDiario: number
+  limiteMensalConsultas: number
+  pagamentoStatus: $Enums.PagamentoStatus
+  pagamentoVenceEm: Date | null
   createdAt: Date
   updatedAt: Date
   _count: ClienteCountAggregateOutputType | null
@@ -247,11 +279,16 @@ export type ClienteWhereInput = {
   nome?: Prisma.StringFilter<"Cliente"> | string
   slug?: Prisma.StringFilter<"Cliente"> | string
   status?: Prisma.EnumClienteStatusFilter<"Cliente"> | $Enums.ClienteStatus
+  planoId?: Prisma.StringNullableFilter<"Cliente"> | string | null
   workerUrl?: Prisma.StringNullableFilter<"Cliente"> | string | null
   intervaloSegundos?: Prisma.IntFilter<"Cliente"> | number
   limiteDiario?: Prisma.IntFilter<"Cliente"> | number
+  limiteMensalConsultas?: Prisma.IntFilter<"Cliente"> | number
+  pagamentoStatus?: Prisma.EnumPagamentoStatusFilter<"Cliente"> | $Enums.PagamentoStatus
+  pagamentoVenceEm?: Prisma.DateTimeNullableFilter<"Cliente"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Cliente"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Cliente"> | Date | string
+  plano?: Prisma.XOR<Prisma.PlanoNullableScalarRelationFilter, Prisma.PlanoWhereInput> | null
   usuarios?: Prisma.UsuarioListRelationFilter
   tarefas?: Prisma.TarefaListRelationFilter
   consultasLogs?: Prisma.ConsultaLogListRelationFilter
@@ -262,11 +299,16 @@ export type ClienteOrderByWithRelationInput = {
   nome?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  planoId?: Prisma.SortOrderInput | Prisma.SortOrder
   workerUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   intervaloSegundos?: Prisma.SortOrder
   limiteDiario?: Prisma.SortOrder
+  limiteMensalConsultas?: Prisma.SortOrder
+  pagamentoStatus?: Prisma.SortOrder
+  pagamentoVenceEm?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  plano?: Prisma.PlanoOrderByWithRelationInput
   usuarios?: Prisma.UsuarioOrderByRelationAggregateInput
   tarefas?: Prisma.TarefaOrderByRelationAggregateInput
   consultasLogs?: Prisma.ConsultaLogOrderByRelationAggregateInput
@@ -280,11 +322,16 @@ export type ClienteWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ClienteWhereInput | Prisma.ClienteWhereInput[]
   nome?: Prisma.StringFilter<"Cliente"> | string
   status?: Prisma.EnumClienteStatusFilter<"Cliente"> | $Enums.ClienteStatus
+  planoId?: Prisma.StringNullableFilter<"Cliente"> | string | null
   workerUrl?: Prisma.StringNullableFilter<"Cliente"> | string | null
   intervaloSegundos?: Prisma.IntFilter<"Cliente"> | number
   limiteDiario?: Prisma.IntFilter<"Cliente"> | number
+  limiteMensalConsultas?: Prisma.IntFilter<"Cliente"> | number
+  pagamentoStatus?: Prisma.EnumPagamentoStatusFilter<"Cliente"> | $Enums.PagamentoStatus
+  pagamentoVenceEm?: Prisma.DateTimeNullableFilter<"Cliente"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Cliente"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Cliente"> | Date | string
+  plano?: Prisma.XOR<Prisma.PlanoNullableScalarRelationFilter, Prisma.PlanoWhereInput> | null
   usuarios?: Prisma.UsuarioListRelationFilter
   tarefas?: Prisma.TarefaListRelationFilter
   consultasLogs?: Prisma.ConsultaLogListRelationFilter
@@ -295,9 +342,13 @@ export type ClienteOrderByWithAggregationInput = {
   nome?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  planoId?: Prisma.SortOrderInput | Prisma.SortOrder
   workerUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   intervaloSegundos?: Prisma.SortOrder
   limiteDiario?: Prisma.SortOrder
+  limiteMensalConsultas?: Prisma.SortOrder
+  pagamentoStatus?: Prisma.SortOrder
+  pagamentoVenceEm?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ClienteCountOrderByAggregateInput
@@ -315,9 +366,13 @@ export type ClienteScalarWhereWithAggregatesInput = {
   nome?: Prisma.StringWithAggregatesFilter<"Cliente"> | string
   slug?: Prisma.StringWithAggregatesFilter<"Cliente"> | string
   status?: Prisma.EnumClienteStatusWithAggregatesFilter<"Cliente"> | $Enums.ClienteStatus
+  planoId?: Prisma.StringNullableWithAggregatesFilter<"Cliente"> | string | null
   workerUrl?: Prisma.StringNullableWithAggregatesFilter<"Cliente"> | string | null
   intervaloSegundos?: Prisma.IntWithAggregatesFilter<"Cliente"> | number
   limiteDiario?: Prisma.IntWithAggregatesFilter<"Cliente"> | number
+  limiteMensalConsultas?: Prisma.IntWithAggregatesFilter<"Cliente"> | number
+  pagamentoStatus?: Prisma.EnumPagamentoStatusWithAggregatesFilter<"Cliente"> | $Enums.PagamentoStatus
+  pagamentoVenceEm?: Prisma.DateTimeNullableWithAggregatesFilter<"Cliente"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Cliente"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Cliente"> | Date | string
 }
@@ -330,8 +385,12 @@ export type ClienteCreateInput = {
   workerUrl?: string | null
   intervaloSegundos?: number
   limiteDiario?: number
+  limiteMensalConsultas?: number
+  pagamentoStatus?: $Enums.PagamentoStatus
+  pagamentoVenceEm?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  plano?: Prisma.PlanoCreateNestedOneWithoutClientesInput
   usuarios?: Prisma.UsuarioCreateNestedManyWithoutClienteInput
   tarefas?: Prisma.TarefaCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogCreateNestedManyWithoutClienteInput
@@ -342,9 +401,13 @@ export type ClienteUncheckedCreateInput = {
   nome: string
   slug: string
   status?: $Enums.ClienteStatus
+  planoId?: string | null
   workerUrl?: string | null
   intervaloSegundos?: number
   limiteDiario?: number
+  limiteMensalConsultas?: number
+  pagamentoStatus?: $Enums.PagamentoStatus
+  pagamentoVenceEm?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   usuarios?: Prisma.UsuarioUncheckedCreateNestedManyWithoutClienteInput
@@ -360,8 +423,12 @@ export type ClienteUpdateInput = {
   workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
   limiteDiario?: Prisma.IntFieldUpdateOperationsInput | number
+  limiteMensalConsultas?: Prisma.IntFieldUpdateOperationsInput | number
+  pagamentoStatus?: Prisma.EnumPagamentoStatusFieldUpdateOperationsInput | $Enums.PagamentoStatus
+  pagamentoVenceEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  plano?: Prisma.PlanoUpdateOneWithoutClientesNestedInput
   usuarios?: Prisma.UsuarioUpdateManyWithoutClienteNestedInput
   tarefas?: Prisma.TarefaUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUpdateManyWithoutClienteNestedInput
@@ -372,9 +439,13 @@ export type ClienteUncheckedUpdateInput = {
   nome?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumClienteStatusFieldUpdateOperationsInput | $Enums.ClienteStatus
+  planoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
   limiteDiario?: Prisma.IntFieldUpdateOperationsInput | number
+  limiteMensalConsultas?: Prisma.IntFieldUpdateOperationsInput | number
+  pagamentoStatus?: Prisma.EnumPagamentoStatusFieldUpdateOperationsInput | $Enums.PagamentoStatus
+  pagamentoVenceEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usuarios?: Prisma.UsuarioUncheckedUpdateManyWithoutClienteNestedInput
@@ -387,9 +458,13 @@ export type ClienteCreateManyInput = {
   nome: string
   slug: string
   status?: $Enums.ClienteStatus
+  planoId?: string | null
   workerUrl?: string | null
   intervaloSegundos?: number
   limiteDiario?: number
+  limiteMensalConsultas?: number
+  pagamentoStatus?: $Enums.PagamentoStatus
+  pagamentoVenceEm?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -402,6 +477,9 @@ export type ClienteUpdateManyMutationInput = {
   workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
   limiteDiario?: Prisma.IntFieldUpdateOperationsInput | number
+  limiteMensalConsultas?: Prisma.IntFieldUpdateOperationsInput | number
+  pagamentoStatus?: Prisma.EnumPagamentoStatusFieldUpdateOperationsInput | $Enums.PagamentoStatus
+  pagamentoVenceEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -411,11 +489,25 @@ export type ClienteUncheckedUpdateManyInput = {
   nome?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumClienteStatusFieldUpdateOperationsInput | $Enums.ClienteStatus
+  planoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
   limiteDiario?: Prisma.IntFieldUpdateOperationsInput | number
+  limiteMensalConsultas?: Prisma.IntFieldUpdateOperationsInput | number
+  pagamentoStatus?: Prisma.EnumPagamentoStatusFieldUpdateOperationsInput | $Enums.PagamentoStatus
+  pagamentoVenceEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ClienteListRelationFilter = {
+  every?: Prisma.ClienteWhereInput
+  some?: Prisma.ClienteWhereInput
+  none?: Prisma.ClienteWhereInput
+}
+
+export type ClienteOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type ClienteCountOrderByAggregateInput = {
@@ -423,9 +515,13 @@ export type ClienteCountOrderByAggregateInput = {
   nome?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  planoId?: Prisma.SortOrder
   workerUrl?: Prisma.SortOrder
   intervaloSegundos?: Prisma.SortOrder
   limiteDiario?: Prisma.SortOrder
+  limiteMensalConsultas?: Prisma.SortOrder
+  pagamentoStatus?: Prisma.SortOrder
+  pagamentoVenceEm?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -433,6 +529,7 @@ export type ClienteCountOrderByAggregateInput = {
 export type ClienteAvgOrderByAggregateInput = {
   intervaloSegundos?: Prisma.SortOrder
   limiteDiario?: Prisma.SortOrder
+  limiteMensalConsultas?: Prisma.SortOrder
 }
 
 export type ClienteMaxOrderByAggregateInput = {
@@ -440,9 +537,13 @@ export type ClienteMaxOrderByAggregateInput = {
   nome?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  planoId?: Prisma.SortOrder
   workerUrl?: Prisma.SortOrder
   intervaloSegundos?: Prisma.SortOrder
   limiteDiario?: Prisma.SortOrder
+  limiteMensalConsultas?: Prisma.SortOrder
+  pagamentoStatus?: Prisma.SortOrder
+  pagamentoVenceEm?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -452,9 +553,13 @@ export type ClienteMinOrderByAggregateInput = {
   nome?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  planoId?: Prisma.SortOrder
   workerUrl?: Prisma.SortOrder
   intervaloSegundos?: Prisma.SortOrder
   limiteDiario?: Prisma.SortOrder
+  limiteMensalConsultas?: Prisma.SortOrder
+  pagamentoStatus?: Prisma.SortOrder
+  pagamentoVenceEm?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -462,6 +567,7 @@ export type ClienteMinOrderByAggregateInput = {
 export type ClienteSumOrderByAggregateInput = {
   intervaloSegundos?: Prisma.SortOrder
   limiteDiario?: Prisma.SortOrder
+  limiteMensalConsultas?: Prisma.SortOrder
 }
 
 export type ClienteScalarRelationFilter = {
@@ -474,28 +580,58 @@ export type ClienteNullableScalarRelationFilter = {
   isNot?: Prisma.ClienteWhereInput | null
 }
 
-export type StringFieldUpdateOperationsInput = {
-  set?: string
+export type ClienteCreateNestedManyWithoutPlanoInput = {
+  create?: Prisma.XOR<Prisma.ClienteCreateWithoutPlanoInput, Prisma.ClienteUncheckedCreateWithoutPlanoInput> | Prisma.ClienteCreateWithoutPlanoInput[] | Prisma.ClienteUncheckedCreateWithoutPlanoInput[]
+  connectOrCreate?: Prisma.ClienteCreateOrConnectWithoutPlanoInput | Prisma.ClienteCreateOrConnectWithoutPlanoInput[]
+  createMany?: Prisma.ClienteCreateManyPlanoInputEnvelope
+  connect?: Prisma.ClienteWhereUniqueInput | Prisma.ClienteWhereUniqueInput[]
+}
+
+export type ClienteUncheckedCreateNestedManyWithoutPlanoInput = {
+  create?: Prisma.XOR<Prisma.ClienteCreateWithoutPlanoInput, Prisma.ClienteUncheckedCreateWithoutPlanoInput> | Prisma.ClienteCreateWithoutPlanoInput[] | Prisma.ClienteUncheckedCreateWithoutPlanoInput[]
+  connectOrCreate?: Prisma.ClienteCreateOrConnectWithoutPlanoInput | Prisma.ClienteCreateOrConnectWithoutPlanoInput[]
+  createMany?: Prisma.ClienteCreateManyPlanoInputEnvelope
+  connect?: Prisma.ClienteWhereUniqueInput | Prisma.ClienteWhereUniqueInput[]
+}
+
+export type ClienteUpdateManyWithoutPlanoNestedInput = {
+  create?: Prisma.XOR<Prisma.ClienteCreateWithoutPlanoInput, Prisma.ClienteUncheckedCreateWithoutPlanoInput> | Prisma.ClienteCreateWithoutPlanoInput[] | Prisma.ClienteUncheckedCreateWithoutPlanoInput[]
+  connectOrCreate?: Prisma.ClienteCreateOrConnectWithoutPlanoInput | Prisma.ClienteCreateOrConnectWithoutPlanoInput[]
+  upsert?: Prisma.ClienteUpsertWithWhereUniqueWithoutPlanoInput | Prisma.ClienteUpsertWithWhereUniqueWithoutPlanoInput[]
+  createMany?: Prisma.ClienteCreateManyPlanoInputEnvelope
+  set?: Prisma.ClienteWhereUniqueInput | Prisma.ClienteWhereUniqueInput[]
+  disconnect?: Prisma.ClienteWhereUniqueInput | Prisma.ClienteWhereUniqueInput[]
+  delete?: Prisma.ClienteWhereUniqueInput | Prisma.ClienteWhereUniqueInput[]
+  connect?: Prisma.ClienteWhereUniqueInput | Prisma.ClienteWhereUniqueInput[]
+  update?: Prisma.ClienteUpdateWithWhereUniqueWithoutPlanoInput | Prisma.ClienteUpdateWithWhereUniqueWithoutPlanoInput[]
+  updateMany?: Prisma.ClienteUpdateManyWithWhereWithoutPlanoInput | Prisma.ClienteUpdateManyWithWhereWithoutPlanoInput[]
+  deleteMany?: Prisma.ClienteScalarWhereInput | Prisma.ClienteScalarWhereInput[]
+}
+
+export type ClienteUncheckedUpdateManyWithoutPlanoNestedInput = {
+  create?: Prisma.XOR<Prisma.ClienteCreateWithoutPlanoInput, Prisma.ClienteUncheckedCreateWithoutPlanoInput> | Prisma.ClienteCreateWithoutPlanoInput[] | Prisma.ClienteUncheckedCreateWithoutPlanoInput[]
+  connectOrCreate?: Prisma.ClienteCreateOrConnectWithoutPlanoInput | Prisma.ClienteCreateOrConnectWithoutPlanoInput[]
+  upsert?: Prisma.ClienteUpsertWithWhereUniqueWithoutPlanoInput | Prisma.ClienteUpsertWithWhereUniqueWithoutPlanoInput[]
+  createMany?: Prisma.ClienteCreateManyPlanoInputEnvelope
+  set?: Prisma.ClienteWhereUniqueInput | Prisma.ClienteWhereUniqueInput[]
+  disconnect?: Prisma.ClienteWhereUniqueInput | Prisma.ClienteWhereUniqueInput[]
+  delete?: Prisma.ClienteWhereUniqueInput | Prisma.ClienteWhereUniqueInput[]
+  connect?: Prisma.ClienteWhereUniqueInput | Prisma.ClienteWhereUniqueInput[]
+  update?: Prisma.ClienteUpdateWithWhereUniqueWithoutPlanoInput | Prisma.ClienteUpdateWithWhereUniqueWithoutPlanoInput[]
+  updateMany?: Prisma.ClienteUpdateManyWithWhereWithoutPlanoInput | Prisma.ClienteUpdateManyWithWhereWithoutPlanoInput[]
+  deleteMany?: Prisma.ClienteScalarWhereInput | Prisma.ClienteScalarWhereInput[]
 }
 
 export type EnumClienteStatusFieldUpdateOperationsInput = {
   set?: $Enums.ClienteStatus
 }
 
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
+export type EnumPagamentoStatusFieldUpdateOperationsInput = {
+  set?: $Enums.PagamentoStatus
 }
 
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
-export type DateTimeFieldUpdateOperationsInput = {
-  set?: Date | string
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
 }
 
 export type ClienteCreateNestedOneWithoutUsuariosInput = {
@@ -542,6 +678,87 @@ export type ClienteUpdateOneWithoutConsultasLogsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ClienteUpdateToOneWithWhereWithoutConsultasLogsInput, Prisma.ClienteUpdateWithoutConsultasLogsInput>, Prisma.ClienteUncheckedUpdateWithoutConsultasLogsInput>
 }
 
+export type ClienteCreateWithoutPlanoInput = {
+  id?: string
+  nome: string
+  slug: string
+  status?: $Enums.ClienteStatus
+  workerUrl?: string | null
+  intervaloSegundos?: number
+  limiteDiario?: number
+  limiteMensalConsultas?: number
+  pagamentoStatus?: $Enums.PagamentoStatus
+  pagamentoVenceEm?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  usuarios?: Prisma.UsuarioCreateNestedManyWithoutClienteInput
+  tarefas?: Prisma.TarefaCreateNestedManyWithoutClienteInput
+  consultasLogs?: Prisma.ConsultaLogCreateNestedManyWithoutClienteInput
+}
+
+export type ClienteUncheckedCreateWithoutPlanoInput = {
+  id?: string
+  nome: string
+  slug: string
+  status?: $Enums.ClienteStatus
+  workerUrl?: string | null
+  intervaloSegundos?: number
+  limiteDiario?: number
+  limiteMensalConsultas?: number
+  pagamentoStatus?: $Enums.PagamentoStatus
+  pagamentoVenceEm?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  usuarios?: Prisma.UsuarioUncheckedCreateNestedManyWithoutClienteInput
+  tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutClienteInput
+  consultasLogs?: Prisma.ConsultaLogUncheckedCreateNestedManyWithoutClienteInput
+}
+
+export type ClienteCreateOrConnectWithoutPlanoInput = {
+  where: Prisma.ClienteWhereUniqueInput
+  create: Prisma.XOR<Prisma.ClienteCreateWithoutPlanoInput, Prisma.ClienteUncheckedCreateWithoutPlanoInput>
+}
+
+export type ClienteCreateManyPlanoInputEnvelope = {
+  data: Prisma.ClienteCreateManyPlanoInput | Prisma.ClienteCreateManyPlanoInput[]
+  skipDuplicates?: boolean
+}
+
+export type ClienteUpsertWithWhereUniqueWithoutPlanoInput = {
+  where: Prisma.ClienteWhereUniqueInput
+  update: Prisma.XOR<Prisma.ClienteUpdateWithoutPlanoInput, Prisma.ClienteUncheckedUpdateWithoutPlanoInput>
+  create: Prisma.XOR<Prisma.ClienteCreateWithoutPlanoInput, Prisma.ClienteUncheckedCreateWithoutPlanoInput>
+}
+
+export type ClienteUpdateWithWhereUniqueWithoutPlanoInput = {
+  where: Prisma.ClienteWhereUniqueInput
+  data: Prisma.XOR<Prisma.ClienteUpdateWithoutPlanoInput, Prisma.ClienteUncheckedUpdateWithoutPlanoInput>
+}
+
+export type ClienteUpdateManyWithWhereWithoutPlanoInput = {
+  where: Prisma.ClienteScalarWhereInput
+  data: Prisma.XOR<Prisma.ClienteUpdateManyMutationInput, Prisma.ClienteUncheckedUpdateManyWithoutPlanoInput>
+}
+
+export type ClienteScalarWhereInput = {
+  AND?: Prisma.ClienteScalarWhereInput | Prisma.ClienteScalarWhereInput[]
+  OR?: Prisma.ClienteScalarWhereInput[]
+  NOT?: Prisma.ClienteScalarWhereInput | Prisma.ClienteScalarWhereInput[]
+  id?: Prisma.StringFilter<"Cliente"> | string
+  nome?: Prisma.StringFilter<"Cliente"> | string
+  slug?: Prisma.StringFilter<"Cliente"> | string
+  status?: Prisma.EnumClienteStatusFilter<"Cliente"> | $Enums.ClienteStatus
+  planoId?: Prisma.StringNullableFilter<"Cliente"> | string | null
+  workerUrl?: Prisma.StringNullableFilter<"Cliente"> | string | null
+  intervaloSegundos?: Prisma.IntFilter<"Cliente"> | number
+  limiteDiario?: Prisma.IntFilter<"Cliente"> | number
+  limiteMensalConsultas?: Prisma.IntFilter<"Cliente"> | number
+  pagamentoStatus?: Prisma.EnumPagamentoStatusFilter<"Cliente"> | $Enums.PagamentoStatus
+  pagamentoVenceEm?: Prisma.DateTimeNullableFilter<"Cliente"> | Date | string | null
+  createdAt?: Prisma.DateTimeFilter<"Cliente"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Cliente"> | Date | string
+}
+
 export type ClienteCreateWithoutUsuariosInput = {
   id?: string
   nome: string
@@ -550,8 +767,12 @@ export type ClienteCreateWithoutUsuariosInput = {
   workerUrl?: string | null
   intervaloSegundos?: number
   limiteDiario?: number
+  limiteMensalConsultas?: number
+  pagamentoStatus?: $Enums.PagamentoStatus
+  pagamentoVenceEm?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  plano?: Prisma.PlanoCreateNestedOneWithoutClientesInput
   tarefas?: Prisma.TarefaCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogCreateNestedManyWithoutClienteInput
 }
@@ -561,9 +782,13 @@ export type ClienteUncheckedCreateWithoutUsuariosInput = {
   nome: string
   slug: string
   status?: $Enums.ClienteStatus
+  planoId?: string | null
   workerUrl?: string | null
   intervaloSegundos?: number
   limiteDiario?: number
+  limiteMensalConsultas?: number
+  pagamentoStatus?: $Enums.PagamentoStatus
+  pagamentoVenceEm?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutClienteInput
@@ -594,8 +819,12 @@ export type ClienteUpdateWithoutUsuariosInput = {
   workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
   limiteDiario?: Prisma.IntFieldUpdateOperationsInput | number
+  limiteMensalConsultas?: Prisma.IntFieldUpdateOperationsInput | number
+  pagamentoStatus?: Prisma.EnumPagamentoStatusFieldUpdateOperationsInput | $Enums.PagamentoStatus
+  pagamentoVenceEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  plano?: Prisma.PlanoUpdateOneWithoutClientesNestedInput
   tarefas?: Prisma.TarefaUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUpdateManyWithoutClienteNestedInput
 }
@@ -605,9 +834,13 @@ export type ClienteUncheckedUpdateWithoutUsuariosInput = {
   nome?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumClienteStatusFieldUpdateOperationsInput | $Enums.ClienteStatus
+  planoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
   limiteDiario?: Prisma.IntFieldUpdateOperationsInput | number
+  limiteMensalConsultas?: Prisma.IntFieldUpdateOperationsInput | number
+  pagamentoStatus?: Prisma.EnumPagamentoStatusFieldUpdateOperationsInput | $Enums.PagamentoStatus
+  pagamentoVenceEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutClienteNestedInput
@@ -622,8 +855,12 @@ export type ClienteCreateWithoutTarefasInput = {
   workerUrl?: string | null
   intervaloSegundos?: number
   limiteDiario?: number
+  limiteMensalConsultas?: number
+  pagamentoStatus?: $Enums.PagamentoStatus
+  pagamentoVenceEm?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  plano?: Prisma.PlanoCreateNestedOneWithoutClientesInput
   usuarios?: Prisma.UsuarioCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogCreateNestedManyWithoutClienteInput
 }
@@ -633,9 +870,13 @@ export type ClienteUncheckedCreateWithoutTarefasInput = {
   nome: string
   slug: string
   status?: $Enums.ClienteStatus
+  planoId?: string | null
   workerUrl?: string | null
   intervaloSegundos?: number
   limiteDiario?: number
+  limiteMensalConsultas?: number
+  pagamentoStatus?: $Enums.PagamentoStatus
+  pagamentoVenceEm?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   usuarios?: Prisma.UsuarioUncheckedCreateNestedManyWithoutClienteInput
@@ -666,8 +907,12 @@ export type ClienteUpdateWithoutTarefasInput = {
   workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
   limiteDiario?: Prisma.IntFieldUpdateOperationsInput | number
+  limiteMensalConsultas?: Prisma.IntFieldUpdateOperationsInput | number
+  pagamentoStatus?: Prisma.EnumPagamentoStatusFieldUpdateOperationsInput | $Enums.PagamentoStatus
+  pagamentoVenceEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  plano?: Prisma.PlanoUpdateOneWithoutClientesNestedInput
   usuarios?: Prisma.UsuarioUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUpdateManyWithoutClienteNestedInput
 }
@@ -677,9 +922,13 @@ export type ClienteUncheckedUpdateWithoutTarefasInput = {
   nome?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumClienteStatusFieldUpdateOperationsInput | $Enums.ClienteStatus
+  planoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
   limiteDiario?: Prisma.IntFieldUpdateOperationsInput | number
+  limiteMensalConsultas?: Prisma.IntFieldUpdateOperationsInput | number
+  pagamentoStatus?: Prisma.EnumPagamentoStatusFieldUpdateOperationsInput | $Enums.PagamentoStatus
+  pagamentoVenceEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usuarios?: Prisma.UsuarioUncheckedUpdateManyWithoutClienteNestedInput
@@ -694,8 +943,12 @@ export type ClienteCreateWithoutConsultasLogsInput = {
   workerUrl?: string | null
   intervaloSegundos?: number
   limiteDiario?: number
+  limiteMensalConsultas?: number
+  pagamentoStatus?: $Enums.PagamentoStatus
+  pagamentoVenceEm?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  plano?: Prisma.PlanoCreateNestedOneWithoutClientesInput
   usuarios?: Prisma.UsuarioCreateNestedManyWithoutClienteInput
   tarefas?: Prisma.TarefaCreateNestedManyWithoutClienteInput
 }
@@ -705,9 +958,13 @@ export type ClienteUncheckedCreateWithoutConsultasLogsInput = {
   nome: string
   slug: string
   status?: $Enums.ClienteStatus
+  planoId?: string | null
   workerUrl?: string | null
   intervaloSegundos?: number
   limiteDiario?: number
+  limiteMensalConsultas?: number
+  pagamentoStatus?: $Enums.PagamentoStatus
+  pagamentoVenceEm?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   usuarios?: Prisma.UsuarioUncheckedCreateNestedManyWithoutClienteInput
@@ -738,8 +995,12 @@ export type ClienteUpdateWithoutConsultasLogsInput = {
   workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
   limiteDiario?: Prisma.IntFieldUpdateOperationsInput | number
+  limiteMensalConsultas?: Prisma.IntFieldUpdateOperationsInput | number
+  pagamentoStatus?: Prisma.EnumPagamentoStatusFieldUpdateOperationsInput | $Enums.PagamentoStatus
+  pagamentoVenceEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  plano?: Prisma.PlanoUpdateOneWithoutClientesNestedInput
   usuarios?: Prisma.UsuarioUpdateManyWithoutClienteNestedInput
   tarefas?: Prisma.TarefaUpdateManyWithoutClienteNestedInput
 }
@@ -749,13 +1010,83 @@ export type ClienteUncheckedUpdateWithoutConsultasLogsInput = {
   nome?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumClienteStatusFieldUpdateOperationsInput | $Enums.ClienteStatus
+  planoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
   limiteDiario?: Prisma.IntFieldUpdateOperationsInput | number
+  limiteMensalConsultas?: Prisma.IntFieldUpdateOperationsInput | number
+  pagamentoStatus?: Prisma.EnumPagamentoStatusFieldUpdateOperationsInput | $Enums.PagamentoStatus
+  pagamentoVenceEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usuarios?: Prisma.UsuarioUncheckedUpdateManyWithoutClienteNestedInput
   tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutClienteNestedInput
+}
+
+export type ClienteCreateManyPlanoInput = {
+  id?: string
+  nome: string
+  slug: string
+  status?: $Enums.ClienteStatus
+  workerUrl?: string | null
+  intervaloSegundos?: number
+  limiteDiario?: number
+  limiteMensalConsultas?: number
+  pagamentoStatus?: $Enums.PagamentoStatus
+  pagamentoVenceEm?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type ClienteUpdateWithoutPlanoInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  nome?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumClienteStatusFieldUpdateOperationsInput | $Enums.ClienteStatus
+  workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
+  limiteDiario?: Prisma.IntFieldUpdateOperationsInput | number
+  limiteMensalConsultas?: Prisma.IntFieldUpdateOperationsInput | number
+  pagamentoStatus?: Prisma.EnumPagamentoStatusFieldUpdateOperationsInput | $Enums.PagamentoStatus
+  pagamentoVenceEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  usuarios?: Prisma.UsuarioUpdateManyWithoutClienteNestedInput
+  tarefas?: Prisma.TarefaUpdateManyWithoutClienteNestedInput
+  consultasLogs?: Prisma.ConsultaLogUpdateManyWithoutClienteNestedInput
+}
+
+export type ClienteUncheckedUpdateWithoutPlanoInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  nome?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumClienteStatusFieldUpdateOperationsInput | $Enums.ClienteStatus
+  workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
+  limiteDiario?: Prisma.IntFieldUpdateOperationsInput | number
+  limiteMensalConsultas?: Prisma.IntFieldUpdateOperationsInput | number
+  pagamentoStatus?: Prisma.EnumPagamentoStatusFieldUpdateOperationsInput | $Enums.PagamentoStatus
+  pagamentoVenceEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  usuarios?: Prisma.UsuarioUncheckedUpdateManyWithoutClienteNestedInput
+  tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutClienteNestedInput
+  consultasLogs?: Prisma.ConsultaLogUncheckedUpdateManyWithoutClienteNestedInput
+}
+
+export type ClienteUncheckedUpdateManyWithoutPlanoInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  nome?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumClienteStatusFieldUpdateOperationsInput | $Enums.ClienteStatus
+  workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
+  limiteDiario?: Prisma.IntFieldUpdateOperationsInput | number
+  limiteMensalConsultas?: Prisma.IntFieldUpdateOperationsInput | number
+  pagamentoStatus?: Prisma.EnumPagamentoStatusFieldUpdateOperationsInput | $Enums.PagamentoStatus
+  pagamentoVenceEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -812,11 +1143,16 @@ export type ClienteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   nome?: boolean
   slug?: boolean
   status?: boolean
+  planoId?: boolean
   workerUrl?: boolean
   intervaloSegundos?: boolean
   limiteDiario?: boolean
+  limiteMensalConsultas?: boolean
+  pagamentoStatus?: boolean
+  pagamentoVenceEm?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  plano?: boolean | Prisma.Cliente$planoArgs<ExtArgs>
   usuarios?: boolean | Prisma.Cliente$usuariosArgs<ExtArgs>
   tarefas?: boolean | Prisma.Cliente$tarefasArgs<ExtArgs>
   consultasLogs?: boolean | Prisma.Cliente$consultasLogsArgs<ExtArgs>
@@ -828,11 +1164,16 @@ export type ClienteSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   nome?: boolean
   slug?: boolean
   status?: boolean
+  planoId?: boolean
   workerUrl?: boolean
   intervaloSegundos?: boolean
   limiteDiario?: boolean
+  limiteMensalConsultas?: boolean
+  pagamentoStatus?: boolean
+  pagamentoVenceEm?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  plano?: boolean | Prisma.Cliente$planoArgs<ExtArgs>
 }, ExtArgs["result"]["cliente"]>
 
 export type ClienteSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -840,11 +1181,16 @@ export type ClienteSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   nome?: boolean
   slug?: boolean
   status?: boolean
+  planoId?: boolean
   workerUrl?: boolean
   intervaloSegundos?: boolean
   limiteDiario?: boolean
+  limiteMensalConsultas?: boolean
+  pagamentoStatus?: boolean
+  pagamentoVenceEm?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  plano?: boolean | Prisma.Cliente$planoArgs<ExtArgs>
 }, ExtArgs["result"]["cliente"]>
 
 export type ClienteSelectScalar = {
@@ -852,26 +1198,36 @@ export type ClienteSelectScalar = {
   nome?: boolean
   slug?: boolean
   status?: boolean
+  planoId?: boolean
   workerUrl?: boolean
   intervaloSegundos?: boolean
   limiteDiario?: boolean
+  limiteMensalConsultas?: boolean
+  pagamentoStatus?: boolean
+  pagamentoVenceEm?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ClienteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nome" | "slug" | "status" | "workerUrl" | "intervaloSegundos" | "limiteDiario" | "createdAt" | "updatedAt", ExtArgs["result"]["cliente"]>
+export type ClienteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nome" | "slug" | "status" | "planoId" | "workerUrl" | "intervaloSegundos" | "limiteDiario" | "limiteMensalConsultas" | "pagamentoStatus" | "pagamentoVenceEm" | "createdAt" | "updatedAt", ExtArgs["result"]["cliente"]>
 export type ClienteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  plano?: boolean | Prisma.Cliente$planoArgs<ExtArgs>
   usuarios?: boolean | Prisma.Cliente$usuariosArgs<ExtArgs>
   tarefas?: boolean | Prisma.Cliente$tarefasArgs<ExtArgs>
   consultasLogs?: boolean | Prisma.Cliente$consultasLogsArgs<ExtArgs>
   _count?: boolean | Prisma.ClienteCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type ClienteIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type ClienteIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type ClienteIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  plano?: boolean | Prisma.Cliente$planoArgs<ExtArgs>
+}
+export type ClienteIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  plano?: boolean | Prisma.Cliente$planoArgs<ExtArgs>
+}
 
 export type $ClientePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Cliente"
   objects: {
+    plano: Prisma.$PlanoPayload<ExtArgs> | null
     usuarios: Prisma.$UsuarioPayload<ExtArgs>[]
     tarefas: Prisma.$TarefaPayload<ExtArgs>[]
     consultasLogs: Prisma.$ConsultaLogPayload<ExtArgs>[]
@@ -881,9 +1237,13 @@ export type $ClientePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     nome: string
     slug: string
     status: $Enums.ClienteStatus
+    planoId: string | null
     workerUrl: string | null
     intervaloSegundos: number
     limiteDiario: number
+    limiteMensalConsultas: number
+    pagamentoStatus: $Enums.PagamentoStatus
+    pagamentoVenceEm: Date | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["cliente"]>
@@ -1280,6 +1640,7 @@ readonly fields: ClienteFieldRefs;
  */
 export interface Prisma__ClienteClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  plano<T extends Prisma.Cliente$planoArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cliente$planoArgs<ExtArgs>>): Prisma.Prisma__PlanoClient<runtime.Types.Result.GetResult<Prisma.$PlanoPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   usuarios<T extends Prisma.Cliente$usuariosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cliente$usuariosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UsuarioPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   tarefas<T extends Prisma.Cliente$tarefasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cliente$tarefasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TarefaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   consultasLogs<T extends Prisma.Cliente$consultasLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cliente$consultasLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ConsultaLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -1316,9 +1677,13 @@ export interface ClienteFieldRefs {
   readonly nome: Prisma.FieldRef<"Cliente", 'String'>
   readonly slug: Prisma.FieldRef<"Cliente", 'String'>
   readonly status: Prisma.FieldRef<"Cliente", 'ClienteStatus'>
+  readonly planoId: Prisma.FieldRef<"Cliente", 'String'>
   readonly workerUrl: Prisma.FieldRef<"Cliente", 'String'>
   readonly intervaloSegundos: Prisma.FieldRef<"Cliente", 'Int'>
   readonly limiteDiario: Prisma.FieldRef<"Cliente", 'Int'>
+  readonly limiteMensalConsultas: Prisma.FieldRef<"Cliente", 'Int'>
+  readonly pagamentoStatus: Prisma.FieldRef<"Cliente", 'PagamentoStatus'>
+  readonly pagamentoVenceEm: Prisma.FieldRef<"Cliente", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Cliente", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Cliente", 'DateTime'>
 }
@@ -1575,6 +1940,10 @@ export type ClienteCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensi
    */
   data: Prisma.ClienteCreateManyInput | Prisma.ClienteCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ClienteIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1645,6 +2014,10 @@ export type ClienteUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensi
    * Limit how many Clientes to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ClienteIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1711,6 +2084,25 @@ export type ClienteDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Limit how many Clientes to delete.
    */
   limit?: number
+}
+
+/**
+ * Cliente.plano
+ */
+export type Cliente$planoArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Plano
+   */
+  select?: Prisma.PlanoSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Plano
+   */
+  omit?: Prisma.PlanoOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PlanoInclude<ExtArgs> | null
+  where?: Prisma.PlanoWhereInput
 }
 
 /**

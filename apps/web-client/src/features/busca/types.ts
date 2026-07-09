@@ -1,9 +1,6 @@
 export type CriarTarefaRequest = {
 	logradouro: string;
 	numero: string;
-	mesAnoInicio: string;
-	mesAnoFinal: string;
-	intervaloSegundos: number;
 };
 
 export type CriarTarefaResponse = {

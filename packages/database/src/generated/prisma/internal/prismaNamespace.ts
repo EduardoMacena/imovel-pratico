@@ -384,6 +384,7 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 
 export const ModelName = {
+  Plano: 'Plano',
   Cliente: 'Cliente',
   Usuario: 'Usuario',
   Tarefa: 'Tarefa',
@@ -405,10 +406,84 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "cliente" | "usuario" | "tarefa" | "tarefaResultado" | "imovelCache" | "consultaLog"
+    modelProps: "plano" | "cliente" | "usuario" | "tarefa" | "tarefaResultado" | "imovelCache" | "consultaLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
+    Plano: {
+      payload: Prisma.$PlanoPayload<ExtArgs>
+      fields: Prisma.PlanoFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PlanoFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanoPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PlanoFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanoPayload>
+        }
+        findFirst: {
+          args: Prisma.PlanoFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanoPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PlanoFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanoPayload>
+        }
+        findMany: {
+          args: Prisma.PlanoFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanoPayload>[]
+        }
+        create: {
+          args: Prisma.PlanoCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanoPayload>
+        }
+        createMany: {
+          args: Prisma.PlanoCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PlanoCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanoPayload>[]
+        }
+        delete: {
+          args: Prisma.PlanoDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanoPayload>
+        }
+        update: {
+          args: Prisma.PlanoUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanoPayload>
+        }
+        deleteMany: {
+          args: Prisma.PlanoDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PlanoUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PlanoUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanoPayload>[]
+        }
+        upsert: {
+          args: Prisma.PlanoUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanoPayload>
+        }
+        aggregate: {
+          args: Prisma.PlanoAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePlano>
+        }
+        groupBy: {
+          args: Prisma.PlanoGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PlanoGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PlanoCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PlanoCountAggregateOutputType> | number
+        }
+      }
+    }
     Cliente: {
       payload: Prisma.$ClientePayload<ExtArgs>
       fields: Prisma.ClienteFieldRefs
@@ -892,14 +967,34 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
+export const PlanoScalarFieldEnum = {
+  id: 'id',
+  nome: 'nome',
+  slug: 'slug',
+  descricao: 'descricao',
+  limiteMensalConsultas: 'limiteMensalConsultas',
+  intervaloSegundos: 'intervaloSegundos',
+  precoCentavos: 'precoCentavos',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PlanoScalarFieldEnum = (typeof PlanoScalarFieldEnum)[keyof typeof PlanoScalarFieldEnum]
+
+
 export const ClienteScalarFieldEnum = {
   id: 'id',
   nome: 'nome',
   slug: 'slug',
   status: 'status',
+  planoId: 'planoId',
   workerUrl: 'workerUrl',
   intervaloSegundos: 'intervaloSegundos',
   limiteDiario: 'limiteDiario',
+  limiteMensalConsultas: 'limiteMensalConsultas',
+  pagamentoStatus: 'pagamentoStatus',
+  pagamentoVenceEm: 'pagamentoVenceEm',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1066,20 +1161,6 @@ export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMod
 
 
 /**
- * Reference to a field of type 'ClienteStatus'
- */
-export type EnumClienteStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClienteStatus'>
-    
-
-
-/**
- * Reference to a field of type 'ClienteStatus[]'
- */
-export type ListEnumClienteStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClienteStatus[]'>
-    
-
-
-/**
  * Reference to a field of type 'Int'
  */
 export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -1094,6 +1175,20 @@ export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
 
 
 /**
+ * Reference to a field of type 'PlanoStatus'
+ */
+export type EnumPlanoStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PlanoStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'PlanoStatus[]'
+ */
+export type ListEnumPlanoStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PlanoStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'DateTime'
  */
 export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
@@ -1104,6 +1199,34 @@ export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
  * Reference to a field of type 'DateTime[]'
  */
 export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ClienteStatus'
+ */
+export type EnumClienteStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClienteStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ClienteStatus[]'
+ */
+export type ListEnumClienteStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClienteStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'PagamentoStatus'
+ */
+export type EnumPagamentoStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PagamentoStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'PagamentoStatus[]'
+ */
+export type ListEnumPagamentoStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PagamentoStatus[]'>
     
 
 
@@ -1307,6 +1430,7 @@ export type PrismaClientOptions = ({
   queryPlanCacheMaxSize?: number
 }
 export type GlobalOmitConfig = {
+  plano?: Prisma.PlanoOmit
   cliente?: Prisma.ClienteOmit
   usuario?: Prisma.UsuarioOmit
   tarefa?: Prisma.TarefaOmit

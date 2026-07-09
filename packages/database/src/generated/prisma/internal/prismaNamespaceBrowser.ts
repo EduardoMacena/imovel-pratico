@@ -51,6 +51,7 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
+  Plano: 'Plano',
   Cliente: 'Cliente',
   Usuario: 'Usuario',
   Tarefa: 'Tarefa',
@@ -75,14 +76,34 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
+export const PlanoScalarFieldEnum = {
+  id: 'id',
+  nome: 'nome',
+  slug: 'slug',
+  descricao: 'descricao',
+  limiteMensalConsultas: 'limiteMensalConsultas',
+  intervaloSegundos: 'intervaloSegundos',
+  precoCentavos: 'precoCentavos',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PlanoScalarFieldEnum = (typeof PlanoScalarFieldEnum)[keyof typeof PlanoScalarFieldEnum]
+
+
 export const ClienteScalarFieldEnum = {
   id: 'id',
   nome: 'nome',
   slug: 'slug',
   status: 'status',
+  planoId: 'planoId',
   workerUrl: 'workerUrl',
   intervaloSegundos: 'intervaloSegundos',
   limiteDiario: 'limiteDiario',
+  limiteMensalConsultas: 'limiteMensalConsultas',
+  pagamentoStatus: 'pagamentoStatus',
+  pagamentoVenceEm: 'pagamentoVenceEm',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
