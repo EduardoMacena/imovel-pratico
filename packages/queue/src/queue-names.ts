@@ -3,5 +3,5 @@ export const QUEUE_NAMES = {
 } as const;
 
 export function getBuscarProprietariosQueueName(clienteId: string) {
-  return `${QUEUE_NAMES.BUSCAR_PROPRIETARIOS_BASE}:${clienteId}`;
+  return `${QUEUE_NAMES.BUSCAR_PROPRIETARIOS_BASE}-${clienteId}`;
 }
