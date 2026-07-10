@@ -8,6 +8,7 @@ import { Card } from "../../../../components/Card";
 import { Input } from "../../../../components/Input";
 import { Select } from "../../../../components/Select";
 import { ClientConsumptionCard } from "../../../../components/ClientConsumptionCard";
+import { StatusBadge } from "../../../../components/StatusBadge";
 import {
 	atualizarCliente,
 	buscarCliente,
@@ -24,10 +25,23 @@ import { useRequireSuperAdmin } from "../../../../hooks/useRequireSuperAdmin";
 import {
 	Actions,
 	BackLink,
+	ConsumptionWrapper,
 	EmptyState,
+	EmptyStateTitle,
 	ErrorBox,
 	Form,
+	FormGrid,
+	FormHeader,
+	FormSection,
+	FormSectionTitle,
 	Header,
+	HeaderContent,
+	HeaderEyebrow,
+	HeaderGrid,
+	HeaderPanel,
+	HeaderPanelItem,
+	HeaderPanelLabel,
+	HeaderPanelValue,
 	PageContainer,
 	Subtitle,
 	SuccessBox,
@@ -167,89 +181,156 @@ export default function EditarClientePage() {
 				<BackLink href="/clientes">← Voltar para clientes</BackLink>
 
 				<Header>
-					<Title>Editar cliente</Title>
-					<Subtitle>
-						Configure plano, pagamento, intervalo de processamento e status do
-						cliente.
-					</Subtitle>
+					<HeaderGrid>
+						<HeaderContent>
+							<HeaderEyebrow>Gestão do cliente</HeaderEyebrow>
+
+							<Title>Editar cliente</Title>
+
+							<Subtitle>
+								Configure plano contratado, situação de pagamento, vencimento,
+								status operacional e vínculo do worker dedicado.
+							</Subtitle>
+						</HeaderContent>
+
+						<HeaderPanel>
+							<HeaderPanelItem>
+								<HeaderPanelLabel>Status do cliente</HeaderPanelLabel>
+								<HeaderPanelValue>
+									<StatusBadge status={status} />
+								</HeaderPanelValue>
+							</HeaderPanelItem>
+
+							<HeaderPanelItem>
+								<HeaderPanelLabel>Pagamento</HeaderPanelLabel>
+								<HeaderPanelValue>
+									<StatusBadge status={pagamentoStatus} />
+								</HeaderPanelValue>
+							</HeaderPanelItem>
+
+							<HeaderPanelItem>
+								<HeaderPanelLabel>Cliente</HeaderPanelLabel>
+								<HeaderPanelValue>{nome || "-"}</HeaderPanelValue>
+							</HeaderPanelItem>
+						</HeaderPanel>
+					</HeaderGrid>
 				</Header>
 
-				{isLoading && <EmptyState>Carregando cliente...</EmptyState>}
+				{isLoading && (
+					<EmptyState>
+						<EmptyStateTitle>Carregando cliente...</EmptyStateTitle>
+						Estamos buscando os dados do cliente, plano e consumo mensal.
+					</EmptyState>
+				)}
 
 				{!isLoading && (
 					<>
-						<div style={{ marginBottom: 24 }}>
-							{consumo && <ClientConsumptionCard consumo={consumo} />}
-						</div>
-            
+						{consumo && (
+							<ConsumptionWrapper>
+								<ClientConsumptionCard consumo={consumo} />
+							</ConsumptionWrapper>
+						)}
+
 						<Card>
+							<FormHeader>
+								<FormSectionTitle>Configurações do cliente</FormSectionTitle>
+								<Subtitle>
+									Altere os dados principais e salve para aplicar as novas regras
+									na operação.
+								</Subtitle>
+							</FormHeader>
+
 							<Form onSubmit={handleSubmit}>
-								<Input
-									label="Nome"
-									value={nome}
-									onChange={(event) => setNome(event.target.value)}
-									required
-								/>
+								<FormSection>
+									<FormSectionTitle>Identificação</FormSectionTitle>
 
-								<Input
-									label="Slug"
-									value={slug}
-									onChange={(event) => setSlug(event.target.value)}
-									required
-								/>
+									<FormGrid>
+										<Input
+											label="Nome"
+											value={nome}
+											onChange={(event) => setNome(event.target.value)}
+											required
+										/>
 
-								<Select
-									label="Status do cliente"
-									value={status}
-									onChange={(event) =>
-										setStatus(event.target.value as ClienteStatus)
-									}
-								>
-									<option value="ATIVO">ATIVO</option>
-									<option value="INATIVO">INATIVO</option>
-									<option value="SUSPENSO">SUSPENSO</option>
-								</Select>
+										<Input
+											label="Slug"
+											value={slug}
+											onChange={(event) => setSlug(event.target.value)}
+											required
+										/>
+									</FormGrid>
+								</FormSection>
 
-								<Select
-									label="Plano contratado"
-									value={planoId}
-									onChange={(event) => setPlanoId(event.target.value)}
-									required
-								>
-									{planos.map((plano) => (
-										<option key={plano.id} value={plano.id}>
-											{plano.nome} — {plano.limiteMensalConsultas} consultas —{" "}
-											{plano.intervaloSegundos}s — {plano.status}
-										</option>
-									))}
-								</Select>
+								<FormSection>
+									<FormSectionTitle>Plano e operação</FormSectionTitle>
 
-								<Select
-									label="Status do pagamento"
-									value={pagamentoStatus}
-									onChange={(event) =>
-										setPagamentoStatus(event.target.value as PagamentoStatus)
-									}
-								>
-									<option value="PAGO">PAGO</option>
-									<option value="PENDENTE">PENDENTE</option>
-									<option value="VENCIDO">VENCIDO</option>
-									<option value="CANCELADO">CANCELADO</option>
-								</Select>
+									<FormGrid>
+										<Select
+											label="Status do cliente"
+											value={status}
+											onChange={(event) =>
+												setStatus(event.target.value as ClienteStatus)
+											}
+										>
+											<option value="ATIVO">ATIVO</option>
+											<option value="INATIVO">INATIVO</option>
+											<option value="SUSPENSO">SUSPENSO</option>
+										</Select>
 
-								<Input
-									label="Vencimento do pagamento"
-									type="date"
-									value={pagamentoVenceEm}
-									onChange={(event) => setPagamentoVenceEm(event.target.value)}
-								/>
+										<Select
+											label="Plano contratado"
+											value={planoId}
+											onChange={(event) => setPlanoId(event.target.value)}
+											required
+										>
+											{planos.map((plano) => (
+												<option key={plano.id} value={plano.id}>
+													{plano.nome} — {plano.limiteMensalConsultas} consultas
+													— {plano.intervaloSegundos}s — {plano.status}
+												</option>
+											))}
+										</Select>
+									</FormGrid>
+								</FormSection>
 
-								<Input
-									label="Worker URL"
-									value={workerUrl}
-									onChange={(event) => setWorkerUrl(event.target.value)}
-									placeholder="Opcional"
-								/>
+								<FormSection>
+									<FormSectionTitle>Pagamento</FormSectionTitle>
+
+									<FormGrid>
+										<Select
+											label="Status do pagamento"
+											value={pagamentoStatus}
+											onChange={(event) =>
+												setPagamentoStatus(event.target.value as PagamentoStatus)
+											}
+										>
+											<option value="PAGO">PAGO</option>
+											<option value="PENDENTE">PENDENTE</option>
+											<option value="VENCIDO">VENCIDO</option>
+											<option value="CANCELADO">CANCELADO</option>
+										</Select>
+
+										<Input
+											label="Vencimento do pagamento"
+											type="date"
+											value={pagamentoVenceEm}
+											onChange={(event) =>
+												setPagamentoVenceEm(event.target.value)
+											}
+										/>
+									</FormGrid>
+								</FormSection>
+
+								<FormSection>
+									<FormSectionTitle>Worker dedicado</FormSectionTitle>
+
+									<Input
+										label="Worker URL"
+										value={workerUrl}
+										onChange={(event) => setWorkerUrl(event.target.value)}
+										placeholder="Opcional"
+									/>
+								</FormSection>
 
 								{erro && <ErrorBox>{erro}</ErrorBox>}
 								{sucesso && <SuccessBox>{sucesso}</SuccessBox>}
@@ -261,6 +342,7 @@ export default function EditarClientePage() {
 
 									<Button
 										type="button"
+										variant="ghost"
 										onClick={() =>
 											router.push(`/clientes/${clienteId}/usuarios`)
 										}
