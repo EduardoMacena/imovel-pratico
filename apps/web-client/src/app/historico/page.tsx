@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { AppHeader } from "../../components/AppHeader";
 import { useRequireAuth } from "../../hooks/useRequireAuth";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { StatusBadge } from "../../components/StatusBadge";
 import { listarTarefas } from "../../features/busca/api";
 import type { TarefaResumo } from "../../features/busca/types";
@@ -13,16 +13,27 @@ import {
 	BackLink,
 	DetailsLink,
 	EmptyState,
+	EmptyStateTitle,
 	ErrorBox,
 	Header,
+	HeaderContent,
+	HeaderEyebrow,
+	HeaderPanel,
+	HeaderPanelLabel,
+	HeaderPanelValue,
 	InfoBox,
 	InfoGrid,
 	InfoLabel,
 	InfoValue,
 	Item,
+	ItemFooter,
 	ItemTop,
 	List,
 	PageContainer,
+	StatCard,
+	StatGrid,
+	StatLabel,
+	StatValue,
 	Subtitle,
 	Title,
 } from "./page.styles";
@@ -43,6 +54,32 @@ export default function HistoricoPage() {
 	const [tarefas, setTarefas] = useState<TarefaResumo[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [erro, setErro] = useState<string | null>(null);
+
+	const resumo = useMemo(() => {
+		const finalizadas = tarefas.filter(
+			(tarefa) => tarefa.status === "COMPLETED"
+		).length;
+
+		const emProcessamento = tarefas.filter(
+			(tarefa) =>
+				tarefa.status === "PROCESSING" || tarefa.status === "PENDING"
+		).length;
+
+		const comErro = tarefas.filter(
+			(tarefa) => tarefa.status === "ERROR" || tarefa.status === "CANCELED"
+		).length;
+
+		const resultados = tarefas.reduce((total, tarefa) => {
+			return total + tarefa.totalResultados;
+		}, 0);
+
+		return {
+			finalizadas,
+			emProcessamento,
+			comErro,
+			resultados,
+		};
+	}, [tarefas]);
 
 	async function carregarTarefas() {
 		try {
@@ -73,26 +110,67 @@ export default function HistoricoPage() {
 	return (
 		<>
 			<AppHeader />
-      
+
 			<PageContainer>
 				<Header>
-					<Link href="/" passHref legacyBehavior>
-						<BackLink>← Voltar para nova busca</BackLink>
-					</Link>
+					<HeaderContent>
+						<Link href="/" passHref legacyBehavior>
+							<BackLink>← Voltar para nova busca</BackLink>
+						</Link>
 
-					<Title>Histórico de buscas</Title>
+						<HeaderEyebrow>Histórico operacional</HeaderEyebrow>
 
-					<Subtitle>
-						Acompanhe as últimas tarefas de captação executadas pelo sistema.
-					</Subtitle>
+						<Title>Histórico de buscas</Title>
+
+						<Subtitle>
+							Acompanhe as tarefas de captação executadas, confira o status de
+							processamento e acesse os resultados encontrados.
+						</Subtitle>
+					</HeaderContent>
+
+					<HeaderPanel>
+						<HeaderPanelLabel>Total de buscas</HeaderPanelLabel>
+						<HeaderPanelValue>{tarefas.length}</HeaderPanelValue>
+					</HeaderPanel>
 				</Header>
+
+				<StatGrid>
+					<StatCard>
+						<StatLabel>Finalizadas</StatLabel>
+						<StatValue>{resumo.finalizadas}</StatValue>
+					</StatCard>
+
+					<StatCard>
+						<StatLabel>Em processamento</StatLabel>
+						<StatValue>{resumo.emProcessamento}</StatValue>
+					</StatCard>
+
+					<StatCard>
+						<StatLabel>Com erro/canceladas</StatLabel>
+						<StatValue>{resumo.comErro}</StatValue>
+					</StatCard>
+
+					<StatCard>
+						<StatLabel>Resultados encontrados</StatLabel>
+						<StatValue>{resumo.resultados}</StatValue>
+					</StatCard>
+				</StatGrid>
 
 				{erro && <ErrorBox>{erro}</ErrorBox>}
 
-				{isLoading && <EmptyState>Carregando histórico...</EmptyState>}
+				{isLoading && (
+					<EmptyState>
+						<EmptyStateTitle>Carregando histórico...</EmptyStateTitle>
+						Estamos buscando as últimas tarefas executadas pela sua imobiliária.
+					</EmptyState>
+				)}
 
 				{!isLoading && !erro && tarefas.length === 0 && (
-					<EmptyState>Nenhuma busca encontrada ainda.</EmptyState>
+					<EmptyState>
+						<EmptyStateTitle>Nenhuma busca encontrada ainda.</EmptyStateTitle>
+						Quando você iniciar sua primeira captação, ela aparecerá aqui com
+						status, progresso e resultados.
+					</EmptyState>
 				)}
 
 				{!isLoading && tarefas.length > 0 && (
@@ -100,9 +178,11 @@ export default function HistoricoPage() {
 						{tarefas.map((tarefa) => (
 							<Item key={tarefa.id}>
 								<ItemTop>
-									<Address>
-										{tarefa.endereco.logradouro}, {tarefa.endereco.numero}
-									</Address>
+									<div>
+										<Address>
+											{tarefa.endereco.logradouro}, {tarefa.endereco.numero}
+										</Address>
+									</div>
 
 									<StatusBadge status={tarefa.status} />
 								</ItemTop>
@@ -119,7 +199,7 @@ export default function HistoricoPage() {
 									<InfoBox>
 										<InfoLabel>Progresso</InfoLabel>
 										<InfoValue>
-											{tarefa.progress.current}/{tarefa.progress.total} —{" "}
+											{tarefa.progress.current}/{tarefa.progress.total} ·{" "}
 											{tarefa.progress.percentage}%
 										</InfoValue>
 									</InfoBox>
@@ -135,15 +215,17 @@ export default function HistoricoPage() {
 									</InfoBox>
 								</InfoGrid>
 
-								<Actions>
-									<Link
-										href={`/historico/${tarefa.id}`}
-										passHref
-										legacyBehavior
-									>
-										<DetailsLink>Ver detalhes</DetailsLink>
-									</Link>
-								</Actions>
+								<ItemFooter>
+									<Actions>
+										<Link
+											href={`/historico/${tarefa.id}`}
+											passHref
+											legacyBehavior
+										>
+											<DetailsLink>Ver detalhes</DetailsLink>
+										</Link>
+									</Actions>
+								</ItemFooter>
 							</Item>
 						))}
 					</List>

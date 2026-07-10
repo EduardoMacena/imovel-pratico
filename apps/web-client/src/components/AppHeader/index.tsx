@@ -1,10 +1,11 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { removeAuthToken } from "../../lib/auth-storage";
 import { Button } from "../Button";
 import {
   Brand,
+  BrandText,
   HeaderActions,
   HeaderInner,
   HeaderWrapper,
@@ -15,6 +16,7 @@ import {
 
 export function AppHeader() {
   const router = useRouter();
+  const pathname = usePathname();
 
   function handleLogout() {
     removeAuthToken();
@@ -26,12 +28,17 @@ export function AppHeader() {
       <HeaderInner>
         <Brand href="/">
           <LogoMark>IP</LogoMark>
-          Imóvel Prático
+          <BrandText>Imóvel Prático</BrandText>
         </Brand>
 
         <Nav>
-          <NavLink href="/">Nova busca</NavLink>
-          <NavLink href="/historico">Histórico</NavLink>
+          <NavLink href="/" $active={pathname === "/"}>
+            Nova busca
+          </NavLink>
+
+          <NavLink href="/historico" $active={pathname.startsWith("/historico")}>
+            Histórico
+          </NavLink>
         </Nav>
 
         <HeaderActions>
