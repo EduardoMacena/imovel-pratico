@@ -15,23 +15,39 @@ import type { BuscarTarefaAdminResponse } from "../../../features/admin/types";
 import { useRequireSuperAdmin } from "../../../hooks/useRequireSuperAdmin";
 import { OwnerDetails } from "../../../components/OwnerDetails";
 import {
+	ActionButton,
 	Actions,
 	BackLink,
 	DangerButton,
 	EmptyState,
+	EmptyStateTitle,
 	ErrorBox,
 	Header,
-	HeaderTop,
+	HeaderContent,
+	HeaderEyebrow,
+	HeaderGrid,
+	HeaderPanel,
+	HeaderPanelItem,
+	HeaderPanelLabel,
+	HeaderPanelValue,
 	InfoBox,
 	InfoGrid,
 	InfoLabel,
 	InfoValue,
 	PageContainer,
+	ProgressFill,
+	ProgressHeader,
+	ProgressPanel,
+	ProgressTrack,
 	ResultItem,
 	ResultList,
+	ResultMeta,
+	ResultMetaItem,
 	ResultTitle,
 	ResultTop,
 	Section,
+	SectionHeader,
+	SectionSubtitle,
 	SectionTitle,
 	Subtitle,
 	SuccessBox,
@@ -40,8 +56,6 @@ import {
 	SummaryLabel,
 	SummaryValue,
 	Title,
-	TitleGroup,
-	ActionButton,
 } from "./page.styles";
 
 type Tarefa = BuscarTarefaAdminResponse["tarefa"];
@@ -239,7 +253,12 @@ export default function DetalheTarefaPage() {
 			<PageContainer>
 				<BackLink href="/clientes">← Voltar para clientes</BackLink>
 
-				{isLoading && <EmptyState>Carregando tarefa...</EmptyState>}
+				{isLoading && (
+					<EmptyState>
+						<EmptyStateTitle>Carregando tarefa...</EmptyStateTitle>
+						Estamos buscando detalhes, progresso e resultados da tarefa.
+					</EmptyState>
+				)}
 
 				{erro && <ErrorBox>{erro}</ErrorBox>}
 				{sucesso && <SuccessBox>{sucesso}</SuccessBox>}
@@ -247,14 +266,17 @@ export default function DetalheTarefaPage() {
 				{!isLoading && tarefa && (
 					<>
 						<Header>
-							<HeaderTop>
-								<TitleGroup>
+							<HeaderGrid>
+								<HeaderContent>
+									<HeaderEyebrow>Controle da tarefa</HeaderEyebrow>
+
 									<Title>Detalhe da tarefa</Title>
 
 									<Subtitle>
 										{tarefa.cliente.nome} • {tarefa.endereco.logradouro},{" "}
 										{tarefa.endereco.numero}
 									</Subtitle>
+
 									<Actions>
 										<ActionButton
 											type="button"
@@ -301,12 +323,31 @@ export default function DetalheTarefaPage() {
 											</ActionButton>
 										)}
 									</Actions>
-								</TitleGroup>
+								</HeaderContent>
 
-								<Actions>
-									<StatusBadge status={tarefa.status} />
-								</Actions>
-							</HeaderTop>
+								<HeaderPanel>
+									<HeaderPanelItem>
+										<HeaderPanelLabel>Status</HeaderPanelLabel>
+										<HeaderPanelValue>
+											<StatusBadge status={tarefa.status} />
+										</HeaderPanelValue>
+									</HeaderPanelItem>
+
+									<HeaderPanelItem>
+										<HeaderPanelLabel>Progresso</HeaderPanelLabel>
+										<HeaderPanelValue>
+											{tarefa.progress.percentage}%
+										</HeaderPanelValue>
+									</HeaderPanelItem>
+
+									<HeaderPanelItem>
+										<HeaderPanelLabel>Resultados</HeaderPanelLabel>
+										<HeaderPanelValue>
+											{tarefa.resultados.length}
+										</HeaderPanelValue>
+									</HeaderPanelItem>
+								</HeaderPanel>
+							</HeaderGrid>
 						</Header>
 
 						<SummaryGrid>
@@ -318,7 +359,7 @@ export default function DetalheTarefaPage() {
 							<SummaryBox>
 								<SummaryLabel>Progresso</SummaryLabel>
 								<SummaryValue>
-									{tarefa.progress.current}/{tarefa.progress.total} —{" "}
+									{tarefa.progress.current}/{tarefa.progress.total} ·{" "}
 									{tarefa.progress.percentage}%
 								</SummaryValue>
 							</SummaryBox>
@@ -358,13 +399,39 @@ export default function DetalheTarefaPage() {
 							</SummaryBox>
 						</SummaryGrid>
 
+						<ProgressPanel>
+							<ProgressHeader>
+								<strong>Processamento da tarefa</strong>
+								<span>
+									{tarefa.progress.current}/{tarefa.progress.total} ·{" "}
+									{tarefa.progress.percentage}%
+								</span>
+							</ProgressHeader>
+
+							<ProgressTrack>
+								<ProgressFill $percent={tarefa.progress.percentage} />
+							</ProgressTrack>
+						</ProgressPanel>
+
 						{tarefa.erro && <ErrorBox>{tarefa.erro}</ErrorBox>}
 
 						<Section>
-							<SectionTitle>Resultados</SectionTitle>
+							<SectionHeader>
+								<div>
+									<SectionTitle>Resultados</SectionTitle>
+									<SectionSubtitle>
+										Proprietários, contatos enriquecidos, endereço e dados
+										retornados pela consulta.
+									</SectionSubtitle>
+								</div>
+							</SectionHeader>
 
 							{tarefa.resultados.length === 0 && (
-								<EmptyState>Nenhum resultado encontrado ainda.</EmptyState>
+								<EmptyState>
+									<EmptyStateTitle>Nenhum resultado encontrado ainda.</EmptyStateTitle>
+									Se a tarefa ainda estiver em processamento, os resultados
+									aparecerão automaticamente.
+								</EmptyState>
 							)}
 
 							{tarefa.resultados.length > 0 && (
@@ -378,7 +445,17 @@ export default function DetalheTarefaPage() {
 															"Proprietário não identificado"}
 													</ResultTitle>
 
-													<div>{resultado.indiceCadastral}</div>
+													<ResultMeta>
+														<ResultMetaItem>
+															Índice cadastral: {resultado.indiceCadastral}
+														</ResultMetaItem>
+
+														{resultado.fonteContato && (
+															<ResultMetaItem>
+																Fonte: {resultado.fonteContato}
+															</ResultMetaItem>
+														)}
+													</ResultMeta>
 												</div>
 
 												<StatusBadge status={resultado.status} />
@@ -400,18 +477,25 @@ export default function DetalheTarefaPage() {
 												</InfoBox>
 
 												<InfoBox>
-													<InfoLabel>Contato</InfoLabel>
+													<InfoLabel>Telefone</InfoLabel>
 													<InfoValue>
-														{resultado.proprietario.telefone ??
-															resultado.proprietario.email ??
-															"-"}
+														{resultado.proprietario.telefone ?? "-"}
+													</InfoValue>
+												</InfoBox>
+
+												<InfoBox>
+													<InfoLabel>E-mail</InfoLabel>
+													<InfoValue>
+														{resultado.proprietario.email ?? "-"}
 													</InfoValue>
 												</InfoBox>
 											</InfoGrid>
+
 											<OwnerDetails
 												fonteContato={resultado.fonteContato}
 												dadosContato={resultado.dadosContato}
 											/>
+
 											{resultado.erro && <ErrorBox>{resultado.erro}</ErrorBox>}
 										</ResultItem>
 									))}
