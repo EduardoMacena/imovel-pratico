@@ -33,12 +33,19 @@ const variants = {
 };
 
 export const Badge = styled.span<{ $variant: Variant }>`
+  flex: 0 0 auto;
   display: inline-flex;
-  padding: 5px 10px;
+  min-height: 34px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
   border-radius: ${({ theme }) => theme.radii.pill};
   border: 1px solid;
-  font-size: 12px;
-  font-weight: 900;
+  font-size: 11px;
+  font-weight: 950;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  text-transform: uppercase;
 
   ${({ $variant }) => variants[$variant]}
 `;

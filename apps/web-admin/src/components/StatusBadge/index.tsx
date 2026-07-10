@@ -7,19 +7,37 @@ type StatusBadgeProps = {
 };
 
 function getVariant(status: string) {
-  if (status === "ATIVO" || status === "SUPER_ADMIN" || status === "ADMIN") {
+  if (
+    status === "ATIVO" ||
+    status === "SUPER_ADMIN" ||
+    status === "ADMIN" ||
+    status === "COMPLETED" ||
+    status === "SUCCESS" ||
+    status === "PAGO"
+  ) {
     return "success";
   }
 
-  if (status === "INATIVO" || status === "SUSPENSO") {
+  if (
+    status === "INATIVO" ||
+    status === "SUSPENSO" ||
+    status === "ERROR" ||
+    status === "CANCELED" ||
+    status === "VENCIDO" ||
+    status === "CANCELADO"
+  ) {
     return "error";
   }
 
-  if (status === "GERENTE") {
+  if (status === "GERENTE" || status === "PROCESSING") {
     return "info";
   }
 
-  if (status === "OPERADOR") {
+  if (
+    status === "OPERADOR" ||
+    status === "PENDING" ||
+    status === "PENDENTE"
+  ) {
     return "warning";
   }
 

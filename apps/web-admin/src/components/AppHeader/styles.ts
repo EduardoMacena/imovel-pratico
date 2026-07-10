@@ -1,28 +1,35 @@
 "use client";
 
 import Link from "next/link";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 export const HeaderWrapper = styled.header`
   position: sticky;
   top: 0;
   z-index: 20;
-  background: rgba(244, 241, 234, 0.82);
+  background: rgba(244, 241, 234, 0.78);
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   backdrop-filter: blur(18px);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
 `;
 
 export const HeaderInner = styled.div`
-  width: min(1220px, calc(100% - 32px));
-  height: 76px;
+  width: min(1280px, calc(100% - 40px));
+  min-height: 76px;
   margin: 0 auto;
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
   gap: ${({ theme }) => theme.spacing.lg};
+
+  @media (max-width: 880px) {
+    width: min(100% - 24px, 1280px);
+    grid-template-columns: 1fr auto;
+  }
 `;
 
 export const Brand = styled(Link)`
+  width: fit-content;
   display: inline-flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.sm};
@@ -33,46 +40,82 @@ export const Brand = styled(Link)`
   text-decoration: none;
 `;
 
+export const BrandText = styled.span`
+  white-space: nowrap;
+
+  @media (max-width: 420px) {
+    display: none;
+  }
+`;
+
 export const LogoMark = styled.span`
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 auto;
   display: inline-grid;
   place-items: center;
   border-radius: ${({ theme }) => theme.radii.md};
   background:
-    linear-gradient(135deg, ${({ theme }) => theme.colors.primary}, ${({ theme }) => theme.colors.secondary});
+    radial-gradient(circle at 30% 20%, rgba(200, 164, 93, 0.45), transparent 26%),
+    linear-gradient(
+      135deg,
+      ${({ theme }) => theme.colors.primary},
+      ${({ theme }) => theme.colors.secondary}
+    );
   color: ${({ theme }) => theme.colors.accent};
   box-shadow: ${({ theme }) => theme.shadows.button};
+  font-size: 13px;
+  font-weight: 950;
+  letter-spacing: -0.04em;
 `;
 
 export const Nav = styled.nav`
-  display: flex;
+  justify-self: center;
+  display: inline-flex;
   align-items: center;
-  gap: ${({ theme }) => theme.spacing.xs};
+  gap: 4px;
+  padding: 5px;
+  border-radius: ${({ theme }) => theme.radii.pill};
+  background: rgba(255, 255, 255, 0.48);
+  border: 1px solid ${({ theme }) => theme.colors.border};
 
   @media (max-width: 880px) {
     display: none;
   }
 `;
 
-export const NavLink = styled(Link)`
-  padding: 10px 14px;
+export const NavLink = styled(Link)<{ $active?: boolean }>`
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
   border-radius: ${({ theme }) => theme.radii.pill};
   color: ${({ theme }) => theme.colors.textMuted};
   font-size: 14px;
-  font-weight: 850;
+  font-weight: 900;
   text-decoration: none;
   transition:
     color 0.18s ease,
-    background 0.18s ease;
+    background 0.18s ease,
+    box-shadow 0.18s ease;
 
   &:hover {
     color: ${({ theme }) => theme.colors.primary};
     background: ${({ theme }) => theme.colors.surface};
   }
+
+  ${({ theme, $active }) =>
+    $active &&
+    css`
+      color: ${theme.colors.primary};
+      background: ${theme.colors.surface};
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+    `}
 `;
 
 export const HeaderActions = styled.div`
+  justify-self: end;
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.sm};

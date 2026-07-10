@@ -9,8 +9,15 @@ import { useRequireSuperAdmin } from "../../hooks/useRequireSuperAdmin";
 import {
 	ClientItem,
 	EmptyState,
+	EmptyStateTitle,
 	ErrorBox,
 	Header,
+	HeaderContent,
+	HeaderEyebrow,
+	HeaderGrid,
+	HeaderPanel,
+	HeaderPanelLabel,
+	HeaderPanelValue,
 	IndicatorCard,
 	IndicatorGrid,
 	IndicatorLabel,
@@ -23,16 +30,21 @@ import {
 	ItemTop,
 	List,
 	PageContainer,
+	QuickAction,
+	QuickActionDescription,
+	QuickActionGrid,
+	QuickActionTitle,
 	Section,
 	SectionGrid,
 	SectionHeader,
 	SectionLink,
+	SectionSubtitle,
 	SectionTitle,
 	Subtitle,
 	TaskInfoGrid,
 	TaskItem,
-	Title,
 	TaskLink,
+	Title,
 } from "./page.styles";
 
 function formatDate(value?: string | null) {
@@ -89,17 +101,35 @@ export default function DashboardPage() {
 
 			<PageContainer>
 				<Header>
-					<Title>Dashboard geral</Title>
+					<HeaderGrid>
+						<HeaderContent>
+							<HeaderEyebrow>Painel administrativo</HeaderEyebrow>
 
-					<Subtitle>
-						Visão geral da operação do SaaS, clientes cadastrados, tarefas
-						executadas e resultados encontrados.
-					</Subtitle>
+							<Title>Dashboard geral</Title>
+
+							<Subtitle>
+								Visão executiva da operação do SaaS: clientes, tarefas,
+								processamento, consumo e resultados encontrados.
+							</Subtitle>
+						</HeaderContent>
+
+						<HeaderPanel>
+							<HeaderPanelLabel>Resultados encontrados</HeaderPanelLabel>
+							<HeaderPanelValue>
+								{dashboard?.indicadores.resultadosTotal ?? 0}
+							</HeaderPanelValue>
+						</HeaderPanel>
+					</HeaderGrid>
 				</Header>
 
 				{erro && <ErrorBox>{erro}</ErrorBox>}
 
-				{isLoading && <EmptyState>Carregando dashboard...</EmptyState>}
+				{isLoading && (
+					<EmptyState>
+						<EmptyStateTitle>Carregando dashboard...</EmptyStateTitle>
+						Estamos buscando os indicadores mais recentes da operação.
+					</EmptyState>
+				)}
 
 				{!isLoading && dashboard && (
 					<>
@@ -162,15 +192,47 @@ export default function DashboardPage() {
 							</IndicatorCard>
 						</IndicatorGrid>
 
+						<QuickActionGrid>
+							<QuickAction href="/clientes">
+								<QuickActionTitle>Gerenciar clientes</QuickActionTitle>
+								<QuickActionDescription>
+									Consulte clientes, usuários, planos e tarefas vinculadas.
+								</QuickActionDescription>
+							</QuickAction>
+
+							<QuickAction href="/planos">
+								<QuickActionTitle>Planos comerciais</QuickActionTitle>
+								<QuickActionDescription>
+									Controle limites mensais, intervalos e status dos planos.
+								</QuickActionDescription>
+							</QuickAction>
+
+							<QuickAction href="/clientes">
+								<QuickActionTitle>Consumo mensal</QuickActionTitle>
+								<QuickActionDescription>
+									Acompanhe uso, bloqueios e disponibilidade dos clientes.
+								</QuickActionDescription>
+							</QuickAction>
+						</QuickActionGrid>
+
 						<SectionGrid>
 							<Section>
 								<SectionHeader>
-									<SectionTitle>Clientes por uso</SectionTitle>
+									<div>
+										<SectionTitle>Clientes por uso</SectionTitle>
+										<SectionSubtitle>
+											Clientes com maior atividade operacional na plataforma.
+										</SectionSubtitle>
+									</div>
+
 									<SectionLink href="/clientes">Ver clientes</SectionLink>
 								</SectionHeader>
 
 								{dashboard.clientesPorUso.length === 0 && (
-									<EmptyState>Nenhum cliente encontrado.</EmptyState>
+									<EmptyState>
+										<EmptyStateTitle>Nenhum cliente encontrado.</EmptyStateTitle>
+										Quando houver clientes cadastrados, eles aparecerão aqui.
+									</EmptyState>
 								)}
 
 								{dashboard.clientesPorUso.length > 0 && (
@@ -205,11 +267,19 @@ export default function DashboardPage() {
 
 							<Section>
 								<SectionHeader>
-									<SectionTitle>Últimas tarefas</SectionTitle>
+									<div>
+										<SectionTitle>Últimas tarefas</SectionTitle>
+										<SectionSubtitle>
+											Processamentos recentes executados pelos clientes.
+										</SectionSubtitle>
+									</div>
 								</SectionHeader>
 
 								{dashboard.ultimasTarefas.length === 0 && (
-									<EmptyState>Nenhuma tarefa encontrada.</EmptyState>
+									<EmptyState>
+										<EmptyStateTitle>Nenhuma tarefa encontrada.</EmptyStateTitle>
+										As buscas iniciadas pelos clientes aparecerão aqui.
+									</EmptyState>
 								)}
 
 								{dashboard.ultimasTarefas.length > 0 && (
@@ -233,7 +303,7 @@ export default function DashboardPage() {
 														<InfoLabel>Progresso</InfoLabel>
 														<InfoValue>
 															{tarefa.progress.current}/{tarefa.progress.total}{" "}
-															— {tarefa.progress.percentage}%
+															· {tarefa.progress.percentage}%
 														</InfoValue>
 													</InfoBox>
 
@@ -257,6 +327,7 @@ export default function DashboardPage() {
 														</InfoValue>
 													</InfoBox>
 												</TaskInfoGrid>
+
 												<TaskLink href={`/tarefas/${tarefa.id}`}>
 													Ver detalhe da tarefa
 												</TaskLink>
