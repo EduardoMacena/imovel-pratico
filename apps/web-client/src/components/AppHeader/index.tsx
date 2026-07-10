@@ -44,7 +44,7 @@ export function AppHeader() {
             href="/trocar-senha"
             $active={pathname.startsWith("/trocar-senha")}
           >
-            Minha senha
+            Perfil
           </NavLink>
         </Nav>
 
