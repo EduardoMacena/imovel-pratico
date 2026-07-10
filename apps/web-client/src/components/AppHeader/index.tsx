@@ -39,6 +39,13 @@ export function AppHeader() {
           <NavLink href="/historico" $active={pathname.startsWith("/historico")}>
             Histórico
           </NavLink>
+
+          <NavLink
+            href="/trocar-senha"
+            $active={pathname.startsWith("/trocar-senha")}
+          >
+            Minha senha
+          </NavLink>
         </Nav>
 
         <HeaderActions>

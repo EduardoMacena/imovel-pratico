@@ -4,7 +4,13 @@ import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "../../components/Button";
 import { Input } from "../../components/Input";
-import { getAuthToken, setAuthCliente, setAuthToken, setAuthUser } from "../../lib/auth-storage";
+import {
+  getAuthToken,
+  getAuthUser,
+  setAuthCliente,
+  setAuthToken,
+  setAuthUser,
+} from "../../lib/auth-storage";
 import {
   Badge,
   ErrorBox,
@@ -22,23 +28,6 @@ import {
 } from "./page.styles";
 import { login } from "../../features/auth/api";
 
-type LoginResponse = {
-  token?: string;
-  accessToken?: string;
-  usuario?: {
-    id: string;
-    nome: string;
-    email: string;
-    role: string;
-  };
-  user?: {
-    id: string;
-    nome?: string;
-    email: string;
-    role?: string;
-  };
-};
-
 export default function LoginPage() {
   const router = useRouter();
 
@@ -50,10 +39,18 @@ export default function LoginPage() {
 
   useEffect(() => {
     const token = getAuthToken();
+    const user = getAuthUser();
 
-    if (token) {
-      router.replace("/");
+    if (!token) {
+      return;
     }
+
+    if (user?.precisaTrocarSenha) {
+      router.replace("/trocar-senha");
+      return;
+    }
+
+    router.replace("/");
   }, [router]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -69,9 +66,7 @@ export default function LoginPage() {
       });
 
       if (!response) {
-        throw new Error(
-           "E-mail ou senha inválidos"
-        );
+        throw new Error("E-mail ou senha inválidos");
       }
 
       const token = response.token;
@@ -83,6 +78,11 @@ export default function LoginPage() {
       setAuthToken(token);
       setAuthUser(response.usuario);
       setAuthCliente(response.cliente);
+
+      if (response.usuario.precisaTrocarSenha) {
+        router.push("/trocar-senha");
+        return;
+      }
 
       router.push("/");
     } catch (error) {
