@@ -12,6 +12,26 @@ function isHttpError(error: unknown): error is {
   return typeof error === "object" && error !== null;
 }
 
+function normalizeOrigin(origin: string) {
+  return origin.trim().replace(/\/$/, "");
+}
+
+function getCorsOrigins() {
+  return env.CORS_ORIGINS.split(",")
+    .map(origin => normalizeOrigin(origin))
+    .filter(Boolean);
+}
+
+function isOriginAllowed(origin: string | undefined, allowedOrigins: string[]) {
+  if (!origin) {
+    return true;
+  }
+
+  const normalizedOrigin = normalizeOrigin(origin);
+
+  return allowedOrigins.includes(normalizedOrigin);
+}
+
 export async function buildApp() {
   const app = Fastify({
     trustProxy: env.TRUST_PROXY,
@@ -30,8 +50,17 @@ export async function buildApp() {
     },
   });
 
+  const allowedOrigins = getCorsOrigins();
+
   await app.register(cors, {
-    origin: true,
+    origin: (origin, callback) => {
+      if (isOriginAllowed(origin, allowedOrigins)) {
+        callback(null, true);
+        return;
+      }
+
+      callback(new Error(`Origem não permitida pelo CORS: ${origin}`), false);
+    },
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
@@ -68,6 +97,16 @@ export async function buildApp() {
         message:
           error.message ||
           "Muitas tentativas. Aguarde alguns instantes e tente novamente.",
+      });
+    }
+
+    if (
+      error instanceof Error &&
+      error.message.startsWith("Origem não permitida pelo CORS")
+    ) {
+      return reply.status(403).send({
+        error: "CorsOriginNotAllowed",
+        message: "Origem não permitida.",
       });
     }
 

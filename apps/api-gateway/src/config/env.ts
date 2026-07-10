@@ -42,6 +42,12 @@ const envSchema = z
 
     WEB_CLIENT_URL: z.string().url().default("http://localhost:3001"),
 
+    CORS_ORIGINS: z
+      .string()
+      .default(
+        "http://localhost:3000,http://localhost:3001,http://localhost:3002"
+      ),
+
     TRUST_PROXY: envBoolean.default(false),
 
     SMTP_HOST: z.string().default("smtp.hostinger.com"),
