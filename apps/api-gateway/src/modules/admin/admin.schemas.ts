@@ -50,22 +50,24 @@ export const atualizarClienteSchema = z.object({
 });
 
 export const criarUsuarioSchema = z.object({
-	nome: z.string().min(2, "Nome é obrigatório"),
-	email: z.string().email("E-mail inválido"),
-	senha: z.string().min(6, "Senha precisa ter pelo menos 6 caracteres"),
-	role: z.enum(["ADMIN", "GERENTE", "OPERADOR"]).default("OPERADOR"),
-	ativo: z.boolean().default(true),
+  nome: z.string().min(2, "Nome é obrigatório"),
+  email: z.string().email("E-mail inválido"),
+  senha: z.string().min(6, "Senha precisa ter pelo menos 6 caracteres"),
+  role: z.enum(["ADMIN", "GERENTE", "OPERADOR"]).default("OPERADOR"),
+  ativo: z.boolean().default(true),
+  precisaTrocarSenha: z.boolean().default(true),
 });
 
 export const atualizarUsuarioSchema = z.object({
-	nome: z.string().min(2).optional(),
-	email: z.string().email("E-mail inválido").optional(),
-	senha: z
-		.string()
-		.min(6, "Senha precisa ter pelo menos 6 caracteres")
-		.optional(),
-	role: z.enum(["ADMIN", "GERENTE", "OPERADOR"]).optional(),
-	ativo: z.boolean().optional(),
+  nome: z.string().min(2).optional(),
+  email: z.string().email("E-mail inválido").optional(),
+  senha: z
+    .string()
+    .min(6, "Senha precisa ter pelo menos 6 caracteres")
+    .optional(),
+  role: z.enum(["ADMIN", "GERENTE", "OPERADOR"]).optional(),
+  ativo: z.boolean().optional(),
+  precisaTrocarSenha: z.boolean().optional(),
 });
 
 export const planoIdParamsSchema = z.object({

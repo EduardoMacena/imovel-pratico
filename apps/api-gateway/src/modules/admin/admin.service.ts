@@ -196,54 +196,59 @@ export async function criarUsuario(clienteId: string, data: CriarUsuarioInput) {
 	const senhaHash = await bcrypt.hash(data.senha, 10);
 
 	const usuario = await prisma.usuario.create({
-		data: {
-			clienteId,
-			nome: data.nome,
-			email: data.email,
-			senha: senhaHash,
-			role: data.role,
-			ativo: data.ativo,
-		},
-	});
+    data: {
+      clienteId,
+      nome: data.nome,
+      email: data.email,
+      senha: senhaHash,
+      role: data.role,
+      ativo: data.ativo,
+      precisaTrocarSenha: data.precisaTrocarSenha ?? true,
+    },
+  });
 
 	return removerSenhaUsuario(usuario);
 }
 
 export async function atualizarUsuario(
-	id: string,
-	data: AtualizarUsuarioInput
+  id: string,
+  data: AtualizarUsuarioInput
 ) {
-	if (data.email) {
-		const emailExistente = await prisma.usuario.findFirst({
-			where: {
-				email: data.email,
-				NOT: {
-					id,
-				},
-			},
-		});
+  if (data.email) {
+    const emailExistente = await prisma.usuario.findFirst({
+      where: {
+        email: data.email,
+        NOT: {
+          id,
+        },
+      },
+    });
 
-		if (emailExistente) {
-			throw new Error("Já existe um usuário com esse e-mail");
-		}
-	}
+    if (emailExistente) {
+      throw new Error("Já existe um usuário com esse e-mail");
+    }
+  }
 
-	const senhaHash = data.senha ? await bcrypt.hash(data.senha, 10) : undefined;
+  const senhaHash = data.senha ? await bcrypt.hash(data.senha, 10) : undefined;
 
-	const usuario = await prisma.usuario.update({
-		where: {
-			id,
-		},
-		data: {
-			nome: data.nome,
-			email: data.email,
-			senha: senhaHash,
-			role: data.role,
-			ativo: data.ativo,
-		},
-	});
+  const usuario = await prisma.usuario.update({
+    where: {
+      id,
+    },
+    data: {
+      nome: data.nome,
+      email: data.email,
+      senha: senhaHash,
+      role: data.role,
+      ativo: data.ativo,
+      precisaTrocarSenha: data.senha
+        ? true
+        : data.precisaTrocarSenha,
+      senhaAlteradaEm: data.senha ? null : undefined,
+    },
+  });
 
-	return removerSenhaUsuario(usuario);
+  return removerSenhaUsuario(usuario);
 }
 
 export async function listarTarefasDoCliente(clienteId: string) {

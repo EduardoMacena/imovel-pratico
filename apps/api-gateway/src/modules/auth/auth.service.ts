@@ -2,7 +2,10 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { prisma } from "@imovel-pratico/database";
 import { env } from "../../config/env.js";
-import type { LoginInput } from "./auth.schemas.js";
+import type {
+  LoginInput,
+  TrocarMinhaSenhaInput,
+} from "./auth.schemas.js";
 
 export type AuthTokenPayload = {
   usuarioId: string;
@@ -29,6 +32,20 @@ export class ClienteInativoError extends Error {
   constructor() {
     super("Cliente inativo ou suspenso");
     this.name = "ClienteInativoError";
+  }
+}
+
+export class SenhaAtualInvalidaError extends Error {
+  constructor() {
+    super("Senha atual inválida");
+    this.name = "SenhaAtualInvalidaError";
+  }
+}
+
+export class UsuarioNaoEncontradoError extends Error {
+  constructor() {
+    super("Usuário não encontrado");
+    this.name = "UsuarioNaoEncontradoError";
   }
 }
 
@@ -85,11 +102,65 @@ export async function login(data: LoginInput) {
       nome: usuario.nome,
       email: usuario.email,
       role: usuario.role,
+      precisaTrocarSenha: usuario.precisaTrocarSenha,
+      senhaAlteradaEm: usuario.senhaAlteradaEm,
     },
     cliente: {
       id: usuario.cliente.id,
       nome: usuario.cliente.nome,
       slug: usuario.cliente.slug,
     },
+  };
+}
+
+export async function trocarMinhaSenha(
+  usuarioId: string,
+  data: TrocarMinhaSenhaInput
+) {
+  const usuario = await prisma.usuario.findUnique({
+    where: {
+      id: usuarioId,
+    },
+  });
+
+  if (!usuario) {
+    throw new UsuarioNaoEncontradoError();
+  }
+
+  const senhaAtualValida = await bcrypt.compare(
+    data.senhaAtual,
+    usuario.senha
+  );
+
+  if (!senhaAtualValida) {
+    throw new SenhaAtualInvalidaError();
+  }
+
+  const novaSenhaHash = await bcrypt.hash(data.novaSenha, 10);
+
+  const usuarioAtualizado = await prisma.usuario.update({
+    where: {
+      id: usuarioId,
+    },
+    data: {
+      senha: novaSenhaHash,
+      precisaTrocarSenha: false,
+      senhaAlteradaEm: new Date(),
+    },
+    select: {
+      id: true,
+      nome: true,
+      email: true,
+      role: true,
+      ativo: true,
+      precisaTrocarSenha: true,
+      senhaAlteradaEm: true,
+      clienteId: true,
+    },
+  });
+
+  return {
+    usuario: usuarioAtualizado,
+    message: "Senha alterada com sucesso.",
   };
 }

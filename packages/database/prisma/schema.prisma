@@ -116,6 +116,9 @@ model Usuario {
 
   ativo Boolean @default(true)
 
+  precisaTrocarSenha Boolean @default(false)
+  senhaAlteradaEm     DateTime?
+
   cliente Cliente @relation(fields: [clienteId], references: [id])
 
   createdAt DateTime @default(now())

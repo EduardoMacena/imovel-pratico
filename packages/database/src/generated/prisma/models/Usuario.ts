@@ -32,6 +32,8 @@ export type UsuarioMinAggregateOutputType = {
   senha: string | null
   role: $Enums.UsuarioRole | null
   ativo: boolean | null
+  precisaTrocarSenha: boolean | null
+  senhaAlteradaEm: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -44,6 +46,8 @@ export type UsuarioMaxAggregateOutputType = {
   senha: string | null
   role: $Enums.UsuarioRole | null
   ativo: boolean | null
+  precisaTrocarSenha: boolean | null
+  senhaAlteradaEm: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -56,6 +60,8 @@ export type UsuarioCountAggregateOutputType = {
   senha: number
   role: number
   ativo: number
+  precisaTrocarSenha: number
+  senhaAlteradaEm: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -70,6 +76,8 @@ export type UsuarioMinAggregateInputType = {
   senha?: true
   role?: true
   ativo?: true
+  precisaTrocarSenha?: true
+  senhaAlteradaEm?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -82,6 +90,8 @@ export type UsuarioMaxAggregateInputType = {
   senha?: true
   role?: true
   ativo?: true
+  precisaTrocarSenha?: true
+  senhaAlteradaEm?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -94,6 +104,8 @@ export type UsuarioCountAggregateInputType = {
   senha?: true
   role?: true
   ativo?: true
+  precisaTrocarSenha?: true
+  senhaAlteradaEm?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -179,6 +191,8 @@ export type UsuarioGroupByOutputType = {
   senha: string
   role: $Enums.UsuarioRole
   ativo: boolean
+  precisaTrocarSenha: boolean
+  senhaAlteradaEm: Date | null
   createdAt: Date
   updatedAt: Date
   _count: UsuarioCountAggregateOutputType | null
@@ -212,6 +226,8 @@ export type UsuarioWhereInput = {
   senha?: Prisma.StringFilter<"Usuario"> | string
   role?: Prisma.EnumUsuarioRoleFilter<"Usuario"> | $Enums.UsuarioRole
   ativo?: Prisma.BoolFilter<"Usuario"> | boolean
+  precisaTrocarSenha?: Prisma.BoolFilter<"Usuario"> | boolean
+  senhaAlteradaEm?: Prisma.DateTimeNullableFilter<"Usuario"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Usuario"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Usuario"> | Date | string
   cliente?: Prisma.XOR<Prisma.ClienteScalarRelationFilter, Prisma.ClienteWhereInput>
@@ -225,6 +241,8 @@ export type UsuarioOrderByWithRelationInput = {
   senha?: Prisma.SortOrder
   role?: Prisma.SortOrder
   ativo?: Prisma.SortOrder
+  precisaTrocarSenha?: Prisma.SortOrder
+  senhaAlteradaEm?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   cliente?: Prisma.ClienteOrderByWithRelationInput
@@ -241,6 +259,8 @@ export type UsuarioWhereUniqueInput = Prisma.AtLeast<{
   senha?: Prisma.StringFilter<"Usuario"> | string
   role?: Prisma.EnumUsuarioRoleFilter<"Usuario"> | $Enums.UsuarioRole
   ativo?: Prisma.BoolFilter<"Usuario"> | boolean
+  precisaTrocarSenha?: Prisma.BoolFilter<"Usuario"> | boolean
+  senhaAlteradaEm?: Prisma.DateTimeNullableFilter<"Usuario"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Usuario"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Usuario"> | Date | string
   cliente?: Prisma.XOR<Prisma.ClienteScalarRelationFilter, Prisma.ClienteWhereInput>
@@ -254,6 +274,8 @@ export type UsuarioOrderByWithAggregationInput = {
   senha?: Prisma.SortOrder
   role?: Prisma.SortOrder
   ativo?: Prisma.SortOrder
+  precisaTrocarSenha?: Prisma.SortOrder
+  senhaAlteradaEm?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UsuarioCountOrderByAggregateInput
@@ -272,6 +294,8 @@ export type UsuarioScalarWhereWithAggregatesInput = {
   senha?: Prisma.StringWithAggregatesFilter<"Usuario"> | string
   role?: Prisma.EnumUsuarioRoleWithAggregatesFilter<"Usuario"> | $Enums.UsuarioRole
   ativo?: Prisma.BoolWithAggregatesFilter<"Usuario"> | boolean
+  precisaTrocarSenha?: Prisma.BoolWithAggregatesFilter<"Usuario"> | boolean
+  senhaAlteradaEm?: Prisma.DateTimeNullableWithAggregatesFilter<"Usuario"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Usuario"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Usuario"> | Date | string
 }
@@ -283,6 +307,8 @@ export type UsuarioCreateInput = {
   senha: string
   role?: $Enums.UsuarioRole
   ativo?: boolean
+  precisaTrocarSenha?: boolean
+  senhaAlteradaEm?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   cliente: Prisma.ClienteCreateNestedOneWithoutUsuariosInput
@@ -296,6 +322,8 @@ export type UsuarioUncheckedCreateInput = {
   senha: string
   role?: $Enums.UsuarioRole
   ativo?: boolean
+  precisaTrocarSenha?: boolean
+  senhaAlteradaEm?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -307,6 +335,8 @@ export type UsuarioUpdateInput = {
   senha?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumUsuarioRoleFieldUpdateOperationsInput | $Enums.UsuarioRole
   ativo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  precisaTrocarSenha?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  senhaAlteradaEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cliente?: Prisma.ClienteUpdateOneRequiredWithoutUsuariosNestedInput
@@ -320,6 +350,8 @@ export type UsuarioUncheckedUpdateInput = {
   senha?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumUsuarioRoleFieldUpdateOperationsInput | $Enums.UsuarioRole
   ativo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  precisaTrocarSenha?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  senhaAlteradaEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -332,6 +364,8 @@ export type UsuarioCreateManyInput = {
   senha: string
   role?: $Enums.UsuarioRole
   ativo?: boolean
+  precisaTrocarSenha?: boolean
+  senhaAlteradaEm?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -343,6 +377,8 @@ export type UsuarioUpdateManyMutationInput = {
   senha?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumUsuarioRoleFieldUpdateOperationsInput | $Enums.UsuarioRole
   ativo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  precisaTrocarSenha?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  senhaAlteradaEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -355,6 +391,8 @@ export type UsuarioUncheckedUpdateManyInput = {
   senha?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumUsuarioRoleFieldUpdateOperationsInput | $Enums.UsuarioRole
   ativo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  precisaTrocarSenha?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  senhaAlteradaEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -377,6 +415,8 @@ export type UsuarioCountOrderByAggregateInput = {
   senha?: Prisma.SortOrder
   role?: Prisma.SortOrder
   ativo?: Prisma.SortOrder
+  precisaTrocarSenha?: Prisma.SortOrder
+  senhaAlteradaEm?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -389,6 +429,8 @@ export type UsuarioMaxOrderByAggregateInput = {
   senha?: Prisma.SortOrder
   role?: Prisma.SortOrder
   ativo?: Prisma.SortOrder
+  precisaTrocarSenha?: Prisma.SortOrder
+  senhaAlteradaEm?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -401,6 +443,8 @@ export type UsuarioMinOrderByAggregateInput = {
   senha?: Prisma.SortOrder
   role?: Prisma.SortOrder
   ativo?: Prisma.SortOrder
+  precisaTrocarSenha?: Prisma.SortOrder
+  senhaAlteradaEm?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -462,6 +506,8 @@ export type UsuarioCreateWithoutClienteInput = {
   senha: string
   role?: $Enums.UsuarioRole
   ativo?: boolean
+  precisaTrocarSenha?: boolean
+  senhaAlteradaEm?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -473,6 +519,8 @@ export type UsuarioUncheckedCreateWithoutClienteInput = {
   senha: string
   role?: $Enums.UsuarioRole
   ativo?: boolean
+  precisaTrocarSenha?: boolean
+  senhaAlteradaEm?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -514,6 +562,8 @@ export type UsuarioScalarWhereInput = {
   senha?: Prisma.StringFilter<"Usuario"> | string
   role?: Prisma.EnumUsuarioRoleFilter<"Usuario"> | $Enums.UsuarioRole
   ativo?: Prisma.BoolFilter<"Usuario"> | boolean
+  precisaTrocarSenha?: Prisma.BoolFilter<"Usuario"> | boolean
+  senhaAlteradaEm?: Prisma.DateTimeNullableFilter<"Usuario"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Usuario"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Usuario"> | Date | string
 }
@@ -525,6 +575,8 @@ export type UsuarioCreateManyClienteInput = {
   senha: string
   role?: $Enums.UsuarioRole
   ativo?: boolean
+  precisaTrocarSenha?: boolean
+  senhaAlteradaEm?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -536,6 +588,8 @@ export type UsuarioUpdateWithoutClienteInput = {
   senha?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumUsuarioRoleFieldUpdateOperationsInput | $Enums.UsuarioRole
   ativo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  precisaTrocarSenha?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  senhaAlteradaEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -547,6 +601,8 @@ export type UsuarioUncheckedUpdateWithoutClienteInput = {
   senha?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumUsuarioRoleFieldUpdateOperationsInput | $Enums.UsuarioRole
   ativo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  precisaTrocarSenha?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  senhaAlteradaEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -558,6 +614,8 @@ export type UsuarioUncheckedUpdateManyWithoutClienteInput = {
   senha?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumUsuarioRoleFieldUpdateOperationsInput | $Enums.UsuarioRole
   ativo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  precisaTrocarSenha?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  senhaAlteradaEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -572,6 +630,8 @@ export type UsuarioSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   senha?: boolean
   role?: boolean
   ativo?: boolean
+  precisaTrocarSenha?: boolean
+  senhaAlteradaEm?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
@@ -585,6 +645,8 @@ export type UsuarioSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   senha?: boolean
   role?: boolean
   ativo?: boolean
+  precisaTrocarSenha?: boolean
+  senhaAlteradaEm?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
@@ -598,6 +660,8 @@ export type UsuarioSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   senha?: boolean
   role?: boolean
   ativo?: boolean
+  precisaTrocarSenha?: boolean
+  senhaAlteradaEm?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
@@ -611,11 +675,13 @@ export type UsuarioSelectScalar = {
   senha?: boolean
   role?: boolean
   ativo?: boolean
+  precisaTrocarSenha?: boolean
+  senhaAlteradaEm?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UsuarioOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "clienteId" | "nome" | "email" | "senha" | "role" | "ativo" | "createdAt" | "updatedAt", ExtArgs["result"]["usuario"]>
+export type UsuarioOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "clienteId" | "nome" | "email" | "senha" | "role" | "ativo" | "precisaTrocarSenha" | "senhaAlteradaEm" | "createdAt" | "updatedAt", ExtArgs["result"]["usuario"]>
 export type UsuarioInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
 }
@@ -639,6 +705,8 @@ export type $UsuarioPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     senha: string
     role: $Enums.UsuarioRole
     ativo: boolean
+    precisaTrocarSenha: boolean
+    senhaAlteradaEm: Date | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["usuario"]>
@@ -1072,6 +1140,8 @@ export interface UsuarioFieldRefs {
   readonly senha: Prisma.FieldRef<"Usuario", 'String'>
   readonly role: Prisma.FieldRef<"Usuario", 'UsuarioRole'>
   readonly ativo: Prisma.FieldRef<"Usuario", 'Boolean'>
+  readonly precisaTrocarSenha: Prisma.FieldRef<"Usuario", 'Boolean'>
+  readonly senhaAlteradaEm: Prisma.FieldRef<"Usuario", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Usuario", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Usuario", 'DateTime'>
 }
