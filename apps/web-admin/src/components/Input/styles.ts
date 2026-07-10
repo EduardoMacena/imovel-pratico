@@ -2,24 +2,43 @@
 
 import styled from "styled-components";
 
-export const Field = styled.div`
+export const Field = styled.label`
   display: grid;
-  gap: ${({ theme }) => theme.spacing.sm};
+  gap: ${({ theme }) => theme.spacing.xs};
 `;
 
-export const Label = styled.label`
-  font-size: 14px;
+export const Label = styled.span`
+  color: ${({ theme }) => theme.colors.text};
+  font-size: 13px;
   font-weight: 800;
 `;
 
-export const StyledInput = styled.input`
-  height: 44px;
-  border: 1px solid ${({ theme }) => theme.colors.borderStrong};
+export const InputElement = styled.input`
+  width: 100%;
+  height: 46px;
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: ${({ theme }) => theme.radii.md};
-  padding: 0 14px;
+  background: ${({ theme }) => theme.colors.backgroundSoft};
+  color: ${({ theme }) => theme.colors.text};
+  padding: 0 ${({ theme }) => theme.spacing.md};
   outline: none;
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease;
+
+  &::placeholder {
+    color: ${({ theme }) => theme.colors.textSoft};
+  }
 
   &:focus {
-    border-color: ${({ theme }) => theme.colors.primary};
+    background: ${({ theme }) => theme.colors.surface};
+    border-color: ${({ theme }) => theme.colors.accent};
+    box-shadow: 0 0 0 4px ${({ theme }) => theme.colors.accentSoft};
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
   }
 `;

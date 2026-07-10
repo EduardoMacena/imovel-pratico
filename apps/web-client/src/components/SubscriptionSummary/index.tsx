@@ -7,6 +7,11 @@ import {
 	Header,
 	Item,
 	Label,
+	PlanName,
+	ProgressBar,
+	ProgressHeader,
+	ProgressTrack,
+	ProgressValue,
 	Title,
 	Value,
 	Wrapper,
@@ -26,20 +31,41 @@ function formatDate(value?: string | null) {
 	}).format(new Date(value));
 }
 
+function calcularPercentualUsado(usadas: number, limite: number) {
+	if (limite <= 0) {
+		return 0;
+	}
+
+	return Math.min(Math.round((usadas / limite) * 100), 100);
+}
+
 export function SubscriptionSummary({ assinatura }: SubscriptionSummaryProps) {
+	const percentualUsado = calcularPercentualUsado(
+		assinatura.uso.consultasUsadas,
+		assinatura.uso.limiteMensal
+	);
+
 	return (
 		<Wrapper>
 			<Header>
 				<div>
-					<Title>
-						{assinatura.cliente.nome} — Plano {assinatura.plano.nome}
-					</Title>
+					<Title>{assinatura.cliente.nome}</Title>
+					<PlanName>Plano {assinatura.plano.nome}</PlanName>
 				</div>
 
 				<Badge $status={assinatura.cliente.pagamentoStatus}>
 					{assinatura.cliente.pagamentoStatus}
 				</Badge>
 			</Header>
+
+			<ProgressHeader>
+				<Label>Uso mensal do plano</Label>
+				<ProgressValue>{percentualUsado}% usado</ProgressValue>
+			</ProgressHeader>
+
+			<ProgressTrack>
+				<ProgressBar $percent={percentualUsado} />
+			</ProgressTrack>
 
 			<Grid>
 				<Item>
@@ -48,21 +74,21 @@ export function SubscriptionSummary({ assinatura }: SubscriptionSummaryProps) {
 				</Item>
 
 				<Item>
-					<Label>Intervalo do plano</Label>
+					<Label>Intervalo</Label>
 					<Value>{assinatura.plano.intervaloSegundos}s</Value>
 				</Item>
 
 				<Item>
-					<Label>Consultas usadas</Label>
+					<Label>Usadas</Label>
 					<Value>{assinatura.uso.consultasUsadas}</Value>
 				</Item>
 
 				<Item>
-					<Label>Consultas restantes</Label>
+					<Label>Restantes</Label>
 					<Value>{assinatura.uso.consultasRestantes}</Value>
 				</Item>
 
-				<Item>
+				<Item $wide>
 					<Label>Vencimento</Label>
 					<Value>{formatDate(assinatura.cliente.pagamentoVenceEm)}</Value>
 				</Item>

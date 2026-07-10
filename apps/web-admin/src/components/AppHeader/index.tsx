@@ -1,56 +1,46 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { removeAuthToken } from "../../lib/auth-storage";
+import { Button } from "../Button";
 import {
-	getAuthUser,
-	removeAuthToken,
-	type AuthUser,
-} from "../../lib/auth-storage";
-import {
-	Brand,
-	HeaderContent,
-	HeaderWrapper,
-	LogoutButton,
-	Nav,
-	NavLink,
-	UserInfo,
+  Brand,
+  HeaderActions,
+  HeaderInner,
+  HeaderWrapper,
+  LogoMark,
+  Nav,
+  NavLink,
 } from "./styles";
 
 export function AppHeader() {
-	const router = useRouter();
-	const [user, setUser] = useState<AuthUser | null>(null);
+  const router = useRouter();
 
-	useEffect(() => {
-		setUser(getAuthUser());
-	}, []);
+  function handleLogout() {
+    removeAuthToken();
+    router.push("/login");
+  }
 
-	function handleLogout() {
-		removeAuthToken();
-		router.replace("/login");
-	}
+  return (
+    <HeaderWrapper>
+      <HeaderInner>
+        <Brand href="/dashboard">
+          <LogoMark>IP</LogoMark>
+          Imóvel Prático
+        </Brand>
 
-	return (
-		<HeaderWrapper>
-			<HeaderContent>
-				<Brand href="/clientes">Imóvel Prático Admin</Brand>
-
-				<Nav>
-					<NavLink href="/dashboard">Dashboard</NavLink>
-					<NavLink href="/clientes">Clientes</NavLink>
+        <Nav>
+          <NavLink href="/dashboard">Dashboard</NavLink>
+          <NavLink href="/clientes">Clientes</NavLink>
           <NavLink href="/planos">Planos</NavLink>
+        </Nav>
 
-					{user && (
-						<UserInfo>
-							{user.nome} • {user.role}
-						</UserInfo>
-					)}
-
-					<LogoutButton type="button" onClick={handleLogout}>
-						Sair
-					</LogoutButton>
-				</Nav>
-			</HeaderContent>
-		</HeaderWrapper>
-	);
+        <HeaderActions>
+          <Button type="button" variant="ghost" onClick={handleLogout}>
+            Sair
+          </Button>
+        </HeaderActions>
+      </HeaderInner>
+    </HeaderWrapper>
+  );
 }

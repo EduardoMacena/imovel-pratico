@@ -1,10 +1,25 @@
 "use client";
 
-import type { ButtonHTMLAttributes } from "react";
+import { ButtonHTMLAttributes, ReactNode } from "react";
 import { StyledButton } from "./styles";
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
+type ButtonVariant = "primary" | "secondary" | "ghost" | "danger" | "accent";
 
-export function Button(props: ButtonProps) {
-  return <StyledButton {...props} />;
+type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+  children: ReactNode;
+  variant?: ButtonVariant;
+  fullWidth?: boolean;
+};
+
+export function Button({
+  children,
+  variant = "primary",
+  fullWidth,
+  ...props
+}: ButtonProps) {
+  return (
+    <StyledButton $variant={variant} $fullWidth={fullWidth} {...props}>
+      {children}
+    </StyledButton>
+  );
 }

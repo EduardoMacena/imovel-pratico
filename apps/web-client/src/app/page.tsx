@@ -1,9 +1,9 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { AppHeader } from "../components/AppHeader";
 import { useRequireAuth } from "../hooks/useRequireAuth";
-import Link from "next/link";
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
 import { Input } from "../components/Input";
@@ -19,26 +19,49 @@ import type {
 	ProgressoTarefaResponse,
 	MinhaAssinaturaResponse,
 } from "../features/busca/types";
+import { SubscriptionSummary } from "../components/SubscriptionSummary";
 import {
 	Actions,
 	EmptyState,
 	ErrorBox,
 	FormGrid,
-	Header,
+	HeaderActions,
+	HeaderLink,
+	HeroContent,
+	HeroGrid,
+	HeroPanel,
+	HeroPanelContent,
+	HeroPanelEyebrow,
+	HeroPanelGrid,
+	HeroPanelItem,
+	HeroPanelLabel,
+	HeroPanelText,
+	HeroPanelValue,
+	InlineHint,
+	MainGrid,
 	PageContainer,
 	ProductBadge,
+	ProgressWrapper,
 	ResultsCount,
 	ResultsHeader,
 	ResultsList,
 	ResultsSection,
 	ResultsTitle,
+	SearchCardBody,
+	SearchCardHeader,
+	SearchDescription,
+	SearchForm,
+	SearchTitle,
+	Sidebar,
+	SidebarCard,
+	SidebarDescription,
+	SidebarList,
+	SidebarListItem,
+	SidebarTitle,
 	Subtitle,
 	TaskId,
 	Title,
-	HeaderActions,
-	HeaderLink,
 } from "./page.styles";
-import { SubscriptionSummary } from "../components/SubscriptionSummary";
 
 export default function HomePage() {
 	const { isCheckingAuth } = useRequireAuth();
@@ -107,7 +130,7 @@ export default function HomePage() {
 
 	useEffect(() => {
 		if (!isCheckingAuth) {
-      carregarAssinatura();
+			carregarAssinatura();
 
 			if (!jobId || isFinalizado) {
 				return;
@@ -163,94 +186,186 @@ export default function HomePage() {
 			<AppHeader />
 
 			<PageContainer>
-			{assinatura && <SubscriptionSummary assinatura={assinatura} />}
-				<Header>
-					<ProductBadge>Imóvel Prático</ProductBadge>
+				<HeroGrid>
+					<HeroContent>
+						<ProductBadge>Imóvel Prático</ProductBadge>
 
-					<Title>Captação inteligente de imóveis</Title>
+						<Title>Captação inteligente de proprietários</Title>
 
-					<Subtitle>
-						Inicie uma busca por endereço, acompanhe o progresso da tarefa e
-						veja os proprietários encontrados automaticamente.
-					</Subtitle>
+						<Subtitle>
+							Inicie uma busca por endereço, acompanhe o processamento em
+							tempo real e visualize contatos enriquecidos em uma operação
+							simples, organizada e profissional.
+						</Subtitle>
 
-					<HeaderActions>
-						<Link href="/historico" passHref legacyBehavior>
-							<HeaderLink>Ver histórico de buscas</HeaderLink>
-						</Link>
-					</HeaderActions>
-				</Header>
+						<HeaderActions>
+							<Link href="/historico" passHref legacyBehavior>
+								<HeaderLink>Ver histórico de buscas</HeaderLink>
+							</Link>
+						</HeaderActions>
+					</HeroContent>
 
-				<Card>
-					{buscaBloqueada && assinatura && (
-						<ErrorBox>
-							{assinatura.cliente.pagamentoStatus !== "PAGO"
-								? "Seu plano está pendente ou vencido. Regularize o pagamento para iniciar novas buscas."
-								: "Você atingiu o limite mensal de consultas do seu plano."}
-						</ErrorBox>
-					)}
-					<form onSubmit={criarTarefa}>
-						<FormGrid>
-							<Input
-								label="Logradouro"
-								value={logradouro}
-								onChange={(event) => setLogradouro(event.target.value)}
-								placeholder="Ex: Rua Desembargador Jorge Fontana"
-								required
-							/>
+					<HeroPanel>
+						<HeroPanelContent>
+							<HeroPanelEyebrow>Fluxo da busca</HeroPanelEyebrow>
 
-							<Input
-								label="Número"
-								value={numero}
-								onChange={(event) => setNumero(event.target.value)}
-								placeholder="Ex: 200"
-								required
-							/>
-						</FormGrid>
+							<HeroPanelText>
+								Endereço informado, índice cadastral localizado, proprietário
+								identificado e contato enriquecido em uma única jornada.
+							</HeroPanelText>
 
-						<Actions>
-							<Button type="submit" disabled={isLoading || buscaBloqueada}>
-								{isLoading ? "Criando tarefa..." : "Iniciar busca"}
-							</Button>
+							<HeroPanelGrid>
+								<HeroPanelItem>
+									<HeroPanelLabel>Plano</HeroPanelLabel>
+									<HeroPanelValue>
+										{assinatura?.plano.nome ?? "Carregando"}
+									</HeroPanelValue>
+								</HeroPanelItem>
 
-							{progresso?.status && <StatusBadge status={progresso.status} />}
+								<HeroPanelItem>
+									<HeroPanelLabel>Restantes</HeroPanelLabel>
+									<HeroPanelValue>
+										{assinatura?.uso.consultasRestantes ?? "-"}
+									</HeroPanelValue>
+								</HeroPanelItem>
 
-							{jobId && <TaskId>Tarefa: {jobId}</TaskId>}
-						</Actions>
-					</form>
+								<HeroPanelItem>
+									<HeroPanelLabel>Status</HeroPanelLabel>
+									<HeroPanelValue>
+										{assinatura?.cliente.pagamentoStatus ?? "-"}
+									</HeroPanelValue>
+								</HeroPanelItem>
+							</HeroPanelGrid>
+						</HeroPanelContent>
+					</HeroPanel>
+				</HeroGrid>
 
-					{erro && <ErrorBox>{erro}</ErrorBox>}
+				<MainGrid>
+					<div>
+						<Card>
+							<SearchCardHeader>
+								<div>
+									<SearchTitle>Nova busca</SearchTitle>
+									<SearchDescription>
+										Informe o logradouro e o número do imóvel para iniciar a
+										captação automática.
+									</SearchDescription>
+								</div>
 
-					{progresso && (
-						<ProgressBar
-							status={progresso.status}
-							total={progresso.progress.total}
-							current={progresso.progress.current}
-							percentage={progresso.progress.percentage}
-						/>
-					)}
+								{progresso?.status && <StatusBadge status={progresso.status} />}
+							</SearchCardHeader>
 
-					{jobId && !progresso && !erro && (
-						<EmptyState>Carregando progresso da tarefa...</EmptyState>
-					)}
+							<SearchCardBody>
+								{buscaBloqueada && assinatura && (
+									<ErrorBox>
+										{assinatura.cliente.pagamentoStatus !== "PAGO"
+											? "Seu plano está pendente ou vencido. Regularize o pagamento para iniciar novas buscas."
+											: "Você atingiu o limite mensal de consultas do seu plano."}
+									</ErrorBox>
+								)}
 
-					{progresso?.resultados && progresso.resultados.length > 0 && (
-						<ResultsSection>
-							<ResultsHeader>
-								<ResultsTitle>Resultados encontrados</ResultsTitle>
-								<ResultsCount>
-									{progresso.resultados.length} resultado(s)
-								</ResultsCount>
-							</ResultsHeader>
+								<SearchForm onSubmit={criarTarefa}>
+									<FormGrid>
+										<Input
+											label="Logradouro"
+											value={logradouro}
+											onChange={(event) => setLogradouro(event.target.value)}
+											placeholder="Ex: Rua Desembargador Jorge Fontana"
+											required
+										/>
 
-							<ResultsList>
-								{progresso.resultados.map((resultado) => (
-									<ResultCard key={resultado.id} resultado={resultado} />
-								))}
-							</ResultsList>
-						</ResultsSection>
-					)}
-				</Card>
+										<Input
+											label="Número"
+											value={numero}
+											onChange={(event) => setNumero(event.target.value)}
+											placeholder="Ex: 200"
+											required
+										/>
+									</FormGrid>
+
+									<Actions>
+										<Button type="submit" disabled={isLoading || buscaBloqueada}>
+											{isLoading ? "Criando tarefa..." : "Iniciar busca"}
+										</Button>
+
+										<InlineHint>
+											A busca respeita o limite e o intervalo do seu plano.
+										</InlineHint>
+									</Actions>
+								</SearchForm>
+
+								{jobId && <TaskId>Tarefa: {jobId}</TaskId>}
+
+								{erro && <ErrorBox>{erro}</ErrorBox>}
+
+								{progresso && (
+									<ProgressWrapper>
+										<ProgressBar
+											status={progresso.status}
+											total={progresso.progress.total}
+											current={progresso.progress.current}
+											percentage={progresso.progress.percentage}
+										/>
+									</ProgressWrapper>
+								)}
+
+								{jobId && !progresso && !erro && (
+									<EmptyState>
+										Carregando progresso da tarefa. Assim que o processamento
+										iniciar, os resultados aparecerão aqui.
+									</EmptyState>
+								)}
+							</SearchCardBody>
+						</Card>
+
+						{progresso?.resultados && progresso.resultados.length > 0 && (
+							<ResultsSection>
+								<ResultsHeader>
+									<div>
+										<ResultsTitle>Resultados encontrados</ResultsTitle>
+										<ResultsCount>
+											{progresso.resultados.length} resultado(s) localizado(s)
+										</ResultsCount>
+									</div>
+								</ResultsHeader>
+
+								<ResultsList>
+									{progresso.resultados.map((resultado) => (
+										<ResultCard key={resultado.id} resultado={resultado} />
+									))}
+								</ResultsList>
+							</ResultsSection>
+						)}
+					</div>
+
+					<Sidebar>
+						{assinatura && <SubscriptionSummary assinatura={assinatura} />}
+
+						<SidebarCard>
+							<SidebarTitle>Como obter melhores resultados</SidebarTitle>
+
+							<SidebarDescription>
+								Use endereços completos e revise a grafia antes de iniciar a
+								busca. Isso reduz tentativas inválidas e melhora a precisão da
+								captação.
+							</SidebarDescription>
+
+							<SidebarList>
+								<SidebarListItem>
+									Digite o logradouro sem abreviações excessivas.
+								</SidebarListItem>
+
+								<SidebarListItem>
+									Confirme o número antes de iniciar a tarefa.
+								</SidebarListItem>
+
+								<SidebarListItem>
+									Acompanhe o histórico para consultar buscas anteriores.
+								</SidebarListItem>
+							</SidebarList>
+						</SidebarCard>
+					</Sidebar>
+				</MainGrid>
 			</PageContainer>
 		</>
 	);

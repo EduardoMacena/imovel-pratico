@@ -4,29 +4,47 @@ import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "../../components/Button";
 import { Input } from "../../components/Input";
-import { login } from "../../features/auth/api";
-import {
-  getAuthToken,
-  setAuthCliente,
-  setAuthToken,
-  setAuthUser,
-} from "../../lib/auth-storage";
+import { getAuthToken, setAuthCliente, setAuthToken, setAuthUser } from "../../lib/auth-storage";
 import {
   Badge,
   ErrorBox,
+  FooterText,
   Form,
-  Hint,
+  Hero,
+  HeroContent,
+  HeroText,
+  HeroTitle,
+  LoginArea,
   LoginCard,
-  PageContainer,
-  Subtitle,
-  Title,
+  LoginSubtitle,
+  LoginTitle,
+  Page,
 } from "./page.styles";
+import { login } from "../../features/auth/api";
+
+type LoginResponse = {
+  token?: string;
+  accessToken?: string;
+  usuario?: {
+    id: string;
+    nome: string;
+    email: string;
+    role: string;
+  };
+  user?: {
+    id: string;
+    nome?: string;
+    email: string;
+    role?: string;
+  };
+};
 
 export default function LoginPage() {
   const router = useRouter();
 
   const [email, setEmail] = useState("admin@twa.com.br");
   const [senha, setSenha] = useState("123456");
+
   const [isLoading, setIsLoading] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
 
@@ -50,11 +68,23 @@ export default function LoginPage() {
         senha,
       });
 
-      setAuthToken(response.token);
+      if (!response) {
+        throw new Error(
+           "E-mail ou senha inválidos"
+        );
+      }
+
+      const token = response.token;
+
+      if (!token) {
+        throw new Error("Token não retornado pela API");
+      }
+
+      setAuthToken(token);
       setAuthUser(response.usuario);
       setAuthCliente(response.cliente);
 
-      router.replace("/");
+      router.push("/");
     } catch (error) {
       setErro(
         error instanceof Error
@@ -67,51 +97,65 @@ export default function LoginPage() {
   }
 
   return (
-    <PageContainer>
-      <LoginCard>
-        <Badge>Imóvel Prático</Badge>
+    <Page>
+      <Hero>
+        <HeroContent>
+          <Badge>Área da imobiliária</Badge>
 
-        <Title>Entrar no sistema</Title>
+          <HeroTitle>
+            Encontre proprietários com mais controle, velocidade e precisão.
+          </HeroTitle>
 
-        <Subtitle>
-          Acesse sua conta para iniciar buscas, acompanhar tarefas e consultar o
-          histórico da sua imobiliária.
-        </Subtitle>
+          <HeroText>
+            Consulte imóveis, acompanhe o processamento, visualize contatos
+            enriquecidos e exporte resultados em uma experiência simples e
+            profissional.
+          </HeroText>
+        </HeroContent>
+      </Hero>
 
-        <Form onSubmit={handleSubmit}>
-          <Input
-            label="E-mail"
-            type="email"
-            value={email}
-            onChange={event => setEmail(event.target.value)}
-            placeholder="seu@email.com"
-            required
-          />
+      <LoginArea>
+        <LoginCard>
+          <LoginTitle>Acessar plataforma</LoginTitle>
 
-          <Input
-            label="Senha"
-            type="password"
-            value={senha}
-            onChange={event => setSenha(event.target.value)}
-            placeholder="Sua senha"
-            required
-          />
+          <LoginSubtitle>
+            Entre com o acesso da sua imobiliária para iniciar buscas e
+            acompanhar seus resultados.
+          </LoginSubtitle>
 
-          {erro && <ErrorBox>{erro}</ErrorBox>}
+          <Form onSubmit={handleSubmit}>
+            <Input
+              label="E-mail"
+              type="email"
+              value={email}
+              onChange={event => setEmail(event.target.value)}
+              placeholder="seu@email.com"
+              autoComplete="email"
+              required
+            />
 
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? "Entrando..." : "Entrar"}
-          </Button>
-        </Form>
+            <Input
+              label="Senha"
+              type="password"
+              value={senha}
+              onChange={event => setSenha(event.target.value)}
+              placeholder="Digite sua senha"
+              autoComplete="current-password"
+              required
+            />
 
-        <Hint>
-          Acesso inicial de teste:
-          <br />
-          <strong>E-mail:</strong> admin@twa.com.br
-          <br />
-          <strong>Senha:</strong> 123456
-        </Hint>
-      </LoginCard>
-    </PageContainer>
+            {erro && <ErrorBox>{erro}</ErrorBox>}
+
+            <Button type="submit" fullWidth disabled={isLoading}>
+              {isLoading ? "Entrando..." : "Entrar"}
+            </Button>
+          </Form>
+
+          <FooterText>
+            Imóvel Prático · Inteligência para prospecção imobiliária
+          </FooterText>
+        </LoginCard>
+      </LoginArea>
+    </Page>
   );
 }
