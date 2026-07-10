@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import { AppHeader } from "../../components/AppHeader";
 import { Button } from "../../components/Button";
 import { Card } from "../../components/Card";
@@ -23,20 +23,39 @@ import { Select } from "../../components/Select";
 import {
 	Actions,
 	ClientItem,
+	ClientMeta,
 	ClientName,
 	ClientTop,
 	DetailsLink,
 	EmptyState,
+	EmptyStateTitle,
 	ErrorBox,
 	Form,
+	FormHeader,
+	FormSubtitle,
+	FormTitle,
 	Grid,
 	Header,
+	HeaderContent,
+	HeaderEyebrow,
+	HeaderGrid,
+	HeaderPanel,
+	HeaderPanelLabel,
+	HeaderPanelValue,
 	InfoBox,
 	InfoGrid,
 	InfoLabel,
 	InfoValue,
 	List,
+	ListHeader,
+	ListSubtitle,
+	ListTitle,
 	PageContainer,
+	Sidebar,
+	StatCard,
+	StatGrid,
+	StatLabel,
+	StatValue,
 	Subtitle,
 	Title,
 } from "./page.styles";
@@ -55,6 +74,28 @@ export default function ClientesPage() {
 	const [isLoading, setIsLoading] = useState(true);
 	const [isCreating, setIsCreating] = useState(false);
 	const [erro, setErro] = useState<string | null>(null);
+
+	const resumo = useMemo(() => {
+		const ativos = clientes.filter((cliente) => cliente.status === "ATIVO").length;
+		const suspensos = clientes.filter(
+			(cliente) => cliente.status === "SUSPENSO"
+		).length;
+
+		const totalUsuarios = clientes.reduce((total, cliente) => {
+			return total + cliente.totalUsuarios;
+		}, 0);
+
+		const totalTarefas = clientes.reduce((total, cliente) => {
+			return total + cliente.totalTarefas;
+		}, 0);
+
+		return {
+			ativos,
+			suspensos,
+			totalUsuarios,
+			totalTarefas,
+		};
+	}, [clientes]);
 
 	function getConsumoCliente(clienteId: string) {
 		return consumos.find((consumo) => consumo.cliente.id === clienteId) ?? null;
@@ -149,51 +190,114 @@ export default function ClientesPage() {
 
 			<PageContainer>
 				<Header>
-					<Title>Clientes</Title>
-					<Subtitle>
-						Cadastre imobiliárias, configure limites e gerencie os usuários de
-						cada cliente.
-					</Subtitle>
+					<HeaderGrid>
+						<HeaderContent>
+							<HeaderEyebrow>Gestão comercial</HeaderEyebrow>
+
+							<Title>Clientes</Title>
+
+							<Subtitle>
+								Cadastre imobiliárias, vincule planos comerciais, acompanhe
+								consumo mensal e gerencie a operação de cada cliente.
+							</Subtitle>
+						</HeaderContent>
+
+						<HeaderPanel>
+							<HeaderPanelLabel>Total de clientes</HeaderPanelLabel>
+							<HeaderPanelValue>{clientes.length}</HeaderPanelValue>
+						</HeaderPanel>
+					</HeaderGrid>
 				</Header>
 
+				<StatGrid>
+					<StatCard>
+						<StatLabel>Clientes ativos</StatLabel>
+						<StatValue>{resumo.ativos}</StatValue>
+					</StatCard>
+
+					<StatCard>
+						<StatLabel>Suspensos</StatLabel>
+						<StatValue>{resumo.suspensos}</StatValue>
+					</StatCard>
+
+					<StatCard>
+						<StatLabel>Usuários cadastrados</StatLabel>
+						<StatValue>{resumo.totalUsuarios}</StatValue>
+					</StatCard>
+
+					<StatCard>
+						<StatLabel>Tarefas executadas</StatLabel>
+						<StatValue>{resumo.totalTarefas}</StatValue>
+					</StatCard>
+				</StatGrid>
+
 				<Grid>
-					<Card>
-						<Form onSubmit={handleCriarCliente}>
-							<Input
-								label="Nome do cliente"
-								value={nome}
-								onChange={(event) => setNome(event.target.value)}
-								placeholder="Ex: TWA Investimentos"
-								required
-							/>
+					<Sidebar>
+						<Card>
+							<FormHeader>
+								<FormTitle>Novo cliente</FormTitle>
+								<FormSubtitle>
+									Crie uma nova imobiliária e vincule imediatamente um plano
+									ativo.
+								</FormSubtitle>
+							</FormHeader>
 
-							<Select
-								label="Plano"
-								value={planoId}
-								onChange={(event) => setPlanoId(event.target.value)}
-								required
-							>
-								{planos.map((plano) => (
-									<option key={plano.id} value={plano.id}>
-										{plano.nome} — {plano.limiteMensalConsultas} consultas —{" "}
-										{plano.intervaloSegundos}s
-									</option>
-								))}
-							</Select>
+							<Form onSubmit={handleCriarCliente}>
+								<Input
+									label="Nome do cliente"
+									value={nome}
+									onChange={(event) => setNome(event.target.value)}
+									placeholder="Ex: TWA Investimentos"
+									required
+								/>
 
-							<Button type="submit" disabled={isCreating}>
-								{isCreating ? "Criando..." : "Criar cliente"}
-							</Button>
-						</Form>
-					</Card>
+								<Select
+									label="Plano"
+									value={planoId}
+									onChange={(event) => setPlanoId(event.target.value)}
+									required
+								>
+									{planos.map((plano) => (
+										<option key={plano.id} value={plano.id}>
+											{plano.nome} — {plano.limiteMensalConsultas} consultas —{" "}
+											{plano.intervaloSegundos}s
+										</option>
+									))}
+								</Select>
+
+								<Button type="submit" fullWidth disabled={isCreating}>
+									{isCreating ? "Criando..." : "Criar cliente"}
+								</Button>
+							</Form>
+						</Card>
+					</Sidebar>
 
 					<div>
+						<ListHeader>
+							<div>
+								<ListTitle>Clientes cadastrados</ListTitle>
+								<ListSubtitle>
+									Visualize plano, consumo, usuários, tarefas e atalhos de
+									gestão.
+								</ListSubtitle>
+							</div>
+						</ListHeader>
+
 						{erro && <ErrorBox>{erro}</ErrorBox>}
 
-						{isLoading && <EmptyState>Carregando clientes...</EmptyState>}
+						{isLoading && (
+							<EmptyState>
+								<EmptyStateTitle>Carregando clientes...</EmptyStateTitle>
+								Estamos buscando os clientes cadastrados na plataforma.
+							</EmptyState>
+						)}
 
 						{!isLoading && clientes.length === 0 && (
-							<EmptyState>Nenhum cliente cadastrado ainda.</EmptyState>
+							<EmptyState>
+								<EmptyStateTitle>Nenhum cliente cadastrado ainda.</EmptyStateTitle>
+								Crie o primeiro cliente para iniciar a operação comercial do
+								SaaS.
+							</EmptyState>
 						)}
 
 						{!isLoading && clientes.length > 0 && (
@@ -206,7 +310,7 @@ export default function ClientesPage() {
 											<ClientTop>
 												<div>
 													<ClientName>{cliente.nome}</ClientName>
-													<div>{cliente.slug}</div>
+													<ClientMeta>{cliente.slug}</ClientMeta>
 												</div>
 
 												<StatusBadge status={cliente.status} />
@@ -242,6 +346,7 @@ export default function ClientesPage() {
 													</InfoValue>
 												</InfoBox>
 											</InfoGrid>
+
 											{consumo && (
 												<ClientConsumptionCard consumo={consumo} compact />
 											)}
