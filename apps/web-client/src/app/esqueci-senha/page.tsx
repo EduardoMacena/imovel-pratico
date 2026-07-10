@@ -98,13 +98,6 @@ export default function EsqueciSenhaPage() {
             {erro && <ErrorBox>{erro}</ErrorBox>}
             {sucesso && <SuccessBox>{sucesso}</SuccessBox>}
 
-            {resetUrl && (
-              <SuccessBox>
-                Ambiente local:{" "}
-                <DevLink href={resetUrl}>abrir link de redefinição</DevLink>
-              </SuccessBox>
-            )}
-
             <Button type="submit" fullWidth disabled={isLoading}>
               {isLoading ? "Enviando..." : "Enviar instruções"}
             </Button>
