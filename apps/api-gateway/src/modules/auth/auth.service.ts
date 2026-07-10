@@ -1,9 +1,12 @@
+import crypto from "node:crypto";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { prisma } from "@imovel-pratico/database";
 import { env } from "../../config/env.js";
 import type {
   LoginInput,
+  RedefinirSenhaInput,
+  SolicitarRedefinicaoSenhaInput,
   TrocarMinhaSenhaInput,
 } from "./auth.schemas.js";
 
@@ -13,6 +16,8 @@ export type AuthTokenPayload = {
   email: string;
   role: string;
 };
+
+const RESET_TOKEN_EXPIRACAO_MINUTOS = 60;
 
 export class CredenciaisInvalidasError extends Error {
   constructor() {
@@ -47,6 +52,33 @@ export class UsuarioNaoEncontradoError extends Error {
     super("Usuário não encontrado");
     this.name = "UsuarioNaoEncontradoError";
   }
+}
+
+export class TokenRedefinicaoSenhaInvalidoError extends Error {
+  constructor() {
+    super("Link de redefinição inválido ou expirado");
+    this.name = "TokenRedefinicaoSenhaInvalidoError";
+  }
+}
+
+function gerarResetToken() {
+  return crypto.randomBytes(32).toString("hex");
+}
+
+function gerarTokenHash(token: string) {
+  return crypto.createHash("sha256").update(token).digest("hex");
+}
+
+function getWebClientUrl() {
+  return process.env.WEB_CLIENT_URL ?? "http://localhost:3001";
+}
+
+function getResetSenhaExpiraEm() {
+  const expiraEm = new Date();
+
+  expiraEm.setMinutes(expiraEm.getMinutes() + RESET_TOKEN_EXPIRACAO_MINUTOS);
+
+  return expiraEm;
 }
 
 export async function login(data: LoginInput) {
@@ -146,6 +178,9 @@ export async function trocarMinhaSenha(
       senha: novaSenhaHash,
       precisaTrocarSenha: false,
       senhaAlteradaEm: new Date(),
+      resetSenhaTokenHash: null,
+      resetSenhaExpiraEm: null,
+      resetSenhaUsadoEm: null,
     },
     select: {
       id: true,
@@ -162,5 +197,99 @@ export async function trocarMinhaSenha(
   return {
     usuario: usuarioAtualizado,
     message: "Senha alterada com sucesso.",
+  };
+}
+
+export async function solicitarRedefinicaoSenha(
+  data: SolicitarRedefinicaoSenhaInput
+) {
+  const mensagem =
+    "Se o e-mail existir na plataforma, enviaremos as instruções para redefinir a senha.";
+
+  const usuario = await prisma.usuario.findUnique({
+    where: {
+      email: data.email,
+    },
+    include: {
+      cliente: {
+        select: {
+          status: true,
+        },
+      },
+    },
+  });
+
+  if (!usuario || !usuario.ativo || usuario.cliente.status !== "ATIVO") {
+    return {
+      message: mensagem,
+      resetUrl: null,
+    };
+  }
+
+  const token = gerarResetToken();
+  const tokenHash = gerarTokenHash(token);
+  const expiraEm = getResetSenhaExpiraEm();
+
+  await prisma.usuario.update({
+    where: {
+      id: usuario.id,
+    },
+    data: {
+      resetSenhaTokenHash: tokenHash,
+      resetSenhaExpiraEm: expiraEm,
+      resetSenhaUsadoEm: null,
+    },
+  });
+
+  const resetUrl = `${getWebClientUrl()}/redefinir-senha?token=${token}`;
+
+  console.log("[RESET_SENHA_URL]", resetUrl);
+
+  return {
+    message: mensagem,
+    resetUrl,
+  };
+}
+
+export async function redefinirSenha(data: RedefinirSenhaInput) {
+  const tokenHash = gerarTokenHash(data.token);
+  const agora = new Date();
+
+  const usuario = await prisma.usuario.findFirst({
+    where: {
+      resetSenhaTokenHash: tokenHash,
+      resetSenhaExpiraEm: {
+        gt: agora,
+      },
+      resetSenhaUsadoEm: null,
+      ativo: true,
+      cliente: {
+        status: "ATIVO",
+      },
+    },
+  });
+
+  if (!usuario) {
+    throw new TokenRedefinicaoSenhaInvalidoError();
+  }
+
+  const senhaHash = await bcrypt.hash(data.novaSenha, 10);
+
+  await prisma.usuario.update({
+    where: {
+      id: usuario.id,
+    },
+    data: {
+      senha: senhaHash,
+      precisaTrocarSenha: false,
+      senhaAlteradaEm: agora,
+      resetSenhaTokenHash: null,
+      resetSenhaExpiraEm: null,
+      resetSenhaUsadoEm: agora,
+    },
+  });
+
+  return {
+    message: "Senha redefinida com sucesso. Faça login com a nova senha.",
   };
 }

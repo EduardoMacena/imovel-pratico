@@ -34,6 +34,9 @@ export type UsuarioMinAggregateOutputType = {
   ativo: boolean | null
   precisaTrocarSenha: boolean | null
   senhaAlteradaEm: Date | null
+  resetSenhaTokenHash: string | null
+  resetSenhaExpiraEm: Date | null
+  resetSenhaUsadoEm: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -48,6 +51,9 @@ export type UsuarioMaxAggregateOutputType = {
   ativo: boolean | null
   precisaTrocarSenha: boolean | null
   senhaAlteradaEm: Date | null
+  resetSenhaTokenHash: string | null
+  resetSenhaExpiraEm: Date | null
+  resetSenhaUsadoEm: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -62,6 +68,9 @@ export type UsuarioCountAggregateOutputType = {
   ativo: number
   precisaTrocarSenha: number
   senhaAlteradaEm: number
+  resetSenhaTokenHash: number
+  resetSenhaExpiraEm: number
+  resetSenhaUsadoEm: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -78,6 +87,9 @@ export type UsuarioMinAggregateInputType = {
   ativo?: true
   precisaTrocarSenha?: true
   senhaAlteradaEm?: true
+  resetSenhaTokenHash?: true
+  resetSenhaExpiraEm?: true
+  resetSenhaUsadoEm?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -92,6 +104,9 @@ export type UsuarioMaxAggregateInputType = {
   ativo?: true
   precisaTrocarSenha?: true
   senhaAlteradaEm?: true
+  resetSenhaTokenHash?: true
+  resetSenhaExpiraEm?: true
+  resetSenhaUsadoEm?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -106,6 +121,9 @@ export type UsuarioCountAggregateInputType = {
   ativo?: true
   precisaTrocarSenha?: true
   senhaAlteradaEm?: true
+  resetSenhaTokenHash?: true
+  resetSenhaExpiraEm?: true
+  resetSenhaUsadoEm?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -193,6 +211,9 @@ export type UsuarioGroupByOutputType = {
   ativo: boolean
   precisaTrocarSenha: boolean
   senhaAlteradaEm: Date | null
+  resetSenhaTokenHash: string | null
+  resetSenhaExpiraEm: Date | null
+  resetSenhaUsadoEm: Date | null
   createdAt: Date
   updatedAt: Date
   _count: UsuarioCountAggregateOutputType | null
@@ -228,6 +249,9 @@ export type UsuarioWhereInput = {
   ativo?: Prisma.BoolFilter<"Usuario"> | boolean
   precisaTrocarSenha?: Prisma.BoolFilter<"Usuario"> | boolean
   senhaAlteradaEm?: Prisma.DateTimeNullableFilter<"Usuario"> | Date | string | null
+  resetSenhaTokenHash?: Prisma.StringNullableFilter<"Usuario"> | string | null
+  resetSenhaExpiraEm?: Prisma.DateTimeNullableFilter<"Usuario"> | Date | string | null
+  resetSenhaUsadoEm?: Prisma.DateTimeNullableFilter<"Usuario"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Usuario"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Usuario"> | Date | string
   cliente?: Prisma.XOR<Prisma.ClienteScalarRelationFilter, Prisma.ClienteWhereInput>
@@ -243,6 +267,9 @@ export type UsuarioOrderByWithRelationInput = {
   ativo?: Prisma.SortOrder
   precisaTrocarSenha?: Prisma.SortOrder
   senhaAlteradaEm?: Prisma.SortOrderInput | Prisma.SortOrder
+  resetSenhaTokenHash?: Prisma.SortOrderInput | Prisma.SortOrder
+  resetSenhaExpiraEm?: Prisma.SortOrderInput | Prisma.SortOrder
+  resetSenhaUsadoEm?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   cliente?: Prisma.ClienteOrderByWithRelationInput
@@ -251,6 +278,7 @@ export type UsuarioOrderByWithRelationInput = {
 export type UsuarioWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   email?: string
+  resetSenhaTokenHash?: string
   AND?: Prisma.UsuarioWhereInput | Prisma.UsuarioWhereInput[]
   OR?: Prisma.UsuarioWhereInput[]
   NOT?: Prisma.UsuarioWhereInput | Prisma.UsuarioWhereInput[]
@@ -261,10 +289,12 @@ export type UsuarioWhereUniqueInput = Prisma.AtLeast<{
   ativo?: Prisma.BoolFilter<"Usuario"> | boolean
   precisaTrocarSenha?: Prisma.BoolFilter<"Usuario"> | boolean
   senhaAlteradaEm?: Prisma.DateTimeNullableFilter<"Usuario"> | Date | string | null
+  resetSenhaExpiraEm?: Prisma.DateTimeNullableFilter<"Usuario"> | Date | string | null
+  resetSenhaUsadoEm?: Prisma.DateTimeNullableFilter<"Usuario"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Usuario"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Usuario"> | Date | string
   cliente?: Prisma.XOR<Prisma.ClienteScalarRelationFilter, Prisma.ClienteWhereInput>
-}, "id" | "email">
+}, "id" | "email" | "resetSenhaTokenHash">
 
 export type UsuarioOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -276,6 +306,9 @@ export type UsuarioOrderByWithAggregationInput = {
   ativo?: Prisma.SortOrder
   precisaTrocarSenha?: Prisma.SortOrder
   senhaAlteradaEm?: Prisma.SortOrderInput | Prisma.SortOrder
+  resetSenhaTokenHash?: Prisma.SortOrderInput | Prisma.SortOrder
+  resetSenhaExpiraEm?: Prisma.SortOrderInput | Prisma.SortOrder
+  resetSenhaUsadoEm?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UsuarioCountOrderByAggregateInput
@@ -296,6 +329,9 @@ export type UsuarioScalarWhereWithAggregatesInput = {
   ativo?: Prisma.BoolWithAggregatesFilter<"Usuario"> | boolean
   precisaTrocarSenha?: Prisma.BoolWithAggregatesFilter<"Usuario"> | boolean
   senhaAlteradaEm?: Prisma.DateTimeNullableWithAggregatesFilter<"Usuario"> | Date | string | null
+  resetSenhaTokenHash?: Prisma.StringNullableWithAggregatesFilter<"Usuario"> | string | null
+  resetSenhaExpiraEm?: Prisma.DateTimeNullableWithAggregatesFilter<"Usuario"> | Date | string | null
+  resetSenhaUsadoEm?: Prisma.DateTimeNullableWithAggregatesFilter<"Usuario"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Usuario"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Usuario"> | Date | string
 }
@@ -309,6 +345,9 @@ export type UsuarioCreateInput = {
   ativo?: boolean
   precisaTrocarSenha?: boolean
   senhaAlteradaEm?: Date | string | null
+  resetSenhaTokenHash?: string | null
+  resetSenhaExpiraEm?: Date | string | null
+  resetSenhaUsadoEm?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   cliente: Prisma.ClienteCreateNestedOneWithoutUsuariosInput
@@ -324,6 +363,9 @@ export type UsuarioUncheckedCreateInput = {
   ativo?: boolean
   precisaTrocarSenha?: boolean
   senhaAlteradaEm?: Date | string | null
+  resetSenhaTokenHash?: string | null
+  resetSenhaExpiraEm?: Date | string | null
+  resetSenhaUsadoEm?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -337,6 +379,9 @@ export type UsuarioUpdateInput = {
   ativo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   precisaTrocarSenha?: Prisma.BoolFieldUpdateOperationsInput | boolean
   senhaAlteradaEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resetSenhaTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetSenhaExpiraEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resetSenhaUsadoEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cliente?: Prisma.ClienteUpdateOneRequiredWithoutUsuariosNestedInput
@@ -352,6 +397,9 @@ export type UsuarioUncheckedUpdateInput = {
   ativo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   precisaTrocarSenha?: Prisma.BoolFieldUpdateOperationsInput | boolean
   senhaAlteradaEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resetSenhaTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetSenhaExpiraEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resetSenhaUsadoEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -366,6 +414,9 @@ export type UsuarioCreateManyInput = {
   ativo?: boolean
   precisaTrocarSenha?: boolean
   senhaAlteradaEm?: Date | string | null
+  resetSenhaTokenHash?: string | null
+  resetSenhaExpiraEm?: Date | string | null
+  resetSenhaUsadoEm?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -379,6 +430,9 @@ export type UsuarioUpdateManyMutationInput = {
   ativo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   precisaTrocarSenha?: Prisma.BoolFieldUpdateOperationsInput | boolean
   senhaAlteradaEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resetSenhaTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetSenhaExpiraEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resetSenhaUsadoEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -393,6 +447,9 @@ export type UsuarioUncheckedUpdateManyInput = {
   ativo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   precisaTrocarSenha?: Prisma.BoolFieldUpdateOperationsInput | boolean
   senhaAlteradaEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resetSenhaTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetSenhaExpiraEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resetSenhaUsadoEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -417,6 +474,9 @@ export type UsuarioCountOrderByAggregateInput = {
   ativo?: Prisma.SortOrder
   precisaTrocarSenha?: Prisma.SortOrder
   senhaAlteradaEm?: Prisma.SortOrder
+  resetSenhaTokenHash?: Prisma.SortOrder
+  resetSenhaExpiraEm?: Prisma.SortOrder
+  resetSenhaUsadoEm?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -431,6 +491,9 @@ export type UsuarioMaxOrderByAggregateInput = {
   ativo?: Prisma.SortOrder
   precisaTrocarSenha?: Prisma.SortOrder
   senhaAlteradaEm?: Prisma.SortOrder
+  resetSenhaTokenHash?: Prisma.SortOrder
+  resetSenhaExpiraEm?: Prisma.SortOrder
+  resetSenhaUsadoEm?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -445,6 +508,9 @@ export type UsuarioMinOrderByAggregateInput = {
   ativo?: Prisma.SortOrder
   precisaTrocarSenha?: Prisma.SortOrder
   senhaAlteradaEm?: Prisma.SortOrder
+  resetSenhaTokenHash?: Prisma.SortOrder
+  resetSenhaExpiraEm?: Prisma.SortOrder
+  resetSenhaUsadoEm?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -508,6 +574,9 @@ export type UsuarioCreateWithoutClienteInput = {
   ativo?: boolean
   precisaTrocarSenha?: boolean
   senhaAlteradaEm?: Date | string | null
+  resetSenhaTokenHash?: string | null
+  resetSenhaExpiraEm?: Date | string | null
+  resetSenhaUsadoEm?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -521,6 +590,9 @@ export type UsuarioUncheckedCreateWithoutClienteInput = {
   ativo?: boolean
   precisaTrocarSenha?: boolean
   senhaAlteradaEm?: Date | string | null
+  resetSenhaTokenHash?: string | null
+  resetSenhaExpiraEm?: Date | string | null
+  resetSenhaUsadoEm?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -564,6 +636,9 @@ export type UsuarioScalarWhereInput = {
   ativo?: Prisma.BoolFilter<"Usuario"> | boolean
   precisaTrocarSenha?: Prisma.BoolFilter<"Usuario"> | boolean
   senhaAlteradaEm?: Prisma.DateTimeNullableFilter<"Usuario"> | Date | string | null
+  resetSenhaTokenHash?: Prisma.StringNullableFilter<"Usuario"> | string | null
+  resetSenhaExpiraEm?: Prisma.DateTimeNullableFilter<"Usuario"> | Date | string | null
+  resetSenhaUsadoEm?: Prisma.DateTimeNullableFilter<"Usuario"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Usuario"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Usuario"> | Date | string
 }
@@ -577,6 +652,9 @@ export type UsuarioCreateManyClienteInput = {
   ativo?: boolean
   precisaTrocarSenha?: boolean
   senhaAlteradaEm?: Date | string | null
+  resetSenhaTokenHash?: string | null
+  resetSenhaExpiraEm?: Date | string | null
+  resetSenhaUsadoEm?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -590,6 +668,9 @@ export type UsuarioUpdateWithoutClienteInput = {
   ativo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   precisaTrocarSenha?: Prisma.BoolFieldUpdateOperationsInput | boolean
   senhaAlteradaEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resetSenhaTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetSenhaExpiraEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resetSenhaUsadoEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -603,6 +684,9 @@ export type UsuarioUncheckedUpdateWithoutClienteInput = {
   ativo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   precisaTrocarSenha?: Prisma.BoolFieldUpdateOperationsInput | boolean
   senhaAlteradaEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resetSenhaTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetSenhaExpiraEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resetSenhaUsadoEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -616,6 +700,9 @@ export type UsuarioUncheckedUpdateManyWithoutClienteInput = {
   ativo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   precisaTrocarSenha?: Prisma.BoolFieldUpdateOperationsInput | boolean
   senhaAlteradaEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resetSenhaTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetSenhaExpiraEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resetSenhaUsadoEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -632,6 +719,9 @@ export type UsuarioSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   ativo?: boolean
   precisaTrocarSenha?: boolean
   senhaAlteradaEm?: boolean
+  resetSenhaTokenHash?: boolean
+  resetSenhaExpiraEm?: boolean
+  resetSenhaUsadoEm?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
@@ -647,6 +737,9 @@ export type UsuarioSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   ativo?: boolean
   precisaTrocarSenha?: boolean
   senhaAlteradaEm?: boolean
+  resetSenhaTokenHash?: boolean
+  resetSenhaExpiraEm?: boolean
+  resetSenhaUsadoEm?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
@@ -662,6 +755,9 @@ export type UsuarioSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   ativo?: boolean
   precisaTrocarSenha?: boolean
   senhaAlteradaEm?: boolean
+  resetSenhaTokenHash?: boolean
+  resetSenhaExpiraEm?: boolean
+  resetSenhaUsadoEm?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
@@ -677,11 +773,14 @@ export type UsuarioSelectScalar = {
   ativo?: boolean
   precisaTrocarSenha?: boolean
   senhaAlteradaEm?: boolean
+  resetSenhaTokenHash?: boolean
+  resetSenhaExpiraEm?: boolean
+  resetSenhaUsadoEm?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UsuarioOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "clienteId" | "nome" | "email" | "senha" | "role" | "ativo" | "precisaTrocarSenha" | "senhaAlteradaEm" | "createdAt" | "updatedAt", ExtArgs["result"]["usuario"]>
+export type UsuarioOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "clienteId" | "nome" | "email" | "senha" | "role" | "ativo" | "precisaTrocarSenha" | "senhaAlteradaEm" | "resetSenhaTokenHash" | "resetSenhaExpiraEm" | "resetSenhaUsadoEm" | "createdAt" | "updatedAt", ExtArgs["result"]["usuario"]>
 export type UsuarioInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
 }
@@ -707,6 +806,9 @@ export type $UsuarioPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     ativo: boolean
     precisaTrocarSenha: boolean
     senhaAlteradaEm: Date | null
+    resetSenhaTokenHash: string | null
+    resetSenhaExpiraEm: Date | null
+    resetSenhaUsadoEm: Date | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["usuario"]>
@@ -1142,6 +1244,9 @@ export interface UsuarioFieldRefs {
   readonly ativo: Prisma.FieldRef<"Usuario", 'Boolean'>
   readonly precisaTrocarSenha: Prisma.FieldRef<"Usuario", 'Boolean'>
   readonly senhaAlteradaEm: Prisma.FieldRef<"Usuario", 'DateTime'>
+  readonly resetSenhaTokenHash: Prisma.FieldRef<"Usuario", 'String'>
+  readonly resetSenhaExpiraEm: Prisma.FieldRef<"Usuario", 'DateTime'>
+  readonly resetSenhaUsadoEm: Prisma.FieldRef<"Usuario", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Usuario", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Usuario", 'DateTime'>
 }

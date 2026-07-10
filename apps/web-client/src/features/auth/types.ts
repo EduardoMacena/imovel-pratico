@@ -36,3 +36,22 @@ export type TrocarMinhaSenhaResponse = {
   usuario: AuthUsuario;
   message: string;
 };
+
+export type SolicitarRedefinicaoSenhaRequest = {
+  email: string;
+};
+
+export type SolicitarRedefinicaoSenhaResponse = {
+  message: string;
+  resetUrl?: string | null;
+};
+
+export type RedefinirSenhaRequest = {
+  token: string;
+  novaSenha: string;
+  confirmarNovaSenha: string;
+};
+
+export type RedefinirSenhaResponse = {
+  message: string;
+};

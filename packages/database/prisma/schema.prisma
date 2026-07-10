@@ -119,6 +119,10 @@ model Usuario {
   precisaTrocarSenha Boolean @default(false)
   senhaAlteradaEm     DateTime?
 
+  resetSenhaTokenHash String?   @unique
+  resetSenhaExpiraEm   DateTime?
+  resetSenhaUsadoEm    DateTime?
+
   cliente Cliente @relation(fields: [clienteId], references: [id])
 
   createdAt DateTime @default(now())

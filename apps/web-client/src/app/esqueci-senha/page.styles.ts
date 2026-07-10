@@ -99,24 +99,38 @@ export const ErrorBox = styled.div`
   color: ${({ theme }) => theme.colors.danger};
   border: 1px solid ${({ theme }) => theme.colors.dangerBorder};
   font-size: 14px;
+  line-height: 1.6;
+`;
+
+export const SuccessBox = styled.div`
+  border-radius: ${({ theme }) => theme.radii.md};
+  padding: ${({ theme }) => theme.spacing.md};
+  background: ${({ theme }) => theme.colors.successBg};
+  color: ${({ theme }) => theme.colors.success};
+  border: 1px solid ${({ theme }) => theme.colors.successBorder};
+  font-size: 14px;
+  line-height: 1.6;
+`;
+
+export const DevLink = styled.a`
+  color: ${({ theme }) => theme.colors.success};
+  font-weight: 900;
+  text-decoration: underline;
 `;
 
 export const FooterText = styled.p`
-  margin: ${({ theme }) => theme.spacing.lg} 0 0;
+  margin: ${({ theme }) => theme.spacing.sm} 0 0;
   color: ${({ theme }) => theme.colors.textMuted};
   font-size: 13px;
   text-align: center;
-`;
 
-export const ForgotPasswordLink = styled.a`
-  width: fit-content;
-  justify-self: center;
-  color: ${({ theme }) => theme.colors.primary};
-  font-size: 13px;
-  font-weight: 900;
-  text-decoration: none;
+  a {
+    color: ${({ theme }) => theme.colors.primary};
+    font-weight: 900;
+    text-decoration: none;
 
-  &:hover {
-    text-decoration: underline;
+    &:hover {
+      text-decoration: underline;
+    }
   }
 `;

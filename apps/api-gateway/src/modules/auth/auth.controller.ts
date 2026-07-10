@@ -2,13 +2,18 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 import { ZodError } from "zod";
 import {
   loginSchema,
+  redefinirSenhaSchema,
+  solicitarRedefinicaoSenhaSchema,
   trocarMinhaSenhaSchema,
 } from "./auth.schemas.js";
 import {
   ClienteInativoError,
   CredenciaisInvalidasError,
   login,
+  redefinirSenha,
   SenhaAtualInvalidaError,
+  solicitarRedefinicaoSenha,
+  TokenRedefinicaoSenhaInvalidoError,
   trocarMinhaSenha,
   UsuarioInativoError,
   UsuarioNaoEncontradoError,
@@ -28,7 +33,6 @@ export async function loginController(
 ) {
   try {
     const data = loginSchema.parse(request.body);
-
     const response = await login(data);
 
     return reply.send(response);
@@ -69,7 +73,6 @@ export async function trocarMinhaSenhaController(
 ) {
   try {
     const data = trocarMinhaSenhaSchema.parse(request.body);
-
     const response = await trocarMinhaSenha(request.auth.usuarioId, data);
 
     return reply.send(response);
@@ -97,6 +100,59 @@ export async function trocarMinhaSenhaController(
     return reply.status(500).send({
       error: "InternalServerError",
       message: "Erro interno ao trocar senha",
+    });
+  }
+}
+
+export async function solicitarRedefinicaoSenhaController(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  try {
+    const data = solicitarRedefinicaoSenhaSchema.parse(request.body);
+    const response = await solicitarRedefinicaoSenha(data);
+
+    return reply.send(response);
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return handleZodError(error, reply);
+    }
+
+    request.log.error(error);
+
+    return reply.status(500).send({
+      error: "InternalServerError",
+      message: "Erro interno ao solicitar redefinição de senha",
+    });
+  }
+}
+
+export async function redefinirSenhaController(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  try {
+    const data = redefinirSenhaSchema.parse(request.body);
+    const response = await redefinirSenha(data);
+
+    return reply.send(response);
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return handleZodError(error, reply);
+    }
+
+    if (error instanceof TokenRedefinicaoSenhaInvalidoError) {
+      return reply.status(400).send({
+        error: error.name,
+        message: error.message,
+      });
+    }
+
+    request.log.error(error);
+
+    return reply.status(500).send({
+      error: "InternalServerError",
+      message: "Erro interno ao redefinir senha",
     });
   }
 }

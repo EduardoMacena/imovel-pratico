@@ -1012,6 +1012,9 @@ export const UsuarioScalarFieldEnum = {
   ativo: 'ativo',
   precisaTrocarSenha: 'precisaTrocarSenha',
   senhaAlteradaEm: 'senhaAlteradaEm',
+  resetSenhaTokenHash: 'resetSenhaTokenHash',
+  resetSenhaExpiraEm: 'resetSenhaExpiraEm',
+  resetSenhaUsadoEm: 'resetSenhaUsadoEm',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
