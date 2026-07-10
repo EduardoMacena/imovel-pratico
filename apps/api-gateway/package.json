@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@fastify/cors": "latest",
+    "@fastify/rate-limit": "^11.1.0",
     "@imovel-pratico/database": "workspace:*",
     "@imovel-pratico/queue": "workspace:*",
     "bcryptjs": "^3.0.3",
