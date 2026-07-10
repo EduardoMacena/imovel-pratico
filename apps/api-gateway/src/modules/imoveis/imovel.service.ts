@@ -117,7 +117,7 @@ export async function buscarProgressoTarefaPorId(
 				select: {
 					id: true,
 					nome: true,
-					slug: true,
+					slug: true
 				},
 			},
 			resultados: {

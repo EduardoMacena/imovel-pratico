@@ -155,11 +155,13 @@ export async function buscarPessoaFisicaBasicaFonteData({
     throw new Error("CPF inválido para consulta FonteData");
   }
 
-  const baseUrl = getFonteDataBaseUrl();
+  const baseUrl = getFonteDataBaseUrl().replace(/\/$/, "");
 
-  const url = `${baseUrl}/consulta/cadastro-pf-basica/${cpfLimpo}`;
+  const url = new URL(`${baseUrl}/consulta/cadastro-pf-basica`);
 
-  const response = await fetch(url, {
+  url.searchParams.set("cpf", cpfLimpo);
+
+  const response = await fetch(url.toString(), {
     method: "GET",
     headers: {
       "X-API-Key": apiKey,

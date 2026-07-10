@@ -117,45 +117,53 @@ async function buscarProprietarioDoImovel(params: {
 		});
 
 		if (cache) {
+			const cacheValido = cache;
+
 			let telefone = cache.telefone;
 			let email = cache.email;
 			let fonteContato: "FONTEDATA" | "INFOQUALY" | "NONE" = "NONE";
+
+			let dadosContato = cacheValido.dadosContato as Record<
+				string,
+				unknown
+			> | null;
 
 			/**
 			 * Se já temos CPF no cache, mas ainda não temos telefone/e-mail,
 			 * tenta enriquecer pela FonteData.
 			 */
-			if (cache.cpf && (!telefone || !email)) {
+			if (cacheValido.cpf && (!telefone || !email || !dadosContato)) {
 				const contato = await buscarContatoPorCpf({
-					cpf: cache.cpf,
+					cpf: cacheValido.cpf,
 				});
 
 				telefone = contato.telefone ?? telefone;
 				email = contato.email ?? email;
 				fonteContato = contato.fonte;
+				dadosContato = contato.dadosContato ?? dadosContato;
 
 				if (telefone || email) {
 					await salvarImovelCache({
-						logradouro: cache.logradouro,
-						numero: cache.numero,
-						complemento: cache.complemento,
-						indiceCadastral: cache.indiceCadastral,
-						nome: cache.nome,
-						cpf: cache.cpf,
-						endereco: cache.endereco,
+						logradouro: cacheValido.logradouro,
+						numero: cacheValido.numero,
+						complemento: cacheValido.complemento,
+						indiceCadastral: cacheValido.indiceCadastral,
+						nome: cacheValido.nome ?? contato.nome ?? null,
+						cpf: cacheValido.cpf ?? contato.cpf ?? null,
+						endereco: cacheValido.endereco ?? contato.endereco ?? null,
 						telefone,
 						email,
-						fonteContato: contato.fonte,
-						dadosContato: contato.dadosContato,
+						fonteContato,
+						dadosContato,
 					});
 				}
 			}
 
 			const proprietario = {
-				nome: cache.nome,
-				cpf: cache.cpf,
-				endereco: cache.endereco,
-				indiceCadastral: cache.indiceCadastral,
+				nome: cacheValido.nome,
+				cpf: cacheValido.cpf,
+				endereco: cacheValido.endereco,
+				indiceCadastral: cacheValido.indiceCadastral,
 			} as ProprietarioEncontrado;
 
 			return {
@@ -167,6 +175,7 @@ async function buscarProprietarioDoImovel(params: {
 				telefone,
 				email,
 				fonteContato,
+				dadosContato,
 				status: "success",
 				fromCache: true,
 			};
