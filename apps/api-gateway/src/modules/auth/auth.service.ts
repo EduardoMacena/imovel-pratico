@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { prisma } from "@imovel-pratico/database";
 import { env } from "../../config/env.js";
+import { enviarEmailRecuperacaoSenha } from "../../services/email.service.js";
 import type {
   LoginInput,
   RedefinirSenhaInput,
@@ -69,16 +70,16 @@ function gerarTokenHash(token: string) {
   return crypto.createHash("sha256").update(token).digest("hex");
 }
 
-function getWebClientUrl() {
-  return process.env.WEB_CLIENT_URL ?? "http://localhost:3001";
-}
-
 function getResetSenhaExpiraEm() {
   const expiraEm = new Date();
 
   expiraEm.setMinutes(expiraEm.getMinutes() + RESET_TOKEN_EXPIRACAO_MINUTOS);
 
   return expiraEm;
+}
+
+function deveRetornarResetUrlNaResposta() {
+  return env.NODE_ENV !== "production";
 }
 
 export async function login(data: LoginInput) {
@@ -241,13 +242,20 @@ export async function solicitarRedefinicaoSenha(
     },
   });
 
-  const resetUrl = `${getWebClientUrl()}/redefinir-senha?token=${token}`;
+  const resetUrl = `${env.WEB_CLIENT_URL}/redefinir-senha?token=${token}`;
+
+  await enviarEmailRecuperacaoSenha({
+    to: usuario.email,
+    nome: usuario.nome,
+    resetUrl,
+    expiraEm,
+  });
 
   console.log("[RESET_SENHA_URL]", resetUrl);
 
   return {
     message: mensagem,
-    resetUrl,
+    resetUrl: deveRetornarResetUrlNaResposta() ? resetUrl : null,
   };
 }
 
