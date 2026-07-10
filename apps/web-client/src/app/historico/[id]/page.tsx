@@ -18,9 +18,17 @@ import {
 	BackLink,
 	EmptyState,
 	ErrorBox,
+	ExportActions,
 	Header,
-	HeaderTop,
+	HeaderContent,
+	HeaderEyebrow,
+	HeaderGrid,
+	HeaderPanel,
+	HeaderPanelLabel,
+	HeaderPanelMetric,
+	HeaderPanelValue,
 	PageContainer,
+	ProgressPanel,
 	ResultsCount,
 	ResultsHeader,
 	ResultsList,
@@ -30,6 +38,8 @@ import {
 	SummaryBox,
 	SummaryGrid,
 	SummaryLabel,
+	SummarySectionHeader,
+	SummarySectionTitle,
 	SummaryValue,
 	TaskId,
 	Title,
@@ -157,42 +167,86 @@ export default function DetalheHistoricoPage() {
 				<Header>
 					<BackLink href="/historico">← Voltar para o histórico</BackLink>
 
-					<HeaderTop>
-						<TitleGroup>
-							<Title>Detalhes da busca</Title>
+					<HeaderGrid>
+						<HeaderContent>
+							<HeaderEyebrow>Detalhe operacional</HeaderEyebrow>
 
-							<Subtitle>
-								Acompanhe o processamento, o endereço pesquisado e os
-								proprietários encontrados.
-							</Subtitle>
+							<TitleGroup>
+								<Title>Detalhes da busca</Title>
+
+								<Subtitle>
+									Acompanhe o processamento, o endereço pesquisado, os
+									proprietários encontrados e os contatos enriquecidos.
+								</Subtitle>
+							</TitleGroup>
 
 							<TaskId>Tarefa: {tarefaId}</TaskId>
-							<Button
-								type="button"
-								disabled={isExporting}
-								onClick={handleExportarCsv}
-							>
-								{isExporting ? "Exportando..." : "Exportar CSV"}
-							</Button>
-							<Button
-								type="button"
-								disabled={isExportingExcel}
-								onClick={handleExportarExcel}
-							>
-								{isExportingExcel ? "Exportando..." : "Exportar Excel"}
-							</Button>
-						</TitleGroup>
 
-						{tarefa?.status && <StatusBadge status={tarefa.status} />}
-					</HeaderTop>
+							<ExportActions>
+								<Button
+									type="button"
+									variant="ghost"
+									disabled={isExporting}
+									onClick={handleExportarCsv}
+								>
+									{isExporting ? "Exportando..." : "Exportar CSV"}
+								</Button>
+
+								<Button
+									type="button"
+									variant="accent"
+									disabled={isExportingExcel}
+									onClick={handleExportarExcel}
+								>
+									{isExportingExcel ? "Exportando..." : "Exportar Excel"}
+								</Button>
+							</ExportActions>
+						</HeaderContent>
+
+						<HeaderPanel>
+							<HeaderPanelLabel>Status da tarefa</HeaderPanelLabel>
+
+							{tarefa?.status ? (
+								<StatusBadge status={tarefa.status} />
+							) : (
+								<HeaderPanelValue>-</HeaderPanelValue>
+							)}
+
+							<HeaderPanelMetric>
+								<HeaderPanelLabel>Progresso</HeaderPanelLabel>
+								<HeaderPanelValue>
+									{tarefa?.progress.percentage ?? 0}%
+								</HeaderPanelValue>
+							</HeaderPanelMetric>
+
+							<HeaderPanelMetric>
+								<HeaderPanelLabel>Resultados</HeaderPanelLabel>
+								<HeaderPanelValue>
+									{tarefa?.resultados.length ?? 0}
+								</HeaderPanelValue>
+							</HeaderPanelMetric>
+						</HeaderPanel>
+					</HeaderGrid>
 				</Header>
 
 				{erro && <ErrorBox>{erro}</ErrorBox>}
 
-				{isLoading && <EmptyState>Carregando detalhes da busca...</EmptyState>}
+				{isLoading && (
+					<EmptyState>Carregando detalhes da busca...</EmptyState>
+				)}
 
 				{!isLoading && !erro && tarefa && (
 					<Card>
+						<SummarySectionHeader>
+							<div>
+								<SummarySectionTitle>Resumo da tarefa</SummarySectionTitle>
+								<Subtitle>
+									Informações principais da busca e acompanhamento do
+									processamento.
+								</Subtitle>
+							</div>
+						</SummarySectionHeader>
+
 						<SummaryGrid>
 							<SummaryBox>
 								<SummaryLabel>Endereço</SummaryLabel>
@@ -220,22 +274,26 @@ export default function DetalheHistoricoPage() {
 							</SummaryBox>
 						</SummaryGrid>
 
-						<ProgressBar
-							status={tarefa.status}
-							total={tarefa.progress.total}
-							current={tarefa.progress.current}
-							percentage={tarefa.progress.percentage}
-						/>
+						<ProgressPanel>
+							<ProgressBar
+								status={tarefa.status}
+								total={tarefa.progress.total}
+								current={tarefa.progress.current}
+								percentage={tarefa.progress.percentage}
+							/>
+						</ProgressPanel>
 
 						{tarefa.erro && <ErrorBox>{tarefa.erro}</ErrorBox>}
 
 						<ResultsSection>
 							<ResultsHeader>
-								<ResultsTitle>Resultados da busca</ResultsTitle>
+								<div>
+									<ResultsTitle>Resultados da busca</ResultsTitle>
 
-								<ResultsCount>
-									{tarefa.resultados.length} resultado(s) encontrado(s)
-								</ResultsCount>
+									<ResultsCount>
+										{tarefa.resultados.length} resultado(s) encontrado(s)
+									</ResultsCount>
+								</div>
 							</ResultsHeader>
 
 							{tarefa.resultados.length === 0 && (
