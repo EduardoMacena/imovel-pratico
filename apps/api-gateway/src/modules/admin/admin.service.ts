@@ -1,4 +1,9 @@
 import bcrypt from "bcryptjs";
+import { env } from "../../config/env.js";
+import {
+  enviarEmailBoasVindasUsuario,
+  enviarEmailSenhaTemporariaAtualizada,
+} from "../../services/email.service.js";
 import { prisma } from "@imovel-pratico/database";
 import {
 	adicionarBuscaProprietariosNaFila,
@@ -173,29 +178,29 @@ export async function listarUsuariosDoCliente(clienteId: string) {
 }
 
 export async function criarUsuario(clienteId: string, data: CriarUsuarioInput) {
-	const cliente = await prisma.cliente.findUnique({
-		where: {
-			id: clienteId,
-		},
-	});
+  const cliente = await prisma.cliente.findUnique({
+    where: {
+      id: clienteId,
+    },
+  });
 
-	if (!cliente) {
-		throw new Error("Cliente não encontrado");
-	}
+  if (!cliente) {
+    throw new Error("Cliente não encontrado");
+  }
 
-	const emailExistente = await prisma.usuario.findUnique({
-		where: {
-			email: data.email,
-		},
-	});
+  const emailExistente = await prisma.usuario.findUnique({
+    where: {
+      email: data.email,
+    },
+  });
 
-	if (emailExistente) {
-		throw new Error("Já existe um usuário com esse e-mail");
-	}
+  if (emailExistente) {
+    throw new Error("Já existe um usuário com esse e-mail");
+  }
 
-	const senhaHash = await bcrypt.hash(data.senha, 10);
+  const senhaHash = await bcrypt.hash(data.senha, 10);
 
-	const usuario = await prisma.usuario.create({
+  const usuario = await prisma.usuario.create({
     data: {
       clienteId,
       nome: data.nome,
@@ -207,7 +212,19 @@ export async function criarUsuario(clienteId: string, data: CriarUsuarioInput) {
     },
   });
 
-	return removerSenhaUsuario(usuario);
+  try {
+    await enviarEmailBoasVindasUsuario({
+      to: usuario.email,
+      nome: usuario.nome,
+      clienteNome: cliente.nome,
+      senhaTemporaria: data.senha,
+      loginUrl: `${env.WEB_CLIENT_URL}/login`,
+    });
+  } catch (error) {
+    console.error("Erro ao enviar e-mail de boas-vindas do usuário:", error);
+  }
+
+  return removerSenhaUsuario(usuario);
 }
 
 export async function atualizarUsuario(
@@ -241,12 +258,34 @@ export async function atualizarUsuario(
       senha: senhaHash,
       role: data.role,
       ativo: data.ativo,
-      precisaTrocarSenha: data.senha
-        ? true
-        : data.precisaTrocarSenha,
+      precisaTrocarSenha: data.senha ? true : data.precisaTrocarSenha,
       senhaAlteradaEm: data.senha ? null : undefined,
     },
+    include: {
+      cliente: {
+        select: {
+          nome: true,
+        },
+      },
+    },
   });
+
+  if (data.senha) {
+    try {
+      await enviarEmailSenhaTemporariaAtualizada({
+        to: usuario.email,
+        nome: usuario.nome,
+        clienteNome: usuario.cliente.nome,
+        senhaTemporaria: data.senha,
+        loginUrl: `${env.WEB_CLIENT_URL}/login`,
+      });
+    } catch (error) {
+      console.error(
+        "Erro ao enviar e-mail de senha temporária atualizada:",
+        error
+      );
+    }
+  }
 
   return removerSenhaUsuario(usuario);
 }
