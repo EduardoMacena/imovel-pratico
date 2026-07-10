@@ -69,6 +69,7 @@ export default function UsuariosClientePage() {
 	const [email, setEmail] = useState("");
 	const [senha, setSenha] = useState("123456");
 	const [role, setRole] = useState<UsuarioRoleCliente>("OPERADOR");
+	const [precisaTrocarSenha, setPrecisaTrocarSenha] = useState("true");
 
 	const [isLoading, setIsLoading] = useState(true);
 	const [isCreating, setIsCreating] = useState(false);
@@ -81,12 +82,16 @@ export default function UsuariosClientePage() {
 		const operadores = usuarios.filter(
 			(usuario) => usuario.role === "OPERADOR"
 		).length;
+		const senhasTemporarias = usuarios.filter(
+			(usuario) => usuario.precisaTrocarSenha
+		).length;
 
 		return {
 			ativos,
 			inativos,
 			admins,
 			operadores,
+			senhasTemporarias,
 		};
 	}, [usuarios]);
 
@@ -121,12 +126,14 @@ export default function UsuariosClientePage() {
 				senha,
 				role,
 				ativo: true,
+				precisaTrocarSenha: precisaTrocarSenha === "true",
 			});
 
 			setNome("");
 			setEmail("");
 			setSenha("123456");
 			setRole("OPERADOR");
+			setPrecisaTrocarSenha("true");
 
 			await carregarUsuarios();
 		} catch (error) {
@@ -166,7 +173,7 @@ export default function UsuariosClientePage() {
 
 							<Subtitle>
 								Cadastre e gerencie usuários que acessam o sistema da
-								imobiliária, definindo permissões por perfil operacional.
+								imobiliária, definindo permissões e controle de senha temporária.
 							</Subtitle>
 						</HeaderContent>
 
@@ -197,6 +204,11 @@ export default function UsuariosClientePage() {
 						<StatLabel>Operadores</StatLabel>
 						<StatValue>{resumo.operadores}</StatValue>
 					</StatCard>
+
+					<StatCard>
+						<StatLabel>Senha temporária</StatLabel>
+						<StatValue>{resumo.senhasTemporarias}</StatValue>
+					</StatCard>
 				</StatGrid>
 
 				<Grid>
@@ -205,8 +217,8 @@ export default function UsuariosClientePage() {
 							<FormHeader>
 								<FormTitle>Novo usuário</FormTitle>
 								<FormSubtitle>
-									Crie um acesso para a imobiliária e defina o perfil inicial do
-									usuário.
+									Crie um acesso para a imobiliária. Por padrão, a senha inicial
+									será temporária e o usuário deverá trocar no primeiro login.
 								</FormSubtitle>
 							</FormHeader>
 
@@ -227,7 +239,7 @@ export default function UsuariosClientePage() {
 								/>
 
 								<Input
-									label="Senha"
+									label="Senha temporária"
 									type="text"
 									value={senha}
 									onChange={(event) => setSenha(event.target.value)}
@@ -246,6 +258,17 @@ export default function UsuariosClientePage() {
 									<option value="OPERADOR">OPERADOR</option>
 								</Select>
 
+								<Select
+									label="Troca de senha no primeiro login"
+									value={precisaTrocarSenha}
+									onChange={(event) =>
+										setPrecisaTrocarSenha(event.target.value)
+									}
+								>
+									<option value="true">Obrigatória</option>
+									<option value="false">Não obrigatória</option>
+								</Select>
+
 								<Button type="submit" fullWidth disabled={isCreating}>
 									{isCreating ? "Criando..." : "Criar usuário"}
 								</Button>
@@ -258,8 +281,8 @@ export default function UsuariosClientePage() {
 							<div>
 								<ListTitle>Usuários cadastrados</ListTitle>
 								<ListSubtitle>
-									Visualize acessos, perfis, status e edite permissões dos
-									usuários deste cliente.
+									Visualize acessos, perfis, status, senha temporária e edite
+									permissões dos usuários deste cliente.
 								</ListSubtitle>
 							</div>
 						</ListHeader>
@@ -289,6 +312,13 @@ export default function UsuariosClientePage() {
 											<div>
 												<UserName>{usuario.nome}</UserName>
 												<UserEmail>{usuario.email}</UserEmail>
+
+												{usuario.precisaTrocarSenha && (
+													<UserEmail>
+														Senha temporária ativa: troca obrigatória no
+														próximo login.
+													</UserEmail>
+												)}
 											</div>
 
 											<Badges>
@@ -296,6 +326,9 @@ export default function UsuariosClientePage() {
 												<StatusBadge
 													status={usuario.ativo ? "ATIVO" : "INATIVO"}
 												/>
+												{usuario.precisaTrocarSenha && (
+													<StatusBadge status="PENDENTE" />
+												)}
 											</Badges>
 										</UserTop>
 

@@ -46,6 +46,8 @@ export type UsuarioResumo = {
 	email: string;
 	role: UsuarioRole;
 	ativo: boolean;
+	precisaTrocarSenha: boolean;
+	senhaAlteradaEm: string | null;
 	createdAt: string;
 	updatedAt: string;
 };
@@ -60,6 +62,7 @@ export type CriarUsuarioRequest = {
 	senha: string;
 	role: Exclude<UsuarioRole, "SUPER_ADMIN">;
 	ativo: boolean;
+	precisaTrocarSenha?: boolean;
 };
 
 export type CriarUsuarioResponse = {
@@ -135,6 +138,7 @@ export type AtualizarUsuarioRequest = {
 	senha?: string;
 	role?: UsuarioRole;
 	ativo?: boolean;
+	precisaTrocarSenha?: boolean;
 };
 
 export type AtualizarUsuarioResponse = {

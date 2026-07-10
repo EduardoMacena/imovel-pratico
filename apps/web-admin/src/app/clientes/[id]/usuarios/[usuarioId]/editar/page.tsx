@@ -54,6 +54,7 @@ export default function EditarUsuarioPage() {
   const [senha, setSenha] = useState("");
   const [role, setRole] = useState<UsuarioRoleCliente>("OPERADOR");
   const [ativo, setAtivo] = useState("true");
+  const [precisaTrocarSenha, setPrecisaTrocarSenha] = useState("false");
 
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -74,6 +75,9 @@ export default function EditarUsuarioPage() {
           : (data.usuario.role as UsuarioRoleCliente)
       );
       setAtivo(data.usuario.ativo ? "true" : "false");
+      setPrecisaTrocarSenha(
+        data.usuario.precisaTrocarSenha ? "true" : "false"
+      );
     } catch (error) {
       setErro(
         error instanceof Error
@@ -93,13 +97,22 @@ export default function EditarUsuarioPage() {
     setIsSaving(true);
 
     try {
+      const novaSenhaInformada = senha.trim().length > 0;
+
       await atualizarUsuario(usuarioId, {
         nome,
         email,
-        senha: senha.trim() || undefined,
+        senha: novaSenhaInformada ? senha.trim() : undefined,
         role,
         ativo: ativo === "true",
+        precisaTrocarSenha: novaSenhaInformada
+          ? true
+          : precisaTrocarSenha === "true",
       });
+
+      if (novaSenhaInformada) {
+        setPrecisaTrocarSenha("true");
+      }
 
       setSenha("");
       setSucesso("Usuário atualizado com sucesso.");
@@ -142,7 +155,7 @@ export default function EditarUsuarioPage() {
 
               <Subtitle>
                 Atualize dados de acesso, perfil operacional, status do usuário
-                e defina uma nova senha quando necessário.
+                e controle se ele deverá trocar a senha no próximo login.
               </Subtitle>
             </HeaderContent>
 
@@ -158,6 +171,15 @@ export default function EditarUsuarioPage() {
                 <HeaderPanelLabel>Status</HeaderPanelLabel>
                 <HeaderPanelValue>
                   <StatusBadge status={ativo === "true" ? "ATIVO" : "INATIVO"} />
+                </HeaderPanelValue>
+              </HeaderPanelItem>
+
+              <HeaderPanelItem>
+                <HeaderPanelLabel>Troca de senha</HeaderPanelLabel>
+                <HeaderPanelValue>
+                  <StatusBadge
+                    status={precisaTrocarSenha === "true" ? "PENDENTE" : "ATIVO"}
+                  />
                 </HeaderPanelValue>
               </HeaderPanelItem>
 
@@ -238,13 +260,35 @@ export default function EditarUsuarioPage() {
               <FormSection>
                 <FormSectionTitle>Senha</FormSectionTitle>
 
-                <Input
-                  label="Nova senha"
-                  type="text"
-                  value={senha}
-                  onChange={event => setSenha(event.target.value)}
-                  placeholder="Deixe vazio para manter a senha atual"
-                />
+                <Subtitle>
+                  Se uma nova senha for informada, ela será considerada
+                  temporária e o usuário será obrigado a trocar no próximo login.
+                </Subtitle>
+
+                <FormGrid>
+                  <Input
+                    label="Nova senha temporária"
+                    type="text"
+                    value={senha}
+                    onChange={event => {
+                      setSenha(event.target.value);
+
+                      if (event.target.value.trim()) {
+                        setPrecisaTrocarSenha("true");
+                      }
+                    }}
+                    placeholder="Deixe vazio para manter a senha atual"
+                  />
+
+                  <Select
+                    label="Forçar troca no próximo login"
+                    value={precisaTrocarSenha}
+                    onChange={event => setPrecisaTrocarSenha(event.target.value)}
+                  >
+                    <option value="true">Sim, obrigar troca</option>
+                    <option value="false">Não obrigar</option>
+                  </Select>
+                </FormGrid>
               </FormSection>
 
               {erro && <ErrorBox>{erro}</ErrorBox>}
