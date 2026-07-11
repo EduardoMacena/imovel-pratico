@@ -1,6 +1,6 @@
 "use client";
 
-import { InputHTMLAttributes } from "react";
+import { InputHTMLAttributes, useId } from "react";
 import { Field, InputElement, Label } from "./styles";
 
 type InputProps = InputHTMLAttributes<HTMLInputElement> & {
@@ -8,7 +8,8 @@ type InputProps = InputHTMLAttributes<HTMLInputElement> & {
 };
 
 export function Input({ label, id, ...props }: InputProps) {
-  const inputId = id ?? props.name ?? label;
+  const generatedId = useId();
+  const inputId = id ?? props.name ?? generatedId;
 
   return (
     <Field htmlFor={inputId}>

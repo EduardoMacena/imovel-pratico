@@ -6,26 +6,66 @@ type StatusBadgeProps = {
   status: string;
 };
 
-function getVariant(status: string) {
-  if (status === "SUCCESS" || status === "COMPLETED") {
-    return "success";
+function getStatusConfig(status: string) {
+  const normalized = status.toUpperCase();
+
+  if (normalized === "SUCCESS" || normalized === "COMPLETED") {
+    return {
+      variant: "success" as const,
+      label: "Concluída",
+    };
   }
 
-  if (status === "ERROR" || status === "CANCELED") {
-    return "error";
+  if (normalized === "ERROR") {
+    return {
+      variant: "error" as const,
+      label: "Erro",
+    };
   }
 
-  if (status === "PROCESSING") {
-    return "info";
+  if (normalized === "CANCELED") {
+    return {
+      variant: "error" as const,
+      label: "Cancelada",
+    };
   }
 
-  if (status === "PENDING") {
-    return "warning";
+  if (normalized === "PROCESSING") {
+    return {
+      variant: "info" as const,
+      label: "Processando",
+    };
   }
 
-  return "neutral";
+  if (normalized === "PENDING") {
+    return {
+      variant: "warning" as const,
+      label: "Pendente",
+    };
+  }
+
+  if (normalized === "PAGO") {
+    return {
+      variant: "success" as const,
+      label: "Pago",
+    };
+  }
+
+  if (normalized === "ATIVO") {
+    return {
+      variant: "success" as const,
+      label: "Ativo",
+    };
+  }
+
+  return {
+    variant: "neutral" as const,
+    label: status,
+  };
 }
 
 export function StatusBadge({ status }: StatusBadgeProps) {
-  return <Badge $variant={getVariant(status)}>{status}</Badge>;
+  const config = getStatusConfig(status);
+
+  return <Badge $variant={config.variant}>{config.label}</Badge>;
 }

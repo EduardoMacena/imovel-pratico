@@ -4,13 +4,16 @@ import styled from "styled-components";
 
 export const Wrapper = styled.section`
   min-width: 0;
+  overflow: hidden;
   background:
-    radial-gradient(circle at top right, rgba(31, 111, 91, 0.1), transparent 32%),
+    radial-gradient(circle at top right, rgba(200, 164, 93, 0.14), transparent 30%),
     ${({ theme }) => theme.colors.surface};
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.radii.xl};
+  border-radius: 28px;
   padding: ${({ theme }) => theme.spacing.lg};
-  box-shadow: ${({ theme }) => theme.shadows.card};
+  box-shadow:
+    0 18px 48px rgba(11, 31, 51, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.80);
 `;
 
 export const Header = styled.div`
@@ -28,7 +31,7 @@ export const Title = styled.h2`
   color: ${({ theme }) => theme.colors.primary};
   font-size: 22px;
   line-height: 1.12;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.05em;
   overflow-wrap: anywhere;
 
   @media (max-width: 1120px) {
@@ -39,8 +42,8 @@ export const Title = styled.h2`
 export const PlanName = styled.p`
   margin: 6px 0 0;
   color: ${({ theme }) => theme.colors.textMuted};
-  font-size: 14px;
-  font-weight: 800;
+  font-size: 13px;
+  font-weight: 900;
 `;
 
 export const Badge = styled.span<{ $status: string }>`
@@ -48,13 +51,15 @@ export const Badge = styled.span<{ $status: string }>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 7px;
   min-height: 34px;
   width: fit-content;
   padding: 0 12px;
   border-radius: ${({ theme }) => theme.radii.pill};
   font-size: 11px;
   font-weight: 950;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
   background: ${({ theme, $status }) =>
     $status === "PAGO" ? theme.colors.successBg : theme.colors.dangerBg};
   color: ${({ theme, $status }) =>
@@ -64,6 +69,15 @@ export const Badge = styled.span<{ $status: string }>`
       $status === "PAGO"
         ? theme.colors.successBorder
         : theme.colors.dangerBorder};
+
+  &::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: ${({ theme, $status }) =>
+      $status === "PAGO" ? theme.colors.success : theme.colors.danger};
+  }
 `;
 
 export const ProgressHeader = styled.div`
@@ -77,12 +91,13 @@ export const ProgressHeader = styled.div`
 export const ProgressValue = styled.span`
   color: ${({ theme }) => theme.colors.primary};
   font-size: 12px;
-  font-weight: 900;
+  font-weight: 950;
 `;
 
 export const ProgressTrack = styled.div`
   width: 100%;
-  height: 10px;
+  height: 12px;
+  padding: 2px;
   border-radius: ${({ theme }) => theme.radii.pill};
   background: ${({ theme }) => theme.colors.surfaceMuted};
   overflow: hidden;
@@ -91,7 +106,7 @@ export const ProgressTrack = styled.div`
 `;
 
 export const ProgressBar = styled.div<{ $percent: number }>`
-  width: ${({ $percent }) => $percent}%;
+  width: ${({ $percent }) => `${Math.max(0, Math.min($percent, 100))}%`};
   height: 100%;
   border-radius: ${({ theme }) => theme.radii.pill};
   background: linear-gradient(
@@ -115,9 +130,11 @@ export const Grid = styled.div`
 export const Item = styled.div<{ $wide?: boolean }>`
   min-width: 0;
   grid-column: ${({ $wide }) => ($wide ? "1 / -1" : "auto")};
-  background: ${({ theme }) => theme.colors.surfaceMuted};
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.68)),
+    ${({ theme }) => theme.colors.surfaceMuted};
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.radii.lg};
+  border-radius: 18px;
   padding: ${({ theme }) => theme.spacing.md};
 `;
 
@@ -126,7 +143,7 @@ export const Label = styled.div`
   font-size: 12px;
   line-height: 1.25;
   margin-bottom: 6px;
-  font-weight: 800;
+  font-weight: 900;
 `;
 
 export const Value = styled.div`
@@ -135,6 +152,6 @@ export const Value = styled.div`
   font-size: 20px;
   line-height: 1.1;
   font-weight: 950;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.05em;
   overflow-wrap: anywhere;
 `;
