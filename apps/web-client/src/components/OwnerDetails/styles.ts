@@ -5,16 +5,16 @@ import styled from "styled-components";
 export const Wrapper = styled.div`
   display: grid;
   gap: ${({ theme }) => theme.spacing.md};
-  margin-top: ${({ theme }) => theme.spacing.lg};
+  padding: 0 ${({ theme }) => theme.spacing.lg} ${({ theme }) => theme.spacing.lg};
 `;
 
 export const Section = styled.div`
   min-width: 0;
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.radii.xl};
+  border-radius: 22px;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.82)),
-    ${({ theme }) => theme.colors.surface};
+    radial-gradient(circle at top right, rgba(200, 164, 93, 0.08), transparent 30%),
+    ${({ theme }) => theme.colors.backgroundSoft};
   padding: ${({ theme }) => theme.spacing.lg};
 `;
 
@@ -42,7 +42,7 @@ export const Grid = styled.div`
 
 export const Item = styled.div`
   min-width: 0;
-  background: ${({ theme }) => theme.colors.surfaceMuted};
+  background: ${({ theme }) => theme.colors.surface};
   border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: ${({ theme }) => theme.radii.lg};
   padding: ${({ theme }) => theme.spacing.md};
@@ -52,7 +52,7 @@ export const Label = styled.div`
   color: ${({ theme }) => theme.colors.textMuted};
   font-size: 12px;
   line-height: 1.25;
-  font-weight: 850;
+  font-weight: 900;
 `;
 
 export const Value = styled.div`
@@ -60,7 +60,7 @@ export const Value = styled.div`
   color: ${({ theme }) => theme.colors.primary};
   font-size: 14px;
   line-height: 1.4;
-  font-weight: 900;
+  font-weight: 950;
   margin-top: 4px;
   overflow-wrap: anywhere;
 `;
@@ -72,7 +72,7 @@ export const List = styled.div`
 
 export const ListItem = styled.div`
   min-width: 0;
-  background: ${({ theme }) => theme.colors.surfaceMuted};
+  background: ${({ theme }) => theme.colors.surface};
   border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: ${({ theme }) => theme.radii.lg};
   padding: ${({ theme }) => theme.spacing.md};

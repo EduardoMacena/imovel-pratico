@@ -4,13 +4,13 @@ import styled from "styled-components";
 
 export const ResultItem = styled.article`
   min-width: 0;
+  overflow: hidden;
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.radii.xl};
-  padding: ${({ theme }) => theme.spacing.lg};
+  border-radius: 28px;
   background:
-    radial-gradient(circle at top right, rgba(31, 111, 91, 0.08), transparent 28%),
+    radial-gradient(circle at top right, rgba(15, 76, 92, 0.08), transparent 30%),
     ${({ theme }) => theme.colors.surface};
-  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.05);
+  box-shadow: 0 18px 48px rgba(11, 31, 51, 0.08);
 `;
 
 export const ResultTop = styled.div`
@@ -19,7 +19,11 @@ export const ResultTop = styled.div`
   justify-content: space-between;
   gap: ${({ theme }) => theme.spacing.md};
   align-items: flex-start;
-  margin-bottom: ${({ theme }) => theme.spacing.lg};
+  padding: ${({ theme }) => theme.spacing.lg};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+  background:
+    radial-gradient(circle at top left, rgba(200, 164, 93, 0.12), transparent 32%),
+    ${({ theme }) => theme.colors.backgroundSoft};
 
   @media (max-width: 720px) {
     flex-direction: column;
@@ -33,13 +37,13 @@ export const ResultTitleGroup = styled.div`
 export const ResultEyebrow = styled.div`
   width: fit-content;
   margin-bottom: ${({ theme }) => theme.spacing.xs};
-  padding: 5px 10px;
+  padding: 6px 10px;
   border-radius: ${({ theme }) => theme.radii.pill};
   background: ${({ theme }) => theme.colors.accentSoft};
   color: ${({ theme }) => theme.colors.primary};
   font-size: 11px;
   font-weight: 950;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
 `;
 
@@ -47,9 +51,9 @@ export const ResultTitle = styled.strong`
   display: block;
   min-width: 0;
   color: ${({ theme }) => theme.colors.primary};
-  font-size: 22px;
-  line-height: 1.2;
-  letter-spacing: -0.04em;
+  font-size: 24px;
+  line-height: 1.15;
+  letter-spacing: -0.05em;
   overflow-wrap: anywhere;
 `;
 
@@ -57,7 +61,8 @@ export const ResultMeta = styled.div`
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: ${({ theme }) => theme.spacing.sm};
-  margin-bottom: ${({ theme }) => theme.spacing.lg};
+  padding: ${({ theme }) => theme.spacing.lg};
+  padding-bottom: 0;
 
   @media (max-width: 720px) {
     grid-template-columns: 1fr;
@@ -67,7 +72,7 @@ export const ResultMeta = styled.div`
 export const ResultMetaItem = styled.div`
   min-width: 0;
   padding: ${({ theme }) => theme.spacing.md};
-  border-radius: ${({ theme }) => theme.radii.lg};
+  border-radius: 18px;
   background: ${({ theme }) => theme.colors.primarySoft};
   border: 1px solid ${({ theme }) => theme.colors.border};
 
@@ -76,7 +81,7 @@ export const ResultMetaItem = styled.div`
     margin-bottom: 5px;
     color: ${({ theme }) => theme.colors.textMuted};
     font-size: 12px;
-    font-weight: 850;
+    font-weight: 900;
   }
 
   span {
@@ -92,6 +97,7 @@ export const ContactGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: ${({ theme }) => theme.spacing.sm};
+  padding: ${({ theme }) => theme.spacing.lg};
 
   @media (max-width: 720px) {
     grid-template-columns: 1fr;
@@ -102,7 +108,7 @@ export const DetailItem = styled.div<{ $wide?: boolean; $highlight?: boolean }>`
   min-width: 0;
   grid-column: ${({ $wide }) => ($wide ? "1 / -1" : "auto")};
   padding: ${({ theme }) => theme.spacing.md};
-  border-radius: ${({ theme }) => theme.radii.lg};
+  border-radius: 18px;
   background: ${({ theme, $highlight }) =>
     $highlight ? theme.colors.secondarySoft : theme.colors.surfaceMuted};
   border: 1px solid
@@ -113,7 +119,7 @@ export const DetailItem = styled.div<{ $wide?: boolean; $highlight?: boolean }>`
 export const DetailLabel = styled.div`
   color: ${({ theme }) => theme.colors.textMuted};
   font-size: 12px;
-  font-weight: 850;
+  font-weight: 900;
   margin-bottom: 6px;
 `;
 
@@ -127,7 +133,7 @@ export const DetailValue = styled.div`
 `;
 
 export const ErrorText = styled.div`
-  margin-top: ${({ theme }) => theme.spacing.md};
+  margin: 0 ${({ theme }) => theme.spacing.lg} ${({ theme }) => theme.spacing.lg};
   padding: ${({ theme }) => theme.spacing.md};
   border-radius: ${({ theme }) => theme.radii.lg};
   background: ${({ theme }) => theme.colors.dangerBg};
