@@ -33,6 +33,13 @@ export function AppHeader() {
 
         <Nav>
           <NavLink href="/" $active={pathname === "/"}>
+            Dashboard
+          </NavLink>
+
+          <NavLink
+            href="/nova-busca"
+            $active={pathname.startsWith("/nova-busca")}
+          >
             Nova busca
           </NavLink>
 

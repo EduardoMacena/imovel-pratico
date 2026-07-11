@@ -114,7 +114,7 @@ export default function HistoricoPage() {
 			<PageContainer>
 				<Header>
 					<HeaderContent>
-						<Link href="/" passHref legacyBehavior>
+						<Link href="/nova-busca" passHref legacyBehavior>
 							<BackLink>← Voltar para nova busca</BackLink>
 						</Link>
 
