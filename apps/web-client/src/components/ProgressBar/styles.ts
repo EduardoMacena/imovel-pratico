@@ -26,7 +26,7 @@ export const ProgressStatus = styled.span`
   gap: 8px;
   color: ${({ theme }) => theme.colors.primary};
   font-size: 13px;
-  font-weight: 950;
+  font-weight: 700;
 
   &::before {
     content: "";
@@ -41,7 +41,7 @@ export const ProgressStatus = styled.span`
 export const ProgressMeta = styled.span`
   color: ${({ theme }) => theme.colors.textMuted};
   font-size: 13px;
-  font-weight: 900;
+  font-weight: 500;
 `;
 
 export const ProgressTrack = styled.div`

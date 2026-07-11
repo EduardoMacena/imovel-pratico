@@ -75,7 +75,7 @@ export const HeroEyebrow = styled.div`
   color: ${({ theme }) => theme.colors.accent};
   border: 1px solid rgba(255, 255, 255, 0.18);
   font-size: 12px;
-  font-weight: 950;
+  font-weight: 700;
   letter-spacing: 0.07em;
   text-transform: uppercase;
 
@@ -199,7 +199,7 @@ export const StatusPill = styled.div<{ $active: boolean }>`
     ${({ $active }) =>
       $active ? "rgba(80, 214, 145, 0.18)" : "rgba(200, 164, 93, 0.28)"};
   font-size: 12px;
-  font-weight: 950;
+  font-weight: 700;
 
   &::before {
     content: "";
@@ -230,7 +230,7 @@ export const UsageMetric = styled.div`
     color: rgba(255, 255, 255, 0.58);
     display: block;
     font-size: 12px;
-    font-weight: 900;
+    font-weight: 700;
   }
 
   strong {
@@ -296,7 +296,7 @@ export const MetricLabel = styled.span`
   display: block;
   color: ${({ theme }) => theme.colors.textMuted};
   font-size: 12px;
-  font-weight: 950;
+  font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 `;
@@ -372,7 +372,7 @@ export const BarInfo = styled.div`
 export const BarLabel = styled.span`
   color: ${({ theme }) => theme.colors.text};
   font-size: 14px;
-  font-weight: 900;
+  font-weight: 700;
 `;
 
 export const BarTrack = styled.div`
@@ -457,15 +457,16 @@ export const PlanLabel = styled.span`
   display: block;
   color: ${({ theme }) => theme.colors.textMuted};
   font-size: 12px;
-  font-weight: 900;
+  font-weight: 700;
 `;
 
 export const PlanValue = styled.strong`
   display: block;
   margin-top: 4px;
   color: ${({ theme }) => theme.colors.primary};
-  font-size: 16px;
-  line-height: 1.3;
+  font-size: 15px;
+  line-height: 1.45;
+  font-weight: 500;
 `;
 
 export const ActionCard = styled.section`

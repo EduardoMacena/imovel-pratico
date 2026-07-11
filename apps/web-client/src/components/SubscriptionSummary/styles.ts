@@ -43,7 +43,7 @@ export const PlanName = styled.p`
   margin: 6px 0 0;
   color: ${({ theme }) => theme.colors.textMuted};
   font-size: 13px;
-  font-weight: 900;
+  font-weight: 700;
 `;
 
 export const Badge = styled.span<{ $status: string }>`
@@ -57,7 +57,7 @@ export const Badge = styled.span<{ $status: string }>`
   padding: 0 12px;
   border-radius: ${({ theme }) => theme.radii.pill};
   font-size: 11px;
-  font-weight: 950;
+  font-weight: 500;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   background: ${({ theme, $status }) =>
@@ -91,7 +91,7 @@ export const ProgressHeader = styled.div`
 export const ProgressValue = styled.span`
   color: ${({ theme }) => theme.colors.primary};
   font-size: 12px;
-  font-weight: 950;
+  font-weight: 500;
 `;
 
 export const ProgressTrack = styled.div`
@@ -143,15 +143,15 @@ export const Label = styled.div`
   font-size: 12px;
   line-height: 1.25;
   margin-bottom: 6px;
-  font-weight: 900;
+  font-weight: 700;
 `;
 
 export const Value = styled.div`
   min-width: 0;
   color: ${({ theme }) => theme.colors.primary};
-  font-size: 20px;
-  line-height: 1.1;
-  font-weight: 950;
+  font-size: 18px;
+  line-height: 1.25;
+  font-weight: 500;
   letter-spacing: -0.05em;
   overflow-wrap: anywhere;
 `;

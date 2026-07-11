@@ -4,26 +4,74 @@ import styled from "styled-components";
 
 export const Wrapper = styled.div`
   display: grid;
-  gap: ${({ theme }) => theme.spacing.md};
+  gap: ${({ theme }) => theme.spacing.sm};
   padding: 0 ${({ theme }) => theme.spacing.lg} ${({ theme }) => theme.spacing.lg};
 `;
 
 export const Section = styled.div`
   min-width: 0;
+  overflow: hidden;
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 22px;
+  border-radius: 20px;
   background:
-    radial-gradient(circle at top right, rgba(200, 164, 93, 0.08), transparent 30%),
+    radial-gradient(circle at top right, rgba(200, 164, 93, 0.07), transparent 30%),
     ${({ theme }) => theme.colors.backgroundSoft};
-  padding: ${({ theme }) => theme.spacing.lg};
+`;
+
+export const SectionButton = styled.button`
+  width: 100%;
+  min-height: 64px;
+  display: flex;
+  justify-content: space-between;
+  gap: ${({ theme }) => theme.spacing.md};
+  align-items: center;
+  padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
+  border: 0;
+  background: transparent;
+  color: ${({ theme }) => theme.colors.primary};
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+
+  > span {
+    flex: 0 0 auto;
+    color: ${({ theme }) => theme.colors.accent};
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.42);
+  }
+
+  @media (max-width: 560px) {
+    align-items: flex-start;
+    flex-direction: column;
+  }
 `;
 
 export const SectionTitle = styled.h4`
-  margin: 0 0 ${({ theme }) => theme.spacing.md};
+  margin: 0;
   color: ${({ theme }) => theme.colors.primary};
-  font-size: 18px;
+  font-size: 17px;
   line-height: 1.2;
   letter-spacing: -0.04em;
+`;
+
+export const SectionCount = styled.span`
+  display: block;
+  margin-top: 4px;
+  color: ${({ theme }) => theme.colors.textMuted};
+  font-size: 12px;
+  font-weight: 500;
+`;
+
+export const SectionContent = styled.div`
+  display: grid;
+  gap: ${({ theme }) => theme.spacing.sm};
+  padding: 0 ${({ theme }) => theme.spacing.lg} ${({ theme }) => theme.spacing.lg};
 `;
 
 export const Grid = styled.div`
@@ -52,7 +100,7 @@ export const Label = styled.div`
   color: ${({ theme }) => theme.colors.textMuted};
   font-size: 12px;
   line-height: 1.25;
-  font-weight: 900;
+  font-weight: 700;
 `;
 
 export const Value = styled.div`
@@ -60,7 +108,7 @@ export const Value = styled.div`
   color: ${({ theme }) => theme.colors.primary};
   font-size: 14px;
   line-height: 1.4;
-  font-weight: 950;
+  font-weight: 500;
   margin-top: 4px;
   overflow-wrap: anywhere;
 `;

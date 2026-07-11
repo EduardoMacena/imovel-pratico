@@ -71,7 +71,7 @@ export const HeaderEyebrow = styled.div`
   color: ${({ theme }) => theme.colors.accent};
   border: 1px solid rgba(255, 255, 255, 0.18);
   font-size: 12px;
-  font-weight: 950;
+  font-weight: 700;
   letter-spacing: 0.07em;
   text-transform: uppercase;
   position: relative;
@@ -139,7 +139,7 @@ export const HeaderPanel = styled.aside`
 export const HeaderPanelLabel = styled.span`
   color: rgba(255, 255, 255, 0.58);
   font-size: 12px;
-  font-weight: 950;
+  font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 `;
@@ -169,7 +169,7 @@ export const HeaderPanelItem = styled.div`
     display: block;
     color: rgba(255, 255, 255, 0.56);
     font-size: 12px;
-    font-weight: 900;
+    font-weight: 700;
   }
 
   strong {
@@ -209,7 +209,7 @@ export const StatCard = styled.div`
 export const StatLabel = styled.div`
   color: ${({ theme }) => theme.colors.textMuted};
   font-size: 12px;
-  font-weight: 950;
+  font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 `;
@@ -219,7 +219,7 @@ export const StatValue = styled.div`
   color: ${({ theme }) => theme.colors.primary};
   font-size: 32px;
   line-height: 1;
-  font-weight: 950;
+  font-weight: 700;
   letter-spacing: -0.06em;
 `;
 
@@ -273,7 +273,7 @@ export const ItemMeta = styled.div`
   margin-bottom: ${({ theme }) => theme.spacing.xs};
   color: ${({ theme }) => theme.colors.accent};
   font-size: 12px;
-  font-weight: 950;
+  font-weight: 700;
   letter-spacing: 0.07em;
   text-transform: uppercase;
 `;
@@ -315,15 +315,15 @@ export const InfoLabel = styled.div`
   font-size: 12px;
   line-height: 1.25;
   margin-bottom: 6px;
-  font-weight: 900;
+  font-weight: 700;
 `;
 
 export const InfoValue = styled.div`
   min-width: 0;
   color: ${({ theme }) => theme.colors.primary};
   font-size: 15px;
-  line-height: 1.35;
-  font-weight: 950;
+  line-height: 1.45;
+  font-weight: 500;
   overflow-wrap: anywhere;
 `;
 
@@ -357,7 +357,7 @@ export const DetailsLink = styled.a`
   color: ${({ theme }) => theme.colors.textInverted};
   border: 1px solid ${({ theme }) => theme.colors.primary};
   font-size: 14px;
-  font-weight: 950;
+  font-weight: 700;
   cursor: pointer;
   text-decoration: none;
   box-shadow: ${({ theme }) => theme.shadows.button};

@@ -95,7 +95,7 @@ export const HeaderEyebrow = styled.div`
   color: ${({ theme }) => theme.colors.accent};
   border: 1px solid rgba(255, 255, 255, 0.18);
   font-size: 12px;
-  font-weight: 950;
+  font-weight: 700;
   letter-spacing: 0.07em;
   text-transform: uppercase;
   position: relative;
@@ -156,7 +156,7 @@ export const HeaderPanel = styled.aside`
 export const HeaderPanelLabel = styled.span`
   color: rgba(255, 255, 255, 0.58);
   font-size: 12px;
-  font-weight: 950;
+  font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 `;
@@ -188,7 +188,7 @@ export const HeaderPanelItem = styled.div`
     display: block;
     color: rgba(255, 255, 255, 0.56);
     font-size: 12px;
-    font-weight: 900;
+    font-weight: 700;
   }
 
   strong {
@@ -229,7 +229,7 @@ export const IntelligenceLabel = styled.span`
   display: block;
   color: ${({ theme }) => theme.colors.textMuted};
   font-size: 12px;
-  font-weight: 950;
+  font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 `;
@@ -238,8 +238,9 @@ export const IntelligenceValue = styled.strong`
   display: block;
   margin-top: ${({ theme }) => theme.spacing.sm};
   color: ${({ theme }) => theme.colors.primary};
-  font-size: 17px;
-  line-height: 1.35;
+  font-size: 16px;
+  line-height: 1.45;
+  font-weight: 500;
   overflow-wrap: anywhere;
 `;
 
@@ -304,14 +305,14 @@ export const SummaryLabel = styled.div`
   font-size: 12px;
   line-height: 1.25;
   margin-bottom: 6px;
-  font-weight: 900;
+  font-weight: 700;
 `;
 
 export const SummaryValue = styled.div`
   min-width: 0;
-  font-size: 16px;
-  line-height: 1.35;
-  font-weight: 950;
+  font-size: 15px;
+  line-height: 1.45;
+  font-weight: 500;
   color: ${({ theme }) => theme.colors.primary};
   overflow-wrap: anywhere;
 `;

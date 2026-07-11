@@ -60,7 +60,7 @@ export const HeroEyebrow = styled.div`
   color: ${({ theme }) => theme.colors.accent};
   border: 1px solid rgba(255, 255, 255, 0.18);
   font-size: 12px;
-  font-weight: 950;
+  font-weight: 700;
   letter-spacing: 0.07em;
   text-transform: uppercase;
 `;
@@ -127,7 +127,7 @@ export const HeroPanelLabel = styled.span`
   display: block;
   color: rgba(255, 255, 255, 0.58);
   font-size: 12px;
-  font-weight: 900;
+  font-weight: 700;
 `;
 
 export const HeroPanelValue = styled.strong`
@@ -187,7 +187,7 @@ export const OperationEyebrow = styled.div`
   width: fit-content;
   color: ${({ theme }) => theme.colors.accent};
   font-size: 12px;
-  font-weight: 950;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 `;
@@ -251,7 +251,7 @@ export const TaskId = styled.span`
   background: ${({ theme }) => theme.colors.primarySoft};
   color: ${({ theme }) => theme.colors.primary};
   font-size: 12px;
-  font-weight: 900;
+  font-weight: 700;
   word-break: break-all;
 `;
 

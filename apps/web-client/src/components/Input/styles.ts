@@ -14,7 +14,7 @@ export const Field = styled.label`
 export const Label = styled.span`
   color: ${({ theme }) => theme.colors.textMuted};
   font-size: 12px;
-  font-weight: 950;
+  font-weight: 400;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   transition: color 0.18s ease;
@@ -33,7 +33,7 @@ export const InputElement = styled.input`
   outline: none;
   font-family: inherit;
   font-size: 15px;
-  font-weight: 800;
+  font-weight: 500;
   box-shadow:
     0 10px 24px rgba(15, 23, 42, 0.04),
     inset 0 1px 0 rgba(255, 255, 255, 0.80);
@@ -45,7 +45,7 @@ export const InputElement = styled.input`
 
   &::placeholder {
     color: ${({ theme }) => theme.colors.textSoft};
-    font-weight: 700;
+    font-weight: 400;
   }
 
   &:focus {

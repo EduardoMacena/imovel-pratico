@@ -1,5 +1,6 @@
 "use client";
 
+import { ReactNode, useState } from "react";
 import type { DadosContato } from "../../features/busca/types";
 import {
   Grid,
@@ -8,6 +9,9 @@ import {
   List,
   ListItem,
   Section,
+  SectionButton,
+  SectionContent,
+  SectionCount,
   SectionTitle,
   Value,
   Wrapper,
@@ -16,6 +20,13 @@ import {
 type OwnerDetailsProps = {
   dadosContato?: DadosContato | null;
   fonteContato?: string | null;
+};
+
+type DetailSectionProps = {
+  title: string;
+  count?: number;
+  defaultOpen?: boolean;
+  children: ReactNode;
 };
 
 function valueOrDash(value?: string | number | boolean | null) {
@@ -30,6 +41,35 @@ function valueOrDash(value?: string | number | boolean | null) {
   return value;
 }
 
+function DetailSection({
+  title,
+  count,
+  defaultOpen = false,
+  children,
+}: DetailSectionProps) {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
+
+  return (
+    <Section>
+      <SectionButton type="button" onClick={() => setIsOpen(value => !value)}>
+        <div>
+          <SectionTitle>{title}</SectionTitle>
+
+          {typeof count === "number" && (
+            <SectionCount>
+              {count} {count === 1 ? "registro" : "registros"}
+            </SectionCount>
+          )}
+        </div>
+
+        <span>{isOpen ? "− Recolher" : "+ Expandir"}</span>
+      </SectionButton>
+
+      {isOpen && <SectionContent>{children}</SectionContent>}
+    </Section>
+  );
+}
+
 export function OwnerDetails({
   dadosContato,
   fonteContato,
@@ -38,68 +78,64 @@ export function OwnerDetails({
     return null;
   }
 
+  const dadosCadastrais = [
+    {
+      label: "Fonte",
+      value: fonteContato,
+    },
+    {
+      label: "CPF",
+      value: dadosContato.cpf,
+    },
+    {
+      label: "Nome",
+      value: dadosContato.nome,
+    },
+    {
+      label: "Sexo",
+      value: dadosContato.sexo,
+    },
+    {
+      label: "Idade",
+      value: dadosContato.idade,
+    },
+    {
+      label: "Signo",
+      value: dadosContato.signo,
+    },
+    {
+      label: "Nome da mãe",
+      value: dadosContato.nomeMae,
+    },
+    {
+      label: "Data nascimento",
+      value: dadosContato.dataNascimento,
+    },
+    {
+      label: "Renda estimada",
+      value: dadosContato.rendaEstimada,
+    },
+    {
+      label: "Faixa salarial",
+      value: dadosContato.rendaFaixaSalarial,
+    },
+  ];
+
   return (
     <Wrapper>
-      <Section>
-        <SectionTitle>Dados completos do proprietário</SectionTitle>
-
+      <DetailSection title="Dados cadastrais" count={dadosCadastrais.length}>
         <Grid>
-          <Item>
-            <Label>Fonte</Label>
-            <Value>{valueOrDash(fonteContato)}</Value>
-          </Item>
-
-          <Item>
-            <Label>CPF</Label>
-            <Value>{valueOrDash(dadosContato.cpf)}</Value>
-          </Item>
-
-          <Item>
-            <Label>Nome</Label>
-            <Value>{valueOrDash(dadosContato.nome)}</Value>
-          </Item>
-
-          <Item>
-            <Label>Sexo</Label>
-            <Value>{valueOrDash(dadosContato.sexo)}</Value>
-          </Item>
-
-          <Item>
-            <Label>Idade</Label>
-            <Value>{valueOrDash(dadosContato.idade)}</Value>
-          </Item>
-
-          <Item>
-            <Label>Signo</Label>
-            <Value>{valueOrDash(dadosContato.signo)}</Value>
-          </Item>
-
-          <Item>
-            <Label>Nome da mãe</Label>
-            <Value>{valueOrDash(dadosContato.nomeMae)}</Value>
-          </Item>
-
-          <Item>
-            <Label>Data nascimento</Label>
-            <Value>{valueOrDash(dadosContato.dataNascimento)}</Value>
-          </Item>
-
-          <Item>
-            <Label>Renda estimada</Label>
-            <Value>{valueOrDash(dadosContato.rendaEstimada)}</Value>
-          </Item>
-
-          <Item>
-            <Label>Faixa salarial</Label>
-            <Value>{valueOrDash(dadosContato.rendaFaixaSalarial)}</Value>
-          </Item>
+          {dadosCadastrais.map(item => (
+            <Item key={item.label}>
+              <Label>{item.label}</Label>
+              <Value>{valueOrDash(item.value)}</Value>
+            </Item>
+          ))}
         </Grid>
-      </Section>
+      </DetailSection>
 
       {dadosContato.telefones && dadosContato.telefones.length > 0 && (
-        <Section>
-          <SectionTitle>Telefones</SectionTitle>
-
+        <DetailSection title="Telefones" count={dadosContato.telefones.length}>
           <List>
             {dadosContato.telefones.map((telefone, index) => (
               <ListItem key={`${telefone.telefoneComDDD}-${index}`}>
@@ -132,13 +168,11 @@ export function OwnerDetails({
               </ListItem>
             ))}
           </List>
-        </Section>
+        </DetailSection>
       )}
 
       {dadosContato.emails && dadosContato.emails.length > 0 && (
-        <Section>
-          <SectionTitle>E-mails</SectionTitle>
-
+        <DetailSection title="E-mails" count={dadosContato.emails.length}>
           <List>
             {dadosContato.emails.map((email, index) => (
               <ListItem key={`${email.enderecoEmail}-${index}`}>
@@ -146,13 +180,11 @@ export function OwnerDetails({
               </ListItem>
             ))}
           </List>
-        </Section>
+        </DetailSection>
       )}
 
       {dadosContato.enderecos && dadosContato.enderecos.length > 0 && (
-        <Section>
-          <SectionTitle>Endereços</SectionTitle>
-
+        <DetailSection title="Endereços" count={dadosContato.enderecos.length}>
           <List>
             {dadosContato.enderecos.map((endereco, index) => (
               <ListItem key={`${endereco.cep}-${index}`}>
@@ -195,7 +227,7 @@ export function OwnerDetails({
               </ListItem>
             ))}
           </List>
-        </Section>
+        </DetailSection>
       )}
     </Wrapper>
   );

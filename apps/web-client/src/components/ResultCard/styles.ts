@@ -42,7 +42,7 @@ export const ResultEyebrow = styled.div`
   background: ${({ theme }) => theme.colors.accentSoft};
   color: ${({ theme }) => theme.colors.primary};
   font-size: 11px;
-  font-weight: 950;
+  font-weight: 500;
   letter-spacing: 0.07em;
   text-transform: uppercase;
 `;
@@ -81,14 +81,14 @@ export const ResultMetaItem = styled.div`
     margin-bottom: 5px;
     color: ${({ theme }) => theme.colors.textMuted};
     font-size: 12px;
-    font-weight: 900;
+    font-weight: 700;
   }
 
   span {
     display: block;
     color: ${({ theme }) => theme.colors.primary};
     font-size: 15px;
-    font-weight: 950;
+    font-weight: 500;
     overflow-wrap: anywhere;
   }
 `;
@@ -119,16 +119,16 @@ export const DetailItem = styled.div<{ $wide?: boolean; $highlight?: boolean }>`
 export const DetailLabel = styled.div`
   color: ${({ theme }) => theme.colors.textMuted};
   font-size: 12px;
-  font-weight: 900;
+  font-weight: 700;
   margin-bottom: 6px;
 `;
 
 export const DetailValue = styled.div`
   min-width: 0;
   color: ${({ theme }) => theme.colors.primary};
-  font-size: 16px;
-  line-height: 1.35;
-  font-weight: 950;
+  font-size: 15px;
+  line-height: 1.45;
+  font-weight: 500;
   overflow-wrap: anywhere;
 `;
 
