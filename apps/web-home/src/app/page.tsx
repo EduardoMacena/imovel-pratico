@@ -598,12 +598,12 @@ export default function HomePage() {
           <PlanContent>
             <SectionEyebrow>Planos estratégicos</SectionEyebrow>
 
-            <h2>Planos sob medida para uma operação imobiliária de alto nível.</h2>
+            <h2>Planos para operações imobiliárias de alto nível.</h2>
 
             <p>
               Escolha a estrutura ideal para sua equipe. Cada plano combina
-              volume de consultas, cadência operacional e posicionamento premium
-              para transformar captação em processo comercial.
+              volume mensal, cadência de processamento e posicionamento premium
+              para transformar captação em um processo comercial previsível.
             </p>
           </PlanContent>
 

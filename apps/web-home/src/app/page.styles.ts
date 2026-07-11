@@ -1203,62 +1203,82 @@ export const Footer = styled.footer`
 
 
 export const PlanSection = styled.section`
-  padding: ${({ theme }) => theme.spacing["3xl"]} 0;
+  padding: clamp(92px, 9vw, 140px) 0;
   background:
-    radial-gradient(circle at 14% 16%, rgba(200, 164, 93, 0.16), transparent 28%),
-    radial-gradient(circle at 86% 28%, rgba(15, 76, 92, 0.28), transparent 30%),
+    radial-gradient(circle at 12% 12%, rgba(200, 164, 93, 0.16), transparent 28%),
+    radial-gradient(circle at 78% 24%, rgba(15, 76, 92, 0.30), transparent 34%),
     linear-gradient(135deg, ${({ theme }) => theme.colors.primary}, #061725 72%);
   color: ${({ theme }) => theme.colors.textInverted};
 `;
 
-export const PlanGrid = styled(Section)`
+export const PlanGrid = styled.div`
+  width: min(1420px, calc(100% - 64px));
+  margin: 0 auto;
   display: grid;
-  grid-template-columns: 0.72fr 1.28fr;
-  gap: clamp(36px, 6vw, 82px);
+  grid-template-columns: minmax(390px, 0.54fr) minmax(760px, 1.46fr);
+  gap: clamp(42px, 5vw, 82px);
   align-items: center;
 
-  @media (max-width: 1080px) {
+  @media (max-width: 1220px) {
+    width: min(1060px, calc(100% - 44px));
     grid-template-columns: 1fr;
+  }
+
+  @media (max-width: 620px) {
+    width: min(100% - 28px, 100%);
   }
 `;
 
 export const PlanContent = styled.div`
+  max-width: 540px;
+
   h2 {
-    max-width: 650px;
     margin: 0;
-    font-size: clamp(42px, 6vw, 76px);
-    line-height: 0.94;
-    letter-spacing: -0.08em;
+    font-size: clamp(42px, 4.4vw, 64px);
+    line-height: 0.98;
+    letter-spacing: -0.07em;
   }
 
   p {
-    max-width: 620px;
+    max-width: 520px;
     margin: ${({ theme }) => theme.spacing.lg} 0 0;
     color: rgba(255, 255, 255, 0.70);
     font-size: 17px;
-    line-height: 1.75;
+    line-height: 1.72;
   }
 
   ${SectionEyebrow} {
     color: ${({ theme }) => theme.colors.accent};
   }
+
+  @media (max-width: 1220px) {
+    max-width: 780px;
+
+    h2 {
+      max-width: 760px;
+    }
+
+    p {
+      max-width: 720px;
+    }
+  }
 `;
 
 export const PlanInfo = styled.div`
   display: grid;
-  gap: ${({ theme }) => theme.spacing.md};
+  gap: 16px;
 `;
 
 export const PlanCard = styled(motion.article)<{ $featured?: boolean }>`
   position: relative;
   overflow: hidden;
   display: grid;
-  grid-template-columns: 76px minmax(170px, 0.95fr) minmax(280px, 1.05fr) minmax(170px, 0.65fr);
-  gap: ${({ theme }) => theme.spacing.lg};
+  grid-template-columns: 74px minmax(190px, 0.85fr) minmax(310px, 1.05fr) minmax(210px, 0.7fr);
+  gap: 24px;
   align-items: center;
-  min-height: 150px;
+  min-height: 142px;
   padding: 24px 28px;
-  border-radius: 30px;
+  border-radius: 28px;
   background:
     radial-gradient(circle at 16% 18%, rgba(255, 255, 255, 0.08), transparent 28%),
     rgba(255, 255, 255, 0.055);
@@ -1285,9 +1305,10 @@ export const PlanCard = styled(motion.article)<{ $featured?: boolean }>`
       0 0 56px rgba(200, 164, 93, 0.10);
   }
 
-  @media (max-width: 860px) {
-    grid-template-columns: 64px 1fr;
-    gap: ${({ theme }) => theme.spacing.md};
+  @media (max-width: 980px) {
+    grid-template-columns: 68px 1fr;
+    gap: 18px;
+    padding: 22px;
   }
 
   @media (max-width: 560px) {
@@ -1296,11 +1317,11 @@ export const PlanCard = styled(motion.article)<{ $featured?: boolean }>`
 `;
 
 export const PlanIcon = styled.div`
-  width: 68px;
-  height: 68px;
+  width: 66px;
+  height: 66px;
   display: grid;
   place-items: center;
-  border-radius: 24px;
+  border-radius: 22px;
   background:
     radial-gradient(circle at 50% 100%, rgba(200, 164, 93, 0.24), transparent 46%),
     rgba(255, 255, 255, 0.06);
@@ -1321,32 +1342,39 @@ export const PlanTitle = styled.div`
   strong {
     display: block;
     color: ${({ theme }) => theme.colors.textInverted};
-    font-size: clamp(24px, 2vw, 32px);
+    font-size: clamp(25px, 2vw, 31px);
     line-height: 1;
     letter-spacing: -0.06em;
+    white-space: nowrap;
   }
 
   span {
     display: block;
-    max-width: 260px;
+    max-width: 250px;
     margin-top: 10px;
     color: rgba(255, 255, 255, 0.62);
     font-size: 14px;
     line-height: 1.55;
   }
+
+  @media (max-width: 980px) {
+    span {
+      max-width: 100%;
+    }
+  }
 `;
 
 export const PlanMeta = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: ${({ theme }) => theme.spacing.md};
-  padding: 0 ${({ theme }) => theme.spacing.lg};
+  grid-template-columns: minmax(150px, 1fr) minmax(90px, 0.7fr);
+  gap: 24px;
+  padding: 0 28px;
   border-left: 1px solid rgba(255, 255, 255, 0.12);
   border-right: 1px solid rgba(255, 255, 255, 0.12);
 
-  @media (max-width: 860px) {
+  @media (max-width: 980px) {
     grid-column: 1 / -1;
-    padding: ${({ theme }) => theme.spacing.md} 0 0;
+    padding: 18px 0 0;
     border-left: 0;
     border-right: 0;
     border-top: 1px solid rgba(255, 255, 255, 0.10);
@@ -1368,15 +1396,17 @@ export const PlanMetaItem = styled.div`
   strong {
     display: block;
     margin-top: 10px;
-    color: rgba(255, 255, 255, 0.92);
-    font-size: clamp(24px, 2.5vw, 32px);
-    line-height: 1;
+    color: rgba(255, 255, 255, 0.94);
+    font-size: clamp(25px, 2.2vw, 32px);
+    line-height: 1.02;
     letter-spacing: -0.05em;
+    white-space: nowrap;
   }
 `;
 
 export const PlanPrice = styled.div`
-  min-width: max-content;
+  min-width: 205px;
+  padding-right: 6px;
 
   span {
     display: block;
@@ -1389,19 +1419,20 @@ export const PlanPrice = styled.div`
     display: block;
     margin-top: 10px;
     color: ${({ theme }) => theme.colors.accent};
-    font-size: clamp(26px, 2.8vw, 38px);
+    font-size: clamp(27px, 2.25vw, 34px);
     line-height: 1;
-    letter-spacing: -0.06em;
+    letter-spacing: -0.055em;
+    white-space: nowrap;
   }
 
-  @media (max-width: 860px) {
+  @media (max-width: 980px) {
     grid-column: 1 / -1;
   }
 `;
 
 export const PlanBadge = styled.div`
   position: absolute;
-  top: 22px;
+  top: 18px;
   right: 24px;
   display: inline-flex;
   align-items: center;
@@ -1413,8 +1444,9 @@ export const PlanBadge = styled.div`
   color: ${({ theme }) => theme.colors.accent};
   font-size: 12px;
   font-weight: 950;
+  white-space: nowrap;
 
-  @media (max-width: 860px) {
+  @media (max-width: 980px) {
     position: static;
     width: fit-content;
     grid-column: 1 / -1;
@@ -1424,3 +1456,4 @@ export const PlanBadge = styled.div`
 export const PopularBadge = styled.span`
   color: ${({ theme }) => theme.colors.accent};
 `;
+
