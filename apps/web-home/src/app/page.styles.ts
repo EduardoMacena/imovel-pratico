@@ -1200,3 +1200,227 @@ export const Footer = styled.footer`
     flex-direction: column;
   }
 `;
+
+
+export const PlanSection = styled.section`
+  padding: ${({ theme }) => theme.spacing["3xl"]} 0;
+  background:
+    radial-gradient(circle at 14% 16%, rgba(200, 164, 93, 0.16), transparent 28%),
+    radial-gradient(circle at 86% 28%, rgba(15, 76, 92, 0.28), transparent 30%),
+    linear-gradient(135deg, ${({ theme }) => theme.colors.primary}, #061725 72%);
+  color: ${({ theme }) => theme.colors.textInverted};
+`;
+
+export const PlanGrid = styled(Section)`
+  display: grid;
+  grid-template-columns: 0.72fr 1.28fr;
+  gap: clamp(36px, 6vw, 82px);
+  align-items: center;
+
+  @media (max-width: 1080px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+export const PlanContent = styled.div`
+  h2 {
+    max-width: 650px;
+    margin: 0;
+    font-size: clamp(42px, 6vw, 76px);
+    line-height: 0.94;
+    letter-spacing: -0.08em;
+  }
+
+  p {
+    max-width: 620px;
+    margin: ${({ theme }) => theme.spacing.lg} 0 0;
+    color: rgba(255, 255, 255, 0.70);
+    font-size: 17px;
+    line-height: 1.75;
+  }
+
+  ${SectionEyebrow} {
+    color: ${({ theme }) => theme.colors.accent};
+  }
+`;
+
+export const PlanInfo = styled.div`
+  display: grid;
+  gap: ${({ theme }) => theme.spacing.md};
+`;
+
+export const PlanCard = styled(motion.article)<{ $featured?: boolean }>`
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 76px minmax(170px, 0.95fr) minmax(280px, 1.05fr) minmax(170px, 0.65fr);
+  gap: ${({ theme }) => theme.spacing.lg};
+  align-items: center;
+  min-height: 150px;
+  padding: 24px 28px;
+  border-radius: 30px;
+  background:
+    radial-gradient(circle at 16% 18%, rgba(255, 255, 255, 0.08), transparent 28%),
+    rgba(255, 255, 255, 0.055);
+  border: 1px solid
+    ${({ theme, $featured }) =>
+      $featured ? theme.colors.accent : "rgba(255, 255, 255, 0.14)"};
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.20),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    background 0.25s ease,
+    box-shadow 0.25s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    background:
+      radial-gradient(circle at 16% 18%, rgba(200, 164, 93, 0.12), transparent 28%),
+      rgba(255, 255, 255, 0.075);
+    border-color: ${({ theme }) => theme.colors.accent};
+    box-shadow:
+      0 34px 90px rgba(0, 0, 0, 0.28),
+      0 0 56px rgba(200, 164, 93, 0.10);
+  }
+
+  @media (max-width: 860px) {
+    grid-template-columns: 64px 1fr;
+    gap: ${({ theme }) => theme.spacing.md};
+  }
+
+  @media (max-width: 560px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+export const PlanIcon = styled.div`
+  width: 68px;
+  height: 68px;
+  display: grid;
+  place-items: center;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 50% 100%, rgba(200, 164, 93, 0.24), transparent 46%),
+    rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(200, 164, 93, 0.32);
+  color: ${({ theme }) => theme.colors.accent};
+  font-size: 20px;
+  font-weight: 950;
+  letter-spacing: -0.04em;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.20);
+
+  @media (max-width: 560px) {
+    width: 58px;
+    height: 58px;
+  }
+`;
+
+export const PlanTitle = styled.div`
+  strong {
+    display: block;
+    color: ${({ theme }) => theme.colors.textInverted};
+    font-size: clamp(24px, 2vw, 32px);
+    line-height: 1;
+    letter-spacing: -0.06em;
+  }
+
+  span {
+    display: block;
+    max-width: 260px;
+    margin-top: 10px;
+    color: rgba(255, 255, 255, 0.62);
+    font-size: 14px;
+    line-height: 1.55;
+  }
+`;
+
+export const PlanMeta = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: ${({ theme }) => theme.spacing.md};
+  padding: 0 ${({ theme }) => theme.spacing.lg};
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+
+  @media (max-width: 860px) {
+    grid-column: 1 / -1;
+    padding: ${({ theme }) => theme.spacing.md} 0 0;
+    border-left: 0;
+    border-right: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.10);
+  }
+
+  @media (max-width: 500px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+export const PlanMetaItem = styled.div`
+  span {
+    display: block;
+    color: ${({ theme }) => theme.colors.accent};
+    font-size: 13px;
+    font-weight: 900;
+  }
+
+  strong {
+    display: block;
+    margin-top: 10px;
+    color: rgba(255, 255, 255, 0.92);
+    font-size: clamp(24px, 2.5vw, 32px);
+    line-height: 1;
+    letter-spacing: -0.05em;
+  }
+`;
+
+export const PlanPrice = styled.div`
+  min-width: max-content;
+
+  span {
+    display: block;
+    color: ${({ theme }) => theme.colors.accent};
+    font-size: 13px;
+    font-weight: 900;
+  }
+
+  strong {
+    display: block;
+    margin-top: 10px;
+    color: ${({ theme }) => theme.colors.accent};
+    font-size: clamp(26px, 2.8vw, 38px);
+    line-height: 1;
+    letter-spacing: -0.06em;
+  }
+
+  @media (max-width: 860px) {
+    grid-column: 1 / -1;
+  }
+`;
+
+export const PlanBadge = styled.div`
+  position: absolute;
+  top: 22px;
+  right: 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 12px;
+  border-radius: ${({ theme }) => theme.radii.pill};
+  background: rgba(200, 164, 93, 0.10);
+  border: 1px solid rgba(200, 164, 93, 0.38);
+  color: ${({ theme }) => theme.colors.accent};
+  font-size: 12px;
+  font-weight: 950;
+
+  @media (max-width: 860px) {
+    position: static;
+    width: fit-content;
+    grid-column: 1 / -1;
+  }
+`;
+
+export const PopularBadge = styled.span`
+  color: ${({ theme }) => theme.colors.accent};
+`;

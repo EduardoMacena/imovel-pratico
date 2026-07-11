@@ -11,8 +11,11 @@
     "typecheck": "turbo typecheck"
   },
   "devDependencies": {
+    "@types/node": "^26.1.1",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "prettier": "latest",
     "turbo": "latest",
-    "typescript": "latest",
-    "prettier": "latest"
+    "typescript": "5.9.3"
   }
 }

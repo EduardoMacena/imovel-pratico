@@ -59,11 +59,18 @@ import {
   ProcessTitle,
   ProgressBar,
   ProgressFill,
-  RoiCard,
-  RoiCards,
-  RoiContent,
-  RoiInner,
-  RoiSection,
+  PlanBadge,
+  PlanCard,
+  PlanContent,
+  PlanGrid,
+  PlanIcon,
+  PlanInfo,
+  PlanMeta,
+  PlanMetaItem,
+  PlanPrice,
+  PlanSection,
+  PlanTitle,
+  PopularBadge,
   SecondaryButton,
   SectionBlock,
   SectionDescription,
@@ -192,18 +199,34 @@ const features = [
   },
 ];
 
-const roiArguments = [
+const plans = [
   {
-    title: "Menos horas improdutivas",
-    text: "A plataforma reduz o trabalho manual de pesquisa e organização, liberando tempo da equipe para contato e negociação.",
+    name: "Plano 500",
+    description: "Para imobiliárias que querem iniciar com uma operação organizada.",
+    limit: "500 consultas",
+    interval: "70s",
+    price: "R$ 1.500,00",
+    badge: "Entrada estratégica",
+    icon: "500",
   },
   {
-    title: "Mais capacidade operacional",
-    text: "Com fila, histórico e exportação, a imobiliária consegue processar mais oportunidades com menos dependência de planilha.",
+    name: "Plano 1000",
+    description: "Para equipes que precisam de mais volume e velocidade comercial.",
+    limit: "1000 consultas",
+    interval: "50s",
+    price: "R$ 2.500,00",
+    badge: "Mais escolhido",
+    icon: "1K",
+    featured: true,
   },
   {
-    title: "Valor percebido alto",
-    text: "O produto entrega estrutura, velocidade e organização. Por isso, um plano de R$ 2.500 a R$ 3.000/mês precisa ser apresentado como operação, não como ferramenta simples.",
+    name: "Plano 2000",
+    description: "Para operações de alto volume, escala e prospecção intensa.",
+    limit: "2000 consultas",
+    interval: "40s",
+    price: "R$ 5.900,00",
+    badge: "Alta performance",
+    icon: "2K",
   },
 ];
 
@@ -570,30 +593,58 @@ export default function HomePage() {
         </FeatureGrid>
       </SectionBlock>
 
-      <RoiSection id="valor">
-        <RoiInner>
-          <RoiContent>
-            <SectionEyebrow>Justificativa de investimento</SectionEyebrow>
-            <h2>R$ 2.500 ou R$ 3.000 não pode parecer mensalidade. Precisa parecer estrutura.</h2>
-            <p>
-              Para vender ticket alto, a comunicação precisa mostrar que a
-              plataforma economiza tempo operacional, aumenta capacidade e
-              organiza a captação como um processo comercial profissional.
-            </p>
-          </RoiContent>
+      <PlanSection id="valor">
+        <PlanGrid>
+          <PlanContent>
+            <SectionEyebrow>Planos estratégicos</SectionEyebrow>
 
-          <RoiCards>
-            {roiArguments.map((argument, index) => (
-              <Reveal key={argument.title} delay={index * 0.08}>
-                <RoiCard>
-                  <strong>{argument.title}</strong>
-                  <span>{argument.text}</span>
-                </RoiCard>
+            <h2>Planos sob medida para uma operação imobiliária de alto nível.</h2>
+
+            <p>
+              Escolha a estrutura ideal para sua equipe. Cada plano combina
+              volume de consultas, cadência operacional e posicionamento premium
+              para transformar captação em processo comercial.
+            </p>
+          </PlanContent>
+
+          <PlanInfo>
+            {plans.map((plan, index) => (
+              <Reveal key={plan.name} delay={index * 0.08}>
+                <PlanCard $featured={plan.featured === true}>
+                  <PlanIcon>{plan.icon}</PlanIcon>
+
+                  <PlanTitle>
+                    <strong>{plan.name}</strong>
+                    <span>{plan.description}</span>
+                  </PlanTitle>
+
+                  <PlanMeta>
+                    <PlanMetaItem>
+                      <span>Limite mensal</span>
+                      <strong>{plan.limit}</strong>
+                    </PlanMetaItem>
+
+                    <PlanMetaItem>
+                      <span>Intervalo</span>
+                      <strong>{plan.interval}</strong>
+                    </PlanMetaItem>
+                  </PlanMeta>
+
+                  <PlanPrice>
+                    <span>Preço</span>
+                    <strong>{plan.price}</strong>
+                  </PlanPrice>
+
+                  <PlanBadge>
+                    {plan.featured && <PopularBadge>★</PopularBadge>}
+                    {plan.badge}
+                  </PlanBadge>
+                </PlanCard>
               </Reveal>
             ))}
-          </RoiCards>
-        </RoiInner>
-      </RoiSection>
+          </PlanInfo>
+        </PlanGrid>
+      </PlanSection>
 
       <SectionBlock>
         <Reveal>
