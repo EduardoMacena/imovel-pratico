@@ -83,3 +83,24 @@ export const BuscaPreviaStatus = {
 } as const
 
 export type BuscaPreviaStatus = (typeof BuscaPreviaStatus)[keyof typeof BuscaPreviaStatus]
+
+
+export const FaturaStatus = {
+  ABERTA: 'ABERTA',
+  FECHADA: 'FECHADA',
+  PAGA: 'PAGA',
+  VENCIDA: 'VENCIDA',
+  CANCELADA: 'CANCELADA'
+} as const
+
+export type FaturaStatus = (typeof FaturaStatus)[keyof typeof FaturaStatus]
+
+
+export const FaturaItemTipo = {
+  MENSALIDADE: 'MENSALIDADE',
+  CONSULTA_EXCEDENTE: 'CONSULTA_EXCEDENTE',
+  AJUSTE: 'AJUSTE',
+  DESCONTO: 'DESCONTO'
+} as const
+
+export type FaturaItemTipo = (typeof FaturaItemTipo)[keyof typeof FaturaItemTipo]

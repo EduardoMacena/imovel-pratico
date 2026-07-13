@@ -389,6 +389,8 @@ export const ModelName = {
   Usuario: 'Usuario',
   Tarefa: 'Tarefa',
   BuscaPrevia: 'BuscaPrevia',
+  Fatura: 'Fatura',
+  FaturaItem: 'FaturaItem',
   TarefaResultado: 'TarefaResultado',
   ImovelCache: 'ImovelCache',
   ConsultaLog: 'ConsultaLog'
@@ -407,7 +409,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "plano" | "cliente" | "usuario" | "tarefa" | "buscaPrevia" | "tarefaResultado" | "imovelCache" | "consultaLog"
+    modelProps: "plano" | "cliente" | "usuario" | "tarefa" | "buscaPrevia" | "fatura" | "faturaItem" | "tarefaResultado" | "imovelCache" | "consultaLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -778,6 +780,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.BuscaPreviaCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.BuscaPreviaCountAggregateOutputType> | number
+        }
+      }
+    }
+    Fatura: {
+      payload: Prisma.$FaturaPayload<ExtArgs>
+      fields: Prisma.FaturaFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.FaturaFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaturaPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.FaturaFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaturaPayload>
+        }
+        findFirst: {
+          args: Prisma.FaturaFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaturaPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.FaturaFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaturaPayload>
+        }
+        findMany: {
+          args: Prisma.FaturaFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaturaPayload>[]
+        }
+        create: {
+          args: Prisma.FaturaCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaturaPayload>
+        }
+        createMany: {
+          args: Prisma.FaturaCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.FaturaCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaturaPayload>[]
+        }
+        delete: {
+          args: Prisma.FaturaDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaturaPayload>
+        }
+        update: {
+          args: Prisma.FaturaUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaturaPayload>
+        }
+        deleteMany: {
+          args: Prisma.FaturaDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.FaturaUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.FaturaUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaturaPayload>[]
+        }
+        upsert: {
+          args: Prisma.FaturaUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaturaPayload>
+        }
+        aggregate: {
+          args: Prisma.FaturaAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateFatura>
+        }
+        groupBy: {
+          args: Prisma.FaturaGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FaturaGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.FaturaCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FaturaCountAggregateOutputType> | number
+        }
+      }
+    }
+    FaturaItem: {
+      payload: Prisma.$FaturaItemPayload<ExtArgs>
+      fields: Prisma.FaturaItemFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.FaturaItemFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaturaItemPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.FaturaItemFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaturaItemPayload>
+        }
+        findFirst: {
+          args: Prisma.FaturaItemFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaturaItemPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.FaturaItemFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaturaItemPayload>
+        }
+        findMany: {
+          args: Prisma.FaturaItemFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaturaItemPayload>[]
+        }
+        create: {
+          args: Prisma.FaturaItemCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaturaItemPayload>
+        }
+        createMany: {
+          args: Prisma.FaturaItemCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.FaturaItemCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaturaItemPayload>[]
+        }
+        delete: {
+          args: Prisma.FaturaItemDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaturaItemPayload>
+        }
+        update: {
+          args: Prisma.FaturaItemUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaturaItemPayload>
+        }
+        deleteMany: {
+          args: Prisma.FaturaItemDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.FaturaItemUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.FaturaItemUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaturaItemPayload>[]
+        }
+        upsert: {
+          args: Prisma.FaturaItemUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaturaItemPayload>
+        }
+        aggregate: {
+          args: Prisma.FaturaItemAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateFaturaItem>
+        }
+        groupBy: {
+          args: Prisma.FaturaItemGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FaturaItemGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.FaturaItemCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FaturaItemCountAggregateOutputType> | number
         }
       }
     }
@@ -1152,6 +1302,45 @@ export const BuscaPreviaScalarFieldEnum = {
 export type BuscaPreviaScalarFieldEnum = (typeof BuscaPreviaScalarFieldEnum)[keyof typeof BuscaPreviaScalarFieldEnum]
 
 
+export const FaturaScalarFieldEnum = {
+  id: 'id',
+  clienteId: 'clienteId',
+  status: 'status',
+  referenciaMes: 'referenciaMes',
+  referenciaAno: 'referenciaAno',
+  planoId: 'planoId',
+  planoNome: 'planoNome',
+  consultasInclusas: 'consultasInclusas',
+  consultasUsadas: 'consultasUsadas',
+  consultasExcedentes: 'consultasExcedentes',
+  valorMensalidadeCentavos: 'valorMensalidadeCentavos',
+  valorConsultaAdicionalCentavos: 'valorConsultaAdicionalCentavos',
+  valorExcedenteCentavos: 'valorExcedenteCentavos',
+  valorTotalCentavos: 'valorTotalCentavos',
+  vencimentoEm: 'vencimentoEm',
+  pagaEm: 'pagaEm',
+  observacao: 'observacao',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type FaturaScalarFieldEnum = (typeof FaturaScalarFieldEnum)[keyof typeof FaturaScalarFieldEnum]
+
+
+export const FaturaItemScalarFieldEnum = {
+  id: 'id',
+  faturaId: 'faturaId',
+  tipo: 'tipo',
+  descricao: 'descricao',
+  quantidade: 'quantidade',
+  valorUnitarioCentavos: 'valorUnitarioCentavos',
+  valorTotalCentavos: 'valorTotalCentavos',
+  createdAt: 'createdAt'
+} as const
+
+export type FaturaItemScalarFieldEnum = (typeof FaturaItemScalarFieldEnum)[keyof typeof FaturaItemScalarFieldEnum]
+
+
 export const TarefaResultadoScalarFieldEnum = {
   id: 'id',
   tarefaId: 'tarefaId',
@@ -1414,6 +1603,34 @@ export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$Prisma
 
 
 /**
+ * Reference to a field of type 'FaturaStatus'
+ */
+export type EnumFaturaStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FaturaStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'FaturaStatus[]'
+ */
+export type ListEnumFaturaStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FaturaStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'FaturaItemTipo'
+ */
+export type EnumFaturaItemTipoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FaturaItemTipo'>
+    
+
+
+/**
+ * Reference to a field of type 'FaturaItemTipo[]'
+ */
+export type ListEnumFaturaItemTipoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FaturaItemTipo[]'>
+    
+
+
+/**
  * Reference to a field of type 'ResultadoStatus'
  */
 export type EnumResultadoStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ResultadoStatus'>
@@ -1569,6 +1786,8 @@ export type GlobalOmitConfig = {
   usuario?: Prisma.UsuarioOmit
   tarefa?: Prisma.TarefaOmit
   buscaPrevia?: Prisma.BuscaPreviaOmit
+  fatura?: Prisma.FaturaOmit
+  faturaItem?: Prisma.FaturaItemOmit
   tarefaResultado?: Prisma.TarefaResultadoOmit
   imovelCache?: Prisma.ImovelCacheOmit
   consultaLog?: Prisma.ConsultaLogOmit

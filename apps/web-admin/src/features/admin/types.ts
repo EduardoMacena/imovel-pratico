@@ -385,3 +385,72 @@ export type ListarConsumoClientesResponse = {
 export type BuscarConsumoClienteResponse = {
 	consumo: ConsumoClienteResumo;
 };
+
+export type FaturaStatus =
+  | "ABERTA"
+  | "FECHADA"
+  | "PAGA"
+  | "VENCIDA"
+  | "CANCELADA";
+
+export type FaturaItemTipo =
+  | "MENSALIDADE"
+  | "CONSULTA_EXCEDENTE"
+  | "AJUSTE"
+  | "DESCONTO";
+
+export type FaturaItemResumo = {
+  id: string;
+  tipo: FaturaItemTipo;
+  descricao: string;
+  quantidade: number;
+  valorUnitarioCentavos: number;
+  valorTotalCentavos: number;
+  createdAt: string;
+};
+
+export type FaturaResumo = {
+  id: string;
+  clienteId: string;
+  cliente: {
+    id: string;
+    nome: string;
+    slug: string;
+    status: ClienteStatus;
+  };
+  status: FaturaStatus;
+  referenciaMes: number;
+  referenciaAno: number;
+  referenciaLabel: string;
+  planoId: string | null;
+  planoNome: string | null;
+  consultasInclusas: number;
+  consultasUsadas: number;
+  consultasExcedentes: number;
+  valorMensalidadeCentavos: number;
+  valorConsultaAdicionalCentavos: number;
+  valorExcedenteCentavos: number;
+  valorTotalCentavos: number;
+  vencimentoEm: string | null;
+  pagaEm: string | null;
+  observacao: string | null;
+  itens: FaturaItemResumo[];
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ListarFaturasResponse = {
+  faturas: FaturaResumo[];
+};
+
+export type GerarFaturaRequest = {
+  clienteId: string;
+  referenciaMes: number;
+  referenciaAno: number;
+  vencimentoEm?: string | null;
+  observacao?: string | null;
+};
+
+export type FaturaResponse = {
+  fatura: FaturaResumo;
+};

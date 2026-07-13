@@ -24,6 +24,13 @@ import {
 	buscarConsumoClienteController,
 	listarConsumoClientesController,
 } from "./admin.controller.js";
+import {
+  buscarFaturaController,
+  cancelarFaturaController,
+  gerarFaturaController,
+  listarFaturasController,
+  marcarFaturaPagaController,
+} from "./admin-faturas.controller.js";
 
 export async function adminRoutes(app: FastifyInstance) {
 	app.addHook("preHandler", authMiddleware);
@@ -33,6 +40,12 @@ export async function adminRoutes(app: FastifyInstance) {
 
 	app.get("/admin/consumo/clientes", listarConsumoClientesController);
 	app.get("/admin/consumo/clientes/:id", buscarConsumoClienteController);
+
+  app.get("/admin/faturas", listarFaturasController);
+  app.post("/admin/faturas/gerar", gerarFaturaController);
+  app.get("/admin/faturas/:id", buscarFaturaController);
+  app.post("/admin/faturas/:id/marcar-paga", marcarFaturaPagaController);
+  app.post("/admin/faturas/:id/cancelar", cancelarFaturaController);
 
 	app.get("/admin/planos", listarPlanosController);
 	app.post("/admin/planos", criarPlanoController);

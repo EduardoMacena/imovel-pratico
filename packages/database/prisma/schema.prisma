@@ -63,6 +63,21 @@ enum BuscaPreviaStatus {
   CANCELADA
 }
 
+enum FaturaStatus {
+  ABERTA
+  FECHADA
+  PAGA
+  VENCIDA
+  CANCELADA
+}
+
+enum FaturaItemTipo {
+  MENSALIDADE
+  CONSULTA_EXCEDENTE
+  AJUSTE
+  DESCONTO
+}
+
 model Plano {
   id   String @id @default(uuid())
   nome String
@@ -113,6 +128,7 @@ model Cliente {
   @@index([planoId])
   @@map("clientes")
   buscasPrevias BuscaPrevia[]
+  faturas Fatura[]
 }
 
 model Usuario {
@@ -217,6 +233,65 @@ model BuscaPrevia {
   @@index([status])
   @@index([expiraEm])
   @@map("buscas_previas")
+}
+
+model Fatura {
+  id String @id @default(uuid())
+
+  clienteId String
+  cliente   Cliente @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+
+  status FaturaStatus @default(ABERTA)
+
+  referenciaMes Int
+  referenciaAno Int
+
+  planoId   String?
+  planoNome String?
+
+  consultasInclusas   Int @default(0)
+  consultasUsadas     Int @default(0)
+  consultasExcedentes Int @default(0)
+
+  valorMensalidadeCentavos       Int @default(0)
+  valorConsultaAdicionalCentavos Int @default(0)
+  valorExcedenteCentavos         Int @default(0)
+  valorTotalCentavos             Int @default(0)
+
+  vencimentoEm DateTime?
+  pagaEm       DateTime?
+
+  observacao String?
+
+  itens FaturaItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([clienteId, referenciaMes, referenciaAno])
+  @@index([clienteId])
+  @@index([status])
+  @@index([vencimentoEm])
+  @@map("faturas")
+}
+
+model FaturaItem {
+  id String @id @default(uuid())
+
+  faturaId String
+  fatura   Fatura @relation(fields: [faturaId], references: [id], onDelete: Cascade)
+
+  tipo FaturaItemTipo
+  descricao String
+
+  quantidade Int @default(1)
+  valorUnitarioCentavos Int
+  valorTotalCentavos    Int
+
+  createdAt DateTime @default(now())
+
+  @@index([faturaId])
+  @@map("fatura_itens")
 }
 
 model TarefaResultado {

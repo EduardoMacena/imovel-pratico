@@ -24,6 +24,9 @@ import type {
 	ListarPlanosResponse,
 	BuscarConsumoClienteResponse,
 	ListarConsumoClientesResponse,
+  FaturaResponse,
+  GerarFaturaRequest,
+  ListarFaturasResponse,
 } from "./types";
 
 export function listarClientes() {
@@ -157,4 +160,54 @@ export function buscarConsumoCliente(clienteId: string) {
 	return apiRequest<BuscarConsumoClienteResponse>(
 		`/admin/consumo/clientes/${clienteId}`
 	);
+}
+
+export function listarFaturas(params?: {
+  clienteId?: string;
+  status?: string;
+  referenciaMes?: number;
+  referenciaAno?: number;
+}) {
+  const searchParams = new URLSearchParams();
+
+  if (params?.clienteId) {
+    searchParams.set("clienteId", params.clienteId);
+  }
+
+  if (params?.status) {
+    searchParams.set("status", params.status);
+  }
+
+  if (params?.referenciaMes) {
+    searchParams.set("referenciaMes", String(params.referenciaMes));
+  }
+
+  if (params?.referenciaAno) {
+    searchParams.set("referenciaAno", String(params.referenciaAno));
+  }
+
+  const query = searchParams.toString();
+
+  return apiRequest<ListarFaturasResponse>(
+    `/admin/faturas${query ? `?${query}` : ""}`
+  );
+}
+
+export function gerarFatura(data: GerarFaturaRequest) {
+  return apiRequest<FaturaResponse>("/admin/faturas/gerar", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export function marcarFaturaPaga(faturaId: string) {
+  return apiRequest<FaturaResponse>(`/admin/faturas/${faturaId}/marcar-paga`, {
+    method: "POST",
+  });
+}
+
+export function cancelarFatura(faturaId: string) {
+  return apiRequest<FaturaResponse>(`/admin/faturas/${faturaId}/cancelar`, {
+    method: "POST",
+  });
 }

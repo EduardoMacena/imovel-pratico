@@ -355,6 +355,40 @@ export type JsonWithAggregatesFilterBase<$PrismaModel = never> = {
   _max?: Prisma.NestedJsonFilter<$PrismaModel>
 }
 
+export type EnumFaturaStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.FaturaStatus | Prisma.EnumFaturaStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.FaturaStatus[] | Prisma.ListEnumFaturaStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.FaturaStatus[] | Prisma.ListEnumFaturaStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumFaturaStatusFilter<$PrismaModel> | $Enums.FaturaStatus
+}
+
+export type EnumFaturaStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.FaturaStatus | Prisma.EnumFaturaStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.FaturaStatus[] | Prisma.ListEnumFaturaStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.FaturaStatus[] | Prisma.ListEnumFaturaStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumFaturaStatusWithAggregatesFilter<$PrismaModel> | $Enums.FaturaStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumFaturaStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumFaturaStatusFilter<$PrismaModel>
+}
+
+export type EnumFaturaItemTipoFilter<$PrismaModel = never> = {
+  equals?: $Enums.FaturaItemTipo | Prisma.EnumFaturaItemTipoFieldRefInput<$PrismaModel>
+  in?: $Enums.FaturaItemTipo[] | Prisma.ListEnumFaturaItemTipoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.FaturaItemTipo[] | Prisma.ListEnumFaturaItemTipoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumFaturaItemTipoFilter<$PrismaModel> | $Enums.FaturaItemTipo
+}
+
+export type EnumFaturaItemTipoWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.FaturaItemTipo | Prisma.EnumFaturaItemTipoFieldRefInput<$PrismaModel>
+  in?: $Enums.FaturaItemTipo[] | Prisma.ListEnumFaturaItemTipoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.FaturaItemTipo[] | Prisma.ListEnumFaturaItemTipoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumFaturaItemTipoWithAggregatesFilter<$PrismaModel> | $Enums.FaturaItemTipo
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumFaturaItemTipoFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumFaturaItemTipoFilter<$PrismaModel>
+}
+
 export type EnumResultadoStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.ResultadoStatus | Prisma.EnumResultadoStatusFieldRefInput<$PrismaModel>
   in?: $Enums.ResultadoStatus[] | Prisma.ListEnumResultadoStatusFieldRefInput<$PrismaModel>
@@ -765,6 +799,40 @@ export type NestedJsonFilterBase<$PrismaModel = never> = {
   gt?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
   gte?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
   not?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | Prisma.JsonNullValueFilter
+}
+
+export type NestedEnumFaturaStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.FaturaStatus | Prisma.EnumFaturaStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.FaturaStatus[] | Prisma.ListEnumFaturaStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.FaturaStatus[] | Prisma.ListEnumFaturaStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumFaturaStatusFilter<$PrismaModel> | $Enums.FaturaStatus
+}
+
+export type NestedEnumFaturaStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.FaturaStatus | Prisma.EnumFaturaStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.FaturaStatus[] | Prisma.ListEnumFaturaStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.FaturaStatus[] | Prisma.ListEnumFaturaStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumFaturaStatusWithAggregatesFilter<$PrismaModel> | $Enums.FaturaStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumFaturaStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumFaturaStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumFaturaItemTipoFilter<$PrismaModel = never> = {
+  equals?: $Enums.FaturaItemTipo | Prisma.EnumFaturaItemTipoFieldRefInput<$PrismaModel>
+  in?: $Enums.FaturaItemTipo[] | Prisma.ListEnumFaturaItemTipoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.FaturaItemTipo[] | Prisma.ListEnumFaturaItemTipoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumFaturaItemTipoFilter<$PrismaModel> | $Enums.FaturaItemTipo
+}
+
+export type NestedEnumFaturaItemTipoWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.FaturaItemTipo | Prisma.EnumFaturaItemTipoFieldRefInput<$PrismaModel>
+  in?: $Enums.FaturaItemTipo[] | Prisma.ListEnumFaturaItemTipoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.FaturaItemTipo[] | Prisma.ListEnumFaturaItemTipoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumFaturaItemTipoWithAggregatesFilter<$PrismaModel> | $Enums.FaturaItemTipo
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumFaturaItemTipoFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumFaturaItemTipoFilter<$PrismaModel>
 }
 
 export type NestedEnumResultadoStatusFilter<$PrismaModel = never> = {

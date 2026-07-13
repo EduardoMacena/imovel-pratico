@@ -67,6 +67,16 @@ export type Tarefa = Prisma.TarefaModel
  */
 export type BuscaPrevia = Prisma.BuscaPreviaModel
 /**
+ * Model Fatura
+ * 
+ */
+export type Fatura = Prisma.FaturaModel
+/**
+ * Model FaturaItem
+ * 
+ */
+export type FaturaItem = Prisma.FaturaItemModel
+/**
  * Model TarefaResultado
  * 
  */

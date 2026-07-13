@@ -56,6 +56,8 @@ export const ModelName = {
   Usuario: 'Usuario',
   Tarefa: 'Tarefa',
   BuscaPrevia: 'BuscaPrevia',
+  Fatura: 'Fatura',
+  FaturaItem: 'FaturaItem',
   TarefaResultado: 'TarefaResultado',
   ImovelCache: 'ImovelCache',
   ConsultaLog: 'ConsultaLog'
@@ -185,6 +187,45 @@ export const BuscaPreviaScalarFieldEnum = {
 } as const
 
 export type BuscaPreviaScalarFieldEnum = (typeof BuscaPreviaScalarFieldEnum)[keyof typeof BuscaPreviaScalarFieldEnum]
+
+
+export const FaturaScalarFieldEnum = {
+  id: 'id',
+  clienteId: 'clienteId',
+  status: 'status',
+  referenciaMes: 'referenciaMes',
+  referenciaAno: 'referenciaAno',
+  planoId: 'planoId',
+  planoNome: 'planoNome',
+  consultasInclusas: 'consultasInclusas',
+  consultasUsadas: 'consultasUsadas',
+  consultasExcedentes: 'consultasExcedentes',
+  valorMensalidadeCentavos: 'valorMensalidadeCentavos',
+  valorConsultaAdicionalCentavos: 'valorConsultaAdicionalCentavos',
+  valorExcedenteCentavos: 'valorExcedenteCentavos',
+  valorTotalCentavos: 'valorTotalCentavos',
+  vencimentoEm: 'vencimentoEm',
+  pagaEm: 'pagaEm',
+  observacao: 'observacao',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type FaturaScalarFieldEnum = (typeof FaturaScalarFieldEnum)[keyof typeof FaturaScalarFieldEnum]
+
+
+export const FaturaItemScalarFieldEnum = {
+  id: 'id',
+  faturaId: 'faturaId',
+  tipo: 'tipo',
+  descricao: 'descricao',
+  quantidade: 'quantidade',
+  valorUnitarioCentavos: 'valorUnitarioCentavos',
+  valorTotalCentavos: 'valorTotalCentavos',
+  createdAt: 'createdAt'
+} as const
+
+export type FaturaItemScalarFieldEnum = (typeof FaturaItemScalarFieldEnum)[keyof typeof FaturaItemScalarFieldEnum]
 
 
 export const TarefaResultadoScalarFieldEnum = {

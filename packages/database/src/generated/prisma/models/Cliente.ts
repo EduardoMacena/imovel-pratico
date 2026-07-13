@@ -293,6 +293,7 @@ export type ClienteWhereInput = {
   tarefas?: Prisma.TarefaListRelationFilter
   consultasLogs?: Prisma.ConsultaLogListRelationFilter
   buscasPrevias?: Prisma.BuscaPreviaListRelationFilter
+  faturas?: Prisma.FaturaListRelationFilter
 }
 
 export type ClienteOrderByWithRelationInput = {
@@ -314,6 +315,7 @@ export type ClienteOrderByWithRelationInput = {
   tarefas?: Prisma.TarefaOrderByRelationAggregateInput
   consultasLogs?: Prisma.ConsultaLogOrderByRelationAggregateInput
   buscasPrevias?: Prisma.BuscaPreviaOrderByRelationAggregateInput
+  faturas?: Prisma.FaturaOrderByRelationAggregateInput
 }
 
 export type ClienteWhereUniqueInput = Prisma.AtLeast<{
@@ -338,6 +340,7 @@ export type ClienteWhereUniqueInput = Prisma.AtLeast<{
   tarefas?: Prisma.TarefaListRelationFilter
   consultasLogs?: Prisma.ConsultaLogListRelationFilter
   buscasPrevias?: Prisma.BuscaPreviaListRelationFilter
+  faturas?: Prisma.FaturaListRelationFilter
 }, "id" | "slug">
 
 export type ClienteOrderByWithAggregationInput = {
@@ -398,6 +401,7 @@ export type ClienteCreateInput = {
   tarefas?: Prisma.TarefaCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogCreateNestedManyWithoutClienteInput
   buscasPrevias?: Prisma.BuscaPreviaCreateNestedManyWithoutClienteInput
+  faturas?: Prisma.FaturaCreateNestedManyWithoutClienteInput
 }
 
 export type ClienteUncheckedCreateInput = {
@@ -418,6 +422,7 @@ export type ClienteUncheckedCreateInput = {
   tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogUncheckedCreateNestedManyWithoutClienteInput
   buscasPrevias?: Prisma.BuscaPreviaUncheckedCreateNestedManyWithoutClienteInput
+  faturas?: Prisma.FaturaUncheckedCreateNestedManyWithoutClienteInput
 }
 
 export type ClienteUpdateInput = {
@@ -438,6 +443,7 @@ export type ClienteUpdateInput = {
   tarefas?: Prisma.TarefaUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUpdateManyWithoutClienteNestedInput
   buscasPrevias?: Prisma.BuscaPreviaUpdateManyWithoutClienteNestedInput
+  faturas?: Prisma.FaturaUpdateManyWithoutClienteNestedInput
 }
 
 export type ClienteUncheckedUpdateInput = {
@@ -458,6 +464,7 @@ export type ClienteUncheckedUpdateInput = {
   tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUncheckedUpdateManyWithoutClienteNestedInput
   buscasPrevias?: Prisma.BuscaPreviaUncheckedUpdateManyWithoutClienteNestedInput
+  faturas?: Prisma.FaturaUncheckedUpdateManyWithoutClienteNestedInput
 }
 
 export type ClienteCreateManyInput = {
@@ -683,6 +690,20 @@ export type ClienteUpdateOneRequiredWithoutBuscasPreviasNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ClienteUpdateToOneWithWhereWithoutBuscasPreviasInput, Prisma.ClienteUpdateWithoutBuscasPreviasInput>, Prisma.ClienteUncheckedUpdateWithoutBuscasPreviasInput>
 }
 
+export type ClienteCreateNestedOneWithoutFaturasInput = {
+  create?: Prisma.XOR<Prisma.ClienteCreateWithoutFaturasInput, Prisma.ClienteUncheckedCreateWithoutFaturasInput>
+  connectOrCreate?: Prisma.ClienteCreateOrConnectWithoutFaturasInput
+  connect?: Prisma.ClienteWhereUniqueInput
+}
+
+export type ClienteUpdateOneRequiredWithoutFaturasNestedInput = {
+  create?: Prisma.XOR<Prisma.ClienteCreateWithoutFaturasInput, Prisma.ClienteUncheckedCreateWithoutFaturasInput>
+  connectOrCreate?: Prisma.ClienteCreateOrConnectWithoutFaturasInput
+  upsert?: Prisma.ClienteUpsertWithoutFaturasInput
+  connect?: Prisma.ClienteWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ClienteUpdateToOneWithWhereWithoutFaturasInput, Prisma.ClienteUpdateWithoutFaturasInput>, Prisma.ClienteUncheckedUpdateWithoutFaturasInput>
+}
+
 export type ClienteCreateNestedOneWithoutConsultasLogsInput = {
   create?: Prisma.XOR<Prisma.ClienteCreateWithoutConsultasLogsInput, Prisma.ClienteUncheckedCreateWithoutConsultasLogsInput>
   connectOrCreate?: Prisma.ClienteCreateOrConnectWithoutConsultasLogsInput
@@ -716,6 +737,7 @@ export type ClienteCreateWithoutPlanoInput = {
   tarefas?: Prisma.TarefaCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogCreateNestedManyWithoutClienteInput
   buscasPrevias?: Prisma.BuscaPreviaCreateNestedManyWithoutClienteInput
+  faturas?: Prisma.FaturaCreateNestedManyWithoutClienteInput
 }
 
 export type ClienteUncheckedCreateWithoutPlanoInput = {
@@ -735,6 +757,7 @@ export type ClienteUncheckedCreateWithoutPlanoInput = {
   tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogUncheckedCreateNestedManyWithoutClienteInput
   buscasPrevias?: Prisma.BuscaPreviaUncheckedCreateNestedManyWithoutClienteInput
+  faturas?: Prisma.FaturaUncheckedCreateNestedManyWithoutClienteInput
 }
 
 export type ClienteCreateOrConnectWithoutPlanoInput = {
@@ -799,6 +822,7 @@ export type ClienteCreateWithoutUsuariosInput = {
   tarefas?: Prisma.TarefaCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogCreateNestedManyWithoutClienteInput
   buscasPrevias?: Prisma.BuscaPreviaCreateNestedManyWithoutClienteInput
+  faturas?: Prisma.FaturaCreateNestedManyWithoutClienteInput
 }
 
 export type ClienteUncheckedCreateWithoutUsuariosInput = {
@@ -818,6 +842,7 @@ export type ClienteUncheckedCreateWithoutUsuariosInput = {
   tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogUncheckedCreateNestedManyWithoutClienteInput
   buscasPrevias?: Prisma.BuscaPreviaUncheckedCreateNestedManyWithoutClienteInput
+  faturas?: Prisma.FaturaUncheckedCreateNestedManyWithoutClienteInput
 }
 
 export type ClienteCreateOrConnectWithoutUsuariosInput = {
@@ -853,6 +878,7 @@ export type ClienteUpdateWithoutUsuariosInput = {
   tarefas?: Prisma.TarefaUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUpdateManyWithoutClienteNestedInput
   buscasPrevias?: Prisma.BuscaPreviaUpdateManyWithoutClienteNestedInput
+  faturas?: Prisma.FaturaUpdateManyWithoutClienteNestedInput
 }
 
 export type ClienteUncheckedUpdateWithoutUsuariosInput = {
@@ -872,6 +898,7 @@ export type ClienteUncheckedUpdateWithoutUsuariosInput = {
   tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUncheckedUpdateManyWithoutClienteNestedInput
   buscasPrevias?: Prisma.BuscaPreviaUncheckedUpdateManyWithoutClienteNestedInput
+  faturas?: Prisma.FaturaUncheckedUpdateManyWithoutClienteNestedInput
 }
 
 export type ClienteCreateWithoutTarefasInput = {
@@ -891,6 +918,7 @@ export type ClienteCreateWithoutTarefasInput = {
   usuarios?: Prisma.UsuarioCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogCreateNestedManyWithoutClienteInput
   buscasPrevias?: Prisma.BuscaPreviaCreateNestedManyWithoutClienteInput
+  faturas?: Prisma.FaturaCreateNestedManyWithoutClienteInput
 }
 
 export type ClienteUncheckedCreateWithoutTarefasInput = {
@@ -910,6 +938,7 @@ export type ClienteUncheckedCreateWithoutTarefasInput = {
   usuarios?: Prisma.UsuarioUncheckedCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogUncheckedCreateNestedManyWithoutClienteInput
   buscasPrevias?: Prisma.BuscaPreviaUncheckedCreateNestedManyWithoutClienteInput
+  faturas?: Prisma.FaturaUncheckedCreateNestedManyWithoutClienteInput
 }
 
 export type ClienteCreateOrConnectWithoutTarefasInput = {
@@ -945,6 +974,7 @@ export type ClienteUpdateWithoutTarefasInput = {
   usuarios?: Prisma.UsuarioUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUpdateManyWithoutClienteNestedInput
   buscasPrevias?: Prisma.BuscaPreviaUpdateManyWithoutClienteNestedInput
+  faturas?: Prisma.FaturaUpdateManyWithoutClienteNestedInput
 }
 
 export type ClienteUncheckedUpdateWithoutTarefasInput = {
@@ -964,6 +994,7 @@ export type ClienteUncheckedUpdateWithoutTarefasInput = {
   usuarios?: Prisma.UsuarioUncheckedUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUncheckedUpdateManyWithoutClienteNestedInput
   buscasPrevias?: Prisma.BuscaPreviaUncheckedUpdateManyWithoutClienteNestedInput
+  faturas?: Prisma.FaturaUncheckedUpdateManyWithoutClienteNestedInput
 }
 
 export type ClienteCreateWithoutBuscasPreviasInput = {
@@ -983,6 +1014,7 @@ export type ClienteCreateWithoutBuscasPreviasInput = {
   usuarios?: Prisma.UsuarioCreateNestedManyWithoutClienteInput
   tarefas?: Prisma.TarefaCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogCreateNestedManyWithoutClienteInput
+  faturas?: Prisma.FaturaCreateNestedManyWithoutClienteInput
 }
 
 export type ClienteUncheckedCreateWithoutBuscasPreviasInput = {
@@ -1002,6 +1034,7 @@ export type ClienteUncheckedCreateWithoutBuscasPreviasInput = {
   usuarios?: Prisma.UsuarioUncheckedCreateNestedManyWithoutClienteInput
   tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogUncheckedCreateNestedManyWithoutClienteInput
+  faturas?: Prisma.FaturaUncheckedCreateNestedManyWithoutClienteInput
 }
 
 export type ClienteCreateOrConnectWithoutBuscasPreviasInput = {
@@ -1037,6 +1070,7 @@ export type ClienteUpdateWithoutBuscasPreviasInput = {
   usuarios?: Prisma.UsuarioUpdateManyWithoutClienteNestedInput
   tarefas?: Prisma.TarefaUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUpdateManyWithoutClienteNestedInput
+  faturas?: Prisma.FaturaUpdateManyWithoutClienteNestedInput
 }
 
 export type ClienteUncheckedUpdateWithoutBuscasPreviasInput = {
@@ -1056,6 +1090,103 @@ export type ClienteUncheckedUpdateWithoutBuscasPreviasInput = {
   usuarios?: Prisma.UsuarioUncheckedUpdateManyWithoutClienteNestedInput
   tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUncheckedUpdateManyWithoutClienteNestedInput
+  faturas?: Prisma.FaturaUncheckedUpdateManyWithoutClienteNestedInput
+}
+
+export type ClienteCreateWithoutFaturasInput = {
+  id?: string
+  nome: string
+  slug: string
+  status?: $Enums.ClienteStatus
+  workerUrl?: string | null
+  intervaloSegundos?: number
+  limiteDiario?: number
+  limiteMensalConsultas?: number
+  pagamentoStatus?: $Enums.PagamentoStatus
+  pagamentoVenceEm?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  plano?: Prisma.PlanoCreateNestedOneWithoutClientesInput
+  usuarios?: Prisma.UsuarioCreateNestedManyWithoutClienteInput
+  tarefas?: Prisma.TarefaCreateNestedManyWithoutClienteInput
+  consultasLogs?: Prisma.ConsultaLogCreateNestedManyWithoutClienteInput
+  buscasPrevias?: Prisma.BuscaPreviaCreateNestedManyWithoutClienteInput
+}
+
+export type ClienteUncheckedCreateWithoutFaturasInput = {
+  id?: string
+  nome: string
+  slug: string
+  status?: $Enums.ClienteStatus
+  planoId?: string | null
+  workerUrl?: string | null
+  intervaloSegundos?: number
+  limiteDiario?: number
+  limiteMensalConsultas?: number
+  pagamentoStatus?: $Enums.PagamentoStatus
+  pagamentoVenceEm?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  usuarios?: Prisma.UsuarioUncheckedCreateNestedManyWithoutClienteInput
+  tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutClienteInput
+  consultasLogs?: Prisma.ConsultaLogUncheckedCreateNestedManyWithoutClienteInput
+  buscasPrevias?: Prisma.BuscaPreviaUncheckedCreateNestedManyWithoutClienteInput
+}
+
+export type ClienteCreateOrConnectWithoutFaturasInput = {
+  where: Prisma.ClienteWhereUniqueInput
+  create: Prisma.XOR<Prisma.ClienteCreateWithoutFaturasInput, Prisma.ClienteUncheckedCreateWithoutFaturasInput>
+}
+
+export type ClienteUpsertWithoutFaturasInput = {
+  update: Prisma.XOR<Prisma.ClienteUpdateWithoutFaturasInput, Prisma.ClienteUncheckedUpdateWithoutFaturasInput>
+  create: Prisma.XOR<Prisma.ClienteCreateWithoutFaturasInput, Prisma.ClienteUncheckedCreateWithoutFaturasInput>
+  where?: Prisma.ClienteWhereInput
+}
+
+export type ClienteUpdateToOneWithWhereWithoutFaturasInput = {
+  where?: Prisma.ClienteWhereInput
+  data: Prisma.XOR<Prisma.ClienteUpdateWithoutFaturasInput, Prisma.ClienteUncheckedUpdateWithoutFaturasInput>
+}
+
+export type ClienteUpdateWithoutFaturasInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  nome?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumClienteStatusFieldUpdateOperationsInput | $Enums.ClienteStatus
+  workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
+  limiteDiario?: Prisma.IntFieldUpdateOperationsInput | number
+  limiteMensalConsultas?: Prisma.IntFieldUpdateOperationsInput | number
+  pagamentoStatus?: Prisma.EnumPagamentoStatusFieldUpdateOperationsInput | $Enums.PagamentoStatus
+  pagamentoVenceEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  plano?: Prisma.PlanoUpdateOneWithoutClientesNestedInput
+  usuarios?: Prisma.UsuarioUpdateManyWithoutClienteNestedInput
+  tarefas?: Prisma.TarefaUpdateManyWithoutClienteNestedInput
+  consultasLogs?: Prisma.ConsultaLogUpdateManyWithoutClienteNestedInput
+  buscasPrevias?: Prisma.BuscaPreviaUpdateManyWithoutClienteNestedInput
+}
+
+export type ClienteUncheckedUpdateWithoutFaturasInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  nome?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumClienteStatusFieldUpdateOperationsInput | $Enums.ClienteStatus
+  planoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
+  limiteDiario?: Prisma.IntFieldUpdateOperationsInput | number
+  limiteMensalConsultas?: Prisma.IntFieldUpdateOperationsInput | number
+  pagamentoStatus?: Prisma.EnumPagamentoStatusFieldUpdateOperationsInput | $Enums.PagamentoStatus
+  pagamentoVenceEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  usuarios?: Prisma.UsuarioUncheckedUpdateManyWithoutClienteNestedInput
+  tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutClienteNestedInput
+  consultasLogs?: Prisma.ConsultaLogUncheckedUpdateManyWithoutClienteNestedInput
+  buscasPrevias?: Prisma.BuscaPreviaUncheckedUpdateManyWithoutClienteNestedInput
 }
 
 export type ClienteCreateWithoutConsultasLogsInput = {
@@ -1075,6 +1206,7 @@ export type ClienteCreateWithoutConsultasLogsInput = {
   usuarios?: Prisma.UsuarioCreateNestedManyWithoutClienteInput
   tarefas?: Prisma.TarefaCreateNestedManyWithoutClienteInput
   buscasPrevias?: Prisma.BuscaPreviaCreateNestedManyWithoutClienteInput
+  faturas?: Prisma.FaturaCreateNestedManyWithoutClienteInput
 }
 
 export type ClienteUncheckedCreateWithoutConsultasLogsInput = {
@@ -1094,6 +1226,7 @@ export type ClienteUncheckedCreateWithoutConsultasLogsInput = {
   usuarios?: Prisma.UsuarioUncheckedCreateNestedManyWithoutClienteInput
   tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutClienteInput
   buscasPrevias?: Prisma.BuscaPreviaUncheckedCreateNestedManyWithoutClienteInput
+  faturas?: Prisma.FaturaUncheckedCreateNestedManyWithoutClienteInput
 }
 
 export type ClienteCreateOrConnectWithoutConsultasLogsInput = {
@@ -1129,6 +1262,7 @@ export type ClienteUpdateWithoutConsultasLogsInput = {
   usuarios?: Prisma.UsuarioUpdateManyWithoutClienteNestedInput
   tarefas?: Prisma.TarefaUpdateManyWithoutClienteNestedInput
   buscasPrevias?: Prisma.BuscaPreviaUpdateManyWithoutClienteNestedInput
+  faturas?: Prisma.FaturaUpdateManyWithoutClienteNestedInput
 }
 
 export type ClienteUncheckedUpdateWithoutConsultasLogsInput = {
@@ -1148,6 +1282,7 @@ export type ClienteUncheckedUpdateWithoutConsultasLogsInput = {
   usuarios?: Prisma.UsuarioUncheckedUpdateManyWithoutClienteNestedInput
   tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutClienteNestedInput
   buscasPrevias?: Prisma.BuscaPreviaUncheckedUpdateManyWithoutClienteNestedInput
+  faturas?: Prisma.FaturaUncheckedUpdateManyWithoutClienteNestedInput
 }
 
 export type ClienteCreateManyPlanoInput = {
@@ -1182,6 +1317,7 @@ export type ClienteUpdateWithoutPlanoInput = {
   tarefas?: Prisma.TarefaUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUpdateManyWithoutClienteNestedInput
   buscasPrevias?: Prisma.BuscaPreviaUpdateManyWithoutClienteNestedInput
+  faturas?: Prisma.FaturaUpdateManyWithoutClienteNestedInput
 }
 
 export type ClienteUncheckedUpdateWithoutPlanoInput = {
@@ -1201,6 +1337,7 @@ export type ClienteUncheckedUpdateWithoutPlanoInput = {
   tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUncheckedUpdateManyWithoutClienteNestedInput
   buscasPrevias?: Prisma.BuscaPreviaUncheckedUpdateManyWithoutClienteNestedInput
+  faturas?: Prisma.FaturaUncheckedUpdateManyWithoutClienteNestedInput
 }
 
 export type ClienteUncheckedUpdateManyWithoutPlanoInput = {
@@ -1228,6 +1365,7 @@ export type ClienteCountOutputType = {
   tarefas: number
   consultasLogs: number
   buscasPrevias: number
+  faturas: number
 }
 
 export type ClienteCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1235,6 +1373,7 @@ export type ClienteCountOutputTypeSelect<ExtArgs extends runtime.Types.Extension
   tarefas?: boolean | ClienteCountOutputTypeCountTarefasArgs
   consultasLogs?: boolean | ClienteCountOutputTypeCountConsultasLogsArgs
   buscasPrevias?: boolean | ClienteCountOutputTypeCountBuscasPreviasArgs
+  faturas?: boolean | ClienteCountOutputTypeCountFaturasArgs
 }
 
 /**
@@ -1275,6 +1414,13 @@ export type ClienteCountOutputTypeCountBuscasPreviasArgs<ExtArgs extends runtime
   where?: Prisma.BuscaPreviaWhereInput
 }
 
+/**
+ * ClienteCountOutputType without action
+ */
+export type ClienteCountOutputTypeCountFaturasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.FaturaWhereInput
+}
+
 
 export type ClienteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1295,6 +1441,7 @@ export type ClienteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   tarefas?: boolean | Prisma.Cliente$tarefasArgs<ExtArgs>
   consultasLogs?: boolean | Prisma.Cliente$consultasLogsArgs<ExtArgs>
   buscasPrevias?: boolean | Prisma.Cliente$buscasPreviasArgs<ExtArgs>
+  faturas?: boolean | Prisma.Cliente$faturasArgs<ExtArgs>
   _count?: boolean | Prisma.ClienteCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["cliente"]>
 
@@ -1355,6 +1502,7 @@ export type ClienteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   tarefas?: boolean | Prisma.Cliente$tarefasArgs<ExtArgs>
   consultasLogs?: boolean | Prisma.Cliente$consultasLogsArgs<ExtArgs>
   buscasPrevias?: boolean | Prisma.Cliente$buscasPreviasArgs<ExtArgs>
+  faturas?: boolean | Prisma.Cliente$faturasArgs<ExtArgs>
   _count?: boolean | Prisma.ClienteCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ClienteIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1372,6 +1520,7 @@ export type $ClientePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     tarefas: Prisma.$TarefaPayload<ExtArgs>[]
     consultasLogs: Prisma.$ConsultaLogPayload<ExtArgs>[]
     buscasPrevias: Prisma.$BuscaPreviaPayload<ExtArgs>[]
+    faturas: Prisma.$FaturaPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1786,6 +1935,7 @@ export interface Prisma__ClienteClient<T, Null = never, ExtArgs extends runtime.
   tarefas<T extends Prisma.Cliente$tarefasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cliente$tarefasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TarefaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   consultasLogs<T extends Prisma.Cliente$consultasLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cliente$consultasLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ConsultaLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   buscasPrevias<T extends Prisma.Cliente$buscasPreviasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cliente$buscasPreviasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BuscaPreviaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  faturas<T extends Prisma.Cliente$faturasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cliente$faturasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FaturaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2341,6 +2491,30 @@ export type Cliente$buscasPreviasArgs<ExtArgs extends runtime.Types.Extensions.I
   take?: number
   skip?: number
   distinct?: Prisma.BuscaPreviaScalarFieldEnum | Prisma.BuscaPreviaScalarFieldEnum[]
+}
+
+/**
+ * Cliente.faturas
+ */
+export type Cliente$faturasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Fatura
+   */
+  select?: Prisma.FaturaSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Fatura
+   */
+  omit?: Prisma.FaturaOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FaturaInclude<ExtArgs> | null
+  where?: Prisma.FaturaWhereInput
+  orderBy?: Prisma.FaturaOrderByWithRelationInput | Prisma.FaturaOrderByWithRelationInput[]
+  cursor?: Prisma.FaturaWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.FaturaScalarFieldEnum | Prisma.FaturaScalarFieldEnum[]
 }
 
 /**
