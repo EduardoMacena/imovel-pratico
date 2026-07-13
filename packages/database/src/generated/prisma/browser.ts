@@ -38,6 +38,11 @@ export type Usuario = Prisma.UsuarioModel
  */
 export type Tarefa = Prisma.TarefaModel
 /**
+ * Model BuscaPrevia
+ * 
+ */
+export type BuscaPrevia = Prisma.BuscaPreviaModel
+/**
  * Model TarefaResultado
  * 
  */

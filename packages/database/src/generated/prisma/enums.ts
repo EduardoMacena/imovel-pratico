@@ -73,3 +73,13 @@ export const PlanoStatus = {
 } as const
 
 export type PlanoStatus = (typeof PlanoStatus)[keyof typeof PlanoStatus]
+
+
+export const BuscaPreviaStatus = {
+  PENDENTE: 'PENDENTE',
+  CONFIRMADA: 'CONFIRMADA',
+  EXPIRADA: 'EXPIRADA',
+  CANCELADA: 'CANCELADA'
+} as const
+
+export type BuscaPreviaStatus = (typeof BuscaPreviaStatus)[keyof typeof BuscaPreviaStatus]

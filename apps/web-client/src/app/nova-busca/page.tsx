@@ -14,10 +14,11 @@ import {
   buscarMinhaAssinatura,
   buscarProgressoTarefa,
   criarTarefaBusca,
+  preverBusca,
 } from "../../features/busca/api";
 import type {
-  CriarTarefaResponse,
   MinhaAssinaturaResponse,
+  PreverBuscaResponse,
   ProgressoTarefaResponse,
 } from "../../features/busca/types";
 import {
@@ -57,6 +58,15 @@ import {
   OperationTitle,
   PageContainer,
   PageShell,
+  PreviewBadge,
+  PreviewCard,
+  PreviewGrid,
+  PreviewHeader,
+  PreviewInfo,
+  PreviewList,
+  PreviewListItem,
+  PreviewSubtitle,
+  PreviewTitle,
   ProgressWrapper,
   ResultsCount,
   ResultsHeader,
@@ -71,6 +81,17 @@ import {
   SidebarTitle,
   TaskId,
 } from "./page.styles";
+
+function formatCurrencyFromCents(value: number) {
+  return new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  }).format(value / 100);
+}
+
+function formatNumber(value: number) {
+  return new Intl.NumberFormat("pt-BR").format(value);
+}
 
 export default function NovaBuscaPage() {
   const { isCheckingAuth } = useRequireAuth();
@@ -88,10 +109,15 @@ export default function NovaBuscaPage() {
   const [progresso, setProgresso] = useState<ProgressoTarefaResponse | null>(
     null
   );
+
+  const [previaBusca, setPreviaBusca] = useState<PreverBuscaResponse | null>(
+    null
+  );
+  const [avisoExcedente, setAvisoExcedente] =
+    useState<PreverBuscaResponse | null>(null);
+
   const [isLoading, setIsLoading] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
-  const [avisoExcedente, setAvisoExcedente] =
-    useState<CriarTarefaResponse | null>(null);
 
   const isFinalizado = useMemo(() => {
     return (
@@ -119,51 +145,96 @@ export default function NovaBuscaPage() {
     }
   }
 
-  async function criarTarefaComControleExcedente(confirmarExcedente = false) {
+  async function criarTarefaComPrevia(
+    previaId: string,
+    confirmarExcedente: boolean
+  ) {
+    const data = await criarTarefaBusca({
+      previaId,
+      confirmarExcedente,
+    });
+
+    if (data.precisaConfirmarExcedente && data.previa && data.excedente) {
+      setAvisoExcedente({
+        previa: data.previa,
+        precisaConfirmarExcedente: true,
+        excedente: data.excedente,
+        uso: data.uso,
+      });
+
+      return;
+    }
+
+    setAvisoExcedente(null);
+
+    if (!data.jobId) {
+      throw new Error("Tarefa criada, mas o ID do job não foi retornado");
+    }
+
+    setJobId(data.jobId);
+
+    await carregarAssinatura();
+  }
+
+  async function iniciarFluxoBusca(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
     setErro(null);
     setProgresso(null);
     setJobId(null);
+    setPreviaBusca(null);
+    setAvisoExcedente(null);
     setIsLoading(true);
 
     try {
-      const data = await criarTarefaBusca({
+      const previa = await preverBusca({
         logradouro,
         numero,
-        confirmarExcedente,
-        consultasEstimadas: assinatura?.uso.consultasRestantes === 0 ? 1 : 1,
       });
 
-      if (data.precisaConfirmarExcedente) {
-        setAvisoExcedente(data);
+      setPreviaBusca(previa);
+
+      if (previa.previa.quantidadeRegistros <= 0) {
+        setErro("Nenhum registro foi encontrado para este endereço.");
         return;
       }
 
-      setAvisoExcedente(null);
-
-      if (data.jobId) {
-        setJobId(data.jobId);
+      if (previa.precisaConfirmarExcedente) {
+        setAvisoExcedente(previa);
+        return;
       }
 
-      await carregarAssinatura();
+      await criarTarefaComPrevia(previa.previa.id, false);
     } catch (error) {
       setErro(
         error instanceof Error
           ? error.message
-          : "Erro desconhecido ao criar tarefa"
+          : "Erro desconhecido ao iniciar busca"
       );
     } finally {
       setIsLoading(false);
     }
   }
 
-  async function criarTarefa(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    await criarTarefaComControleExcedente(false);
-  }
-
   async function confirmarBuscaComExcedente() {
-    await criarTarefaComControleExcedente(true);
+    if (!avisoExcedente?.previa.id) {
+      return;
+    }
+
+    setErro(null);
+    setIsLoading(true);
+
+    try {
+      await criarTarefaComPrevia(avisoExcedente.previa.id, true);
+    } catch (error) {
+      setErro(
+        error instanceof Error
+          ? error.message
+          : "Erro desconhecido ao confirmar excedente"
+      );
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   useEffect(() => {
@@ -219,7 +290,6 @@ export default function NovaBuscaPage() {
     <>
       <AppHeader />
 
-
       {avisoExcedente?.excedente && (
         <ModalOverlay>
           <ModalCard>
@@ -228,54 +298,54 @@ export default function NovaBuscaPage() {
             <ModalTitle>Esta busca pode gerar cobrança adicional</ModalTitle>
 
             <ModalText>
-              Esta busca pode ultrapassar o limite de consultas inclusas do seu
-              plano. Para continuar, confirme que está ciente da cobrança
-              adicional conforme o plano contratado.
+              O 1RIBH encontrou {avisoExcedente.previa.quantidadeRegistros}{" "}
+              registro(s) para este endereço. Seu plano ainda possui{" "}
+              {
+                avisoExcedente.excedente.consultasDisponiveisNoMomento
+              }{" "}
+              consulta(s) inclusas disponíveis neste mês.
             </ModalText>
 
             <ModalGrid>
               <ModalInfo>
-                <strong>Consultas estimadas</strong>
-                <span>{avisoExcedente.excedente.consultasEstimadas}</span>
+                <strong>Registros encontrados</strong>
+                <span>
+                  {formatNumber(avisoExcedente.previa.quantidadeRegistros)}
+                </span>
               </ModalInfo>
 
               <ModalInfo>
                 <strong>Consultas disponíveis</strong>
                 <span>
-                  {
-                    avisoExcedente.excedente
-                      .consultasDisponiveisNoMomento
-                  }
+                  {formatNumber(
+                    avisoExcedente.excedente.consultasDisponiveisNoMomento
+                  )}
                 </span>
               </ModalInfo>
 
               <ModalInfo>
                 <strong>Consultas excedentes</strong>
                 <span>
-                  {
-                    avisoExcedente.excedente
-                      .consultasExcedentesEstimadas
-                  }
+                  {formatNumber(
+                    avisoExcedente.excedente.consultasExcedentesEstimadas
+                  )}
                 </span>
               </ModalInfo>
 
               <ModalInfo>
-                <strong>Valor estimado</strong>
+                <strong>Valor adicional estimado</strong>
                 <span>
-                  {new Intl.NumberFormat("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  }).format(
+                  {formatCurrencyFromCents(
                     avisoExcedente.excedente
-                      .valorExcedenteEstimadoCentavos / 100
+                      .valorExcedenteEstimadoCentavos
                   )}
                 </span>
               </ModalInfo>
             </ModalGrid>
 
             <ModalText>
-              Ao continuar, você autoriza a criação da tarefa mesmo com
-              excedente e confirma ciência da cobrança adicional.
+              Ao continuar, você confirma que está ciente da cobrança adicional
+              conforme o plano contratado.
             </ModalText>
 
             <ModalActions>
@@ -292,7 +362,9 @@ export default function NovaBuscaPage() {
                 disabled={isLoading}
                 onClick={confirmarBuscaComExcedente}
               >
-                Continuar e autorizar excedente
+                {isLoading
+                  ? "Confirmando..."
+                  : "Continuar e autorizar excedente"}
               </Button>
             </ModalActions>
           </ModalCard>
@@ -306,11 +378,14 @@ export default function NovaBuscaPage() {
               <HeroContent>
                 <HeroEyebrow>Nova busca inteligente</HeroEyebrow>
 
-                <HeroTitle>Localize proprietários com um fluxo simples e controlado.</HeroTitle>
+                <HeroTitle>
+                  Consulte a prévia antes de iniciar o processamento.
+                </HeroTitle>
 
                 <HeroSubtitle>
-                  Informe o endereço, acompanhe o processamento em tempo real e
-                  visualize os resultados da captação assim que a tarefa avançar.
+                  O sistema consulta o 1RIBH primeiro, mostra a quantidade real
+                  de registros encontrados e só depois cria a tarefa de CPF e
+                  contato.
                 </HeroSubtitle>
 
                 <HeaderActions>
@@ -340,9 +415,13 @@ export default function NovaBuscaPage() {
                 </HeroPanelItem>
 
                 <HeroPanelItem>
-                  <HeroPanelLabel>Status financeiro</HeroPanelLabel>
+                  <HeroPanelLabel>Consulta adicional</HeroPanelLabel>
                   <HeroPanelValue>
-                    {assinatura?.cliente.pagamentoStatus ?? "-"}
+                    {assinatura
+                      ? formatCurrencyFromCents(
+                          assinatura.plano.valorConsultaAdicionalCentavos
+                        )
+                      : "-"}
                   </HeroPanelValue>
                 </HeroPanelItem>
               </HeroPanelGrid>
@@ -354,11 +433,11 @@ export default function NovaBuscaPage() {
               <OperationCard>
                 <OperationCardHeader>
                   <div>
-                    <OperationEyebrow>Execução operacional</OperationEyebrow>
+                    <OperationEyebrow>Prévia operacional</OperationEyebrow>
                     <OperationTitle>Dados do imóvel</OperationTitle>
                     <OperationDescription>
-                      Use endereço completo e número correto para aumentar a
-                      precisão da busca.
+                      Primeiro vamos consultar os registros do endereço no
+                      1RIBH. Depois você confirma o processamento.
                     </OperationDescription>
                   </div>
 
@@ -368,8 +447,9 @@ export default function NovaBuscaPage() {
                 <OperationCardBody>
                   {buscaBloqueada && assinatura && (
                     <ErrorBox>
-                      Seu plano está pendente, vencido, inativo ou indisponível.
-                      Regularize a situação para iniciar novas buscas.
+                      Seu plano está pendente, vencido, inativo ou
+                      indisponível. Regularize a situação para iniciar novas
+                      buscas.
                     </ErrorBox>
                   )}
 
@@ -380,7 +460,7 @@ export default function NovaBuscaPage() {
                     </EmptyState>
                   )}
 
-                  <OperationForm onSubmit={criarTarefa}>
+                  <OperationForm onSubmit={iniciarFluxoBusca}>
                     <FormGrid>
                       <Input
                         label="Logradouro"
@@ -401,15 +481,70 @@ export default function NovaBuscaPage() {
 
                     <Actions>
                       <Button type="submit" disabled={isLoading || buscaBloqueada}>
-                        {isLoading ? "Criando tarefa..." : "Iniciar busca"}
+                        {isLoading
+                          ? "Consultando prévia..."
+                          : "Consultar prévia da busca"}
                       </Button>
 
                       <InlineHint>
-                        A busca respeita o limite mensal e o intervalo
-                        operacional do seu plano.
+                        A busca só será criada depois da prévia do 1RIBH e, se
+                        necessário, da autorização de excedente.
                       </InlineHint>
                     </Actions>
                   </OperationForm>
+
+                  {previaBusca && (
+                    <PreviewCard>
+                      <PreviewHeader>
+                        <div>
+                          <PreviewTitle>Prévia encontrada</PreviewTitle>
+                          <PreviewSubtitle>
+                            Esta é a lista retornada pelo 1RIBH. O worker-cnd
+                            usará estes registros salvos, sem consultar o 1RIBH
+                            novamente.
+                          </PreviewSubtitle>
+                        </div>
+
+                        <PreviewBadge>
+                          {formatNumber(previaBusca.previa.quantidadeRegistros)}{" "}
+                          registro(s)
+                        </PreviewBadge>
+                      </PreviewHeader>
+
+                      <PreviewGrid>
+                        <PreviewInfo>
+                          <strong>Logradouro</strong>
+                          <span>{previaBusca.previa.logradouro}</span>
+                        </PreviewInfo>
+
+                        <PreviewInfo>
+                          <strong>Número</strong>
+                          <span>{previaBusca.previa.numero}</span>
+                        </PreviewInfo>
+
+                        <PreviewInfo>
+                          <strong>Excedente estimado</strong>
+                          <span>
+                            {formatCurrencyFromCents(
+                              previaBusca.excedente
+                                .valorExcedenteEstimadoCentavos
+                            )}
+                          </span>
+                        </PreviewInfo>
+                      </PreviewGrid>
+
+                      <PreviewList>
+                        {previaBusca.previa.registros.map((registro, index) => (
+                          <PreviewListItem
+                            key={`${registro.indiceCadastral}-${index}`}
+                          >
+                            <strong>{registro.indiceCadastral}</strong>
+                            <span>{registro.complemento ?? "Sem complemento"}</span>
+                          </PreviewListItem>
+                        ))}
+                      </PreviewList>
+                    </PreviewCard>
+                  )}
 
                   {jobId && <TaskId>Tarefa ativa: {jobId}</TaskId>}
 
@@ -459,24 +594,24 @@ export default function NovaBuscaPage() {
               {assinatura && <SubscriptionSummary assinatura={assinatura} />}
 
               <SidebarCard>
-                <SidebarTitle>Boas práticas</SidebarTitle>
+                <SidebarTitle>Fluxo protegido</SidebarTitle>
 
                 <SidebarDescription>
-                  Pequenos cuidados antes de iniciar a tarefa ajudam a reduzir
-                  tentativas inválidas.
+                  A prévia evita cobrança surpresa e também evita consultar o
+                  1RIBH duas vezes para o mesmo endereço.
                 </SidebarDescription>
 
                 <SidebarList>
                   <SidebarListItem>
-                    Evite abreviações excessivas no logradouro.
+                    Primeiro o sistema busca os registros no 1RIBH.
                   </SidebarListItem>
 
                   <SidebarListItem>
-                    Confirme o número antes de iniciar a busca.
+                    Depois calcula se haverá consulta excedente.
                   </SidebarListItem>
 
                   <SidebarListItem>
-                    Consulte o histórico antes de repetir uma busca.
+                    Ao confirmar, o worker-cnd usa a prévia já salva.
                   </SidebarListItem>
                 </SidebarList>
               </SidebarCard>

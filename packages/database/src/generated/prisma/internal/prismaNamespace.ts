@@ -388,6 +388,7 @@ export const ModelName = {
   Cliente: 'Cliente',
   Usuario: 'Usuario',
   Tarefa: 'Tarefa',
+  BuscaPrevia: 'BuscaPrevia',
   TarefaResultado: 'TarefaResultado',
   ImovelCache: 'ImovelCache',
   ConsultaLog: 'ConsultaLog'
@@ -406,7 +407,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "plano" | "cliente" | "usuario" | "tarefa" | "tarefaResultado" | "imovelCache" | "consultaLog"
+    modelProps: "plano" | "cliente" | "usuario" | "tarefa" | "buscaPrevia" | "tarefaResultado" | "imovelCache" | "consultaLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -703,6 +704,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.TarefaCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.TarefaCountAggregateOutputType> | number
+        }
+      }
+    }
+    BuscaPrevia: {
+      payload: Prisma.$BuscaPreviaPayload<ExtArgs>
+      fields: Prisma.BuscaPreviaFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BuscaPreviaFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuscaPreviaPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BuscaPreviaFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuscaPreviaPayload>
+        }
+        findFirst: {
+          args: Prisma.BuscaPreviaFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuscaPreviaPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BuscaPreviaFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuscaPreviaPayload>
+        }
+        findMany: {
+          args: Prisma.BuscaPreviaFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuscaPreviaPayload>[]
+        }
+        create: {
+          args: Prisma.BuscaPreviaCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuscaPreviaPayload>
+        }
+        createMany: {
+          args: Prisma.BuscaPreviaCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BuscaPreviaCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuscaPreviaPayload>[]
+        }
+        delete: {
+          args: Prisma.BuscaPreviaDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuscaPreviaPayload>
+        }
+        update: {
+          args: Prisma.BuscaPreviaUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuscaPreviaPayload>
+        }
+        deleteMany: {
+          args: Prisma.BuscaPreviaDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BuscaPreviaUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BuscaPreviaUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuscaPreviaPayload>[]
+        }
+        upsert: {
+          args: Prisma.BuscaPreviaUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuscaPreviaPayload>
+        }
+        aggregate: {
+          args: Prisma.BuscaPreviaAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBuscaPrevia>
+        }
+        groupBy: {
+          args: Prisma.BuscaPreviaGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BuscaPreviaGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BuscaPreviaCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BuscaPreviaCountAggregateOutputType> | number
         }
       }
     }
@@ -1027,6 +1102,7 @@ export type UsuarioScalarFieldEnum = (typeof UsuarioScalarFieldEnum)[keyof typeo
 export const TarefaScalarFieldEnum = {
   id: 'id',
   clienteId: 'clienteId',
+  buscaPreviaId: 'buscaPreviaId',
   status: 'status',
   logradouro: 'logradouro',
   numero: 'numero',
@@ -1051,6 +1127,29 @@ export const TarefaScalarFieldEnum = {
 } as const
 
 export type TarefaScalarFieldEnum = (typeof TarefaScalarFieldEnum)[keyof typeof TarefaScalarFieldEnum]
+
+
+export const BuscaPreviaScalarFieldEnum = {
+  id: 'id',
+  clienteId: 'clienteId',
+  status: 'status',
+  logradouro: 'logradouro',
+  numero: 'numero',
+  quantidadeRegistros: 'quantidadeRegistros',
+  registros: 'registros',
+  consultasDisponiveisNoMomento: 'consultasDisponiveisNoMomento',
+  consultasExcedentesEstimadas: 'consultasExcedentesEstimadas',
+  valorConsultaAdicionalCentavos: 'valorConsultaAdicionalCentavos',
+  valorExcedenteEstimadoCentavos: 'valorExcedenteEstimadoCentavos',
+  workerUrl: 'workerUrl',
+  erro: 'erro',
+  expiraEm: 'expiraEm',
+  confirmadaEm: 'confirmadaEm',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BuscaPreviaScalarFieldEnum = (typeof BuscaPreviaScalarFieldEnum)[keyof typeof BuscaPreviaScalarFieldEnum]
 
 
 export const TarefaResultadoScalarFieldEnum = {
@@ -1119,6 +1218,13 @@ export const SortOrder = {
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const NullableJsonNullValueInput = {
@@ -1280,16 +1386,16 @@ export type ListEnumTarefaStatusFieldRefInput<$PrismaModel> = FieldRefInputType<
 
 
 /**
- * Reference to a field of type 'ResultadoStatus'
+ * Reference to a field of type 'BuscaPreviaStatus'
  */
-export type EnumResultadoStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ResultadoStatus'>
+export type EnumBuscaPreviaStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BuscaPreviaStatus'>
     
 
 
 /**
- * Reference to a field of type 'ResultadoStatus[]'
+ * Reference to a field of type 'BuscaPreviaStatus[]'
  */
-export type ListEnumResultadoStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ResultadoStatus[]'>
+export type ListEnumBuscaPreviaStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BuscaPreviaStatus[]'>
     
 
 
@@ -1304,6 +1410,20 @@ export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'J
  * Reference to a field of type 'QueryMode'
  */
 export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
+ * Reference to a field of type 'ResultadoStatus'
+ */
+export type EnumResultadoStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ResultadoStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ResultadoStatus[]'
+ */
+export type ListEnumResultadoStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ResultadoStatus[]'>
     
 
 
@@ -1448,6 +1568,7 @@ export type GlobalOmitConfig = {
   cliente?: Prisma.ClienteOmit
   usuario?: Prisma.UsuarioOmit
   tarefa?: Prisma.TarefaOmit
+  buscaPrevia?: Prisma.BuscaPreviaOmit
   tarefaResultado?: Prisma.TarefaResultadoOmit
   imovelCache?: Prisma.ImovelCacheOmit
   consultaLog?: Prisma.ConsultaLogOmit

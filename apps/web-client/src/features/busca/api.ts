@@ -4,8 +4,17 @@ import type {
   CriarTarefaResponse,
   ListarTarefasResponse,
   MinhaAssinaturaResponse,
+  PreverBuscaRequest,
+  PreverBuscaResponse,
   ProgressoTarefaResponse,
 } from "./types";
+
+export function preverBusca(data: PreverBuscaRequest) {
+  return apiRequest<PreverBuscaResponse>("/imoveis/prever-busca", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
 
 export function criarTarefaBusca(data: CriarTarefaRequest) {
   return apiRequest<CriarTarefaResponse>("/imoveis/buscar-proprietarios", {

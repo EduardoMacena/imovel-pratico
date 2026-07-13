@@ -203,6 +203,25 @@ importers:
         specifier: latest
         version: 7.0.2
 
+  apps/worker-registro:
+    dependencies:
+      dotenv:
+        specifier: ^17.2.2
+        version: 17.4.2
+      fastify:
+        specifier: ^5.6.2
+        version: 5.10.0
+      playwright:
+        specifier: ^1.57.0
+        version: 1.61.1
+    devDependencies:
+      tsx:
+        specifier: ^4.20.6
+        version: 4.23.0
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
+
   packages/database:
     dependencies:
       '@prisma/adapter-pg':

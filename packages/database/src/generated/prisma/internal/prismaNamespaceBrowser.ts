@@ -55,6 +55,7 @@ export const ModelName = {
   Cliente: 'Cliente',
   Usuario: 'Usuario',
   Tarefa: 'Tarefa',
+  BuscaPrevia: 'BuscaPrevia',
   TarefaResultado: 'TarefaResultado',
   ImovelCache: 'ImovelCache',
   ConsultaLog: 'ConsultaLog'
@@ -136,6 +137,7 @@ export type UsuarioScalarFieldEnum = (typeof UsuarioScalarFieldEnum)[keyof typeo
 export const TarefaScalarFieldEnum = {
   id: 'id',
   clienteId: 'clienteId',
+  buscaPreviaId: 'buscaPreviaId',
   status: 'status',
   logradouro: 'logradouro',
   numero: 'numero',
@@ -160,6 +162,29 @@ export const TarefaScalarFieldEnum = {
 } as const
 
 export type TarefaScalarFieldEnum = (typeof TarefaScalarFieldEnum)[keyof typeof TarefaScalarFieldEnum]
+
+
+export const BuscaPreviaScalarFieldEnum = {
+  id: 'id',
+  clienteId: 'clienteId',
+  status: 'status',
+  logradouro: 'logradouro',
+  numero: 'numero',
+  quantidadeRegistros: 'quantidadeRegistros',
+  registros: 'registros',
+  consultasDisponiveisNoMomento: 'consultasDisponiveisNoMomento',
+  consultasExcedentesEstimadas: 'consultasExcedentesEstimadas',
+  valorConsultaAdicionalCentavos: 'valorConsultaAdicionalCentavos',
+  valorExcedenteEstimadoCentavos: 'valorExcedenteEstimadoCentavos',
+  workerUrl: 'workerUrl',
+  erro: 'erro',
+  expiraEm: 'expiraEm',
+  confirmadaEm: 'confirmadaEm',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BuscaPreviaScalarFieldEnum = (typeof BuscaPreviaScalarFieldEnum)[keyof typeof BuscaPreviaScalarFieldEnum]
 
 
 export const TarefaResultadoScalarFieldEnum = {
@@ -228,6 +253,13 @@ export const SortOrder = {
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const NullableJsonNullValueInput = {

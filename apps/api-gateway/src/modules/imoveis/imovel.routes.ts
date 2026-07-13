@@ -7,10 +7,13 @@ import {
 	exportarResultadosTarefaController,
 	exportarResultadosTarefaExcelController,
 	listarTarefasController,
+	preverBuscaController,
 } from "./imovel.controller.js";
 
 export async function imovelRoutes(app: FastifyInstance) {
 	app.addHook("preHandler", authMiddleware);
+
+	app.post("/imoveis/prever-busca", preverBuscaController);
 
 	app.post("/imoveis/buscar-proprietarios", buscarProprietariosController);
 

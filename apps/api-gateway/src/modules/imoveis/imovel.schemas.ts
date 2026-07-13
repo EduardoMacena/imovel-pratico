@@ -1,12 +1,17 @@
 import { z } from "zod";
 
-export const buscarProprietariosSchema = z.object({
+export const preverBuscaSchema = z.object({
   logradouro: z.string().min(3, "Logradouro é obrigatório"),
   numero: z.string().min(1, "Número é obrigatório"),
-  forceRefresh: z.boolean().optional().default(false),
-  confirmarExcedente: z.boolean().optional().default(false),
-  consultasEstimadas: z.coerce.number().int().min(1).optional().default(1),
 });
+
+export const buscarProprietariosSchema = z.object({
+  previaId: z.string().uuid("Prévia inválida"),
+  confirmarExcedente: z.boolean().optional().default(false),
+  forceRefresh: z.boolean().optional().default(false),
+});
+
+export type PreverBuscaInput = z.infer<typeof preverBuscaSchema>;
 
 export type BuscarProprietariosInput = z.infer<
   typeof buscarProprietariosSchema

@@ -30,6 +30,7 @@ export type ResultadoBuscaProprietario = {
 type BuscarProprietariosParams = {
 	logradouro: string;
 	numero: string;
+	imoveis?: ImovelEncontrado[];
 	mesAnoInicio: string;
 	mesAnoFinal: string;
 	intervaloSegundos: number;
@@ -109,8 +110,6 @@ async function buscarProprietarioDoImovel(params: {
 	} = params;
 
 	try {
-		await validarLimiteMensalAntesDeSalvarResultado(clienteId);
-
 		const cache = await buscarImovelCacheValido({
 			indiceCadastral: imovel.indiceCadastral,
 			forceRefresh,
@@ -194,7 +193,7 @@ async function buscarProprietarioDoImovel(params: {
 		await salvarImovelCache({
 			logradouro,
 			numero,
-			complemento: null,
+			complemento: imovel.imovel || null,
 			indiceCadastral: imovel.indiceCadastral,
 			nome: proprietario.nome ?? null,
 			cpf: proprietario.cpf ?? null,
@@ -260,8 +259,9 @@ export async function buscarProprietariosPorEndereco({
 	forceRefresh = false,
 	clienteId,
 	onProgress,
+	imoveis: imoveisDaPrevia,
 }: BuscarProprietariosParams) {
-	const imoveis = await buscarIndiceCadastral(logradouro, numero);
+	const imoveis = imoveisDaPrevia ?? await buscarIndiceCadastral(logradouro, numero);
 
 	const resultados: ResultadoBuscaProprietario[] = [];
 	const intervaloMs = intervaloSegundos * 1000;

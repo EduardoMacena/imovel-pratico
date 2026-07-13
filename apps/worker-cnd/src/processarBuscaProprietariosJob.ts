@@ -13,7 +13,33 @@ function toPrismaJson(
 	return JSON.parse(JSON.stringify(value)) as Prisma.InputJsonValue;
 }
 
-async function validarLimiteMensalAntesDeSalvarResultado(clienteId: string) {
+function normalizarRegistrosPrevia(value: unknown) {
+	if (!Array.isArray(value)) {
+		return undefined;
+	}
+
+	return value
+		.map(item => {
+			const registro = item as {
+				indiceCadastral?: unknown;
+				complemento?: unknown;
+			};
+
+			return {
+				indiceCadastral:
+					typeof registro.indiceCadastral === "string"
+						? registro.indiceCadastral
+						: "",
+				imovel:
+					typeof registro.complemento === "string"
+						? registro.complemento
+						: "",
+			};
+		})
+		.filter(item => item.indiceCadastral.length > 0);
+}
+
+async function validarLimiteMensalAntesDeSalvarResultado(clienteId: string, tarefaId: string) {
 	const inicioMes = new Date();
 
 	inicioMes.setDate(1);
@@ -22,6 +48,19 @@ async function validarLimiteMensalAntesDeSalvarResultado(clienteId: string) {
 	const fimMes = new Date(inicioMes);
 
 	fimMes.setMonth(fimMes.getMonth() + 1);
+
+	const tarefa = await prisma.tarefa.findUnique({
+		where: {
+			id: tarefaId,
+		},
+		select: {
+			excedenteAutorizado: true,
+		},
+	});
+
+	if (tarefa?.excedenteAutorizado) {
+		return;
+	}
 
 	const cliente = await prisma.cliente.findUnique({
 		where: {
@@ -91,9 +130,33 @@ export async function processarBuscaProprietariosJob(
 			},
 		});
 
+		const tarefaComPrevia = await prisma.tarefa.findUnique({
+			where: {
+				id: job.data.tarefaId,
+			},
+			include: {
+				buscaPrevia: true,
+			},
+		});
+
+		const registrosPrevia = normalizarRegistrosPrevia(
+			tarefaComPrevia?.buscaPrevia?.registros
+		);
+
+		const logradouroBusca =
+			tarefaComPrevia?.buscaPrevia?.logradouro ?? job.data.logradouro;
+
+		const numeroBusca =
+			tarefaComPrevia?.buscaPrevia?.numero ?? job.data.numero;
+
+		if (!logradouroBusca || !numeroBusca) {
+			throw new Error("Dados da busca não encontrados");
+		}
+
 		const resultado = await buscarProprietariosPorEndereco({
-			logradouro: job.data.logradouro,
-			numero: job.data.numero,
+			logradouro: logradouroBusca,
+			numero: numeroBusca,
+			imoveis: registrosPrevia,
 			mesAnoInicio: job.data.mesAnoInicio,
 			mesAnoFinal: job.data.mesAnoFinal,
 			intervaloSegundos: job.data.intervaloSegundos,
@@ -120,7 +183,10 @@ export async function processarBuscaProprietariosJob(
 					return;
 				}
 
-				await validarLimiteMensalAntesDeSalvarResultado(job.data.clienteId);
+				await validarLimiteMensalAntesDeSalvarResultado(
+					job.data.clienteId,
+					job.data.tarefaId
+				);
 
 				const item = progress.item;
 

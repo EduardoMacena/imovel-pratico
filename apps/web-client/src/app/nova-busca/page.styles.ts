@@ -460,3 +460,117 @@ export const ModalActions = styled.div`
     }
   }
 `;
+
+export const PreviewCard = styled.div`
+  margin-top: ${({ theme }) => theme.spacing.lg};
+  padding: ${({ theme }) => theme.spacing.lg};
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at top right, rgba(200, 164, 93, 0.10), transparent 32%),
+    ${({ theme }) => theme.colors.surfaceMuted};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+`;
+
+export const PreviewHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  gap: ${({ theme }) => theme.spacing.md};
+  align-items: flex-start;
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+  }
+`;
+
+export const PreviewTitle = styled.h3`
+  margin: 0;
+  color: ${({ theme }) => theme.colors.primary};
+  font-size: 20px;
+  line-height: 1.15;
+  letter-spacing: -0.04em;
+`;
+
+export const PreviewSubtitle = styled.p`
+  margin: 6px 0 0;
+  color: ${({ theme }) => theme.colors.textMuted};
+  line-height: 1.55;
+  font-size: 14px;
+`;
+
+export const PreviewBadge = styled.div`
+  width: fit-content;
+  padding: 8px 12px;
+  border-radius: ${({ theme }) => theme.radii.pill};
+  background: ${({ theme }) => theme.colors.successBg};
+  color: ${({ theme }) => theme.colors.success};
+  border: 1px solid ${({ theme }) => theme.colors.successBorder};
+  font-size: 12px;
+  font-weight: 900;
+`;
+
+export const PreviewGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: ${({ theme }) => theme.spacing.sm};
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+
+  @media (max-width: 760px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+export const PreviewInfo = styled.div`
+  min-width: 0;
+  padding: ${({ theme }) => theme.spacing.md};
+  border-radius: 18px;
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+
+  strong {
+    display: block;
+    color: ${({ theme }) => theme.colors.textMuted};
+    font-size: 12px;
+    margin-bottom: 5px;
+  }
+
+  span {
+    color: ${({ theme }) => theme.colors.primary};
+    font-size: 16px;
+    font-weight: 800;
+    overflow-wrap: anywhere;
+  }
+`;
+
+export const PreviewList = styled.div`
+  display: grid;
+  gap: 8px;
+  max-height: 260px;
+  overflow: auto;
+  padding-right: 4px;
+`;
+
+export const PreviewListItem = styled.div`
+  display: flex;
+  justify-content: space-between;
+  gap: ${({ theme }) => theme.spacing.md};
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  color: ${({ theme }) => theme.colors.text};
+  font-size: 13px;
+
+  strong {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+
+  span {
+    color: ${({ theme }) => theme.colors.textMuted};
+  }
+
+  @media (max-width: 520px) {
+    flex-direction: column;
+    gap: 4px;
+  }
+`;

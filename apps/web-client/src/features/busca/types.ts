@@ -1,3 +1,17 @@
+export type BuscaPreviaRegistro = {
+  indiceCadastral: string;
+  complemento: string | null;
+};
+
+export type BuscaPreviaResumo = {
+  id: string;
+  logradouro: string;
+  numero: string;
+  quantidadeRegistros: number;
+  registros: BuscaPreviaRegistro[];
+  expiraEm: string;
+};
+
 export type ExcedenteResumo = {
   consultasEstimadas: number;
   consultasDisponiveisNoMomento: number;
@@ -6,12 +20,31 @@ export type ExcedenteResumo = {
   valorExcedenteEstimadoCentavos: number;
 };
 
-export type CriarTarefaRequest = {
+export type PreverBuscaRequest = {
   logradouro: string;
   numero: string;
-  forceRefresh?: boolean;
+};
+
+export type PreverBuscaResponse = {
+  previa: BuscaPreviaResumo;
+  precisaConfirmarExcedente: boolean;
+  excedente: ExcedenteResumo;
+  uso?: {
+    consultasUsadas: number;
+    limiteMensal: number;
+    consultasRestantes: number;
+    consultasExcedentes: number;
+    valorConsultaAdicionalCentavos: number;
+    valorExcedenteCentavos: number;
+    totalEstimadoCentavos: number;
+    percentualUsado: number;
+  };
+};
+
+export type CriarTarefaRequest = {
+  previaId: string;
   confirmarExcedente?: boolean;
-  consultasEstimadas?: number;
+  forceRefresh?: boolean;
 };
 
 export type CriarTarefaResponse = {
@@ -19,6 +52,7 @@ export type CriarTarefaResponse = {
   jobId?: string;
   status?: string;
   message: string;
+  previa?: BuscaPreviaResumo;
   uso?: {
     consultasUsadas: number;
     limiteMensal: number;
