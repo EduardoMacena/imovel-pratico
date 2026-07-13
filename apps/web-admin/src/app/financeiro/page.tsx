@@ -1,14 +1,13 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
 import { AppHeader } from "../../components/AppHeader";
 import { Button } from "../../components/Button";
-import { Input } from "../../components/Input";
 import { Select } from "../../components/Select";
 import { StatusBadge } from "../../components/StatusBadge";
 import {
   cancelarFatura,
-  gerarFatura,
   listarClientes,
   listarFaturas,
   marcarFaturaPaga,
@@ -16,11 +15,11 @@ import {
 import type {
   ClienteResumo,
   FaturaResumo,
-  FaturaStatus,
 } from "../../features/admin/types";
 import { useRequireSuperAdmin } from "../../hooks/useRequireSuperAdmin";
 import {
   Actions,
+  CreateInvoiceLink,
   EmptyState,
   EmptyStateTitle,
   ErrorBox,
@@ -31,10 +30,6 @@ import {
   FaturaMeta,
   FaturaTitle,
   FilterGrid,
-  Form,
-  FormCard,
-  FormHeader,
-  FormTitle,
   Header,
   HeaderContent,
   HeaderEyebrow,
@@ -86,40 +81,16 @@ function formatDate(value?: string | null) {
   }).format(date);
 }
 
-function getCurrentMes() {
-  return new Date().getMonth() + 1;
-}
-
-function getCurrentAno() {
-  return new Date().getFullYear();
-}
-
-function getDefaultVencimento() {
-  const now = new Date();
-  const vencimento = new Date(
-    Date.UTC(now.getFullYear(), now.getMonth() + 1, 10, 12, 0, 0, 0)
-  );
-
-  return vencimento.toISOString().slice(0, 10);
-}
-
 export default function FinanceiroPage() {
   const { isCheckingAuth } = useRequireSuperAdmin();
 
   const [clientes, setClientes] = useState<ClienteResumo[]>([]);
   const [faturas, setFaturas] = useState<FaturaResumo[]>([]);
 
-  const [clienteId, setClienteId] = useState("");
-  const [referenciaMes, setReferenciaMes] = useState(String(getCurrentMes()));
-  const [referenciaAno, setReferenciaAno] = useState(String(getCurrentAno()));
-  const [vencimentoEm, setVencimentoEm] = useState(getDefaultVencimento());
-  const [observacao, setObservacao] = useState("");
-
-  const [statusFiltro, setStatusFiltro] = useState<string>("");
-  const [clienteFiltro, setClienteFiltro] = useState<string>("");
+  const [statusFiltro, setStatusFiltro] = useState("");
+  const [clienteFiltro, setClienteFiltro] = useState("");
 
   const [isLoading, setIsLoading] = useState(true);
-  const [isGenerating, setIsGenerating] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
   const [sucesso, setSucesso] = useState<string | null>(null);
 
@@ -148,16 +119,14 @@ export default function FinanceiroPage() {
 
   async function carregarClientes() {
     const data = await listarClientes();
-    setClientes(data.clientes);
 
-    if (!clienteId && data.clientes[0]) {
-      setClienteId(data.clientes[0].id);
-    }
+    setClientes(data.clientes);
   }
 
   async function carregarFaturas() {
     try {
       setErro(null);
+      setIsLoading(true);
 
       const data = await listarFaturas({
         clienteId: clienteFiltro || undefined,
@@ -173,36 +142,6 @@ export default function FinanceiroPage() {
       );
     } finally {
       setIsLoading(false);
-    }
-  }
-
-  async function handleGerarFatura(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    setErro(null);
-    setSucesso(null);
-    setIsGenerating(true);
-
-    try {
-      await gerarFatura({
-        clienteId,
-        referenciaMes: Number(referenciaMes),
-        referenciaAno: Number(referenciaAno),
-        vencimentoEm,
-        observacao: observacao.trim() || undefined,
-      });
-
-      setSucesso("Fatura gerada com sucesso.");
-
-      await carregarFaturas();
-    } catch (error) {
-      setErro(
-        error instanceof Error
-          ? error.message
-          : "Erro desconhecido ao gerar fatura"
-      );
-    } finally {
-      setIsGenerating(false);
     }
   }
 
@@ -243,7 +182,6 @@ export default function FinanceiroPage() {
   useEffect(() => {
     if (!isCheckingAuth) {
       carregarClientes();
-      carregarFaturas();
     }
   }, [isCheckingAuth]);
 
@@ -251,7 +189,7 @@ export default function FinanceiroPage() {
     if (!isCheckingAuth) {
       carregarFaturas();
     }
-  }, [statusFiltro, clienteFiltro]);
+  }, [isCheckingAuth, statusFiltro, clienteFiltro]);
 
   if (isCheckingAuth) {
     return null;
@@ -270,8 +208,8 @@ export default function FinanceiroPage() {
               <Title>Faturas</Title>
 
               <Subtitle>
-                Gere faturas mensais com mensalidade, consumo excedente,
-                vencimento e controle manual de pagamento.
+                Acompanhe faturas geradas, mensalidade, consumo excedente,
+                vencimento e pagamento dos clientes.
               </Subtitle>
             </HeaderContent>
 
@@ -309,81 +247,17 @@ export default function FinanceiroPage() {
         {erro && <ErrorBox>{erro}</ErrorBox>}
         {sucesso && <SuccessBox>{sucesso}</SuccessBox>}
 
-        <FormCard>
-          <FormHeader>
-            <FormTitle>Gerar fatura do mês</FormTitle>
-            <Subtitle>
-              O sistema recalcula mensalidade e excedente com base no consumo da
-              referência selecionada.
-            </Subtitle>
-          </FormHeader>
-
-          <Form onSubmit={handleGerarFatura}>
-            <FilterGrid>
-              <Select
-                label="Cliente"
-                value={clienteId}
-                onChange={event => setClienteId(event.target.value)}
-                required
-              >
-                {clientes.map(cliente => (
-                  <option key={cliente.id} value={cliente.id}>
-                    {cliente.nome}
-                  </option>
-                ))}
-              </Select>
-
-              <Input
-                label="Mês"
-                type="number"
-                min={1}
-                max={12}
-                value={referenciaMes}
-                onChange={event => setReferenciaMes(event.target.value)}
-                required
-              />
-
-              <Input
-                label="Ano"
-                type="number"
-                min={2024}
-                value={referenciaAno}
-                onChange={event => setReferenciaAno(event.target.value)}
-                required
-              />
-
-              <Input
-                label="Vencimento"
-                type="date"
-                value={vencimentoEm}
-                onChange={event => setVencimentoEm(event.target.value)}
-                required
-              />
-            </FilterGrid>
-
-            <Input
-              label="Observação"
-              value={observacao}
-              onChange={event => setObservacao(event.target.value)}
-              placeholder="Ex: ajuste comercial, negociação ou observação interna"
-            />
-
-            <Actions>
-              <Button type="submit" disabled={isGenerating}>
-                {isGenerating ? "Gerando..." : "Gerar fatura"}
-              </Button>
-            </Actions>
-          </Form>
-        </FormCard>
-
         <SectionHeader>
           <div>
             <SectionTitle>Faturas geradas</SectionTitle>
             <SectionSubtitle>
-              Acompanhe status, vencimento, mensalidade, excedente e total
-              cobrado.
+              Filtre por cliente ou status e acompanhe o histórico financeiro.
             </SectionSubtitle>
           </div>
+
+          <Link href="/financeiro/nova" passHref legacyBehavior>
+            <CreateInvoiceLink>Nova fatura</CreateInvoiceLink>
+          </Link>
         </SectionHeader>
 
         <FilterGrid>

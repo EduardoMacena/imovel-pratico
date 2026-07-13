@@ -371,3 +371,53 @@ export const SuccessBox = styled.div`
   border: 1px solid ${({ theme }) => theme.colors.successBorder};
   line-height: 1.6;
 `;
+
+export const CreateInvoiceLink = styled.a`
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 ${({ theme }) => theme.spacing.lg};
+  border-radius: ${({ theme }) => theme.radii.pill};
+  background: ${({ theme }) => theme.colors.secondary};
+  color: ${({ theme }) => theme.colors.textInverted};
+  border: 1px solid ${({ theme }) => theme.colors.secondary};
+  box-shadow: ${({ theme }) => theme.shadows.button};
+  font-size: 14px;
+  font-weight: 950;
+  text-decoration: none;
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease,
+    box-shadow 0.18s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    background: ${({ theme }) => theme.colors.secondaryHover};
+    border-color: ${({ theme }) => theme.colors.secondaryHover};
+    box-shadow: 0 16px 32px rgba(31, 111, 91, 0.22);
+  }
+`;
+
+export const BackLink = styled.a`
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 ${({ theme }) => theme.spacing.lg};
+  border-radius: ${({ theme }) => theme.radii.pill};
+  background: ${({ theme }) => theme.colors.surfaceMuted};
+  color: ${({ theme }) => theme.colors.primary};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  font-size: 14px;
+  font-weight: 900;
+  text-decoration: none;
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    background: ${({ theme }) => theme.colors.surface};
+  }
+`;
