@@ -6,7 +6,6 @@ import { Button } from "../../components/Button";
 import { Card } from "../../components/Card";
 import { Input } from "../../components/Input";
 import { StatusBadge } from "../../components/StatusBadge";
-import { ClientConsumptionCard } from "../../components/ClientConsumptionCard";
 import {
 	criarCliente,
 	listarClientes,
@@ -30,6 +29,11 @@ import {
 	EmptyState,
 	EmptyStateTitle,
 	ErrorBox,
+	FinancialBox,
+	FinancialGrid,
+	FinancialHint,
+	FinancialLabel,
+	FinancialValue,
 	Form,
 	FormHeader,
 	FormSubtitle,
@@ -60,6 +64,111 @@ import {
 	Title,
 } from "./page.styles";
 
+type UsoFinanceiro = ConsumoClienteResumo["uso"] & {
+	consultasExcedentes?: number;
+	valorExcedenteCentavos?: number;
+	totalEstimadoCentavos?: number;
+};
+
+function formatCurrencyFromCents(value?: number | null) {
+	if (value === null || value === undefined) {
+		return "-";
+	}
+
+	return new Intl.NumberFormat("pt-BR", {
+		style: "currency",
+		currency: "BRL",
+	}).format(value / 100);
+}
+
+function formatNumber(value?: number | null) {
+	if (typeof value !== "number") {
+		return "-";
+	}
+
+	return new Intl.NumberFormat("pt-BR").format(value);
+}
+
+function formatDate(value?: string | null) {
+	if (!value) {
+		return "-";
+	}
+
+	const date = /^\d{4}-\d{2}-\d{2}$/.test(value)
+		? new Date(`${value}T12:00:00.000Z`)
+		: new Date(value);
+
+	return new Intl.DateTimeFormat("pt-BR", {
+		dateStyle: "short",
+		timeZone: "UTC",
+	}).format(date);
+}
+
+function getPagamentoLabel(status?: string | null, vencido?: boolean) {
+	if (vencido) {
+		return "VENCIDO";
+	}
+
+	if (status === "PAGO") {
+		return "PAGO";
+	}
+
+	if (status === "PENDENTE") {
+		return "PENDENTE";
+	}
+
+	if (status === "CANCELADO") {
+		return "CANCELADO";
+	}
+
+	return status ?? "-";
+}
+
+function calcularFinanceiroCliente(
+	cliente: ClienteResumo,
+	consumo: ConsumoClienteResumo | null
+) {
+	const plano = consumo?.plano ?? cliente.plano;
+	const uso = consumo?.uso as UsoFinanceiro | undefined;
+
+	const mensalidadeCentavos = plano?.precoCentavos ?? 0;
+	const valorExcedenteCentavos = uso?.valorExcedenteCentavos ?? 0;
+	const totalEstimadoCentavos =
+		uso?.totalEstimadoCentavos ?? mensalidadeCentavos + valorExcedenteCentavos;
+
+	const pagamentoStatus = consumo?.cliente.pagamentoStatus ?? cliente.pagamentoStatus;
+	const pagamentoVencido = consumo?.cliente.pagamentoVencido ?? false;
+
+	const pagamentoEmAberto = pagamentoStatus !== "PAGO" || pagamentoVencido;
+
+	const valorDevedorCentavos = pagamentoEmAberto
+		? totalEstimadoCentavos
+		: valorExcedenteCentavos;
+
+	const consultasExcedentes = uso?.consultasExcedentes ?? 0;
+
+	return {
+		plano,
+		mensalidadeCentavos,
+		valorExcedenteCentavos,
+		totalEstimadoCentavos,
+		valorDevedorCentavos,
+		consultasExcedentes,
+		pagamentoStatus,
+		pagamentoVencido,
+		vencimento: consumo?.cliente.pagamentoVenceEm ?? cliente.pagamentoVenceEm,
+		pagamentoEmAberto,
+	};
+}
+
+function getFinancialVariant(valorDevedorCentavos: number) {
+	if (valorDevedorCentavos > 0) {
+		return "danger" as const;
+	}
+
+	return "success" as const;
+}
+
 export default function ClientesPage() {
 	const { isCheckingAuth } = useRequireSuperAdmin();
 
@@ -75,6 +184,10 @@ export default function ClientesPage() {
 	const [isCreating, setIsCreating] = useState(false);
 	const [erro, setErro] = useState<string | null>(null);
 
+	function getConsumoCliente(clienteId: string) {
+		return consumos.find((consumo) => consumo.cliente.id === clienteId) ?? null;
+	}
+
 	const resumo = useMemo(() => {
 		const ativos = clientes.filter((cliente) => cliente.status === "ATIVO").length;
 		const suspensos = clientes.filter(
@@ -89,17 +202,40 @@ export default function ClientesPage() {
 			return total + cliente.totalTarefas;
 		}, 0);
 
+		const financeiro = clientes.map((cliente) => {
+			const consumo =
+				consumos.find((item) => item.cliente.id === cliente.id) ?? null;
+
+			return calcularFinanceiroCliente(cliente, consumo);
+		});
+
+		const receitaMensalAtiva = financeiro.reduce((total, item) => {
+			return total + item.mensalidadeCentavos;
+		}, 0);
+
+		const totalExcedente = financeiro.reduce((total, item) => {
+			return total + item.valorExcedenteCentavos;
+		}, 0);
+
+		const totalDevedor = financeiro.reduce((total, item) => {
+			return total + item.valorDevedorCentavos;
+		}, 0);
+
+		const clientesComDebito = financeiro.filter(
+			(item) => item.valorDevedorCentavos > 0
+		).length;
+
 		return {
 			ativos,
 			suspensos,
 			totalUsuarios,
 			totalTarefas,
+			receitaMensalAtiva,
+			totalExcedente,
+			totalDevedor,
+			clientesComDebito,
 		};
-	}, [clientes]);
-
-	function getConsumoCliente(clienteId: string) {
-		return consumos.find((consumo) => consumo.cliente.id === clienteId) ?? null;
-	}
+	}, [clientes, consumos]);
 
 	async function carregarConsumosClientes() {
 		try {
@@ -192,42 +328,46 @@ export default function ClientesPage() {
 				<Header>
 					<HeaderGrid>
 						<HeaderContent>
-							<HeaderEyebrow>Gestão comercial</HeaderEyebrow>
+							<HeaderEyebrow>Gestão comercial e financeira</HeaderEyebrow>
 
 							<Title>Clientes</Title>
 
 							<Subtitle>
-								Cadastre imobiliárias, vincule planos comerciais, acompanhe
-								consumo mensal e gerencie a operação de cada cliente.
+								Cadastre imobiliárias, acompanhe plano, consumo, vencimento,
+								excedente e valor em aberto de cada cliente.
 							</Subtitle>
 						</HeaderContent>
 
 						<HeaderPanel>
-							<HeaderPanelLabel>Total de clientes</HeaderPanelLabel>
-							<HeaderPanelValue>{clientes.length}</HeaderPanelValue>
+							<HeaderPanelLabel>Total devedor estimado</HeaderPanelLabel>
+							<HeaderPanelValue>
+								{formatCurrencyFromCents(resumo.totalDevedor)}
+							</HeaderPanelValue>
 						</HeaderPanel>
 					</HeaderGrid>
 				</Header>
 
 				<StatGrid>
 					<StatCard>
+						<StatLabel>Receita mensal ativa</StatLabel>
+						<StatValue>
+							{formatCurrencyFromCents(resumo.receitaMensalAtiva)}
+						</StatValue>
+					</StatCard>
+
+					<StatCard>
+						<StatLabel>Excedente no mês</StatLabel>
+						<StatValue>{formatCurrencyFromCents(resumo.totalExcedente)}</StatValue>
+					</StatCard>
+
+					<StatCard>
+						<StatLabel>Clientes com débito</StatLabel>
+						<StatValue>{resumo.clientesComDebito}</StatValue>
+					</StatCard>
+
+					<StatCard>
 						<StatLabel>Clientes ativos</StatLabel>
 						<StatValue>{resumo.ativos}</StatValue>
-					</StatCard>
-
-					<StatCard>
-						<StatLabel>Suspensos</StatLabel>
-						<StatValue>{resumo.suspensos}</StatValue>
-					</StatCard>
-
-					<StatCard>
-						<StatLabel>Usuários cadastrados</StatLabel>
-						<StatValue>{resumo.totalUsuarios}</StatValue>
-					</StatCard>
-
-					<StatCard>
-						<StatLabel>Tarefas executadas</StatLabel>
-						<StatValue>{resumo.totalTarefas}</StatValue>
 					</StatCard>
 				</StatGrid>
 
@@ -260,7 +400,7 @@ export default function ClientesPage() {
 									{planos.map((plano) => (
 										<option key={plano.id} value={plano.id}>
 											{plano.nome} — {plano.limiteMensalConsultas} consultas —{" "}
-											{plano.intervaloSegundos}s
+											{formatCurrencyFromCents(plano.precoCentavos)}
 										</option>
 									))}
 								</Select>
@@ -277,8 +417,8 @@ export default function ClientesPage() {
 							<div>
 								<ListTitle>Clientes cadastrados</ListTitle>
 								<ListSubtitle>
-									Visualize plano, consumo, usuários, tarefas e atalhos de
-									gestão.
+									Controle operacional e financeiro por cliente: mensalidade,
+									excedente, vencimento, status de pagamento e valor em aberto.
 								</ListSubtitle>
 							</div>
 						</ListHeader>
@@ -288,15 +428,14 @@ export default function ClientesPage() {
 						{isLoading && (
 							<EmptyState>
 								<EmptyStateTitle>Carregando clientes...</EmptyStateTitle>
-								Estamos buscando os clientes cadastrados na plataforma.
+								Estamos buscando os clientes cadastrados e o resumo financeiro.
 							</EmptyState>
 						)}
 
 						{!isLoading && clientes.length === 0 && (
 							<EmptyState>
-								<EmptyStateTitle>Nenhum cliente cadastrado ainda.</EmptyStateTitle>
-								Crie o primeiro cliente para iniciar a operação comercial do
-								SaaS.
+								<EmptyStateTitle>Nenhum cliente cadastrado.</EmptyStateTitle>
+								Crie o primeiro cliente para iniciar a operação.
 							</EmptyState>
 						)}
 
@@ -304,64 +443,121 @@ export default function ClientesPage() {
 							<List>
 								{clientes.map((cliente) => {
 									const consumo = getConsumoCliente(cliente.id);
+									const financeiro = calcularFinanceiroCliente(cliente, consumo);
+									const uso = consumo?.uso as UsoFinanceiro | undefined;
 
 									return (
 										<ClientItem key={cliente.id}>
 											<ClientTop>
 												<div>
 													<ClientName>{cliente.nome}</ClientName>
-													<ClientMeta>{cliente.slug}</ClientMeta>
+													<ClientMeta>
+														{cliente.slug} · Plano:{" "}
+														{financeiro.plano?.nome ?? "Sem plano"}
+													</ClientMeta>
 												</div>
 
 												<StatusBadge status={cliente.status} />
 											</ClientTop>
 
+											<FinancialGrid>
+												<FinancialBox>
+													<FinancialLabel>Valor devedor</FinancialLabel>
+													<FinancialValue
+														$variant={getFinancialVariant(
+															financeiro.valorDevedorCentavos
+														)}
+													>
+														{formatCurrencyFromCents(
+															financeiro.valorDevedorCentavos
+														)}
+													</FinancialValue>
+													<FinancialHint>
+														{financeiro.valorDevedorCentavos > 0
+															? "Em aberto / a cobrar"
+															: "Sem débito estimado"}
+													</FinancialHint>
+												</FinancialBox>
+
+												<FinancialBox>
+													<FinancialLabel>Mensalidade</FinancialLabel>
+													<FinancialValue>
+														{formatCurrencyFromCents(
+															financeiro.mensalidadeCentavos
+														)}
+													</FinancialValue>
+													<FinancialHint>Valor fixo do plano</FinancialHint>
+												</FinancialBox>
+
+												<FinancialBox>
+													<FinancialLabel>Excedente</FinancialLabel>
+													<FinancialValue>
+														{formatCurrencyFromCents(
+															financeiro.valorExcedenteCentavos
+														)}
+													</FinancialValue>
+													<FinancialHint>
+														{formatNumber(financeiro.consultasExcedentes)} consulta(s)
+														excedente(s)
+													</FinancialHint>
+												</FinancialBox>
+
+												<FinancialBox>
+													<FinancialLabel>Total do ciclo</FinancialLabel>
+													<FinancialValue>
+														{formatCurrencyFromCents(
+															financeiro.totalEstimadoCentavos
+														)}
+													</FinancialValue>
+													<FinancialHint>Mensalidade + excedente</FinancialHint>
+												</FinancialBox>
+											</FinancialGrid>
+
 											<InfoGrid>
 												<InfoBox>
-													<InfoLabel>Usuários</InfoLabel>
-													<InfoValue>{cliente.totalUsuarios}</InfoValue>
+													<InfoLabel>Pagamento</InfoLabel>
+													<InfoValue>
+														{getPagamentoLabel(
+															financeiro.pagamentoStatus,
+															financeiro.pagamentoVencido
+														)}
+													</InfoValue>
+												</InfoBox>
+
+												<InfoBox>
+													<InfoLabel>Vencimento</InfoLabel>
+													<InfoValue>{formatDate(financeiro.vencimento)}</InfoValue>
+												</InfoBox>
+
+												<InfoBox>
+													<InfoLabel>Uso mensal</InfoLabel>
+													<InfoValue>{uso?.percentualUsado ?? 0}%</InfoValue>
+												</InfoBox>
+
+												<InfoBox>
+													<InfoLabel>Restantes</InfoLabel>
+													<InfoValue>
+														{formatNumber(uso?.consultasRestantes ?? 0)}
+													</InfoValue>
 												</InfoBox>
 
 												<InfoBox>
 													<InfoLabel>Tarefas</InfoLabel>
 													<InfoValue>{cliente.totalTarefas}</InfoValue>
 												</InfoBox>
-
-												<InfoBox>
-													<InfoLabel>Intervalo</InfoLabel>
-													<InfoValue>
-														{cliente.plano?.intervaloSegundos}s
-													</InfoValue>
-												</InfoBox>
-
-												<InfoBox>
-													<InfoLabel>Plano</InfoLabel>
-													<InfoValue>{cliente.plano?.nome ?? "-"}</InfoValue>
-												</InfoBox>
-
-												<InfoBox>
-													<InfoLabel>Limite mensal</InfoLabel>
-													<InfoValue>
-														{cliente.plano?.limiteMensalConsultas ?? "-"}
-													</InfoValue>
-												</InfoBox>
 											</InfoGrid>
-
-											{consumo && (
-												<ClientConsumptionCard consumo={consumo} compact />
-											)}
 
 											<Actions>
 												<DetailsLink href={`/clientes/${cliente.id}/editar`}>
-													Editar cliente
+													Financeiro e configurações
 												</DetailsLink>
 
 												<DetailsLink href={`/clientes/${cliente.id}/usuarios`}>
-													Gerenciar usuários
+													Usuários
 												</DetailsLink>
 
 												<DetailsLink href={`/clientes/${cliente.id}/tarefas`}>
-													Ver tarefas
+													Tarefas
 												</DetailsLink>
 											</Actions>
 										</ClientItem>

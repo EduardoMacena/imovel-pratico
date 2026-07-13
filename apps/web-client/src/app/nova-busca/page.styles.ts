@@ -574,3 +574,64 @@ export const PreviewListItem = styled.div`
     gap: 4px;
   }
 `;
+
+export const ModalCancelButton = styled.button`
+  min-height: 46px;
+  padding: 0 ${({ theme }) => theme.spacing.lg};
+  border-radius: ${({ theme }) => theme.radii.pill};
+  background: ${({ theme }) => theme.colors.dangerBg};
+  color: ${({ theme }) => theme.colors.danger};
+  border: 1px solid ${({ theme }) => theme.colors.dangerBorder};
+  font-size: 14px;
+  font-weight: 950;
+  cursor: pointer;
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease,
+    box-shadow 0.18s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    background: ${({ theme }) => theme.colors.danger};
+    color: ${({ theme }) => theme.colors.textInverted};
+    box-shadow: 0 14px 28px rgba(180, 35, 24, 0.18);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.58;
+    transform: none;
+    box-shadow: none;
+  }
+`;
+
+export const ModalConfirmButton = styled.button`
+  min-height: 46px;
+  padding: 0 ${({ theme }) => theme.spacing.lg};
+  border-radius: ${({ theme }) => theme.radii.pill};
+  background: ${({ theme }) => theme.colors.secondary};
+  color: ${({ theme }) => theme.colors.textInverted};
+  border: 1px solid ${({ theme }) => theme.colors.secondary};
+  box-shadow: ${({ theme }) => theme.shadows.button};
+  font-size: 14px;
+  font-weight: 950;
+  cursor: pointer;
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease,
+    box-shadow 0.18s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    background: ${({ theme }) => theme.colors.secondaryHover};
+    border-color: ${({ theme }) => theme.colors.secondaryHover};
+    box-shadow: 0 16px 32px rgba(31, 111, 91, 0.22);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.58;
+    transform: none;
+    box-shadow: none;
+  }
+`;

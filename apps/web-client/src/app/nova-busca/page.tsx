@@ -42,7 +42,9 @@ import {
   InlineHint,
   MainGrid,
   ModalActions,
+  ModalCancelButton,
   ModalCard,
+  ModalConfirmButton,
   ModalEyebrow,
   ModalGrid,
   ModalInfo,
@@ -349,15 +351,14 @@ export default function NovaBuscaPage() {
             </ModalText>
 
             <ModalActions>
-              <Button
+              <ModalCancelButton
                 type="button"
-                variant="secondary"
                 onClick={() => setAvisoExcedente(null)}
               >
                 Cancelar busca
-              </Button>
+              </ModalCancelButton>
 
-              <Button
+              <ModalConfirmButton
                 type="button"
                 disabled={isLoading}
                 onClick={confirmarBuscaComExcedente}
@@ -365,7 +366,7 @@ export default function NovaBuscaPage() {
                 {isLoading
                   ? "Confirmando..."
                   : "Continuar e autorizar excedente"}
-              </Button>
+              </ModalConfirmButton>
             </ModalActions>
           </ModalCard>
         </ModalOverlay>

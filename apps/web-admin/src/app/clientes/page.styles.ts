@@ -417,3 +417,69 @@ export const EmptyStateTitle = styled.strong`
   color: ${({ theme }) => theme.colors.primary};
   font-size: 18px;
 `;
+
+export const FinancialGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1.2fr repeat(3, minmax(0, 1fr));
+  gap: ${({ theme }) => theme.spacing.sm};
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+
+  @media (max-width: 1180px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (max-width: 620px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+export const FinancialBox = styled.div`
+  min-width: 0;
+  padding: ${({ theme }) => theme.spacing.md};
+  border-radius: ${({ theme }) => theme.radii.lg};
+  background:
+    radial-gradient(circle at top right, rgba(200, 164, 93, 0.08), transparent 36%),
+    ${({ theme }) => theme.colors.surfaceMuted};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+`;
+
+export const FinancialLabel = styled.div`
+  color: ${({ theme }) => theme.colors.textMuted};
+  font-size: 12px;
+  line-height: 1.25;
+  font-weight: 900;
+  margin-bottom: 6px;
+`;
+
+export const FinancialValue = styled.div<{
+  $variant?: "danger" | "success" | "warning";
+}>`
+  color: ${({ theme, $variant }) => {
+    if ($variant === "danger") {
+      return theme.colors.danger;
+    }
+
+    if ($variant === "success") {
+      return theme.colors.success;
+    }
+
+    if ($variant === "warning") {
+      return theme.colors.warning;
+    }
+
+    return theme.colors.primary;
+  }};
+  font-size: 22px;
+  line-height: 1;
+  font-weight: 950;
+  letter-spacing: -0.05em;
+  overflow-wrap: anywhere;
+`;
+
+export const FinancialHint = styled.div`
+  margin-top: 8px;
+  color: ${({ theme }) => theme.colors.textMuted};
+  font-size: 12px;
+  line-height: 1.35;
+  font-weight: 700;
+`;
