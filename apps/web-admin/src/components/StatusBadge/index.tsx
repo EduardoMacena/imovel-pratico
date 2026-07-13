@@ -6,44 +6,77 @@ type StatusBadgeProps = {
   status: string;
 };
 
-function getVariant(status: string) {
-  if (
-    status === "ATIVO" ||
-    status === "SUPER_ADMIN" ||
-    status === "ADMIN" ||
-    status === "COMPLETED" ||
-    status === "SUCCESS" ||
-    status === "PAGO"
-  ) {
-    return "success";
-  }
+function getStatusConfig(status: string) {
+  const normalized = status.toUpperCase();
 
   if (
-    status === "INATIVO" ||
-    status === "SUSPENSO" ||
-    status === "ERROR" ||
-    status === "CANCELED" ||
-    status === "VENCIDO" ||
-    status === "CANCELADO"
+    normalized === "ATIVO" ||
+    normalized === "SUPER_ADMIN" ||
+    normalized === "ADMIN" ||
+    normalized === "COMPLETED" ||
+    normalized === "SUCCESS" ||
+    normalized === "PAGO"
   ) {
-    return "error";
-  }
-
-  if (status === "GERENTE" || status === "PROCESSING") {
-    return "info";
+    return {
+      variant: "success" as const,
+      label:
+        normalized === "COMPLETED"
+          ? "Concluída"
+          : normalized === "SUCCESS"
+            ? "Sucesso"
+            : normalized === "PAGO"
+              ? "Pago"
+              : normalized === "ATIVO"
+                ? "Ativo"
+                : status,
+    };
   }
 
   if (
-    status === "OPERADOR" ||
-    status === "PENDING" ||
-    status === "PENDENTE"
+    normalized === "INATIVO" ||
+    normalized === "SUSPENSO" ||
+    normalized === "ERROR" ||
+    normalized === "CANCELED" ||
+    normalized === "VENCIDO" ||
+    normalized === "CANCELADO"
   ) {
-    return "warning";
+    return {
+      variant: "error" as const,
+      label:
+        normalized === "ERROR"
+          ? "Erro"
+          : normalized === "CANCELED"
+            ? "Cancelada"
+            : status,
+    };
   }
 
-  return "neutral";
+  if (normalized === "GERENTE" || normalized === "PROCESSING") {
+    return {
+      variant: "info" as const,
+      label: normalized === "PROCESSING" ? "Processando" : status,
+    };
+  }
+
+  if (
+    normalized === "OPERADOR" ||
+    normalized === "PENDING" ||
+    normalized === "PENDENTE"
+  ) {
+    return {
+      variant: "warning" as const,
+      label: normalized === "PENDING" ? "Pendente" : status,
+    };
+  }
+
+  return {
+    variant: "neutral" as const,
+    label: status,
+  };
 }
 
 export function StatusBadge({ status }: StatusBadgeProps) {
-  return <Badge $variant={getVariant(status)}>{status}</Badge>;
+  const config = getStatusConfig(status);
+
+  return <Badge $variant={config.variant}>{config.label}</Badge>;
 }

@@ -110,8 +110,8 @@ importers:
         specifier: latest
         version: 19.2.3(@types/react@19.2.17)
       typescript:
-        specifier: latest
-        version: 7.0.2
+        specifier: 5.9.3
+        version: 5.9.3
 
   apps/web-client:
     dependencies:
@@ -185,7 +185,7 @@ importers:
         version: link:../../packages/queue
       bullmq:
         specifier: latest
-        version: 5.80.1
+        version: 5.80.2
       dotenv:
         specifier: latest
         version: 17.4.2
@@ -241,7 +241,7 @@ importers:
     dependencies:
       bullmq:
         specifier: latest
-        version: 5.80.1
+        version: 5.80.2
       dotenv:
         specifier: latest
         version: 17.4.2
@@ -1151,8 +1151,8 @@ packages:
     resolution: {integrity: sha512-9q/rDEGSb/Qsvv2qvzIzdluL5k7AaJOTrw23z9reQthrbF7is4CtlT0DXyO1oei2DCp4uojjzQ7igaSHp1kAEQ==}
     engines: {node: '>=0.2.0'}
 
-  bullmq@5.80.1:
-    resolution: {integrity: sha512-nV8Bmr28HKqbNOU6GqPVca0vCfW/y6WB7IpnFVmRScx8s6IfXWGiqmDIVMEiNoXKKrfoBBvL/FTzR1SQet0iAg==}
+  bullmq@5.80.2:
+    resolution: {integrity: sha512-IobIZd0xFtpnw9W9RdqDX45nfdI2QSmq8rudMj99p3V5mIm9v4I3uPObqKj7i+6Xfd8Lzs3n1p+YNB7s6ykF4Q==}
     engines: {node: '>=12.22.0'}
     peerDependencies:
       redis: '>=5.0.0'
@@ -2786,7 +2786,7 @@ snapshots:
 
   buffers@0.1.1: {}
 
-  bullmq@5.80.1:
+  bullmq@5.80.2:
     dependencies:
       cron-parser: 4.9.0
       ioredis: 5.10.1

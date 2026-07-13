@@ -1,6 +1,6 @@
 "use client";
 
-import { SelectHTMLAttributes } from "react";
+import { SelectHTMLAttributes, useId } from "react";
 import { Field, Label, SelectElement } from "./styles";
 
 type SelectProps = SelectHTMLAttributes<HTMLSelectElement> & {
@@ -8,7 +8,8 @@ type SelectProps = SelectHTMLAttributes<HTMLSelectElement> & {
 };
 
 export function Select({ label, id, children, ...props }: SelectProps) {
-  const selectId = id ?? props.name ?? label;
+  const generatedId = useId();
+  const selectId = id ?? props.name ?? generatedId;
 
   return (
     <Field htmlFor={selectId}>

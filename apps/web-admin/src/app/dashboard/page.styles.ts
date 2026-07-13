@@ -3,108 +3,201 @@
 import Link from "next/link";
 import styled from "styled-components";
 
+export const PageShell = styled.main`
+  min-height: calc(100vh - 76px);
+`;
+
 export const PageContainer = styled.main`
-  width: min(1220px, calc(100% - 32px));
+  width: min(1320px, calc(100% - 40px));
   margin: 0 auto;
-  padding: ${({ theme }) => theme.spacing.xl} 0
+  padding: ${({ theme }) => theme.spacing.lg} 0
     ${({ theme }) => theme.spacing["3xl"]};
 
   @media (max-width: 720px) {
-    width: min(100% - 24px, 1220px);
+    width: min(100% - 24px, 1320px);
   }
 `;
 
-export const Header = styled.header`
-  margin-bottom: ${({ theme }) => theme.spacing.lg};
-`;
-
-export const HeaderGrid = styled.div`
+export const HeroGrid = styled.section`
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 320px;
+  grid-template-columns: minmax(0, 1fr) 430px;
   gap: ${({ theme }) => theme.spacing.lg};
   align-items: stretch;
+  margin-bottom: ${({ theme }) => theme.spacing.lg};
 
-  @media (max-width: 920px) {
+  @media (max-width: 1080px) {
     grid-template-columns: 1fr;
   }
 `;
 
-export const HeaderContent = styled.div`
-  min-width: 0;
-  padding: ${({ theme }) => theme.spacing["2xl"]};
-  border-radius: ${({ theme }) => theme.radii.xl};
-  border: 1px solid ${({ theme }) => theme.colors.border};
+export const HeroCard = styled.header`
+  min-height: 320px;
+  overflow: hidden;
+  position: relative;
+  border-radius: 32px;
   background:
-    radial-gradient(circle at top left, rgba(200, 164, 93, 0.2), transparent 34%),
-    linear-gradient(135deg, ${({ theme }) => theme.colors.primary}, #102b45);
+    radial-gradient(circle at 16% 12%, rgba(200, 164, 93, 0.24), transparent 30%),
+    radial-gradient(circle at 88% 12%, rgba(15, 76, 92, 0.32), transparent 34%),
+    linear-gradient(135deg, ${({ theme }) => theme.colors.primary}, #071927);
+  box-shadow: ${({ theme }) => theme.shadows.dark};
   color: ${({ theme }) => theme.colors.textInverted};
-  box-shadow: ${({ theme }) => theme.shadows.card};
 
-  @media (max-width: 720px) {
-    padding: ${({ theme }) => theme.spacing.xl};
+  &::after {
+    content: "";
+    position: absolute;
+    right: -90px;
+    bottom: -120px;
+    width: 280px;
+    height: 280px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.07);
   }
 `;
 
-export const HeaderEyebrow = styled.div`
+export const HeroContent = styled.div`
+  position: relative;
+  z-index: 1;
+  max-width: 760px;
+  padding: clamp(34px, 4vw, 58px);
+`;
+
+export const HeroEyebrow = styled.div`
   width: fit-content;
   margin-bottom: ${({ theme }) => theme.spacing.md};
-  padding: 7px 12px;
+  padding: 8px 13px;
   border-radius: ${({ theme }) => theme.radii.pill};
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.10);
   color: ${({ theme }) => theme.colors.accent};
   border: 1px solid rgba(255, 255, 255, 0.18);
   font-size: 12px;
   font-weight: 950;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
 `;
 
-export const Title = styled.h1`
+export const HeroTitle = styled.h1`
   max-width: 760px;
   margin: 0;
-  color: ${({ theme }) => theme.colors.textInverted};
-  font-size: clamp(38px, 5vw, 60px);
-  line-height: 0.98;
-  letter-spacing: -0.06em;
-`;
-
-export const Subtitle = styled.p`
-  max-width: 720px;
-  margin: ${({ theme }) => theme.spacing.lg} 0 0;
-  color: rgba(255, 255, 255, 0.78);
-  font-size: 16px;
-  line-height: 1.7;
-`;
-
-export const HeaderPanel = styled.aside`
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: ${({ theme }) => theme.spacing.xl};
-  border-radius: ${({ theme }) => theme.radii.xl};
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  background:
-    radial-gradient(circle at top right, rgba(31, 111, 91, 0.13), transparent 34%),
-    ${({ theme }) => theme.colors.surface};
-  box-shadow: ${({ theme }) => theme.shadows.card};
-`;
-
-export const HeaderPanelLabel = styled.span`
-  color: ${({ theme }) => theme.colors.textMuted};
-  font-size: 13px;
-  font-weight: 850;
-`;
-
-export const HeaderPanelValue = styled.strong`
-  margin-top: ${({ theme }) => theme.spacing.sm};
-  color: ${({ theme }) => theme.colors.primary};
-  font-size: 56px;
-  line-height: 1;
+  font-size: clamp(38px, 4.6vw, 64px);
+  line-height: 0.97;
   letter-spacing: -0.08em;
 `;
 
-export const IndicatorGrid = styled.div`
+export const HeroSubtitle = styled.p`
+  max-width: 680px;
+  margin: ${({ theme }) => theme.spacing.md} 0 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 15px;
+  line-height: 1.68;
+`;
+
+export const HeaderActions = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: ${({ theme }) => theme.spacing.sm};
+  margin-top: ${({ theme }) => theme.spacing.lg};
+`;
+
+export const PrimaryLink = styled(Link)`
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 ${({ theme }) => theme.spacing.lg};
+  border-radius: ${({ theme }) => theme.radii.pill};
+  color: ${({ theme }) => theme.colors.primary};
+  background: ${({ theme }) => theme.colors.accent};
+  border: 1px solid ${({ theme }) => theme.colors.accent};
+  box-shadow: ${({ theme }) => theme.shadows.button};
+  font-size: 14px;
+  font-weight: 950;
+  text-decoration: none;
+`;
+
+export const SecondaryLink = styled(Link)`
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 ${({ theme }) => theme.spacing.lg};
+  border-radius: ${({ theme }) => theme.radii.pill};
+  color: ${({ theme }) => theme.colors.textInverted};
+  background: rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  font-size: 14px;
+  font-weight: 950;
+  text-decoration: none;
+`;
+
+export const HeroPanel = styled.aside`
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: ${({ theme }) => theme.spacing.xl};
+  border-radius: 32px;
+  background:
+    radial-gradient(circle at 16% 14%, rgba(200, 164, 93, 0.18), transparent 30%),
+    ${({ theme }) => theme.colors.surfaceDark};
+  color: ${({ theme }) => theme.colors.textInverted};
+  box-shadow: ${({ theme }) => theme.shadows.dark};
+  border: 1px solid rgba(255, 255, 255, 0.12);
+`;
+
+export const HeroPanelHeader = styled.div``;
+
+export const HeroPanelTitle = styled.h2`
+  margin: 0;
+  color: ${({ theme }) => theme.colors.textInverted};
+  font-size: 28px;
+  line-height: 1.05;
+  letter-spacing: -0.06em;
+`;
+
+export const HeroPanelSubtitle = styled.p`
+  margin: ${({ theme }) => theme.spacing.sm} 0 0;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 14px;
+  line-height: 1.55;
+`;
+
+export const HeroPanelMetricGrid = styled.div`
+  display: grid;
+  gap: ${({ theme }) => theme.spacing.sm};
+  margin-top: ${({ theme }) => theme.spacing.xl};
+`;
+
+export const HeroPanelMetric = styled.div`
+  padding: ${({ theme }) => theme.spacing.md};
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.075);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+
+  span {
+    display: block;
+    color: rgba(255, 255, 255, 0.58);
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  strong {
+    display: block;
+    margin-top: 7px;
+    color: ${({ theme }) => theme.colors.textInverted};
+    font-size: 30px;
+    line-height: 1;
+    letter-spacing: -0.06em;
+  }
+`;
+
+export const HeroPanelFooter = styled.div`
+  margin-top: ${({ theme }) => theme.spacing.lg};
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 13px;
+  line-height: 1.5;
+`;
+
+export const MetricGrid = styled.section`
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: ${({ theme }) => theme.spacing.md};
@@ -119,105 +212,70 @@ export const IndicatorGrid = styled.div`
   }
 `;
 
-export const IndicatorCard = styled.div`
+export const MetricCard = styled.div`
   min-width: 0;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.9)),
-    ${({ theme }) => theme.colors.surface};
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.radii.xl};
   padding: ${({ theme }) => theme.spacing.lg};
-  box-shadow: ${({ theme }) => theme.shadows.card};
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.82);
+  box-shadow: 0 18px 48px rgba(11, 31, 51, 0.08);
 `;
 
-export const IndicatorLabel = styled.div`
+export const MetricLabel = styled.div`
   color: ${({ theme }) => theme.colors.textMuted};
-  font-size: 13px;
-  line-height: 1.35;
-  font-weight: 850;
-  margin-bottom: ${({ theme }) => theme.spacing.sm};
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 `;
 
-export const IndicatorValue = styled.div`
+export const MetricValue = styled.div`
+  margin-top: ${({ theme }) => theme.spacing.sm};
   color: ${({ theme }) => theme.colors.primary};
   font-size: 34px;
   line-height: 1;
-  font-weight: 950;
+  font-weight: 900;
   letter-spacing: -0.06em;
 `;
 
-export const QuickActionGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: ${({ theme }) => theme.spacing.md};
-  margin-bottom: ${({ theme }) => theme.spacing.lg};
-
-  @media (max-width: 920px) {
-    grid-template-columns: 1fr;
-  }
-`;
-
-export const QuickAction = styled(Link)`
-  min-width: 0;
-  display: block;
-  padding: ${({ theme }) => theme.spacing.lg};
-  border-radius: ${({ theme }) => theme.radii.xl};
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  background:
-    radial-gradient(circle at top right, rgba(200, 164, 93, 0.12), transparent 34%),
-    ${({ theme }) => theme.colors.surface};
-  color: inherit;
-  text-decoration: none;
-  box-shadow: ${({ theme }) => theme.shadows.card};
-  transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease,
-    border-color 0.18s ease;
-
-  &:hover {
-    transform: translateY(-2px);
-    border-color: ${({ theme }) => theme.colors.borderStrong};
-    box-shadow: ${({ theme }) => theme.shadows.cardHover};
-  }
-`;
-
-export const QuickActionTitle = styled.h3`
-  margin: 0;
-  color: ${({ theme }) => theme.colors.primary};
-  font-size: 18px;
-  line-height: 1.2;
-  letter-spacing: -0.04em;
-`;
-
-export const QuickActionDescription = styled.p`
-  margin: ${({ theme }) => theme.spacing.sm} 0 0;
+export const MetricHint = styled.div`
+  margin-top: 8px;
   color: ${({ theme }) => theme.colors.textMuted};
-  font-size: 14px;
-  line-height: 1.6;
+  font-size: 12px;
+  line-height: 1.45;
 `;
 
-export const SectionGrid = styled.div`
+export const DashboardGrid = styled.section`
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  grid-template-columns: minmax(0, 1fr) 420px;
   gap: ${({ theme }) => theme.spacing.lg};
+  align-items: start;
 
-  @media (max-width: 1040px) {
+  @media (max-width: 1120px) {
     grid-template-columns: 1fr;
   }
 `;
 
-export const Section = styled.section`
+export const MainColumn = styled.div`
+  display: grid;
+  gap: ${({ theme }) => theme.spacing.lg};
+`;
+
+export const SideColumn = styled.aside`
+  display: grid;
+  gap: ${({ theme }) => theme.spacing.lg};
+`;
+
+export const PanelCard = styled.section`
   min-width: 0;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.9)),
-    ${({ theme }) => theme.colors.surface};
+  padding: ${({ theme }) => theme.spacing.lg};
+  border-radius: 28px;
+  background: ${({ theme }) => theme.colors.surface};
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.radii.xl};
-  padding: ${({ theme }) => theme.spacing.xl};
   box-shadow: ${({ theme }) => theme.shadows.card};
 `;
 
-export const SectionHeader = styled.div`
+export const PanelHeader = styled.div`
   display: flex;
   justify-content: space-between;
   gap: ${({ theme }) => theme.spacing.md};
@@ -229,22 +287,145 @@ export const SectionHeader = styled.div`
   }
 `;
 
-export const SectionTitle = styled.h2`
+export const PanelTitle = styled.h2`
   margin: 0;
   color: ${({ theme }) => theme.colors.primary};
   font-size: 24px;
-  line-height: 1.1;
-  letter-spacing: -0.04em;
+  line-height: 1.08;
+  letter-spacing: -0.05em;
 `;
 
-export const SectionSubtitle = styled.p`
+export const PanelSubtitle = styled.p`
   margin: ${({ theme }) => theme.spacing.xs} 0 0;
   color: ${({ theme }) => theme.colors.textMuted};
   font-size: 14px;
   line-height: 1.6;
 `;
 
-export const SectionLink = styled(Link)`
+export const BarList = styled.div`
+  display: grid;
+  gap: ${({ theme }) => theme.spacing.md};
+`;
+
+export const BarRow = styled.div`
+  display: grid;
+  gap: ${({ theme }) => theme.spacing.sm};
+`;
+
+export const BarInfo = styled.div`
+  display: flex;
+  justify-content: space-between;
+  gap: ${({ theme }) => theme.spacing.md};
+  align-items: center;
+
+  strong {
+    color: ${({ theme }) => theme.colors.primary};
+    font-size: 15px;
+    font-weight: 700;
+  }
+`;
+
+export const BarLabel = styled.span`
+  color: ${({ theme }) => theme.colors.text};
+  font-size: 14px;
+  font-weight: 600;
+`;
+
+export const BarTrack = styled.div`
+  overflow: hidden;
+  height: 12px;
+  border-radius: ${({ theme }) => theme.radii.pill};
+  background: ${({ theme }) => theme.colors.primarySoft};
+`;
+
+export const BarFill = styled.div<{ $percentage: number }>`
+  width: ${({ $percentage }) => $percentage}%;
+  min-width: 8px;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    ${({ theme }) => theme.colors.secondary},
+    ${({ theme }) => theme.colors.accent}
+  );
+`;
+
+export const List = styled.div`
+  display: grid;
+  gap: ${({ theme }) => theme.spacing.md};
+`;
+
+export const ClientItem = styled.article`
+  min-width: 0;
+  padding: ${({ theme }) => theme.spacing.md};
+  border-radius: 20px;
+  background: ${({ theme }) => theme.colors.surfaceMuted};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+`;
+
+export const ItemTop = styled.div`
+  display: flex;
+  justify-content: space-between;
+  gap: ${({ theme }) => theme.spacing.md};
+  align-items: flex-start;
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+
+  @media (max-width: 620px) {
+    flex-direction: column;
+  }
+`;
+
+export const ItemTitle = styled.strong`
+  display: block;
+  color: ${({ theme }) => theme.colors.primary};
+  font-size: 17px;
+  line-height: 1.25;
+  font-weight: 750;
+`;
+
+export const ItemMuted = styled.span`
+  display: block;
+  margin-top: 4px;
+  color: ${({ theme }) => theme.colors.textMuted};
+  font-size: 13px;
+`;
+
+export const InfoGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: ${({ theme }) => theme.spacing.sm};
+
+  @media (max-width: 620px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+export const InfoBox = styled.div`
+  min-width: 0;
+  padding: ${({ theme }) => theme.spacing.md};
+  border-radius: 16px;
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+`;
+
+export const InfoLabel = styled.div`
+  color: ${({ theme }) => theme.colors.textMuted};
+  font-size: 12px;
+  line-height: 1.25;
+  margin-bottom: 6px;
+  font-weight: 700;
+`;
+
+export const InfoValue = styled.div`
+  min-width: 0;
+  color: ${({ theme }) => theme.colors.primary};
+  font-size: 15px;
+  line-height: 1.45;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+`;
+
+export const ClientLink = styled(Link)`
   flex: 0 0 auto;
   display: inline-flex;
   min-height: 38px;
@@ -258,98 +439,105 @@ export const SectionLink = styled(Link)`
   font-size: 13px;
   font-weight: 900;
   text-decoration: none;
+`;
+
+export const TaskLink = styled(Link)`
+  width: fit-content;
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  justify-content: center;
+  color: ${({ theme }) => theme.colors.primary};
+  font-size: 13px;
+  font-weight: 800;
+  text-decoration: none;
 
   &:hover {
-    border-color: ${({ theme }) => theme.colors.borderStrong};
+    color: ${({ theme }) => theme.colors.secondary};
   }
 `;
 
-export const List = styled.div`
+export const ActionCard = styled.section`
+  padding: ${({ theme }) => theme.spacing.lg};
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at top right, rgba(200, 164, 93, 0.16), transparent 32%),
+    ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.textInverted};
+  box-shadow: ${({ theme }) => theme.shadows.dark};
+`;
+
+export const ActionTitle = styled.h3`
+  margin: 0;
+  font-size: 22px;
+  letter-spacing: -0.04em;
+`;
+
+export const ActionDescription = styled.p`
+  margin: ${({ theme }) => theme.spacing.sm} 0 0;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 14px;
+  line-height: 1.6;
+`;
+
+export const ActionGrid = styled.div`
   display: grid;
-  gap: ${({ theme }) => theme.spacing.md};
-`;
-
-export const ClientItem = styled.article`
-  min-width: 0;
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.radii.lg};
-  padding: ${({ theme }) => theme.spacing.md};
-  background: ${({ theme }) => theme.colors.surfaceMuted};
-`;
-
-export const TaskItem = styled.article`
-  min-width: 0;
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.radii.lg};
-  padding: ${({ theme }) => theme.spacing.md};
-  background: ${({ theme }) => theme.colors.surfaceMuted};
-`;
-
-export const ItemTop = styled.div`
-  min-width: 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: ${({ theme }) => theme.spacing.md};
-  margin-bottom: ${({ theme }) => theme.spacing.md};
-
-  @media (max-width: 560px) {
-    flex-direction: column;
-  }
-`;
-
-export const ItemTitle = styled.strong`
-  display: block;
-  min-width: 0;
-  color: ${({ theme }) => theme.colors.primary};
-  font-size: 16px;
-  line-height: 1.25;
-  overflow-wrap: anywhere;
-`;
-
-export const ItemMuted = styled.div`
-  min-width: 0;
-  margin-top: 4px;
-  color: ${({ theme }) => theme.colors.textMuted};
-  font-size: 13px;
-  line-height: 1.4;
-  overflow-wrap: anywhere;
-`;
-
-export const TaskInfoGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: ${({ theme }) => theme.spacing.sm};
-  margin-top: ${({ theme }) => theme.spacing.sm};
+  margin-top: ${({ theme }) => theme.spacing.lg};
 
-  @media (max-width: 560px) {
-    grid-template-columns: 1fr;
+  a {
+    width: 100%;
   }
 `;
 
-export const InfoBox = styled.div`
-  min-width: 0;
-  background: ${({ theme }) => theme.colors.surface};
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.radii.md};
-  padding: ${({ theme }) => theme.spacing.sm};
+export const RecentList = styled.div`
+  display: grid;
+  gap: ${({ theme }) => theme.spacing.sm};
 `;
 
-export const InfoLabel = styled.div`
+export const RecentItem = styled.article`
+  min-width: 0;
+  padding: ${({ theme }) => theme.spacing.md};
+  border-radius: 20px;
+  background: ${({ theme }) => theme.colors.surfaceMuted};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+`;
+
+export const RecentContent = styled.div`
+  min-width: 0;
+`;
+
+export const RecentAddress = styled.strong`
+  display: block;
+  color: ${({ theme }) => theme.colors.primary};
+  font-size: 15px;
+  line-height: 1.35;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+`;
+
+export const RecentDate = styled.span`
+  display: block;
+  margin-top: 5px;
   color: ${({ theme }) => theme.colors.textMuted};
   font-size: 12px;
-  line-height: 1.25;
-  font-weight: 850;
 `;
 
-export const InfoValue = styled.div`
-  min-width: 0;
+export const EmptyState = styled.div`
+  padding: ${({ theme }) => theme.spacing.xl};
+  border: 1px dashed ${({ theme }) => theme.colors.borderStrong};
+  border-radius: 24px;
+  text-align: center;
+  color: ${({ theme }) => theme.colors.textMuted};
+  background: ${({ theme }) => theme.colors.surfaceMuted};
+  line-height: 1.65;
+`;
+
+export const EmptyStateTitle = styled.strong`
+  display: block;
+  margin-bottom: ${({ theme }) => theme.spacing.sm};
   color: ${({ theme }) => theme.colors.primary};
-  font-size: 14px;
-  line-height: 1.35;
-  font-weight: 900;
-  margin-top: 4px;
-  overflow-wrap: anywhere;
+  font-size: 18px;
 `;
 
 export const ErrorBox = styled.div`
@@ -360,45 +548,4 @@ export const ErrorBox = styled.div`
   color: ${({ theme }) => theme.colors.danger};
   border: 1px solid ${({ theme }) => theme.colors.dangerBorder};
   line-height: 1.6;
-`;
-
-export const EmptyState = styled.div`
-  padding: ${({ theme }) => theme.spacing.xl};
-  border: 1px dashed ${({ theme }) => theme.colors.borderStrong};
-  border-radius: ${({ theme }) => theme.radii.xl};
-  text-align: center;
-  color: ${({ theme }) => theme.colors.textMuted};
-  background:
-    radial-gradient(circle at top, rgba(200, 164, 93, 0.1), transparent 34%),
-    ${({ theme }) => theme.colors.surface};
-  line-height: 1.6;
-`;
-
-export const EmptyStateTitle = styled.strong`
-  display: block;
-  margin-bottom: ${({ theme }) => theme.spacing.sm};
-  color: ${({ theme }) => theme.colors.primary};
-  font-size: 18px;
-`;
-
-export const TaskLink = styled(Link)`
-  width: fit-content;
-  display: inline-flex;
-  min-height: 38px;
-  align-items: center;
-  justify-content: center;
-  margin-top: ${({ theme }) => theme.spacing.md};
-  padding: 0 ${({ theme }) => theme.spacing.md};
-  border-radius: ${({ theme }) => theme.radii.pill};
-  background: ${({ theme }) => theme.colors.primary};
-  color: ${({ theme }) => theme.colors.textInverted};
-  border: 1px solid ${({ theme }) => theme.colors.primary};
-  font-size: 13px;
-  font-weight: 900;
-  text-decoration: none;
-
-  &:hover {
-    background: ${({ theme }) => theme.colors.primaryHover};
-    border-color: ${({ theme }) => theme.colors.primaryHover};
-  }
 `;

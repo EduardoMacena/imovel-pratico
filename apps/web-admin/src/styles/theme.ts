@@ -6,6 +6,7 @@ export const theme = {
     surface: "#FFFFFF",
     surfaceMuted: "#F7F4EE",
     surfaceDark: "#07111F",
+    surfaceDarkSoft: "#0B1F33",
 
     primary: "#0B1F33",
     primaryHover: "#102B45",
@@ -42,6 +43,9 @@ export const theme = {
     info: "#175CD3",
     infoBg: "#D1E9FF",
     infoBorder: "#84CAFF",
+
+    glowBlue: "rgba(15, 76, 92, 0.28)",
+    glowGold: "rgba(200, 164, 93, 0.22)",
   },
 
   spacing: {
@@ -67,6 +71,8 @@ export const theme = {
     cardHover: "0 24px 60px rgba(15, 23, 42, 0.12)",
     header: "0 12px 30px rgba(15, 23, 42, 0.08)",
     button: "0 12px 24px rgba(11, 31, 51, 0.18)",
+    dark: "0 28px 80px rgba(7, 17, 31, 0.28)",
+    glow: "0 0 54px rgba(200, 164, 93, 0.14)",
   },
 
   typography: {

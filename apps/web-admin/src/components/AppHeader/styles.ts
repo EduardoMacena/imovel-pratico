@@ -14,7 +14,7 @@ export const HeaderWrapper = styled.header`
 `;
 
 export const HeaderInner = styled.div`
-  width: min(1280px, calc(100% - 40px));
+  width: min(1320px, calc(100% - 40px));
   min-height: 76px;
   margin: 0 auto;
   display: grid;
@@ -23,7 +23,7 @@ export const HeaderInner = styled.div`
   gap: ${({ theme }) => theme.spacing.lg};
 
   @media (max-width: 880px) {
-    width: min(100% - 24px, 1280px);
+    width: min(100% - 24px, 1320px);
     grid-template-columns: 1fr auto;
   }
 `;
@@ -49,14 +49,14 @@ export const BrandText = styled.span`
 `;
 
 export const LogoMark = styled.span`
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   flex: 0 0 auto;
   display: inline-grid;
   place-items: center;
   border-radius: ${({ theme }) => theme.radii.md};
   background:
-    radial-gradient(circle at 30% 20%, rgba(200, 164, 93, 0.45), transparent 26%),
+    radial-gradient(circle at 30% 20%, rgba(200, 164, 93, 0.46), transparent 28%),
     linear-gradient(
       135deg,
       ${({ theme }) => theme.colors.primary},
@@ -76,8 +76,11 @@ export const Nav = styled.nav`
   gap: 4px;
   padding: 5px;
   border-radius: ${({ theme }) => theme.radii.pill};
-  background: rgba(255, 255, 255, 0.48);
+  background: rgba(255, 255, 255, 0.56);
   border: 1px solid ${({ theme }) => theme.colors.border};
+  box-shadow:
+    0 10px 24px rgba(15, 23, 42, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.70);
 
   @media (max-width: 880px) {
     display: none;
@@ -93,16 +96,18 @@ export const NavLink = styled(Link)<{ $active?: boolean }>`
   border-radius: ${({ theme }) => theme.radii.pill};
   color: ${({ theme }) => theme.colors.textMuted};
   font-size: 14px;
-  font-weight: 900;
+  font-weight: 850;
   text-decoration: none;
   transition:
     color 0.18s ease,
     background 0.18s ease,
-    box-shadow 0.18s ease;
+    box-shadow 0.18s ease,
+    transform 0.18s ease;
 
   &:hover {
     color: ${({ theme }) => theme.colors.primary};
     background: ${({ theme }) => theme.colors.surface};
+    transform: translateY(-1px);
   }
 
   ${({ theme, $active }) =>
@@ -111,6 +116,7 @@ export const NavLink = styled(Link)<{ $active?: boolean }>`
       color: ${theme.colors.primary};
       background: ${theme.colors.surface};
       box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+      font-weight: 950;
     `}
 `;
 
