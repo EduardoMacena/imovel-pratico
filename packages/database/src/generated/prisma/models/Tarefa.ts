@@ -28,12 +28,22 @@ export type AggregateTarefa = {
 
 export type TarefaAvgAggregateOutputType = {
   intervaloSegundos: number | null
+  consultasEstimadas: number | null
+  consultasDisponiveisNoMomento: number | null
+  consultasExcedentesEstimadas: number | null
+  valorConsultaAdicionalCentavos: number | null
+  valorExcedenteEstimadoCentavos: number | null
   total: number | null
   current: number | null
 }
 
 export type TarefaSumAggregateOutputType = {
   intervaloSegundos: number | null
+  consultasEstimadas: number | null
+  consultasDisponiveisNoMomento: number | null
+  consultasExcedentesEstimadas: number | null
+  valorConsultaAdicionalCentavos: number | null
+  valorExcedenteEstimadoCentavos: number | null
   total: number | null
   current: number | null
 }
@@ -48,6 +58,13 @@ export type TarefaMinAggregateOutputType = {
   mesAnoFinal: string | null
   intervaloSegundos: number | null
   forceRefresh: boolean | null
+  excedenteAutorizado: boolean | null
+  excedenteAutorizadoEm: Date | null
+  consultasEstimadas: number | null
+  consultasDisponiveisNoMomento: number | null
+  consultasExcedentesEstimadas: number | null
+  valorConsultaAdicionalCentavos: number | null
+  valorExcedenteEstimadoCentavos: number | null
   total: number | null
   current: number | null
   erro: string | null
@@ -67,6 +84,13 @@ export type TarefaMaxAggregateOutputType = {
   mesAnoFinal: string | null
   intervaloSegundos: number | null
   forceRefresh: boolean | null
+  excedenteAutorizado: boolean | null
+  excedenteAutorizadoEm: Date | null
+  consultasEstimadas: number | null
+  consultasDisponiveisNoMomento: number | null
+  consultasExcedentesEstimadas: number | null
+  valorConsultaAdicionalCentavos: number | null
+  valorExcedenteEstimadoCentavos: number | null
   total: number | null
   current: number | null
   erro: string | null
@@ -86,6 +110,13 @@ export type TarefaCountAggregateOutputType = {
   mesAnoFinal: number
   intervaloSegundos: number
   forceRefresh: number
+  excedenteAutorizado: number
+  excedenteAutorizadoEm: number
+  consultasEstimadas: number
+  consultasDisponiveisNoMomento: number
+  consultasExcedentesEstimadas: number
+  valorConsultaAdicionalCentavos: number
+  valorExcedenteEstimadoCentavos: number
   total: number
   current: number
   erro: number
@@ -99,12 +130,22 @@ export type TarefaCountAggregateOutputType = {
 
 export type TarefaAvgAggregateInputType = {
   intervaloSegundos?: true
+  consultasEstimadas?: true
+  consultasDisponiveisNoMomento?: true
+  consultasExcedentesEstimadas?: true
+  valorConsultaAdicionalCentavos?: true
+  valorExcedenteEstimadoCentavos?: true
   total?: true
   current?: true
 }
 
 export type TarefaSumAggregateInputType = {
   intervaloSegundos?: true
+  consultasEstimadas?: true
+  consultasDisponiveisNoMomento?: true
+  consultasExcedentesEstimadas?: true
+  valorConsultaAdicionalCentavos?: true
+  valorExcedenteEstimadoCentavos?: true
   total?: true
   current?: true
 }
@@ -119,6 +160,13 @@ export type TarefaMinAggregateInputType = {
   mesAnoFinal?: true
   intervaloSegundos?: true
   forceRefresh?: true
+  excedenteAutorizado?: true
+  excedenteAutorizadoEm?: true
+  consultasEstimadas?: true
+  consultasDisponiveisNoMomento?: true
+  consultasExcedentesEstimadas?: true
+  valorConsultaAdicionalCentavos?: true
+  valorExcedenteEstimadoCentavos?: true
   total?: true
   current?: true
   erro?: true
@@ -138,6 +186,13 @@ export type TarefaMaxAggregateInputType = {
   mesAnoFinal?: true
   intervaloSegundos?: true
   forceRefresh?: true
+  excedenteAutorizado?: true
+  excedenteAutorizadoEm?: true
+  consultasEstimadas?: true
+  consultasDisponiveisNoMomento?: true
+  consultasExcedentesEstimadas?: true
+  valorConsultaAdicionalCentavos?: true
+  valorExcedenteEstimadoCentavos?: true
   total?: true
   current?: true
   erro?: true
@@ -157,6 +212,13 @@ export type TarefaCountAggregateInputType = {
   mesAnoFinal?: true
   intervaloSegundos?: true
   forceRefresh?: true
+  excedenteAutorizado?: true
+  excedenteAutorizadoEm?: true
+  consultasEstimadas?: true
+  consultasDisponiveisNoMomento?: true
+  consultasExcedentesEstimadas?: true
+  valorConsultaAdicionalCentavos?: true
+  valorExcedenteEstimadoCentavos?: true
   total?: true
   current?: true
   erro?: true
@@ -263,6 +325,13 @@ export type TarefaGroupByOutputType = {
   mesAnoFinal: string
   intervaloSegundos: number
   forceRefresh: boolean
+  excedenteAutorizado: boolean
+  excedenteAutorizadoEm: Date | null
+  consultasEstimadas: number | null
+  consultasDisponiveisNoMomento: number | null
+  consultasExcedentesEstimadas: number | null
+  valorConsultaAdicionalCentavos: number | null
+  valorExcedenteEstimadoCentavos: number | null
   total: number
   current: number
   erro: string | null
@@ -305,6 +374,13 @@ export type TarefaWhereInput = {
   mesAnoFinal?: Prisma.StringFilter<"Tarefa"> | string
   intervaloSegundos?: Prisma.IntFilter<"Tarefa"> | number
   forceRefresh?: Prisma.BoolFilter<"Tarefa"> | boolean
+  excedenteAutorizado?: Prisma.BoolFilter<"Tarefa"> | boolean
+  excedenteAutorizadoEm?: Prisma.DateTimeNullableFilter<"Tarefa"> | Date | string | null
+  consultasEstimadas?: Prisma.IntNullableFilter<"Tarefa"> | number | null
+  consultasDisponiveisNoMomento?: Prisma.IntNullableFilter<"Tarefa"> | number | null
+  consultasExcedentesEstimadas?: Prisma.IntNullableFilter<"Tarefa"> | number | null
+  valorConsultaAdicionalCentavos?: Prisma.IntNullableFilter<"Tarefa"> | number | null
+  valorExcedenteEstimadoCentavos?: Prisma.IntNullableFilter<"Tarefa"> | number | null
   total?: Prisma.IntFilter<"Tarefa"> | number
   current?: Prisma.IntFilter<"Tarefa"> | number
   erro?: Prisma.StringNullableFilter<"Tarefa"> | string | null
@@ -326,6 +402,13 @@ export type TarefaOrderByWithRelationInput = {
   mesAnoFinal?: Prisma.SortOrder
   intervaloSegundos?: Prisma.SortOrder
   forceRefresh?: Prisma.SortOrder
+  excedenteAutorizado?: Prisma.SortOrder
+  excedenteAutorizadoEm?: Prisma.SortOrderInput | Prisma.SortOrder
+  consultasEstimadas?: Prisma.SortOrderInput | Prisma.SortOrder
+  consultasDisponiveisNoMomento?: Prisma.SortOrderInput | Prisma.SortOrder
+  consultasExcedentesEstimadas?: Prisma.SortOrderInput | Prisma.SortOrder
+  valorConsultaAdicionalCentavos?: Prisma.SortOrderInput | Prisma.SortOrder
+  valorExcedenteEstimadoCentavos?: Prisma.SortOrderInput | Prisma.SortOrder
   total?: Prisma.SortOrder
   current?: Prisma.SortOrder
   erro?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -350,6 +433,13 @@ export type TarefaWhereUniqueInput = Prisma.AtLeast<{
   mesAnoFinal?: Prisma.StringFilter<"Tarefa"> | string
   intervaloSegundos?: Prisma.IntFilter<"Tarefa"> | number
   forceRefresh?: Prisma.BoolFilter<"Tarefa"> | boolean
+  excedenteAutorizado?: Prisma.BoolFilter<"Tarefa"> | boolean
+  excedenteAutorizadoEm?: Prisma.DateTimeNullableFilter<"Tarefa"> | Date | string | null
+  consultasEstimadas?: Prisma.IntNullableFilter<"Tarefa"> | number | null
+  consultasDisponiveisNoMomento?: Prisma.IntNullableFilter<"Tarefa"> | number | null
+  consultasExcedentesEstimadas?: Prisma.IntNullableFilter<"Tarefa"> | number | null
+  valorConsultaAdicionalCentavos?: Prisma.IntNullableFilter<"Tarefa"> | number | null
+  valorExcedenteEstimadoCentavos?: Prisma.IntNullableFilter<"Tarefa"> | number | null
   total?: Prisma.IntFilter<"Tarefa"> | number
   current?: Prisma.IntFilter<"Tarefa"> | number
   erro?: Prisma.StringNullableFilter<"Tarefa"> | string | null
@@ -371,6 +461,13 @@ export type TarefaOrderByWithAggregationInput = {
   mesAnoFinal?: Prisma.SortOrder
   intervaloSegundos?: Prisma.SortOrder
   forceRefresh?: Prisma.SortOrder
+  excedenteAutorizado?: Prisma.SortOrder
+  excedenteAutorizadoEm?: Prisma.SortOrderInput | Prisma.SortOrder
+  consultasEstimadas?: Prisma.SortOrderInput | Prisma.SortOrder
+  consultasDisponiveisNoMomento?: Prisma.SortOrderInput | Prisma.SortOrder
+  consultasExcedentesEstimadas?: Prisma.SortOrderInput | Prisma.SortOrder
+  valorConsultaAdicionalCentavos?: Prisma.SortOrderInput | Prisma.SortOrder
+  valorExcedenteEstimadoCentavos?: Prisma.SortOrderInput | Prisma.SortOrder
   total?: Prisma.SortOrder
   current?: Prisma.SortOrder
   erro?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -398,6 +495,13 @@ export type TarefaScalarWhereWithAggregatesInput = {
   mesAnoFinal?: Prisma.StringWithAggregatesFilter<"Tarefa"> | string
   intervaloSegundos?: Prisma.IntWithAggregatesFilter<"Tarefa"> | number
   forceRefresh?: Prisma.BoolWithAggregatesFilter<"Tarefa"> | boolean
+  excedenteAutorizado?: Prisma.BoolWithAggregatesFilter<"Tarefa"> | boolean
+  excedenteAutorizadoEm?: Prisma.DateTimeNullableWithAggregatesFilter<"Tarefa"> | Date | string | null
+  consultasEstimadas?: Prisma.IntNullableWithAggregatesFilter<"Tarefa"> | number | null
+  consultasDisponiveisNoMomento?: Prisma.IntNullableWithAggregatesFilter<"Tarefa"> | number | null
+  consultasExcedentesEstimadas?: Prisma.IntNullableWithAggregatesFilter<"Tarefa"> | number | null
+  valorConsultaAdicionalCentavos?: Prisma.IntNullableWithAggregatesFilter<"Tarefa"> | number | null
+  valorExcedenteEstimadoCentavos?: Prisma.IntNullableWithAggregatesFilter<"Tarefa"> | number | null
   total?: Prisma.IntWithAggregatesFilter<"Tarefa"> | number
   current?: Prisma.IntWithAggregatesFilter<"Tarefa"> | number
   erro?: Prisma.StringNullableWithAggregatesFilter<"Tarefa"> | string | null
@@ -416,6 +520,13 @@ export type TarefaCreateInput = {
   mesAnoFinal: string
   intervaloSegundos?: number
   forceRefresh?: boolean
+  excedenteAutorizado?: boolean
+  excedenteAutorizadoEm?: Date | string | null
+  consultasEstimadas?: number | null
+  consultasDisponiveisNoMomento?: number | null
+  consultasExcedentesEstimadas?: number | null
+  valorConsultaAdicionalCentavos?: number | null
+  valorExcedenteEstimadoCentavos?: number | null
   total?: number
   current?: number
   erro?: string | null
@@ -437,6 +548,13 @@ export type TarefaUncheckedCreateInput = {
   mesAnoFinal: string
   intervaloSegundos?: number
   forceRefresh?: boolean
+  excedenteAutorizado?: boolean
+  excedenteAutorizadoEm?: Date | string | null
+  consultasEstimadas?: number | null
+  consultasDisponiveisNoMomento?: number | null
+  consultasExcedentesEstimadas?: number | null
+  valorConsultaAdicionalCentavos?: number | null
+  valorExcedenteEstimadoCentavos?: number | null
   total?: number
   current?: number
   erro?: string | null
@@ -456,6 +574,13 @@ export type TarefaUpdateInput = {
   mesAnoFinal?: Prisma.StringFieldUpdateOperationsInput | string
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
   forceRefresh?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excedenteAutorizado?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excedenteAutorizadoEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  consultasEstimadas?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  consultasDisponiveisNoMomento?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  consultasExcedentesEstimadas?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  valorConsultaAdicionalCentavos?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  valorExcedenteEstimadoCentavos?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   total?: Prisma.IntFieldUpdateOperationsInput | number
   current?: Prisma.IntFieldUpdateOperationsInput | number
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -477,6 +602,13 @@ export type TarefaUncheckedUpdateInput = {
   mesAnoFinal?: Prisma.StringFieldUpdateOperationsInput | string
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
   forceRefresh?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excedenteAutorizado?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excedenteAutorizadoEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  consultasEstimadas?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  consultasDisponiveisNoMomento?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  consultasExcedentesEstimadas?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  valorConsultaAdicionalCentavos?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  valorExcedenteEstimadoCentavos?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   total?: Prisma.IntFieldUpdateOperationsInput | number
   current?: Prisma.IntFieldUpdateOperationsInput | number
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -497,6 +629,13 @@ export type TarefaCreateManyInput = {
   mesAnoFinal: string
   intervaloSegundos?: number
   forceRefresh?: boolean
+  excedenteAutorizado?: boolean
+  excedenteAutorizadoEm?: Date | string | null
+  consultasEstimadas?: number | null
+  consultasDisponiveisNoMomento?: number | null
+  consultasExcedentesEstimadas?: number | null
+  valorConsultaAdicionalCentavos?: number | null
+  valorExcedenteEstimadoCentavos?: number | null
   total?: number
   current?: number
   erro?: string | null
@@ -515,6 +654,13 @@ export type TarefaUpdateManyMutationInput = {
   mesAnoFinal?: Prisma.StringFieldUpdateOperationsInput | string
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
   forceRefresh?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excedenteAutorizado?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excedenteAutorizadoEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  consultasEstimadas?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  consultasDisponiveisNoMomento?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  consultasExcedentesEstimadas?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  valorConsultaAdicionalCentavos?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  valorExcedenteEstimadoCentavos?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   total?: Prisma.IntFieldUpdateOperationsInput | number
   current?: Prisma.IntFieldUpdateOperationsInput | number
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -534,6 +680,13 @@ export type TarefaUncheckedUpdateManyInput = {
   mesAnoFinal?: Prisma.StringFieldUpdateOperationsInput | string
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
   forceRefresh?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excedenteAutorizado?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excedenteAutorizadoEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  consultasEstimadas?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  consultasDisponiveisNoMomento?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  consultasExcedentesEstimadas?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  valorConsultaAdicionalCentavos?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  valorExcedenteEstimadoCentavos?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   total?: Prisma.IntFieldUpdateOperationsInput | number
   current?: Prisma.IntFieldUpdateOperationsInput | number
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -563,6 +716,13 @@ export type TarefaCountOrderByAggregateInput = {
   mesAnoFinal?: Prisma.SortOrder
   intervaloSegundos?: Prisma.SortOrder
   forceRefresh?: Prisma.SortOrder
+  excedenteAutorizado?: Prisma.SortOrder
+  excedenteAutorizadoEm?: Prisma.SortOrder
+  consultasEstimadas?: Prisma.SortOrder
+  consultasDisponiveisNoMomento?: Prisma.SortOrder
+  consultasExcedentesEstimadas?: Prisma.SortOrder
+  valorConsultaAdicionalCentavos?: Prisma.SortOrder
+  valorExcedenteEstimadoCentavos?: Prisma.SortOrder
   total?: Prisma.SortOrder
   current?: Prisma.SortOrder
   erro?: Prisma.SortOrder
@@ -574,6 +734,11 @@ export type TarefaCountOrderByAggregateInput = {
 
 export type TarefaAvgOrderByAggregateInput = {
   intervaloSegundos?: Prisma.SortOrder
+  consultasEstimadas?: Prisma.SortOrder
+  consultasDisponiveisNoMomento?: Prisma.SortOrder
+  consultasExcedentesEstimadas?: Prisma.SortOrder
+  valorConsultaAdicionalCentavos?: Prisma.SortOrder
+  valorExcedenteEstimadoCentavos?: Prisma.SortOrder
   total?: Prisma.SortOrder
   current?: Prisma.SortOrder
 }
@@ -588,6 +753,13 @@ export type TarefaMaxOrderByAggregateInput = {
   mesAnoFinal?: Prisma.SortOrder
   intervaloSegundos?: Prisma.SortOrder
   forceRefresh?: Prisma.SortOrder
+  excedenteAutorizado?: Prisma.SortOrder
+  excedenteAutorizadoEm?: Prisma.SortOrder
+  consultasEstimadas?: Prisma.SortOrder
+  consultasDisponiveisNoMomento?: Prisma.SortOrder
+  consultasExcedentesEstimadas?: Prisma.SortOrder
+  valorConsultaAdicionalCentavos?: Prisma.SortOrder
+  valorExcedenteEstimadoCentavos?: Prisma.SortOrder
   total?: Prisma.SortOrder
   current?: Prisma.SortOrder
   erro?: Prisma.SortOrder
@@ -607,6 +779,13 @@ export type TarefaMinOrderByAggregateInput = {
   mesAnoFinal?: Prisma.SortOrder
   intervaloSegundos?: Prisma.SortOrder
   forceRefresh?: Prisma.SortOrder
+  excedenteAutorizado?: Prisma.SortOrder
+  excedenteAutorizadoEm?: Prisma.SortOrder
+  consultasEstimadas?: Prisma.SortOrder
+  consultasDisponiveisNoMomento?: Prisma.SortOrder
+  consultasExcedentesEstimadas?: Prisma.SortOrder
+  valorConsultaAdicionalCentavos?: Prisma.SortOrder
+  valorExcedenteEstimadoCentavos?: Prisma.SortOrder
   total?: Prisma.SortOrder
   current?: Prisma.SortOrder
   erro?: Prisma.SortOrder
@@ -618,6 +797,11 @@ export type TarefaMinOrderByAggregateInput = {
 
 export type TarefaSumOrderByAggregateInput = {
   intervaloSegundos?: Prisma.SortOrder
+  consultasEstimadas?: Prisma.SortOrder
+  consultasDisponiveisNoMomento?: Prisma.SortOrder
+  consultasExcedentesEstimadas?: Prisma.SortOrder
+  valorConsultaAdicionalCentavos?: Prisma.SortOrder
+  valorExcedenteEstimadoCentavos?: Prisma.SortOrder
   total?: Prisma.SortOrder
   current?: Prisma.SortOrder
 }
@@ -696,6 +880,13 @@ export type TarefaCreateWithoutClienteInput = {
   mesAnoFinal: string
   intervaloSegundos?: number
   forceRefresh?: boolean
+  excedenteAutorizado?: boolean
+  excedenteAutorizadoEm?: Date | string | null
+  consultasEstimadas?: number | null
+  consultasDisponiveisNoMomento?: number | null
+  consultasExcedentesEstimadas?: number | null
+  valorConsultaAdicionalCentavos?: number | null
+  valorExcedenteEstimadoCentavos?: number | null
   total?: number
   current?: number
   erro?: string | null
@@ -715,6 +906,13 @@ export type TarefaUncheckedCreateWithoutClienteInput = {
   mesAnoFinal: string
   intervaloSegundos?: number
   forceRefresh?: boolean
+  excedenteAutorizado?: boolean
+  excedenteAutorizadoEm?: Date | string | null
+  consultasEstimadas?: number | null
+  consultasDisponiveisNoMomento?: number | null
+  consultasExcedentesEstimadas?: number | null
+  valorConsultaAdicionalCentavos?: number | null
+  valorExcedenteEstimadoCentavos?: number | null
   total?: number
   current?: number
   erro?: string | null
@@ -764,6 +962,13 @@ export type TarefaScalarWhereInput = {
   mesAnoFinal?: Prisma.StringFilter<"Tarefa"> | string
   intervaloSegundos?: Prisma.IntFilter<"Tarefa"> | number
   forceRefresh?: Prisma.BoolFilter<"Tarefa"> | boolean
+  excedenteAutorizado?: Prisma.BoolFilter<"Tarefa"> | boolean
+  excedenteAutorizadoEm?: Prisma.DateTimeNullableFilter<"Tarefa"> | Date | string | null
+  consultasEstimadas?: Prisma.IntNullableFilter<"Tarefa"> | number | null
+  consultasDisponiveisNoMomento?: Prisma.IntNullableFilter<"Tarefa"> | number | null
+  consultasExcedentesEstimadas?: Prisma.IntNullableFilter<"Tarefa"> | number | null
+  valorConsultaAdicionalCentavos?: Prisma.IntNullableFilter<"Tarefa"> | number | null
+  valorExcedenteEstimadoCentavos?: Prisma.IntNullableFilter<"Tarefa"> | number | null
   total?: Prisma.IntFilter<"Tarefa"> | number
   current?: Prisma.IntFilter<"Tarefa"> | number
   erro?: Prisma.StringNullableFilter<"Tarefa"> | string | null
@@ -782,6 +987,13 @@ export type TarefaCreateWithoutResultadosInput = {
   mesAnoFinal: string
   intervaloSegundos?: number
   forceRefresh?: boolean
+  excedenteAutorizado?: boolean
+  excedenteAutorizadoEm?: Date | string | null
+  consultasEstimadas?: number | null
+  consultasDisponiveisNoMomento?: number | null
+  consultasExcedentesEstimadas?: number | null
+  valorConsultaAdicionalCentavos?: number | null
+  valorExcedenteEstimadoCentavos?: number | null
   total?: number
   current?: number
   erro?: string | null
@@ -802,6 +1014,13 @@ export type TarefaUncheckedCreateWithoutResultadosInput = {
   mesAnoFinal: string
   intervaloSegundos?: number
   forceRefresh?: boolean
+  excedenteAutorizado?: boolean
+  excedenteAutorizadoEm?: Date | string | null
+  consultasEstimadas?: number | null
+  consultasDisponiveisNoMomento?: number | null
+  consultasExcedentesEstimadas?: number | null
+  valorConsultaAdicionalCentavos?: number | null
+  valorExcedenteEstimadoCentavos?: number | null
   total?: number
   current?: number
   erro?: string | null
@@ -836,6 +1055,13 @@ export type TarefaUpdateWithoutResultadosInput = {
   mesAnoFinal?: Prisma.StringFieldUpdateOperationsInput | string
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
   forceRefresh?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excedenteAutorizado?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excedenteAutorizadoEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  consultasEstimadas?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  consultasDisponiveisNoMomento?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  consultasExcedentesEstimadas?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  valorConsultaAdicionalCentavos?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  valorExcedenteEstimadoCentavos?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   total?: Prisma.IntFieldUpdateOperationsInput | number
   current?: Prisma.IntFieldUpdateOperationsInput | number
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -856,6 +1082,13 @@ export type TarefaUncheckedUpdateWithoutResultadosInput = {
   mesAnoFinal?: Prisma.StringFieldUpdateOperationsInput | string
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
   forceRefresh?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excedenteAutorizado?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excedenteAutorizadoEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  consultasEstimadas?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  consultasDisponiveisNoMomento?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  consultasExcedentesEstimadas?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  valorConsultaAdicionalCentavos?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  valorExcedenteEstimadoCentavos?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   total?: Prisma.IntFieldUpdateOperationsInput | number
   current?: Prisma.IntFieldUpdateOperationsInput | number
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -874,6 +1107,13 @@ export type TarefaCreateManyClienteInput = {
   mesAnoFinal: string
   intervaloSegundos?: number
   forceRefresh?: boolean
+  excedenteAutorizado?: boolean
+  excedenteAutorizadoEm?: Date | string | null
+  consultasEstimadas?: number | null
+  consultasDisponiveisNoMomento?: number | null
+  consultasExcedentesEstimadas?: number | null
+  valorConsultaAdicionalCentavos?: number | null
+  valorExcedenteEstimadoCentavos?: number | null
   total?: number
   current?: number
   erro?: string | null
@@ -892,6 +1132,13 @@ export type TarefaUpdateWithoutClienteInput = {
   mesAnoFinal?: Prisma.StringFieldUpdateOperationsInput | string
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
   forceRefresh?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excedenteAutorizado?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excedenteAutorizadoEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  consultasEstimadas?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  consultasDisponiveisNoMomento?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  consultasExcedentesEstimadas?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  valorConsultaAdicionalCentavos?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  valorExcedenteEstimadoCentavos?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   total?: Prisma.IntFieldUpdateOperationsInput | number
   current?: Prisma.IntFieldUpdateOperationsInput | number
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -911,6 +1158,13 @@ export type TarefaUncheckedUpdateWithoutClienteInput = {
   mesAnoFinal?: Prisma.StringFieldUpdateOperationsInput | string
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
   forceRefresh?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excedenteAutorizado?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excedenteAutorizadoEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  consultasEstimadas?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  consultasDisponiveisNoMomento?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  consultasExcedentesEstimadas?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  valorConsultaAdicionalCentavos?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  valorExcedenteEstimadoCentavos?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   total?: Prisma.IntFieldUpdateOperationsInput | number
   current?: Prisma.IntFieldUpdateOperationsInput | number
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -930,6 +1184,13 @@ export type TarefaUncheckedUpdateManyWithoutClienteInput = {
   mesAnoFinal?: Prisma.StringFieldUpdateOperationsInput | string
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
   forceRefresh?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excedenteAutorizado?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excedenteAutorizadoEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  consultasEstimadas?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  consultasDisponiveisNoMomento?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  consultasExcedentesEstimadas?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  valorConsultaAdicionalCentavos?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  valorExcedenteEstimadoCentavos?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   total?: Prisma.IntFieldUpdateOperationsInput | number
   current?: Prisma.IntFieldUpdateOperationsInput | number
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -980,6 +1241,13 @@ export type TarefaSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   mesAnoFinal?: boolean
   intervaloSegundos?: boolean
   forceRefresh?: boolean
+  excedenteAutorizado?: boolean
+  excedenteAutorizadoEm?: boolean
+  consultasEstimadas?: boolean
+  consultasDisponiveisNoMomento?: boolean
+  consultasExcedentesEstimadas?: boolean
+  valorConsultaAdicionalCentavos?: boolean
+  valorExcedenteEstimadoCentavos?: boolean
   total?: boolean
   current?: boolean
   erro?: boolean
@@ -1002,6 +1270,13 @@ export type TarefaSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   mesAnoFinal?: boolean
   intervaloSegundos?: boolean
   forceRefresh?: boolean
+  excedenteAutorizado?: boolean
+  excedenteAutorizadoEm?: boolean
+  consultasEstimadas?: boolean
+  consultasDisponiveisNoMomento?: boolean
+  consultasExcedentesEstimadas?: boolean
+  valorConsultaAdicionalCentavos?: boolean
+  valorExcedenteEstimadoCentavos?: boolean
   total?: boolean
   current?: boolean
   erro?: boolean
@@ -1022,6 +1297,13 @@ export type TarefaSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   mesAnoFinal?: boolean
   intervaloSegundos?: boolean
   forceRefresh?: boolean
+  excedenteAutorizado?: boolean
+  excedenteAutorizadoEm?: boolean
+  consultasEstimadas?: boolean
+  consultasDisponiveisNoMomento?: boolean
+  consultasExcedentesEstimadas?: boolean
+  valorConsultaAdicionalCentavos?: boolean
+  valorExcedenteEstimadoCentavos?: boolean
   total?: boolean
   current?: boolean
   erro?: boolean
@@ -1042,6 +1324,13 @@ export type TarefaSelectScalar = {
   mesAnoFinal?: boolean
   intervaloSegundos?: boolean
   forceRefresh?: boolean
+  excedenteAutorizado?: boolean
+  excedenteAutorizadoEm?: boolean
+  consultasEstimadas?: boolean
+  consultasDisponiveisNoMomento?: boolean
+  consultasExcedentesEstimadas?: boolean
+  valorConsultaAdicionalCentavos?: boolean
+  valorExcedenteEstimadoCentavos?: boolean
   total?: boolean
   current?: boolean
   erro?: boolean
@@ -1051,7 +1340,7 @@ export type TarefaSelectScalar = {
   updatedAt?: boolean
 }
 
-export type TarefaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "clienteId" | "status" | "logradouro" | "numero" | "mesAnoInicio" | "mesAnoFinal" | "intervaloSegundos" | "forceRefresh" | "total" | "current" | "erro" | "createdAt" | "startedAt" | "completedAt" | "updatedAt", ExtArgs["result"]["tarefa"]>
+export type TarefaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "clienteId" | "status" | "logradouro" | "numero" | "mesAnoInicio" | "mesAnoFinal" | "intervaloSegundos" | "forceRefresh" | "excedenteAutorizado" | "excedenteAutorizadoEm" | "consultasEstimadas" | "consultasDisponiveisNoMomento" | "consultasExcedentesEstimadas" | "valorConsultaAdicionalCentavos" | "valorExcedenteEstimadoCentavos" | "total" | "current" | "erro" | "createdAt" | "startedAt" | "completedAt" | "updatedAt", ExtArgs["result"]["tarefa"]>
 export type TarefaInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
   resultados?: boolean | Prisma.Tarefa$resultadosArgs<ExtArgs>
@@ -1080,6 +1369,13 @@ export type $TarefaPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     mesAnoFinal: string
     intervaloSegundos: number
     forceRefresh: boolean
+    excedenteAutorizado: boolean
+    excedenteAutorizadoEm: Date | null
+    consultasEstimadas: number | null
+    consultasDisponiveisNoMomento: number | null
+    consultasExcedentesEstimadas: number | null
+    valorConsultaAdicionalCentavos: number | null
+    valorExcedenteEstimadoCentavos: number | null
     total: number
     current: number
     erro: string | null
@@ -1521,6 +1817,13 @@ export interface TarefaFieldRefs {
   readonly mesAnoFinal: Prisma.FieldRef<"Tarefa", 'String'>
   readonly intervaloSegundos: Prisma.FieldRef<"Tarefa", 'Int'>
   readonly forceRefresh: Prisma.FieldRef<"Tarefa", 'Boolean'>
+  readonly excedenteAutorizado: Prisma.FieldRef<"Tarefa", 'Boolean'>
+  readonly excedenteAutorizadoEm: Prisma.FieldRef<"Tarefa", 'DateTime'>
+  readonly consultasEstimadas: Prisma.FieldRef<"Tarefa", 'Int'>
+  readonly consultasDisponiveisNoMomento: Prisma.FieldRef<"Tarefa", 'Int'>
+  readonly consultasExcedentesEstimadas: Prisma.FieldRef<"Tarefa", 'Int'>
+  readonly valorConsultaAdicionalCentavos: Prisma.FieldRef<"Tarefa", 'Int'>
+  readonly valorExcedenteEstimadoCentavos: Prisma.FieldRef<"Tarefa", 'Int'>
   readonly total: Prisma.FieldRef<"Tarefa", 'Int'>
   readonly current: Prisma.FieldRef<"Tarefa", 'Int'>
   readonly erro: Prisma.FieldRef<"Tarefa", 'String'>

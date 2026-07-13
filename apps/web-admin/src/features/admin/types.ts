@@ -309,6 +309,8 @@ export type PlanoResumo = {
 	limiteMensalConsultas: number;
 	intervaloSegundos: number;
 	precoCentavos: number;
+	valorConsultaAdicionalCentavos: number;
+	limiteCorretores: number | null;
 	status: PlanoStatus;
 	createdAt: string;
 	updatedAt: string;
@@ -329,6 +331,8 @@ export type CriarPlanoRequest = {
 	limiteMensalConsultas: number;
 	intervaloSegundos: number;
 	precoCentavos: number;
+	valorConsultaAdicionalCentavos: number;
+	limiteCorretores: number | null;
 	status: PlanoStatus;
 };
 
@@ -357,6 +361,10 @@ export type ConsumoClienteResumo = {
 		consultasUsadas: number;
 		limiteMensal: number;
 		consultasRestantes: number;
+		consultasExcedentes: number;
+		valorConsultaAdicionalCentavos: number;
+		valorExcedenteCentavos: number;
+		totalEstimadoCentavos: number;
 		percentualUsado: number;
 		inicioMes: string;
 		fimMes: string;

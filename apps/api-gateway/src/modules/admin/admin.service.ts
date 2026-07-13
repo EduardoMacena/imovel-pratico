@@ -19,6 +19,7 @@ import type {
 } from "./admin.schemas.js";
 import { buildCsv } from "../../utils/csv.js";
 import { buildExcelBuffer } from "../../utils/excel.js";
+import { formatDateOnlyFromDate, parseDateOnlyToUtcNoon } from "../../utils/date-only.js";
 
 function gerarSlugBase(value: string) {
 	return value
@@ -98,6 +99,8 @@ export async function listarClientes() {
 					status: cliente.plano.status,
 				}
 			: null,
+		pagamentoStatus: cliente.pagamentoStatus,
+		pagamentoVenceEm: formatDateOnlyFromDate(cliente.pagamentoVenceEm),
 		createdAt: cliente.createdAt,
 		updatedAt: cliente.updatedAt,
 	}));
@@ -157,7 +160,7 @@ export async function atualizarCliente(
 			workerUrl: data.workerUrl,
 			planoId: data.planoId,
       pagamentoStatus: data.pagamentoStatus,
-      pagamentoVenceEm: data.pagamentoVenceEm ? new Date(data.pagamentoVenceEm) : null,
+      pagamentoVenceEm: data.pagamentoVenceEm === undefined ? undefined : parseDateOnlyToUtcNoon(data.pagamentoVenceEm),
 		},
 	});
 
@@ -622,6 +625,19 @@ export async function buscarTarefaAdminPorId(id: string) {
 			current: tarefa.current,
 			percentage,
 		},
+		excedente: {
+			autorizado: tarefa.excedenteAutorizado,
+			autorizadoEm: tarefa.excedenteAutorizadoEm,
+			consultasEstimadas: tarefa.consultasEstimadas,
+			consultasDisponiveisNoMomento:
+				tarefa.consultasDisponiveisNoMomento,
+			consultasExcedentesEstimadas:
+				tarefa.consultasExcedentesEstimadas,
+			valorConsultaAdicionalCentavos:
+				tarefa.valorConsultaAdicionalCentavos,
+			valorExcedenteEstimadoCentavos:
+				tarefa.valorExcedenteEstimadoCentavos,
+		},
 		erro: tarefa.erro,
 		resultados: tarefa.resultados.map((resultado) => ({
 			id: resultado.id,
@@ -894,193 +910,173 @@ export async function exportarResultadosTarefaAdminExcel(id: string) {
 	};
 }
 
+
 export async function listarPlanos() {
-	return prisma.plano.findMany({
-		orderBy: {
-			limiteMensalConsultas: "asc",
-		},
-	});
+  return prisma.plano.findMany({
+    orderBy: {
+      limiteMensalConsultas: "asc",
+    },
+  });
 }
 
 export async function buscarPlanoPorId(id: string) {
-	return prisma.plano.findUnique({
-		where: {
-			id,
-		},
-	});
+  return prisma.plano.findUnique({
+    where: {
+      id,
+    },
+  });
+}
+
+async function gerarSlugPlanoUnico(nome: string, slugInformado?: string) {
+  const base = gerarSlugBase(slugInformado || nome);
+
+  let slug = base;
+  let contador = 1;
+
+  while (true) {
+    const existente = await prisma.plano.findUnique({
+      where: {
+        slug,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!existente) {
+      return slug;
+    }
+
+    contador += 1;
+    slug = `${base}-${contador}`;
+  }
 }
 
 export async function criarPlano(data: CriarPlanoInput) {
-	const slug = await gerarSlugUnicoPlano(data.nome, data.slug);
+  const slug = await gerarSlugPlanoUnico(data.nome, data.slug);
 
-	return prisma.plano.create({
-		data: {
-			nome: data.nome,
-			slug,
-			descricao: data.descricao ?? null,
-			limiteMensalConsultas: data.limiteMensalConsultas,
-			intervaloSegundos: data.intervaloSegundos,
-			precoCentavos: data.precoCentavos,
-			status: data.status,
-		},
-	});
+  return prisma.plano.create({
+    data: {
+      nome: data.nome,
+      slug,
+      descricao: data.descricao ?? null,
+      limiteMensalConsultas: data.limiteMensalConsultas,
+      intervaloSegundos: data.intervaloSegundos,
+      precoCentavos: data.precoCentavos,
+      valorConsultaAdicionalCentavos:
+        data.valorConsultaAdicionalCentavos ?? 0,
+      limiteCorretores: data.limiteCorretores ?? null,
+      status: data.status,
+    },
+  });
 }
 
 export async function atualizarPlano(id: string, data: AtualizarPlanoInput) {
-	let slug = data.slug;
+  let slug = data.slug;
 
-	if (slug) {
-		const slugNormalizado = gerarSlugBase(slug);
+  if (slug) {
+    const slugNormalizado = gerarSlugBase(slug);
 
-		const existente = await prisma.plano.findFirst({
-			where: {
-				slug: slugNormalizado,
-				NOT: {
-					id,
-				},
-			},
-			select: {
-				id: true,
-			},
-		});
+    const existente = await prisma.plano.findFirst({
+      where: {
+        slug: slugNormalizado,
+        NOT: {
+          id,
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
 
-		if (existente) {
-			throw new Error("Já existe um plano com esse slug");
-		}
+    if (existente) {
+      throw new Error("Já existe um plano com esse slug");
+    }
 
-		slug = slugNormalizado;
-	}
+    slug = slugNormalizado;
+  }
 
-	return prisma.plano.update({
-		where: {
-			id,
-		},
-		data: {
-			nome: data.nome,
-			slug,
-			descricao: data.descricao,
-			limiteMensalConsultas: data.limiteMensalConsultas,
-			intervaloSegundos: data.intervaloSegundos,
-			precoCentavos: data.precoCentavos,
-			status: data.status,
-		},
-	});
+  return prisma.plano.update({
+    where: {
+      id,
+    },
+    data: {
+      nome: data.nome,
+      slug,
+      descricao: data.descricao,
+      limiteMensalConsultas: data.limiteMensalConsultas,
+      intervaloSegundos: data.intervaloSegundos,
+      precoCentavos: data.precoCentavos,
+      valorConsultaAdicionalCentavos:
+        data.valorConsultaAdicionalCentavos,
+      limiteCorretores: data.limiteCorretores,
+      status: data.status,
+    },
+  });
 }
 
-async function gerarSlugUnicoPlano(nome: string, slugInformado?: string) {
-	const base = gerarSlugBase(slugInformado || nome);
+function calcularPagamentoVencido(pagamentoVenceEm: Date | null) {
+  if (!pagamentoVenceEm) {
+    return false;
+  }
 
-	let slug = base;
-	let contador = 1;
+  const now = new Date();
+  const hojeUtcNoon = new Date(
+    Date.UTC(
+      now.getUTCFullYear(),
+      now.getUTCMonth(),
+      now.getUTCDate(),
+      12,
+      0,
+      0,
+      0
+    )
+  );
 
-	while (true) {
-		const existente = await prisma.plano.findUnique({
-			where: {
-				slug,
-			},
-			select: {
-				id: true,
-			},
-		});
+  return pagamentoVenceEm < hojeUtcNoon;
+}
 
-		if (!existente) {
-			return slug;
-		}
+function calcularResumoUsoAdmin({
+  consultasUsadas,
+  limiteMensal,
+  precoCentavos,
+  valorConsultaAdicionalCentavos,
+}: {
+  consultasUsadas: number;
+  limiteMensal: number;
+  precoCentavos: number;
+  valorConsultaAdicionalCentavos: number;
+}) {
+  const consultasRestantes = Math.max(limiteMensal - consultasUsadas, 0);
+  const consultasExcedentes = Math.max(consultasUsadas - limiteMensal, 0);
+  const valorExcedenteCentavos =
+    consultasExcedentes * valorConsultaAdicionalCentavos;
 
-		contador += 1;
-		slug = `${base}-${contador}`;
-	}
+  return {
+    consultasUsadas,
+    limiteMensal,
+    consultasRestantes,
+    consultasExcedentes,
+    valorConsultaAdicionalCentavos,
+    valorExcedenteCentavos,
+    totalEstimadoCentavos: precoCentavos + valorExcedenteCentavos,
+    percentualUsado:
+      limiteMensal > 0
+        ? Math.min(Math.round((consultasUsadas / limiteMensal) * 100), 100)
+        : 0,
+  };
 }
 
 function getInicioMesAtual() {
   const now = new Date();
 
-  return new Date(now.getFullYear(), now.getMonth(), 1);
+  return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1, 0, 0, 0, 0));
 }
 
 function getFimMesAtual() {
   const now = new Date();
 
-  return new Date(now.getFullYear(), now.getMonth() + 1, 1);
-}
-
-function calcularPercentualUsado(usadas: number, limite: number) {
-  if (limite <= 0) {
-    return 0;
-  }
-
-  return Math.min(Math.round((usadas / limite) * 100), 100);
-}
-
-function pagamentoEstaVencido(pagamentoVenceEm: Date | null) {
-  if (!pagamentoVenceEm) {
-    return false;
-  }
-
-  const hoje = new Date();
-
-  return pagamentoVenceEm < hoje;
-}
-
-async function contarConsultasUsadasNoMes(clienteId: string) {
-  const inicioMes = getInicioMesAtual();
-  const fimMes = getFimMesAtual();
-
-  return prisma.tarefaResultado.count({
-    where: {
-      tarefa: {
-        clienteId,
-      },
-      createdAt: {
-        gte: inicioMes,
-        lt: fimMes,
-      },
-    },
-  });
-}
-
-async function contarTarefasPorStatus(clienteId: string) {
-  const grupos = await prisma.tarefa.groupBy({
-    by: ["status"],
-    where: {
-      clienteId,
-    },
-    _count: {
-      _all: true,
-    },
-  });
-
-  const resumo = {
-    pending: 0,
-    processing: 0,
-    completed: 0,
-    error: 0,
-    canceled: 0,
-  };
-
-  for (const grupo of grupos) {
-    if (grupo.status === "PENDING") {
-      resumo.pending = grupo._count._all;
-    }
-
-    if (grupo.status === "PROCESSING") {
-      resumo.processing = grupo._count._all;
-    }
-
-    if (grupo.status === "COMPLETED") {
-      resumo.completed = grupo._count._all;
-    }
-
-    if (grupo.status === "ERROR") {
-      resumo.error = grupo._count._all;
-    }
-
-    if (grupo.status === "CANCELED") {
-      resumo.canceled = grupo._count._all;
-    }
-  }
-
-  return resumo;
+  return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1, 0, 0, 0, 0));
 }
 
 export async function buscarConsumoClienteAdmin(clienteId: string) {
@@ -1097,15 +1093,42 @@ export async function buscarConsumoClienteAdmin(clienteId: string) {
     return null;
   }
 
-  const consultasUsadas = await contarConsultasUsadasNoMes(cliente.id);
-  const tarefas = await contarTarefasPorStatus(cliente.id);
+  const inicioMes = getInicioMesAtual();
+  const fimMes = getFimMesAtual();
 
-  const limiteMensal = cliente.plano?.limiteMensalConsultas ?? 0;
-  const consultasRestantes = Math.max(limiteMensal - consultasUsadas, 0);
-  const percentualUsado = calcularPercentualUsado(
+  const [
     consultasUsadas,
-    limiteMensal
-  );
+    pending,
+    processing,
+    completed,
+    error,
+    canceled,
+  ] = await prisma.$transaction([
+    prisma.tarefaResultado.count({
+      where: {
+        tarefa: {
+          clienteId,
+        },
+        createdAt: {
+          gte: inicioMes,
+          lt: fimMes,
+        },
+      },
+    }),
+    prisma.tarefa.count({ where: { clienteId, status: "PENDING" } }),
+    prisma.tarefa.count({ where: { clienteId, status: "PROCESSING" } }),
+    prisma.tarefa.count({ where: { clienteId, status: "COMPLETED" } }),
+    prisma.tarefa.count({ where: { clienteId, status: "ERROR" } }),
+    prisma.tarefa.count({ where: { clienteId, status: "CANCELED" } }),
+  ]);
+
+  const limiteMensal =
+    cliente.plano?.limiteMensalConsultas ?? cliente.limiteMensalConsultas;
+
+  const precoCentavos = cliente.plano?.precoCentavos ?? 0;
+
+  const valorConsultaAdicionalCentavos =
+    cliente.plano?.valorConsultaAdicionalCentavos ?? 0;
 
   return {
     cliente: {
@@ -1114,39 +1137,37 @@ export async function buscarConsumoClienteAdmin(clienteId: string) {
       slug: cliente.slug,
       status: cliente.status,
       pagamentoStatus: cliente.pagamentoStatus,
-      pagamentoVenceEm: cliente.pagamentoVenceEm,
-      pagamentoVencido: pagamentoEstaVencido(cliente.pagamentoVenceEm),
+      pagamentoVenceEm: formatDateOnlyFromDate(cliente.pagamentoVenceEm),
+      pagamentoVencido: calcularPagamentoVencido(cliente.pagamentoVenceEm),
     },
-    plano: cliente.plano
-      ? {
-          id: cliente.plano.id,
-          nome: cliente.plano.nome,
-          slug: cliente.plano.slug,
-          limiteMensalConsultas: cliente.plano.limiteMensalConsultas,
-          intervaloSegundos: cliente.plano.intervaloSegundos,
-          precoCentavos: cliente.plano.precoCentavos,
-          status: cliente.plano.status,
-        }
-      : null,
+    plano: cliente.plano,
     uso: {
-      consultasUsadas,
-      limiteMensal,
-      consultasRestantes,
-      percentualUsado,
-      inicioMes: getInicioMesAtual(),
-      fimMes: getFimMesAtual(),
+      ...calcularResumoUsoAdmin({
+        consultasUsadas,
+        limiteMensal,
+        precoCentavos,
+        valorConsultaAdicionalCentavos,
+      }),
+      inicioMes,
+      fimMes,
     },
-    tarefas,
+    tarefas: {
+      pending,
+      processing,
+      completed,
+      error,
+      canceled,
+    },
   };
 }
 
 export async function listarConsumoClientesAdmin() {
   const clientes = await prisma.cliente.findMany({
-    include: {
-      plano: true,
-    },
     orderBy: {
       createdAt: "desc",
+    },
+    select: {
+      id: true,
     },
   });
 

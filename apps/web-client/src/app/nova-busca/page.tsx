@@ -16,6 +16,7 @@ import {
   criarTarefaBusca,
 } from "../../features/busca/api";
 import type {
+  CriarTarefaResponse,
   MinhaAssinaturaResponse,
   ProgressoTarefaResponse,
 } from "../../features/busca/types";
@@ -39,6 +40,14 @@ import {
   HeroTitle,
   InlineHint,
   MainGrid,
+  ModalActions,
+  ModalCard,
+  ModalEyebrow,
+  ModalGrid,
+  ModalInfo,
+  ModalOverlay,
+  ModalText,
+  ModalTitle,
   OperationCard,
   OperationCardBody,
   OperationCardHeader,
@@ -81,6 +90,8 @@ export default function NovaBuscaPage() {
   );
   const [isLoading, setIsLoading] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
+  const [avisoExcedente, setAvisoExcedente] =
+    useState<CriarTarefaResponse | null>(null);
 
   const isFinalizado = useMemo(() => {
     return (
@@ -94,8 +105,7 @@ export default function NovaBuscaPage() {
     !assinatura ||
     assinatura.cliente.pagamentoStatus !== "PAGO" ||
     assinatura.cliente.status !== "ATIVO" ||
-    assinatura.plano.status !== "ATIVO" ||
-    assinatura.uso.consultasRestantes === 0;
+    assinatura.plano.status !== "ATIVO";
 
   async function carregarAssinatura() {
     try {
@@ -109,9 +119,7 @@ export default function NovaBuscaPage() {
     }
   }
 
-  async function criarTarefa(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
+  async function criarTarefaComControleExcedente(confirmarExcedente = false) {
     setErro(null);
     setProgresso(null);
     setJobId(null);
@@ -121,9 +129,22 @@ export default function NovaBuscaPage() {
       const data = await criarTarefaBusca({
         logradouro,
         numero,
+        confirmarExcedente,
+        consultasEstimadas: assinatura?.uso.consultasRestantes === 0 ? 1 : 1,
       });
 
-      setJobId(data.jobId);
+      if (data.precisaConfirmarExcedente) {
+        setAvisoExcedente(data);
+        return;
+      }
+
+      setAvisoExcedente(null);
+
+      if (data.jobId) {
+        setJobId(data.jobId);
+      }
+
+      await carregarAssinatura();
     } catch (error) {
       setErro(
         error instanceof Error
@@ -133,6 +154,16 @@ export default function NovaBuscaPage() {
     } finally {
       setIsLoading(false);
     }
+  }
+
+  async function criarTarefa(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    await criarTarefaComControleExcedente(false);
+  }
+
+  async function confirmarBuscaComExcedente() {
+    await criarTarefaComControleExcedente(true);
   }
 
   useEffect(() => {
@@ -187,6 +218,86 @@ export default function NovaBuscaPage() {
   return (
     <>
       <AppHeader />
+
+
+      {avisoExcedente?.excedente && (
+        <ModalOverlay>
+          <ModalCard>
+            <ModalEyebrow>Atenção: excedente</ModalEyebrow>
+
+            <ModalTitle>Esta busca pode gerar cobrança adicional</ModalTitle>
+
+            <ModalText>
+              Esta busca pode ultrapassar o limite de consultas inclusas do seu
+              plano. Para continuar, confirme que está ciente da cobrança
+              adicional conforme o plano contratado.
+            </ModalText>
+
+            <ModalGrid>
+              <ModalInfo>
+                <strong>Consultas estimadas</strong>
+                <span>{avisoExcedente.excedente.consultasEstimadas}</span>
+              </ModalInfo>
+
+              <ModalInfo>
+                <strong>Consultas disponíveis</strong>
+                <span>
+                  {
+                    avisoExcedente.excedente
+                      .consultasDisponiveisNoMomento
+                  }
+                </span>
+              </ModalInfo>
+
+              <ModalInfo>
+                <strong>Consultas excedentes</strong>
+                <span>
+                  {
+                    avisoExcedente.excedente
+                      .consultasExcedentesEstimadas
+                  }
+                </span>
+              </ModalInfo>
+
+              <ModalInfo>
+                <strong>Valor estimado</strong>
+                <span>
+                  {new Intl.NumberFormat("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  }).format(
+                    avisoExcedente.excedente
+                      .valorExcedenteEstimadoCentavos / 100
+                  )}
+                </span>
+              </ModalInfo>
+            </ModalGrid>
+
+            <ModalText>
+              Ao continuar, você autoriza a criação da tarefa mesmo com
+              excedente e confirma ciência da cobrança adicional.
+            </ModalText>
+
+            <ModalActions>
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => setAvisoExcedente(null)}
+              >
+                Cancelar busca
+              </Button>
+
+              <Button
+                type="button"
+                disabled={isLoading}
+                onClick={confirmarBuscaComExcedente}
+              >
+                Continuar e autorizar excedente
+              </Button>
+            </ModalActions>
+          </ModalCard>
+        </ModalOverlay>
+      )}
 
       <PageShell>
         <PageContainer>
@@ -257,9 +368,8 @@ export default function NovaBuscaPage() {
                 <OperationCardBody>
                   {buscaBloqueada && assinatura && (
                     <ErrorBox>
-                      {assinatura.cliente.pagamentoStatus !== "PAGO"
-                        ? "Seu plano está pendente ou vencido. Regularize o pagamento para iniciar novas buscas."
-                        : "Você atingiu o limite mensal de consultas do seu plano."}
+                      Seu plano está pendente, vencido, inativo ou indisponível.
+                      Regularize a situação para iniciar novas buscas.
                     </ErrorBox>
                   )}
 

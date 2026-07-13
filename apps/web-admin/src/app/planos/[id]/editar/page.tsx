@@ -1,15 +1,14 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { AppHeader } from "../../../../components/AppHeader";
 import { Button } from "../../../../components/Button";
-import { Card } from "../../../../components/Card";
 import { Input } from "../../../../components/Input";
 import { Select } from "../../../../components/Select";
 import { StatusBadge } from "../../../../components/StatusBadge";
 import { atualizarPlano, buscarPlano } from "../../../../features/admin/api";
-import type { PlanoStatus } from "../../../../features/admin/types";
+import type { AtualizarPlanoRequest } from "../../../../features/admin/types";
 import { useRequireSuperAdmin } from "../../../../hooks/useRequireSuperAdmin";
 import {
   Actions,
@@ -20,6 +19,7 @@ import {
   Form,
   FormGrid,
   FormHeader,
+  FormPanel,
   FormSection,
   FormSectionTitle,
   Header,
@@ -36,29 +36,60 @@ import {
   Title,
 } from "./page.styles";
 
-function centsToReais(value: number) {
-  return String(value / 100);
+type PlanoStatus = NonNullable<AtualizarPlanoRequest["status"]>;
+
+function formatCurrencyFromCents(value?: number | null) {
+  if (value === null || value === undefined) {
+    return "-";
+  }
+
+  return new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  }).format(value / 100);
 }
 
-function toCents(value: string) {
-  const normalized = value.replace(",", ".");
-  return Math.round(Number(normalized || 0) * 100);
+function centsToMoneyInput(value?: number | null) {
+  if (value === null || value === undefined) {
+    return "";
+  }
+
+  return String(value / 100).replace(".", ",");
+}
+
+function moneyToCents(value: string) {
+  const normalized = value
+    .replace(/\s/g, "")
+    .replace("R$", "")
+    .replace(/\./g, "")
+    .replace(",", ".");
+
+  const numberValue = Number(normalized);
+
+  if (Number.isNaN(numberValue)) {
+    return 0;
+  }
+
+  return Math.round(numberValue * 100);
 }
 
 export default function EditarPlanoPage() {
   const { isCheckingAuth } = useRequireSuperAdmin();
   const params = useParams<{ id: string }>();
-  const router = useRouter();
 
   const planoId = params.id;
 
   const [nome, setNome] = useState("");
   const [slug, setSlug] = useState("");
   const [descricao, setDescricao] = useState("");
-  const [limiteMensalConsultas, setLimiteMensalConsultas] = useState(300);
-  const [intervaloSegundos, setIntervaloSegundos] = useState(90);
-  const [precoReais, setPrecoReais] = useState("0");
+  const [limiteMensalConsultas, setLimiteMensalConsultas] = useState("");
+  const [intervaloSegundos, setIntervaloSegundos] = useState("");
+  const [precoMensal, setPrecoMensal] = useState("");
+  const [valorConsultaAdicional, setValorConsultaAdicional] = useState("");
+  const [limiteCorretores, setLimiteCorretores] = useState("");
   const [status, setStatus] = useState<PlanoStatus>("ATIVO");
+
+  const [precoOriginalCentavos, setPrecoOriginalCentavos] = useState(0);
 
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -74,10 +105,15 @@ export default function EditarPlanoPage() {
       setNome(data.plano.nome);
       setSlug(data.plano.slug);
       setDescricao(data.plano.descricao ?? "");
-      setLimiteMensalConsultas(data.plano.limiteMensalConsultas);
-      setIntervaloSegundos(data.plano.intervaloSegundos);
-      setPrecoReais(centsToReais(data.plano.precoCentavos));
-      setStatus(data.plano.status);
+      setLimiteMensalConsultas(String(data.plano.limiteMensalConsultas));
+      setIntervaloSegundos(String(data.plano.intervaloSegundos));
+      setPrecoMensal(centsToMoneyInput(data.plano.precoCentavos));
+      setValorConsultaAdicional(
+        centsToMoneyInput(data.plano.valorConsultaAdicionalCentavos)
+      );
+      setLimiteCorretores(String(data.plano.limiteCorretores ?? ""));
+      setPrecoOriginalCentavos(data.plano.precoCentavos);
+      setStatus(data.plano.status as PlanoStatus);
     } catch (error) {
       setErro(
         error instanceof Error
@@ -100,13 +136,16 @@ export default function EditarPlanoPage() {
       await atualizarPlano(planoId, {
         nome,
         slug,
-        descricao: descricao.trim() || null,
-        limiteMensalConsultas,
-        intervaloSegundos,
-        precoCentavos: toCents(precoReais),
+        descricao: descricao.trim() || undefined,
+        limiteMensalConsultas: Number(limiteMensalConsultas),
+        intervaloSegundos: Number(intervaloSegundos),
+        precoCentavos: moneyToCents(precoMensal),
+        valorConsultaAdicionalCentavos: moneyToCents(valorConsultaAdicional),
+        limiteCorretores: limiteCorretores ? Number(limiteCorretores) : null,
         status,
       });
 
+      setPrecoOriginalCentavos(moneyToCents(precoMensal));
       setSucesso("Plano atualizado com sucesso.");
     } catch (error) {
       setErro(
@@ -139,13 +178,13 @@ export default function EditarPlanoPage() {
         <Header>
           <HeaderGrid>
             <HeaderContent>
-              <HeaderEyebrow>Gestão comercial</HeaderEyebrow>
+              <HeaderEyebrow>Configuração comercial</HeaderEyebrow>
 
               <Title>Editar plano</Title>
 
               <Subtitle>
-                Altere nome, slug, limite mensal, intervalo entre consultas,
-                preço e status comercial do plano.
+                Ajuste limite mensal, intervalo de processamento, preço e status
+                do plano comercial.
               </Subtitle>
             </HeaderContent>
 
@@ -158,34 +197,37 @@ export default function EditarPlanoPage() {
               </HeaderPanelItem>
 
               <HeaderPanelItem>
-                <HeaderPanelLabel>Limite mensal</HeaderPanelLabel>
+                <HeaderPanelLabel>Preço atual</HeaderPanelLabel>
                 <HeaderPanelValue>
-                  {limiteMensalConsultas} consultas
+                  {formatCurrencyFromCents(precoOriginalCentavos)}
                 </HeaderPanelValue>
               </HeaderPanelItem>
 
               <HeaderPanelItem>
-                <HeaderPanelLabel>Intervalo</HeaderPanelLabel>
-                <HeaderPanelValue>{intervaloSegundos}s</HeaderPanelValue>
+                <HeaderPanelLabel>Plano</HeaderPanelLabel>
+                <HeaderPanelValue>{nome || "-"}</HeaderPanelValue>
               </HeaderPanelItem>
             </HeaderPanel>
           </HeaderGrid>
         </Header>
 
+        {erro && <ErrorBox>{erro}</ErrorBox>}
+        {sucesso && <SuccessBox>{sucesso}</SuccessBox>}
+
         {isLoading && (
           <EmptyState>
             <EmptyStateTitle>Carregando plano...</EmptyStateTitle>
-            Estamos buscando as configurações comerciais deste plano.
+            Estamos buscando as regras comerciais deste plano.
           </EmptyState>
         )}
 
         {!isLoading && (
-          <Card>
+          <FormPanel>
             <FormHeader>
-              <FormSectionTitle>Configurações do plano</FormSectionTitle>
+              <FormSectionTitle>Dados do plano</FormSectionTitle>
               <Subtitle>
-                Atualize os dados comerciais e salve para aplicar as mudanças
-                aos próximos vínculos de clientes.
+                Altere os campos abaixo e salve para aplicar as novas regras aos
+                clientes vinculados.
               </Subtitle>
             </FormHeader>
 
@@ -213,61 +255,64 @@ export default function EditarPlanoPage() {
                   label="Descrição"
                   value={descricao}
                   onChange={event => setDescricao(event.target.value)}
-                  placeholder="Opcional"
+                  placeholder="Descrição comercial do plano"
                 />
               </FormSection>
 
               <FormSection>
-                <FormSectionTitle>Limites operacionais</FormSectionTitle>
+                <FormSectionTitle>Limites e operação</FormSectionTitle>
 
                 <FormGrid>
-                  <Select
+                  <Input
                     label="Limite mensal de consultas"
+                    type="number"
+                    min={1}
                     value={limiteMensalConsultas}
-                    onChange={event =>
-                      setLimiteMensalConsultas(Number(event.target.value))
-                    }
-                  >
-                    <option value={300}>300 consultas/mês</option>
-                    <option value={500}>500 consultas/mês</option>
-                    <option value={1000}>1000 consultas/mês</option>
-                    <option value={2000}>2000 consultas/mês</option>
-                  </Select>
+                    onChange={event => setLimiteMensalConsultas(event.target.value)}
+                    required
+                  />
 
                   <Input
                     label="Intervalo entre consultas em segundos"
                     type="number"
-                    min={40}
-                    max={300}
+                    min={1}
                     value={intervaloSegundos}
-                    onChange={event =>
-                      setIntervaloSegundos(Number(event.target.value))
-                    }
+                    onChange={event => setIntervaloSegundos(event.target.value)}
                     required
                   />
                 </FormGrid>
               </FormSection>
 
               <FormSection>
-                <FormSectionTitle>Comercial</FormSectionTitle>
+                <FormSectionTitle>Preço e status</FormSectionTitle>
 
                 <FormGrid>
                   <Input
                     label="Preço mensal em reais"
-                    type="number"
-                    min={0}
-                    step="0.01"
-                    value={precoReais}
-                    onChange={event => setPrecoReais(event.target.value)}
+                    value={precoMensal}
+                    onChange={event => setPrecoMensal(event.target.value)}
                     required
+                  />
+
+                  <Input
+                    label="Valor da consulta adicional"
+                    value={valorConsultaAdicional}
+                    onChange={event => setValorConsultaAdicional(event.target.value)}
+                    required
+                  />
+
+                  <Input
+                    label="Quantidade de corretores"
+                    type="number"
+                    min={1}
+                    value={limiteCorretores}
+                    onChange={event => setLimiteCorretores(event.target.value)}
                   />
 
                   <Select
                     label="Status"
                     value={status}
-                    onChange={event =>
-                      setStatus(event.target.value as PlanoStatus)
-                    }
+                    onChange={event => setStatus(event.target.value as PlanoStatus)}
                   >
                     <option value="ATIVO">ATIVO</option>
                     <option value="INATIVO">INATIVO</option>
@@ -275,24 +320,13 @@ export default function EditarPlanoPage() {
                 </FormGrid>
               </FormSection>
 
-              {erro && <ErrorBox>{erro}</ErrorBox>}
-              {sucesso && <SuccessBox>{sucesso}</SuccessBox>}
-
               <Actions>
                 <Button type="submit" disabled={isSaving}>
                   {isSaving ? "Salvando..." : "Salvar alterações"}
                 </Button>
-
-                <Button
-                  type="button"
-                  variant="ghost"
-                  onClick={() => router.push("/planos")}
-                >
-                  Voltar
-                </Button>
               </Actions>
             </Form>
-          </Card>
+          </FormPanel>
         )}
       </PageContainer>
     </>

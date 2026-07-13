@@ -39,7 +39,8 @@ function formatDate(value?: string | null) {
 
   return new Intl.DateTimeFormat("pt-BR", {
     dateStyle: "short",
-  }).format(new Date(value));
+    timeZone: "UTC",
+  }).format(new Date(`${value}T12:00:00.000Z`));
 }
 
 function getPagamentoVariant(consumo: ConsumoClienteResumo) {
@@ -104,6 +105,49 @@ export function ClientConsumptionCard({
           <Item>
             <Label>Preço do plano</Label>
             <Value>{formatCurrencyFromCents(consumo.plano?.precoCentavos)}</Value>
+          </Item>
+        )}
+
+        {!compact && (
+          <Item>
+            <Label>Consulta adicional</Label>
+            <Value>
+              {formatCurrencyFromCents(
+                consumo.plano?.valorConsultaAdicionalCentavos
+              )}
+            </Value>
+          </Item>
+        )}
+
+        {!compact && (
+          <Item>
+            <Label>Excedentes</Label>
+            <Value>{consumo.uso.consultasExcedentes}</Value>
+          </Item>
+        )}
+
+        {!compact && (
+          <Item>
+            <Label>Valor excedente</Label>
+            <Value>
+              {formatCurrencyFromCents(consumo.uso.valorExcedenteCentavos)}
+            </Value>
+          </Item>
+        )}
+
+        {!compact && (
+          <Item>
+            <Label>Total estimado</Label>
+            <Value>
+              {formatCurrencyFromCents(consumo.uso.totalEstimadoCentavos)}
+            </Value>
+          </Item>
+        )}
+
+        {!compact && (
+          <Item>
+            <Label>Corretores</Label>
+            <Value>{consumo.plano?.limiteCorretores ?? "-"}</Value>
           </Item>
         )}
 

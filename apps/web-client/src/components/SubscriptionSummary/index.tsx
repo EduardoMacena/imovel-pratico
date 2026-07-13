@@ -28,11 +28,19 @@ function formatDate(value?: string | null) {
 
   return new Intl.DateTimeFormat("pt-BR", {
     dateStyle: "short",
-  }).format(new Date(value));
+    timeZone: "UTC",
+  }).format(new Date(`${value}T12:00:00.000Z`));
 }
 
 function formatNumber(value: number) {
   return new Intl.NumberFormat("pt-BR").format(value);
+}
+
+function formatCurrencyFromCents(value: number) {
+  return new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  }).format(value / 100);
 }
 
 function calcularPercentualUsado(usadas: number, limite: number) {
@@ -98,6 +106,26 @@ export function SubscriptionSummary({ assinatura }: SubscriptionSummaryProps) {
         <Item>
           <Label>Restantes</Label>
           <Value>{formatNumber(assinatura.uso.consultasRestantes)}</Value>
+        </Item>
+
+        <Item>
+          <Label>Excedentes</Label>
+          <Value>{formatNumber(assinatura.uso.consultasExcedentes)}</Value>
+        </Item>
+
+        <Item>
+          <Label>Valor excedente</Label>
+          <Value>{formatCurrencyFromCents(assinatura.uso.valorExcedenteCentavos)}</Value>
+        </Item>
+
+        <Item>
+          <Label>Total estimado</Label>
+          <Value>{formatCurrencyFromCents(assinatura.uso.totalEstimadoCentavos)}</Value>
+        </Item>
+
+        <Item>
+          <Label>Corretores</Label>
+          <Value>{assinatura.plano.limiteCorretores ?? "-"}</Value>
         </Item>
 
         <Item $wide>

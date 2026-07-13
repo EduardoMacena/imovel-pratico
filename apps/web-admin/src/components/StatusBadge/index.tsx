@@ -3,10 +3,17 @@
 import { Badge } from "./styles";
 
 type StatusBadgeProps = {
-  status: string;
+  status?: string | null;
 };
 
-function getStatusConfig(status: string) {
+function getStatusConfig(status?: string | null) {
+  if (!status) {
+    return {
+      label: "Indefinido",
+      variant: "info" as const,
+    };
+  }
+
   const normalized = status.toUpperCase();
 
   if (
@@ -70,7 +77,7 @@ function getStatusConfig(status: string) {
   }
 
   return {
-    variant: "neutral" as const,
+    variant: "info" as const,
     label: status,
   };
 }

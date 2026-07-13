@@ -3,7 +3,10 @@ import { adicionarBuscaProprietariosNaFila } from "@imovel-pratico/queue";
 import type { BuscarProprietariosInput } from "./imovel.schemas.js";
 import { buildCsv } from "../../utils/csv.js";
 import { buildExcelBuffer } from "../../utils/excel.js";
-import { validarClientePodeCriarBusca } from "../assinatura/assinatura.service.js";
+import {
+  calcularResumoExcedenteBusca,
+  validarClientePodeCriarBusca,
+} from "../assinatura/assinatura.service.js";
 
 function getMesAnoInicioAtual() {
 	const now = new Date();
@@ -19,67 +22,128 @@ function getMesAnoFinalAtual() {
 }
 
 export async function criarTarefaBuscaProprietarios(
-	clienteId: string,
-	data: BuscarProprietariosInput
+  clienteId: string,
+  data: BuscarProprietariosInput
 ) {
-	const { cliente, plano, uso } = await validarClientePodeCriarBusca(clienteId);
+  const { cliente, plano, uso } = await validarClientePodeCriarBusca(clienteId);
 
-	if (!cliente) {
-		throw new Error("Cliente não encontrado");
-	}
+  if (!cliente) {
+    throw new Error("Cliente não encontrado");
+  }
 
-	const tarefa = await prisma.tarefa.create({
-		data: {
-			clienteId: cliente.id,
-			status: "PENDING",
-			logradouro: data.logradouro,
-			numero: data.numero,
-			mesAnoInicio: getMesAnoInicioAtual(),
-			mesAnoFinal: getMesAnoFinalAtual(),
-			intervaloSegundos: plano.intervaloSegundos,
-			forceRefresh: data.forceRefresh,
-		},
-	});
+  const excedente = calcularResumoExcedenteBusca({
+    consultasEstimadas: data.consultasEstimadas,
+    consultasRestantes: uso.consultasRestantes,
+    valorConsultaAdicionalCentavos: plano.valorConsultaAdicionalCentavos,
+  });
 
-	const job = await adicionarBuscaProprietariosNaFila({
-		tarefaId: tarefa.id,
-		clienteId: cliente.id,
-		logradouro: tarefa.logradouro,
-		numero: tarefa.numero,
-		mesAnoInicio: tarefa.mesAnoInicio,
-		mesAnoFinal: tarefa.mesAnoFinal,
-		intervaloSegundos: tarefa.intervaloSegundos,
-		forceRefresh: tarefa.forceRefresh,
-	});
+  if (
+    excedente.consultasExcedentesEstimadas > 0 &&
+    !data.confirmarExcedente
+  ) {
+    return {
+      precisaConfirmarExcedente: true,
+      message:
+        "Esta busca pode ultrapassar o limite de consultas inclusas do seu plano.",
+      cliente: {
+        id: cliente.id,
+        nome: cliente.nome,
+        slug: cliente.slug,
+      },
+      plano: {
+        id: plano.id,
+        nome: plano.nome,
+        limiteMensalConsultas: plano.limiteMensalConsultas,
+        intervaloSegundos: plano.intervaloSegundos,
+        precoCentavos: plano.precoCentavos,
+        valorConsultaAdicionalCentavos: plano.valorConsultaAdicionalCentavos,
+        limiteCorretores: plano.limiteCorretores,
+      },
+      uso,
+      excedente,
+    };
+  }
 
-	return {
-		jobId: job.id,
-		status: tarefa.status,
-		message: "Tarefa criada e adicionada na fila com sucesso",
-		cliente: {
-			id: cliente.id,
-			nome: cliente.nome,
-			slug: cliente.slug,
-		},
+  const tarefa = await prisma.tarefa.create({
+    data: {
+      clienteId: cliente.id,
+      status: "PENDING",
+      logradouro: data.logradouro,
+      numero: data.numero,
+      mesAnoInicio: getMesAnoInicioAtual(),
+      mesAnoFinal: getMesAnoFinalAtual(),
+      intervaloSegundos: plano.intervaloSegundos,
+      forceRefresh: data.forceRefresh,
+      excedenteAutorizado: excedente.consultasExcedentesEstimadas > 0,
+      excedenteAutorizadoEm:
+        excedente.consultasExcedentesEstimadas > 0 ? new Date() : null,
+      consultasEstimadas: excedente.consultasEstimadas,
+      consultasDisponiveisNoMomento:
+        excedente.consultasDisponiveisNoMomento,
+      consultasExcedentesEstimadas:
+        excedente.consultasExcedentesEstimadas,
+      valorConsultaAdicionalCentavos:
+        excedente.valorConsultaAdicionalCentavos,
+      valorExcedenteEstimadoCentavos:
+        excedente.valorExcedenteEstimadoCentavos,
+    },
+  });
+
+  const job = await adicionarBuscaProprietariosNaFila({
+    tarefaId: tarefa.id,
+    clienteId: cliente.id,
+    logradouro: tarefa.logradouro,
+    numero: tarefa.numero,
+    mesAnoInicio: tarefa.mesAnoInicio,
+    mesAnoFinal: tarefa.mesAnoFinal,
+    intervaloSegundos: tarefa.intervaloSegundos,
+    forceRefresh: tarefa.forceRefresh,
+  });
+
+  return {
+    precisaConfirmarExcedente: false,
+    jobId: job.id,
+    status: tarefa.status,
+    message: "Tarefa criada e adicionada na fila com sucesso",
+    cliente: {
+      id: cliente.id,
+      nome: cliente.nome,
+      slug: cliente.slug,
+    },
     plano: {
       id: plano.id,
       nome: plano.nome,
       limiteMensalConsultas: plano.limiteMensalConsultas,
       intervaloSegundos: plano.intervaloSegundos,
+      precoCentavos: plano.precoCentavos,
+      valorConsultaAdicionalCentavos: plano.valorConsultaAdicionalCentavos,
+      limiteCorretores: plano.limiteCorretores,
     },
     uso,
-		tarefa: {
-			id: tarefa.id,
-			status: tarefa.status,
-			logradouro: tarefa.logradouro,
-			numero: tarefa.numero,
-			mesAnoInicio: tarefa.mesAnoInicio,
-			mesAnoFinal: tarefa.mesAnoFinal,
-			intervaloSegundos: tarefa.intervaloSegundos,
-			forceRefresh: tarefa.forceRefresh,
-			createdAt: tarefa.createdAt,
-		},
-	};
+    excedente,
+    tarefa: {
+      id: tarefa.id,
+      status: tarefa.status,
+      logradouro: tarefa.logradouro,
+      numero: tarefa.numero,
+      mesAnoInicio: tarefa.mesAnoInicio,
+      mesAnoFinal: tarefa.mesAnoFinal,
+      intervaloSegundos: tarefa.intervaloSegundos,
+      forceRefresh: tarefa.forceRefresh,
+      excedenteAutorizado: tarefa.excedenteAutorizado,
+      excedenteAutorizadoEm: tarefa.excedenteAutorizadoEm,
+      consultasEstimadas: tarefa.consultasEstimadas,
+      consultasDisponiveisNoMomento:
+        tarefa.consultasDisponiveisNoMomento,
+      consultasExcedentesEstimadas:
+        tarefa.consultasExcedentesEstimadas,
+      valorConsultaAdicionalCentavos:
+        tarefa.valorConsultaAdicionalCentavos,
+      valorExcedenteEstimadoCentavos:
+        tarefa.valorExcedenteEstimadoCentavos,
+      createdAt: tarefa.createdAt,
+    },
+  };
 }
 
 export async function buscarTarefaPorId(clienteId: string, id: string) {
@@ -151,6 +215,19 @@ export async function buscarProgressoTarefaPorId(
 			total: tarefa.total,
 			current: tarefa.current,
 			percentage,
+		},
+		excedente: {
+			autorizado: tarefa.excedenteAutorizado,
+			autorizadoEm: tarefa.excedenteAutorizadoEm,
+			consultasEstimadas: tarefa.consultasEstimadas,
+			consultasDisponiveisNoMomento:
+				tarefa.consultasDisponiveisNoMomento,
+			consultasExcedentesEstimadas:
+				tarefa.consultasExcedentesEstimadas,
+			valorConsultaAdicionalCentavos:
+				tarefa.valorConsultaAdicionalCentavos,
+			valorExcedenteEstimadoCentavos:
+				tarefa.valorExcedenteEstimadoCentavos,
 		},
 		erro: tarefa.erro,
 		resultados: tarefa.resultados.map((resultado) => ({

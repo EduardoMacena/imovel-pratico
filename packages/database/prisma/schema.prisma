@@ -63,9 +63,11 @@ model Plano {
 
   descricao String?
 
-  limiteMensalConsultas Int
-  intervaloSegundos     Int
-  precoCentavos         Int
+  limiteMensalConsultas          Int
+  intervaloSegundos              Int
+  precoCentavos                  Int
+  valorConsultaAdicionalCentavos Int @default(0)
+  limiteCorretores               Int?
 
   status PlanoStatus @default(ATIVO)
 
@@ -144,6 +146,14 @@ model Tarefa {
   mesAnoFinal       String
   intervaloSegundos Int     @default(30)
   forceRefresh      Boolean @default(false)
+
+  excedenteAutorizado              Boolean   @default(false)
+  excedenteAutorizadoEm            DateTime?
+  consultasEstimadas               Int?
+  consultasDisponiveisNoMomento    Int?
+  consultasExcedentesEstimadas     Int?
+  valorConsultaAdicionalCentavos   Int?
+  valorExcedenteEstimadoCentavos   Int?
 
   total   Int @default(0)
   current Int @default(0)

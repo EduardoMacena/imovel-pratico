@@ -366,3 +366,97 @@ export const SidebarListItem = styled.li`
     box-shadow: 0 0 0 4px ${({ theme }) => theme.colors.accentSoft};
   }
 `;
+
+export const ModalOverlay = styled.div`
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: ${({ theme }) => theme.spacing.lg};
+  background: rgba(7, 25, 39, 0.62);
+  backdrop-filter: blur(8px);
+`;
+
+export const ModalCard = styled.div`
+  width: min(560px, 100%);
+  border-radius: 28px;
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  box-shadow: ${({ theme }) => theme.shadows.cardHover};
+  padding: ${({ theme }) => theme.spacing.xl};
+`;
+
+export const ModalEyebrow = styled.div`
+  width: fit-content;
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+  padding: 7px 11px;
+  border-radius: ${({ theme }) => theme.radii.pill};
+  background: ${({ theme }) => theme.colors.warningBg};
+  color: ${({ theme }) => theme.colors.warning};
+  border: 1px solid ${({ theme }) => theme.colors.warningBorder};
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+`;
+
+export const ModalTitle = styled.h2`
+  margin: 0;
+  color: ${({ theme }) => theme.colors.primary};
+  font-size: 28px;
+  line-height: 1.05;
+  letter-spacing: -0.05em;
+`;
+
+export const ModalText = styled.p`
+  color: ${({ theme }) => theme.colors.textMuted};
+  line-height: 1.65;
+  margin: ${({ theme }) => theme.spacing.md} 0;
+`;
+
+export const ModalGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: ${({ theme }) => theme.spacing.sm};
+  margin: ${({ theme }) => theme.spacing.lg} 0;
+
+  @media (max-width: 520px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+export const ModalInfo = styled.div`
+  min-width: 0;
+  padding: ${({ theme }) => theme.spacing.md};
+  border-radius: 18px;
+  background: ${({ theme }) => theme.colors.surfaceMuted};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+
+  strong {
+    display: block;
+    color: ${({ theme }) => theme.colors.textMuted};
+    font-size: 12px;
+    margin-bottom: 5px;
+  }
+
+  span {
+    display: block;
+    color: ${({ theme }) => theme.colors.primary};
+    font-size: 17px;
+    font-weight: 750;
+  }
+`;
+
+export const ModalActions = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: ${({ theme }) => theme.spacing.sm};
+
+  @media (max-width: 520px) {
+    button {
+      width: 100%;
+    }
+  }
+`;

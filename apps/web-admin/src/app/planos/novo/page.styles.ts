@@ -32,17 +32,10 @@ export const BackLink = styled(Link)`
   box-shadow:
     0 10px 24px rgba(15, 23, 42, 0.05),
     inset 0 1px 0 rgba(255, 255, 255, 0.78);
-  transition:
-    transform 0.18s ease,
-    background 0.18s ease,
-    border-color 0.18s ease,
-    box-shadow 0.18s ease;
 
   &:hover {
-    transform: translateY(-1px);
     background: ${({ theme }) => theme.colors.surface};
     border-color: ${({ theme }) => theme.colors.borderStrong};
-    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
   }
 `;
 
@@ -75,7 +68,7 @@ export const HeaderContent = styled.div`
     radial-gradient(circle at 88% 12%, rgba(15, 76, 92, 0.32), transparent 34%),
     linear-gradient(135deg, ${({ theme }) => theme.colors.primary}, #071927);
   color: ${({ theme }) => theme.colors.textInverted};
-  box-shadow: ${({ theme }) => theme.shadows.dark};
+  box-shadow: ${({ theme }) => theme.shadows.cardHover};
 
   &::after {
     content: "";
@@ -128,8 +121,6 @@ export const Subtitle = styled.p`
     z-index: 1;
     margin-top: ${({ theme }) => theme.spacing.md};
     color: rgba(255, 255, 255, 0.72);
-    font-size: 15px;
-    line-height: 1.68;
   }
 `;
 
@@ -144,7 +135,7 @@ export const HeaderPanel = styled.aside`
     radial-gradient(circle at 16% 14%, rgba(200, 164, 93, 0.18), transparent 30%),
     ${({ theme }) => theme.colors.surfaceDark};
   color: ${({ theme }) => theme.colors.textInverted};
-  box-shadow: ${({ theme }) => theme.shadows.dark};
+  box-shadow: ${({ theme }) => theme.shadows.cardHover};
   border: 1px solid rgba(255, 255, 255, 0.12);
 `;
 
@@ -241,8 +232,6 @@ export const Actions = styled.div`
   padding-top: ${({ theme }) => theme.spacing.sm};
 
   @media (max-width: 560px) {
-    justify-content: stretch;
-
     button,
     a {
       width: 100%;
@@ -268,24 +257,4 @@ export const SuccessBox = styled.div`
   color: ${({ theme }) => theme.colors.success};
   border: 1px solid ${({ theme }) => theme.colors.successBorder};
   line-height: 1.6;
-`;
-
-export const EmptyState = styled.div`
-  padding: ${({ theme }) => theme.spacing.xl};
-  border: 1px dashed ${({ theme }) => theme.colors.borderStrong};
-  border-radius: 28px;
-  text-align: center;
-  color: ${({ theme }) => theme.colors.textMuted};
-  background:
-    radial-gradient(circle at top, rgba(200, 164, 93, 0.10), transparent 34%),
-    ${({ theme }) => theme.colors.surface};
-  box-shadow: ${({ theme }) => theme.shadows.card};
-  line-height: 1.6;
-`;
-
-export const EmptyStateTitle = styled.strong`
-  display: block;
-  margin-bottom: ${({ theme }) => theme.spacing.sm};
-  color: ${({ theme }) => theme.colors.primary};
-  font-size: 18px;
 `;
