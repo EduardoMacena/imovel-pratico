@@ -10,6 +10,7 @@ import {
   cancelarTarefaAdmin,
   exportarResultadosTarefaAdmin,
   exportarResultadosTarefaAdminExcel,
+  exportarResultadosTarefaAdminPdf,
   reprocessarTarefaAdmin,
 } from "../../../features/admin/api";
 import type { BuscarTarefaAdminResponse } from "../../../features/admin/types";
@@ -118,6 +119,7 @@ export default function DetalheTarefaPage() {
 
   const [isExporting, setIsExporting] = useState(false);
   const [isExportingExcel, setIsExportingExcel] = useState(false);
+  const [isExportingPdf, setIsExportingPdf] = useState(false);
 
   const podeCancelar = useMemo(() => {
     return tarefa?.status === "PENDING" || tarefa?.status === "PROCESSING";
@@ -147,6 +149,26 @@ export default function DetalheTarefaPage() {
       );
     } finally {
       setIsExportingExcel(false);
+    }
+  }
+
+  async function handleExportarPdf() {
+    setIsExportingPdf(true);
+    setErro(null);
+    setSucesso(null);
+
+    try {
+      await exportarResultadosTarefaAdminPdf(tarefaId);
+
+      setSucesso("PDF exportado com sucesso.");
+    } catch (error) {
+      setErro(
+        error instanceof Error
+          ? error.message
+          : "Erro desconhecido ao exportar PDF"
+      );
+    } finally {
+      setIsExportingPdf(false);
     }
   }
 
@@ -324,6 +346,14 @@ export default function DetalheTarefaPage() {
                       onClick={handleExportarExcel}
                     >
                       {isExportingExcel ? "Exportando..." : "Exportar Excel"}
+                    </ActionButton>
+
+                    <ActionButton
+                      type="button"
+                      disabled={isExportingPdf}
+                      onClick={handleExportarPdf}
+                    >
+                      {isExportingPdf ? "Exportando..." : "Exportar PDF"}
                     </ActionButton>
 
                     {podeCancelar && (

@@ -201,35 +201,47 @@ const features = [
 
 const plans = [
   {
-    name: "Plano 500",
-    description: "Para imobiliárias que querem iniciar com uma operação organizada.",
-    limit: "500 consultas",
-    interval: "70s",
-    price: "R$ 1.500,00",
+    name: "Start",
+    description: "Para imobiliárias pequenas que querem iniciar a captação ativa com organização.",
+    limit: "250 consultas inclusas",
+    brokers: "Até 6 corretores",
+    overage: "R$ 2,90 por consulta adicional",
+    price: "R$ 597/mês",
     badge: "Entrada estratégica",
-    icon: "500",
+    icon: "S",
   },
   {
-    name: "Plano 1000",
-    description: "Para equipes que precisam de mais volume e velocidade comercial.",
-    limit: "1000 consultas",
-    interval: "50s",
-    price: "R$ 2.500,00",
+    name: "Growth",
+    description: "Para equipes em crescimento que precisam de mais volume comercial todos os meses.",
+    limit: "500 consultas inclusas",
+    brokers: "Até 12 corretores",
+    overage: "R$ 2,50 por consulta adicional",
+    price: "R$ 897/mês",
+    badge: "Crescimento",
+    icon: "G",
+  },
+  {
+    name: "Business",
+    description: "Para operações estruturadas que querem previsibilidade, escala e controle de consumo.",
+    limit: "750 consultas inclusas",
+    brokers: "Até 18 corretores",
+    overage: "R$ 2,10 por consulta adicional",
+    price: "R$ 1.197/mês",
     badge: "Mais escolhido",
-    icon: "1K",
+    icon: "B",
     featured: true,
   },
   {
-    name: "Plano 2000",
-    description: "Para operações de alto volume, escala e prospecção intensa.",
-    limit: "2000 consultas",
-    interval: "40s",
-    price: "R$ 5.900,00",
+    name: "Premium",
+    description: "Para imobiliárias de alto volume com equipe maior e captação comercial intensa.",
+    limit: "1.000 consultas inclusas",
+    brokers: "Até 26 corretores",
+    overage: "R$ 1,80 por consulta adicional",
+    price: "R$ 1.497/mês",
     badge: "Alta performance",
-    icon: "2K",
+    icon: "P",
   },
-];
-
+]
 const audiences = [
   {
     title: "Imobiliárias de alto padrão",
@@ -602,8 +614,8 @@ export default function HomePage() {
 
             <p>
               Escolha a estrutura ideal para sua equipe. Cada plano combina
-              volume mensal, cadência de processamento e posicionamento premium
-              para transformar captação em um processo comercial previsível.
+              consultas mensais inclusas, quantidade de corretores e cobrança
+              transparente por consulta adicional.
             </p>
           </PlanContent>
 
@@ -625,13 +637,18 @@ export default function HomePage() {
                     </PlanMetaItem>
 
                     <PlanMetaItem>
-                      <span>Intervalo</span>
-                      <strong>{plan.interval}</strong>
+                      <span>Corretores</span>
+                      <strong>{plan.brokers}</strong>
+                    </PlanMetaItem>
+
+                    <PlanMetaItem>
+                      <span>Adicional</span>
+                      <strong>{plan.overage}</strong>
                     </PlanMetaItem>
                   </PlanMeta>
 
                   <PlanPrice>
-                    <span>Preço</span>
+                    <span>Mensalidade</span>
                     <strong>{plan.price}</strong>
                   </PlanPrice>
 
