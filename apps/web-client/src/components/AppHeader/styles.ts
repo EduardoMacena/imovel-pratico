@@ -48,25 +48,18 @@ export const BrandText = styled.span`
   }
 `;
 
-export const LogoMark = styled.span`
-  width: 40px;
-  height: 40px;
+export const LogoMark = styled.img`
+  width: 148px;
+  max-width: 42vw;
+  height: auto;
+  max-height: 52px;
+  display: block;
   flex: 0 0 auto;
-  display: inline-grid;
-  place-items: center;
-  border-radius: ${({ theme }) => theme.radii.md};
-  background:
-    radial-gradient(circle at 30% 20%, rgba(200, 164, 93, 0.45), transparent 26%),
-    linear-gradient(
-      135deg,
-      ${({ theme }) => theme.colors.primary},
-      ${({ theme }) => theme.colors.secondary}
-    );
-  color: ${({ theme }) => theme.colors.accent};
-  box-shadow: ${({ theme }) => theme.shadows.button};
-  font-size: 13px;
-  font-weight: 950;
-  letter-spacing: -0.04em;
+  object-fit: contain;
+
+  @media (max-width: 420px) {
+    width: 126px;
+  }
 `;
 
 export const Nav = styled.nav`

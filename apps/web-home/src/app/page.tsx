@@ -322,8 +322,7 @@ export default function HomePage() {
       <FloatingNav>
         <NavInner>
           <Brand href="#">
-            <BrandMark>IP</BrandMark>
-            Imóvel Prático
+            <BrandMark src="/logo-imovel-pratico.svg" alt="Imóvel Prático" />
           </Brand>
 
           <NavLinks>
@@ -727,8 +726,6 @@ export default function HomePage() {
           </PrimaryButton>
 
           <SecondaryButton href={webClientUrl}>Acessar sistema</SecondaryButton>
-
-          <SecondaryButton href={webAdminUrl}>Área administrativa</SecondaryButton>
         </CtaActions>
       </FinalCta>
 

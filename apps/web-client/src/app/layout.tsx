@@ -5,6 +5,18 @@ import { StyledComponentsRegistry } from "./registry";
 export const metadata: Metadata = {
 	title: "Imóvel Prático",
 	description: "Busque proprietários de imóveis com rapidez e organização",
+  icons: {
+    icon: [
+      {
+        url: "/favicon-dark.svg",
+        media: "(prefers-color-scheme: light)",
+      },
+      {
+        url: "/favicon-light.svg",
+        media: "(prefers-color-scheme: dark)",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({

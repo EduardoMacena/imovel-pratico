@@ -14,6 +14,18 @@ export const metadata: Metadata = {
     "automação imobiliária",
     "Imóvel Prático",
   ],
+  icons: {
+    icon: [
+      {
+        url: "/favicon-dark.svg",
+        media: "(prefers-color-scheme: light)",
+      },
+      {
+        url: "/favicon-light.svg",
+        media: "(prefers-color-scheme: dark)",
+      },
+    ],
+  },
 };
 
 type RootLayoutProps = {

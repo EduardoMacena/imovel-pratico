@@ -5,6 +5,18 @@ import { StyledComponentsRegistry } from "./registry";
 export const metadata: Metadata = {
 	title: "Imóvel Prático Admin",
 	description: "Painel administrativo do Imóvel Prático",
+  icons: {
+    icon: [
+      {
+        url: "/favicon-dark.svg",
+        media: "(prefers-color-scheme: light)",
+      },
+      {
+        url: "/favicon-light.svg",
+        media: "(prefers-color-scheme: dark)",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({

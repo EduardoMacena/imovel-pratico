@@ -5,7 +5,6 @@ import { removeAuthToken } from "../../lib/auth-storage";
 import { Button } from "../Button";
 import {
   Brand,
-  BrandText,
   HeaderActions,
   HeaderInner,
   HeaderWrapper,
@@ -27,8 +26,7 @@ export function AppHeader() {
     <HeaderWrapper>
       <HeaderInner>
         <Brand href="/dashboard">
-          <LogoMark>IP</LogoMark>
-          <BrandText>Imóvel Prático</BrandText>
+          <LogoMark src="/logo-imovel-pratico.svg" alt="Imóvel Prático" />
         </Brand>
 
         <Nav>
