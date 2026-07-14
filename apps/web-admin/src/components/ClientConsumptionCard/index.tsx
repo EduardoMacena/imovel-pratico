@@ -1,6 +1,7 @@
 "use client";
 
 import type { ConsumoClienteResumo } from "../../features/admin/types";
+import { formatCurrencyFromCents, formatDateOnlyBR, formatNumberBR } from "../../lib/formatters";
 import {
   Badge,
   Grid,
@@ -20,17 +21,6 @@ type ClientConsumptionCardProps = {
   consumo: ConsumoClienteResumo;
   compact?: boolean;
 };
-
-function formatCurrencyFromCents(value?: number | null) {
-  if (value === null || value === undefined) {
-    return "-";
-  }
-
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(value / 100);
-}
 
 function formatDate(value?: string | null) {
   if (!value) {

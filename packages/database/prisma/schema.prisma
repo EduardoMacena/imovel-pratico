@@ -58,9 +58,16 @@ enum PlanoStatus {
 
 enum BuscaPreviaStatus {
   PENDENTE
+  PROCESSANDO
+  AGUARDANDO_INTERVALO
+  CONSULTANDO_REGISTRO
+  PRONTA
+  AGUARDANDO_AUTORIZACAO_EXCEDENTE
+  AUTORIZANDO
   CONFIRMADA
-  EXPIRADA
   CANCELADA
+  EXPIRADA
+  ERRO
 }
 
 enum FaturaStatus {
@@ -205,13 +212,13 @@ model BuscaPrevia {
   clienteId String
   cliente   Cliente @relation(fields: [clienteId], references: [id], onDelete: Cascade)
 
-  status BuscaPreviaStatus @default(PENDENTE)
+  status BuscaPreviaStatus @default(PROCESSANDO)
 
   logradouro String
   numero     String
 
-  quantidadeRegistros Int
-  registros            Json
+  quantidadeRegistros Int @default(0)
+  registros            Json @default("[]")
 
   consultasDisponiveisNoMomento  Int
   consultasExcedentesEstimadas   Int

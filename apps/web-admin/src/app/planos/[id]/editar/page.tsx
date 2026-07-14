@@ -10,6 +10,33 @@ import { StatusBadge } from "../../../../components/StatusBadge";
 import { atualizarPlano, buscarPlano } from "../../../../features/admin/api";
 import type { AtualizarPlanoRequest } from "../../../../features/admin/types";
 import { useRequireSuperAdmin } from "../../../../hooks/useRequireSuperAdmin";
+
+
+function formatMoneyInput(value: string) {
+  const digits = value.replace(/\D/g, "");
+
+  if (!digits) {
+    return "";
+  }
+
+  return new Intl.NumberFormat("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(Number(digits) / 100);
+}
+
+function moneyToCents(value: string) {
+  const digits = value.replace(/\D/g, "");
+
+  return Number(digits || 0);
+}
+
+function centsToMoneyInput(value?: number | null) {
+  return new Intl.NumberFormat("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(Number(value ?? 0) / 100);
+}
 import {
   Actions,
   BackLink,
@@ -47,30 +74,6 @@ function formatCurrencyFromCents(value?: number | null) {
     style: "currency",
     currency: "BRL",
   }).format(value / 100);
-}
-
-function centsToMoneyInput(value?: number | null) {
-  if (value === null || value === undefined) {
-    return "";
-  }
-
-  return String(value / 100).replace(".", ",");
-}
-
-function moneyToCents(value: string) {
-  const normalized = value
-    .replace(/\s/g, "")
-    .replace("R$", "")
-    .replace(/\./g, "")
-    .replace(",", ".");
-
-  const numberValue = Number(normalized);
-
-  if (Number.isNaN(numberValue)) {
-    return 0;
-  }
-
-  return Math.round(numberValue * 100);
 }
 
 export default function EditarPlanoPage() {
@@ -290,14 +293,16 @@ export default function EditarPlanoPage() {
                   <Input
                     label="Preço mensal em reais"
                     value={precoMensal}
-                    onChange={event => setPrecoMensal(event.target.value)}
+                    onChange={event => setPrecoMensal(formatMoneyInput(event.target.value))}
                     required
                   />
 
                   <Input
                     label="Valor da consulta adicional"
                     value={valorConsultaAdicional}
-                    onChange={event => setValorConsultaAdicional(event.target.value)}
+                    onChange={event =>
+                  setValorConsultaAdicional(formatMoneyInput(event.target.value))
+                }
                     required
                   />
 

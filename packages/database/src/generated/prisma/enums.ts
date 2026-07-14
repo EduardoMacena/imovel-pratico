@@ -77,9 +77,16 @@ export type PlanoStatus = (typeof PlanoStatus)[keyof typeof PlanoStatus]
 
 export const BuscaPreviaStatus = {
   PENDENTE: 'PENDENTE',
+  PROCESSANDO: 'PROCESSANDO',
+  AGUARDANDO_INTERVALO: 'AGUARDANDO_INTERVALO',
+  CONSULTANDO_REGISTRO: 'CONSULTANDO_REGISTRO',
+  PRONTA: 'PRONTA',
+  AGUARDANDO_AUTORIZACAO_EXCEDENTE: 'AGUARDANDO_AUTORIZACAO_EXCEDENTE',
+  AUTORIZANDO: 'AUTORIZANDO',
   CONFIRMADA: 'CONFIRMADA',
+  CANCELADA: 'CANCELADA',
   EXPIRADA: 'EXPIRADA',
-  CANCELADA: 'CANCELADA'
+  ERRO: 'ERRO'
 } as const
 
 export type BuscaPreviaStatus = (typeof BuscaPreviaStatus)[keyof typeof BuscaPreviaStatus]

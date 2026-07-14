@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { AppHeader } from "../components/AppHeader";
 import { StatusBadge } from "../components/StatusBadge";
 import { useRequireAuth } from "../hooks/useRequireAuth";
@@ -106,6 +107,7 @@ function formatDate(value: string | null) {
 
 export default function DashboardPage() {
   const { isCheckingAuth } = useRequireAuth();
+  const router = useRouter();
 
   const [nomeUsuario, setNomeUsuario] = useState("sua equipe");
   const [assinatura, setAssinatura] = useState<MinhaAssinaturaResponse | null>(
@@ -175,10 +177,21 @@ export default function DashboardPage() {
   const tarefasRecentes = tarefas.slice(0, 5);
 
   const operacaoAtiva =
-    assinatura?.cliente.pagamentoStatus === "PAGO" &&
+    Boolean(assinatura) &&
     assinatura?.cliente.status === "ATIVO" &&
-    assinatura?.plano.status === "ATIVO" &&
-    assinatura?.uso.consultasRestantes > 0;
+    assinatura?.cliente.pagamentoStatus === "PAGO" &&
+    assinatura?.plano.status === "ATIVO";
+
+  const estaEmExcedente =
+    operacaoAtiva &&
+    consultasRestantes <= 0 &&
+    consultasUsadas >= limiteMensal;
+
+  const statusOperacao = !operacaoAtiva
+    ? "Bloqueado"
+    : estaEmExcedente
+      ? "Excedente ativo"
+      : "Ativo";
 
   async function carregarDashboard() {
     try {
@@ -255,13 +268,13 @@ export default function DashboardPage() {
                 </div>
 
                 <StatusPill $active={operacaoAtiva}>
-                  {operacaoAtiva ? "Ativo" : "Bloqueado"}
+                  {statusOperacao}
                 </StatusPill>
               </PanelHeader>
 
               <UsageMetricGrid>
                 <UsageMetric>
-                  <span>Restantes</span>
+                  <span>Inclusas restantes</span>
                   <strong>{formatNumber(consultasRestantes)}</strong>
                 </UsageMetric>
 
@@ -282,7 +295,7 @@ export default function DashboardPage() {
 
               <UsageFooter>
                 {formatNumber(consultasUsadas)} de {formatNumber(limiteMensal)}{" "}
-                consultas mensais · intervalo{" "}
+                consultas inclusas · intervalo{" "}
                 {plano?.intervaloSegundos ? `${plano.intervaloSegundos}s` : "-"}
               </UsageFooter>
             </UsageCard>

@@ -130,6 +130,13 @@ export function exportarResultadosTarefaAdminExcel(tarefaId: string) {
 	);
 }
 
+export function exportarResultadosTarefaAdminPdf(tarefaId: string) {
+  return apiDownload(
+    `/admin/tarefas/${tarefaId}/exportar-pdf`,
+    `proprietarios-admin-tarefa-${tarefaId}.pdf`
+  );
+}
+
 export function listarPlanos() {
 	return apiRequest<ListarPlanosResponse>("/admin/planos");
 }
@@ -210,4 +217,11 @@ export function cancelarFatura(faturaId: string) {
   return apiRequest<FaturaResponse>(`/admin/faturas/${faturaId}/cancelar`, {
     method: "POST",
   });
+}
+
+export function exportarResultadosTarefaAdminCsv(tarefaId: string) {
+  return apiDownload(
+    `/admin/tarefas/${tarefaId}/exportar`,
+    `proprietarios-admin-tarefa-${tarefaId}.csv`
+  );
 }

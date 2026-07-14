@@ -12,6 +12,7 @@ import {
   buscarProgressoTarefa,
   exportarResultadosTarefa,
   exportarResultadosTarefaExcel,
+  exportarResultadosTarefaPdf,
 } from "../../../features/busca/api";
 import type { ProgressoTarefaResponse } from "../../../features/busca/types";
 import {
@@ -102,6 +103,7 @@ export default function DetalheHistoricoPage() {
 
   const [isExporting, setIsExporting] = useState(false);
   const [isExportingExcel, setIsExportingExcel] = useState(false);
+  const [isExportingPdf, setIsExportingPdf] = useState(false);
 
   const [tarefa, setTarefa] = useState<ProgressoTarefaResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -115,8 +117,34 @@ export default function DetalheHistoricoPage() {
   const totalResultados = resultados.length;
   const percentual = tarefa?.progress.percentage ?? 0;
 
+  async function handleExportarCsv() {
+    if (!tarefaId) {
+      return;
+    }
+
+    setIsExporting(true);
+    setErro(null);
+
+    try {
+      await exportarResultadosTarefa(tarefaId);
+    } catch (error) {
+      setErro(
+        error instanceof Error
+          ? error.message
+          : "Erro desconhecido ao exportar CSV"
+      );
+    } finally {
+      setIsExporting(false);
+    }
+  }
+
   async function handleExportarExcel() {
+    if (!tarefaId) {
+      return;
+    }
+
     setIsExportingExcel(true);
+    setErro(null);
 
     try {
       await exportarResultadosTarefaExcel(tarefaId);
@@ -131,19 +159,24 @@ export default function DetalheHistoricoPage() {
     }
   }
 
-  async function handleExportarCsv() {
-    setIsExporting(true);
+  async function handleExportarPdf() {
+    if (!tarefaId) {
+      return;
+    }
+
+    setIsExportingPdf(true);
+    setErro(null);
 
     try {
-      await exportarResultadosTarefa(tarefaId);
+      await exportarResultadosTarefaPdf(tarefaId);
     } catch (error) {
       setErro(
         error instanceof Error
           ? error.message
-          : "Erro desconhecido ao exportar CSV"
+          : "Erro desconhecido ao exportar PDF"
       );
     } finally {
-      setIsExporting(false);
+      setIsExportingPdf(false);
     }
   }
 

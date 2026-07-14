@@ -635,3 +635,119 @@ export const ModalConfirmButton = styled.button`
     box-shadow: none;
   }
 `;
+
+
+export const PreviewStatus = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.sm};
+  flex-wrap: wrap;
+  margin-top: ${({ theme }) => theme.spacing.md};
+`;
+
+
+export const PreviewStatusBadge = styled.div<{ $variant?: "success" | "warning" | "danger" | "info" }>`
+  width: fit-content;
+  padding: 7px 11px;
+  border-radius: ${({ theme }) => theme.radii.pill};
+  font-size: 12px;
+  font-weight: 950;
+  border: 1px solid ${({ theme, $variant }) => {
+    if ($variant === "success") return theme.colors.successBorder;
+    if ($variant === "warning") return theme.colors.warningBorder;
+    if ($variant === "danger") return theme.colors.dangerBorder;
+    return theme.colors.infoBorder;
+  }};
+  color: ${({ theme, $variant }) => {
+    if ($variant === "success") return theme.colors.success;
+    if ($variant === "warning") return theme.colors.warning;
+    if ($variant === "danger") return theme.colors.danger;
+    return theme.colors.info;
+  }};
+  background: ${({ theme, $variant }) => {
+    if ($variant === "success") return theme.colors.successBg;
+    if ($variant === "warning") return theme.colors.warningBg;
+    if ($variant === "danger") return theme.colors.dangerBg;
+    return theme.colors.infoBg;
+  }};
+`;
+
+
+export const PreviewActions = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: ${({ theme }) => theme.spacing.sm};
+  flex-wrap: wrap;
+  margin-top: ${({ theme }) => theme.spacing.md};
+`;
+
+
+export const PendingPreviewList = styled.div`
+  display: grid;
+  gap: ${({ theme }) => theme.spacing.sm};
+  margin-top: ${({ theme }) => theme.spacing.md};
+`;
+
+
+export const PendingPreviewItem = styled.div`
+  display: grid;
+  gap: ${({ theme }) => theme.spacing.sm};
+  padding: ${({ theme }) => theme.spacing.md};
+  border-radius: ${({ theme }) => theme.radii.lg};
+  background: ${({ theme }) => theme.colors.surfaceMuted};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+
+  strong {
+    color: ${({ theme }) => theme.colors.primary};
+    line-height: 1.35;
+  }
+
+  span {
+    color: ${({ theme }) => theme.colors.textMuted};
+    font-size: 13px;
+    line-height: 1.45;
+  }
+`;
+
+
+export const PendingPreviewActions = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.sm};
+  flex-wrap: wrap;
+`;
+
+
+export const SmallActionButton = styled.button`
+  min-height: 34px;
+  padding: 0 ${({ theme }) => theme.spacing.md};
+  border-radius: ${({ theme }) => theme.radii.pill};
+  background: ${({ theme }) => theme.colors.secondary};
+  color: ${({ theme }) => theme.colors.textInverted};
+  border: 1px solid ${({ theme }) => theme.colors.secondary};
+  font-size: 12px;
+  font-weight: 950;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+`;
+
+
+export const SmallDangerButton = styled.button`
+  min-height: 34px;
+  padding: 0 ${({ theme }) => theme.spacing.md};
+  border-radius: ${({ theme }) => theme.radii.pill};
+  background: ${({ theme }) => theme.colors.dangerBg};
+  color: ${({ theme }) => theme.colors.danger};
+  border: 1px solid ${({ theme }) => theme.colors.dangerBorder};
+  font-size: 12px;
+  font-weight: 950;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+`;

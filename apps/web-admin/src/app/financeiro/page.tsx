@@ -17,6 +17,7 @@ import type {
   FaturaResumo,
 } from "../../features/admin/types";
 import { useRequireSuperAdmin } from "../../hooks/useRequireSuperAdmin";
+import { formatCurrencyFromCents, formatDateOnlyBR, formatDateTimeBR } from "../../lib/formatters";
 import {
   Actions,
   CreateInvoiceLink,
@@ -54,17 +55,6 @@ import {
   SuccessBox,
   Title,
 } from "./page.styles";
-
-function formatCurrencyFromCents(value?: number | null) {
-  if (value === null || value === undefined) {
-    return "-";
-  }
-
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(value / 100);
-}
 
 function formatDate(value?: string | null) {
   if (!value) {

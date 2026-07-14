@@ -1,12 +1,7 @@
 import "dotenv/config";
 import Fastify from "fastify";
 import { closeBrowser } from "./playwright/browser.js";
-import { buscarIndiceCadastral } from "./services/buscarIndiceCadastral.js";
-
-type PreverBuscaBody = {
-  logradouro?: string;
-  numero?: string;
-};
+import { getRegistroFilaInfo } from "./services/registro-rate-limiter.js";
 
 const app = Fastify({
   logger: true,
@@ -17,37 +12,11 @@ app.get("/health", async () => ({
   service: "worker-registro",
 }));
 
-app.post("/registro/prever-busca", async (request, reply) => {
-  const body = request.body as PreverBuscaBody;
-
-  const logradouro = body.logradouro?.trim();
-  const numero = body.numero?.trim();
-
-  if (!logradouro || logradouro.length < 3) {
-    return reply.status(400).send({
-      error: "BadRequest",
-      message: "Logradouro é obrigatório",
-    });
-  }
-
-  if (!numero) {
-    return reply.status(400).send({
-      error: "BadRequest",
-      message: "Número é obrigatório",
-    });
-  }
-
-  const registros = await buscarIndiceCadastral(logradouro, numero);
-
-  return reply.status(200).send({
-    previa: {
-      logradouro,
-      numero,
-      quantidadeRegistros: registros.length,
-      registros,
-    },
-  });
-});
+app.get("/registro/status", async () => ({
+  ok: true,
+  service: "worker-registro",
+  fila: getRegistroFilaInfo(),
+}));
 
 async function main() {
   const port = Number(process.env.PORT ?? 3334);
@@ -57,7 +26,7 @@ async function main() {
     host: "0.0.0.0",
   });
 
-  console.log(`[worker-registro] Rodando na porta ${port}`);
+  console.log(`[worker-registro] Health server rodando na porta ${port}`);
 }
 
 async function shutdown() {

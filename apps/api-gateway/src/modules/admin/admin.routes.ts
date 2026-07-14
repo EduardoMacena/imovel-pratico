@@ -1,6 +1,7 @@
 import type { FastifyInstance } from "fastify";
 import { authMiddleware } from "../auth/auth.middleware.js";
 import { adminMiddleware } from "./admin.middleware.js";
+import { exportarResultadosTarefaAdminPdfController } from "./admin-exportacao-pdf.controller.js";
 import {
 	atualizarClienteController,
 	atualizarUsuarioController,
@@ -63,6 +64,11 @@ export async function adminRoutes(app: FastifyInstance) {
 		"/admin/tarefas/:id/exportar-excel",
 		exportarResultadosTarefaAdminExcelController
 	);
+
+  app.get(
+    "/admin/tarefas/:id/exportar-pdf",
+    exportarResultadosTarefaAdminPdfController
+  );
 
 	app.post("/admin/tarefas/:id/cancelar", cancelarTarefaAdminController);
 	app.post("/admin/tarefas/:id/reprocessar", reprocessarTarefaAdminController);

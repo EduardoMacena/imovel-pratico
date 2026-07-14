@@ -3,9 +3,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { AppHeader } from "../../components/AppHeader";
 import { StatusBadge } from "../../components/StatusBadge";
-import { listarPlanos } from "../../features/admin/api";
-import type { PlanoResumo } from "../../features/admin/types";
+import { listarClientes, listarPlanos } from "../../features/admin/api";
+import type { ClienteResumo, PlanoResumo } from "../../features/admin/types";
 import { useRequireSuperAdmin } from "../../hooks/useRequireSuperAdmin";
+import { formatCurrencyFromCents } from "../../lib/formatters";
 import {
   Actions,
   EmptyState,
@@ -42,17 +43,6 @@ import {
   Title,
 } from "./page.styles";
 
-function formatCurrencyFromCents(value?: number | null) {
-  if (value === null || value === undefined) {
-    return "-";
-  }
-
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(value / 100);
-}
-
 function formatNumber(value?: number | null) {
   if (typeof value !== "number") {
     return "-";
@@ -65,28 +55,86 @@ export default function PlanosPage() {
   const { isCheckingAuth } = useRequireSuperAdmin();
 
   const [planos, setPlanos] = useState<PlanoResumo[]>([]);
+  const [clientes, setClientes] = useState<ClienteResumo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [erro, setErro] = useState<string | null>(null);
 
   const resumo = useMemo(() => {
     const ativos = planos.filter(plano => plano.status === "ATIVO").length;
-    const inativos = planos.filter(plano => plano.status !== "ATIVO").length;
+    const inativos = planos.filter(plano => plano.status === "INATIVO").length;
 
     const maiorLimite = planos.reduce((max, plano) => {
       return Math.max(max, plano.limiteMensalConsultas);
     }, 0);
 
-    const receitaPotencial = planos
-      .filter(plano => plano.status === "ATIVO")
-      .reduce((total, plano) => total + plano.precoCentavos, 0);
+    const clientesAtivosComPlano = clientes.filter(cliente => {
+      return cliente.status === "ATIVO" && Boolean(cliente.plano);
+    });
+
+    const mrrVinculado = clientesAtivosComPlano.reduce((total, cliente) => {
+      return total + (cliente.plano?.precoCentavos ?? 0);
+    }, 0);
+
+    const ticketMedioReal =
+      clientesAtivosComPlano.length > 0
+        ? Math.round(mrrVinculado / clientesAtivosComPlano.length)
+        : 0;
+
+    const clientesPorPlano = clientesAtivosComPlano.reduce<
+      Record<string, { nome: string; total: number }>
+    >((acc, cliente) => {
+      if (!cliente.plano) {
+        return acc;
+      }
+
+      const atual = acc[cliente.plano.id] ?? {
+        nome: cliente.plano.nome,
+        total: 0,
+      };
+
+      acc[cliente.plano.id] = {
+        ...atual,
+        total: atual.total + 1,
+      };
+
+      return acc;
+    }, {});
+
+    const planoMaisUsado =
+      Object.values(clientesPorPlano).sort((a, b) => b.total - a.total)[0] ??
+      null;
+
+    const planosComCliente = new Set(
+      clientesAtivosComPlano
+        .map(cliente => cliente.plano?.id)
+        .filter(Boolean)
+    );
+
+    const planosSemCliente = planos.filter(plano => {
+      return plano.status === "ATIVO" && !planosComCliente.has(plano.id);
+    }).length;
 
     return {
       ativos,
       inativos,
       maiorLimite,
-      receitaPotencial,
+      mrrVinculado,
+      ticketMedioReal,
+      clientesComPlano: clientesAtivosComPlano.length,
+      planoMaisUsado,
+      planosSemCliente,
     };
-  }, [planos]);
+  }, [planos, clientes]);
+
+  async function carregarClientes() {
+    try {
+      const data = await listarClientes();
+
+      setClientes(data.clientes);
+    } catch (error) {
+      console.error("Erro ao carregar clientes na tela de planos:", error);
+    }
+  }
 
   async function carregarPlanos() {
     try {
@@ -109,6 +157,7 @@ export default function PlanosPage() {
   useEffect(() => {
     if (!isCheckingAuth) {
       carregarPlanos();
+      carregarClientes();
     }
   }, [isCheckingAuth]);
 
@@ -135,9 +184,9 @@ export default function PlanosPage() {
             </HeaderContent>
 
             <HeaderPanel>
-              <HeaderPanelLabel>Receita potencial dos planos ativos</HeaderPanelLabel>
+              <HeaderPanelLabel>MRR vinculado aos clientes</HeaderPanelLabel>
               <HeaderPanelValue>
-                {formatCurrencyFromCents(resumo.receitaPotencial)}
+                {formatCurrencyFromCents(resumo.mrrVinculado)}
               </HeaderPanelValue>
 
               <Actions>
@@ -156,18 +205,22 @@ export default function PlanosPage() {
           </StatCard>
 
           <StatCard>
-            <StatLabel>Planos inativos</StatLabel>
-            <StatValue>{formatNumber(resumo.inativos)}</StatValue>
+            <StatLabel>Clientes com plano</StatLabel>
+            <StatValue>{formatNumber(resumo.clientesComPlano)}</StatValue>
           </StatCard>
 
           <StatCard>
-            <StatLabel>Maior limite mensal</StatLabel>
-            <StatValue>{formatNumber(resumo.maiorLimite)}</StatValue>
+            <StatLabel>Plano mais usado</StatLabel>
+            <StatValue>
+              {resumo.planoMaisUsado
+                ? `${resumo.planoMaisUsado.nome} (${resumo.planoMaisUsado.total})`
+                : "-"}
+            </StatValue>
           </StatCard>
 
           <StatCard>
-            <StatLabel>Total de planos</StatLabel>
-            <StatValue>{formatNumber(planos.length)}</StatValue>
+            <StatLabel>Ticket médio real</StatLabel>
+            <StatValue>{formatCurrencyFromCents(resumo.ticketMedioReal)}</StatValue>
           </StatCard>
         </StatGrid>
 

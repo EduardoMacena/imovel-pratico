@@ -1,3 +1,16 @@
+export type BuscaPreviaStatus =
+  | "PENDENTE"
+  | "PROCESSANDO"
+  | "AGUARDANDO_INTERVALO"
+  | "CONSULTANDO_REGISTRO"
+  | "PRONTA"
+  | "AGUARDANDO_AUTORIZACAO_EXCEDENTE"
+  | "AUTORIZANDO"
+  | "CONFIRMADA"
+  | "CANCELADA"
+  | "EXPIRADA"
+  | "ERRO";
+
 export type BuscaPreviaRegistro = {
   indiceCadastral: string;
   complemento: string | null;
@@ -5,11 +18,16 @@ export type BuscaPreviaRegistro = {
 
 export type BuscaPreviaResumo = {
   id: string;
+  status: BuscaPreviaStatus;
   logradouro: string;
   numero: string;
   quantidadeRegistros: number;
   registros: BuscaPreviaRegistro[];
+  erro: string | null;
   expiraEm: string;
+  confirmadaEm: string | null;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type ExcedenteResumo = {
@@ -25,20 +43,27 @@ export type PreverBuscaRequest = {
   numero: string;
 };
 
+export type UsoResumo = {
+  consultasUsadas: number;
+  limiteMensal: number;
+  consultasRestantes: number;
+  consultasExcedentes: number;
+  valorConsultaAdicionalCentavos: number;
+  valorExcedenteCentavos: number;
+  totalEstimadoCentavos: number;
+  percentualUsado: number;
+};
+
 export type PreverBuscaResponse = {
   previa: BuscaPreviaResumo;
   precisaConfirmarExcedente: boolean;
   excedente: ExcedenteResumo;
-  uso?: {
-    consultasUsadas: number;
-    limiteMensal: number;
-    consultasRestantes: number;
-    consultasExcedentes: number;
-    valorConsultaAdicionalCentavos: number;
-    valorExcedenteCentavos: number;
-    totalEstimadoCentavos: number;
-    percentualUsado: number;
-  };
+  uso?: UsoResumo;
+  message?: string;
+};
+
+export type ListarPreviasPendentesResponse = {
+  previas: PreverBuscaResponse[];
 };
 
 export type CriarTarefaRequest = {
@@ -47,26 +72,14 @@ export type CriarTarefaRequest = {
   forceRefresh?: boolean;
 };
 
-export type CriarTarefaResponse = {
-  precisaConfirmarExcedente?: boolean;
+export type CriarTarefaResponse = PreverBuscaResponse & {
   jobId?: string;
   status?: string;
   message: string;
-  previa?: BuscaPreviaResumo;
-  uso?: {
-    consultasUsadas: number;
-    limiteMensal: number;
-    consultasRestantes: number;
-    consultasExcedentes: number;
-    valorConsultaAdicionalCentavos: number;
-    valorExcedenteCentavos: number;
-    totalEstimadoCentavos: number;
-    percentualUsado: number;
-  };
-  excedente?: ExcedenteResumo;
   tarefa?: {
     id: string;
     status: string;
+    buscaPreviaId: string;
   };
 };
 

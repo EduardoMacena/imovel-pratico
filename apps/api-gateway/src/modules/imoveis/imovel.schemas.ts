@@ -1,5 +1,9 @@
 import { z } from "zod";
 
+export const previaIdParamsSchema = z.object({
+  id: z.string().uuid(),
+});
+
 export const preverBuscaSchema = z.object({
   logradouro: z.string().min(3, "Logradouro é obrigatório"),
   numero: z.string().min(1, "Número é obrigatório"),

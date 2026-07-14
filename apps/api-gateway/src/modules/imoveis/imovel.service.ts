@@ -7,6 +7,7 @@ import type {
 import { buildCsv } from "../../utils/csv.js";
 import { buildExcelBuffer } from "../../utils/excel.js";
 import { preverBuscaNoWorkerRegistro } from "./registro-worker.client.js";
+import { buildPdfResultadosProprietarios, montarLinhasResultadoExportacao } from "../../utils/exportacao-resultados.js";
 import {
   calcularResumoExcedenteBusca,
   validarClientePodeCriarBusca,
@@ -466,165 +467,132 @@ export async function listarTarefasRecentes(clienteId: string) {
 }
 
 export async function exportarResultadosTarefaCsv(
-	clienteId: string,
-	id: string
+  clienteId: string,
+  id: string
 ) {
-	const tarefa = await prisma.tarefa.findFirst({
-		where: {
-			id,
-			clienteId,
-		},
-		include: {
-			cliente: {
-				select: {
-					nome: true,
-					slug: true,
-				},
-			},
-			resultados: {
-				orderBy: {
-					createdAt: "asc",
-				},
-			},
-		},
-	});
+  const tarefa = await prisma.tarefa.findFirst({
+    where: {
+      id,
+      clienteId,
+    },
+    include: {
+      cliente: {
+        select: {
+          nome: true,
+          slug: true,
+        },
+      },
+      resultados: {
+        orderBy: {
+          createdAt: "asc",
+        },
+      },
+    },
+  });
 
-	if (!tarefa) {
-		return null;
-	}
+  if (!tarefa) {
+    return null;
+  }
 
-	const rows = tarefa.resultados.map((resultado) => ({
-		cliente: tarefa.cliente.nome,
-		tarefaId: tarefa.id,
-		statusTarefa: tarefa.status,
-		logradouroBusca: tarefa.logradouro,
-		numeroBusca: tarefa.numero,
-		mesAnoInicio: tarefa.mesAnoInicio,
-		mesAnoFinal: tarefa.mesAnoFinal,
-		statusResultado: resultado.status,
-		indiceCadastral: resultado.indiceCadastral,
-		logradouro: resultado.logradouro,
-		numero: resultado.numero,
-		complemento: resultado.complemento,
-		nome: resultado.nome,
-		cpf: resultado.cpf,
-		endereco: resultado.endereco,
-		telefone: resultado.telefone,
-		email: resultado.email,
-		fonteContato: resultado.fonteContato,
-		sexo: (resultado.dadosContato as any)?.sexo,
-		idade: (resultado.dadosContato as any)?.idade,
-		signo: (resultado.dadosContato as any)?.signo,
-		nomeMae: (resultado.dadosContato as any)?.nomeMae,
-		dataNascimento: (resultado.dadosContato as any)?.dataNascimento,
-		rendaEstimada: (resultado.dadosContato as any)?.rendaEstimada,
-		rendaFaixaSalarial: (resultado.dadosContato as any)?.rendaFaixaSalarial,
-		telefones: JSON.stringify((resultado.dadosContato as any)?.telefones ?? []),
-		emails: JSON.stringify((resultado.dadosContato as any)?.emails ?? []),
-		enderecos: JSON.stringify((resultado.dadosContato as any)?.enderecos ?? []),
-		erro: resultado.erro,
-		consultadoEm: resultado.createdAt.toISOString(),
-	}));
+  const rows = montarLinhasResultadoExportacao(tarefa);
 
-	const csv = buildCsv(
-		rows.length > 0
-			? rows
-			: [
-					{
-						cliente: tarefa.cliente.nome,
-						tarefaId: tarefa.id,
-						statusTarefa: tarefa.status,
-						mensagem: "Nenhum resultado encontrado para esta tarefa",
-					},
-				]
-	);
+  const csv = buildCsv(
+    rows.length > 0
+      ? rows
+      : [
+          {
+            mensagem: "Nenhum resultado encontrado para esta tarefa",
+          },
+        ]
+  );
 
-	return {
-		filename: `resultados-${tarefa.cliente.slug}-${tarefa.id}.csv`,
-		csv,
-	};
+  return {
+    filename: `proprietarios-${tarefa.cliente.slug}-${tarefa.id}.csv`,
+    csv,
+  };
 }
 
 export async function exportarResultadosTarefaExcel(
-	clienteId: string,
-	id: string
+  clienteId: string,
+  id: string
 ) {
-	const tarefa = await prisma.tarefa.findFirst({
-		where: {
-			id,
-			clienteId,
-		},
-		include: {
-			cliente: {
-				select: {
-					nome: true,
-					slug: true,
-				},
-			},
-			resultados: {
-				orderBy: {
-					createdAt: "asc",
-				},
-			},
-		},
-	});
+  const tarefa = await prisma.tarefa.findFirst({
+    where: {
+      id,
+      clienteId,
+    },
+    include: {
+      cliente: {
+        select: {
+          nome: true,
+          slug: true,
+        },
+      },
+      resultados: {
+        orderBy: {
+          createdAt: "asc",
+        },
+      },
+    },
+  });
 
-	if (!tarefa) {
-		return null;
-	}
+  if (!tarefa) {
+    return null;
+  }
 
-	const rows =
-		tarefa.resultados.length > 0
-			? tarefa.resultados.map((resultado) => ({
-					cliente: tarefa.cliente.nome,
-					tarefaId: tarefa.id,
-					statusTarefa: tarefa.status,
-					logradouroBusca: tarefa.logradouro,
-					numeroBusca: tarefa.numero,
-					mesAnoInicio: tarefa.mesAnoInicio,
-					mesAnoFinal: tarefa.mesAnoFinal,
-					statusResultado: resultado.status,
-					indiceCadastral: resultado.indiceCadastral,
-					logradouro: resultado.logradouro,
-					numero: resultado.numero,
-					complemento: resultado.complemento,
-					nome: resultado.nome,
-					cpf: resultado.cpf,
-					endereco: resultado.endereco,
-					telefone: resultado.telefone,
-					email: resultado.email,
-					fonteContato: resultado.fonteContato,
-					sexo: (resultado.dadosContato as any)?.sexo,
-					idade: (resultado.dadosContato as any)?.idade,
-					signo: (resultado.dadosContato as any)?.signo,
-					nomeMae: (resultado.dadosContato as any)?.nomeMae,
-					dataNascimento: (resultado.dadosContato as any)?.dataNascimento,
-					rendaEstimada: (resultado.dadosContato as any)?.rendaEstimada,
-					rendaFaixaSalarial: (resultado.dadosContato as any)
-						?.rendaFaixaSalarial,
-					telefones: JSON.stringify(
-						(resultado.dadosContato as any)?.telefones ?? []
-					),
-					emails: JSON.stringify((resultado.dadosContato as any)?.emails ?? []),
-					enderecos: JSON.stringify(
-						(resultado.dadosContato as any)?.enderecos ?? []
-					),
-					erro: resultado.erro,
-					consultadoEm: resultado.createdAt.toISOString(),
-				}))
-			: [
-					{
-						cliente: tarefa.cliente.nome,
-						tarefaId: tarefa.id,
-						statusTarefa: tarefa.status,
-						mensagem: "Nenhum resultado encontrado para esta tarefa",
-					},
-				];
+  const rows =
+    tarefa.resultados.length > 0
+      ? montarLinhasResultadoExportacao(tarefa)
+      : [
+          {
+            mensagem: "Nenhum resultado encontrado para esta tarefa",
+          },
+        ];
 
-	const buffer = await buildExcelBuffer(rows, "Resultados");
+  const buffer = await buildExcelBuffer(rows, "Proprietarios");
 
-	return {
-		filename: `resultados-${tarefa.cliente.slug}-${tarefa.id}.xlsx`,
-		buffer,
-	};
+  return {
+    filename: `proprietarios-${tarefa.cliente.slug}-${tarefa.id}.xlsx`,
+    buffer,
+  };
+}
+
+export async function exportarResultadosTarefaPdf(
+  clienteId: string,
+  id: string
+) {
+  const tarefa = await prisma.tarefa.findFirst({
+    where: {
+      id,
+      clienteId,
+    },
+    include: {
+      cliente: {
+        select: {
+          nome: true,
+          slug: true,
+        },
+      },
+      resultados: {
+        orderBy: {
+          createdAt: "asc",
+        },
+      },
+    },
+  });
+
+  if (!tarefa) {
+    return null;
+  }
+
+  const rows = montarLinhasResultadoExportacao(tarefa);
+  const buffer = await buildPdfResultadosProprietarios({
+    tarefa,
+    rows,
+  });
+
+  return {
+    filename: `proprietarios-${tarefa.cliente.slug}-${tarefa.id}.pdf`,
+    buffer,
+  };
 }

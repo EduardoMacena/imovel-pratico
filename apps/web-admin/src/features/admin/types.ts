@@ -114,8 +114,6 @@ export type AtualizarClienteRequest = {
 	intervaloSegundos?: number;
 	limiteDiario?: number;
 	planoId?: string;
-	pagamentoStatus?: PagamentoStatus;
-	pagamentoVenceEm?: string | null;
 };
 
 export type AtualizarClienteResponse = {

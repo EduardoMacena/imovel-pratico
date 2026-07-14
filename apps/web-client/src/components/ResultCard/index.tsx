@@ -3,6 +3,7 @@
 import type { ResultadoBusca } from "../../features/busca/types";
 import { OwnerDetails } from "../OwnerDetails";
 import { StatusBadge } from "../StatusBadge";
+import { formatPhoneBR } from "../../lib/formatters";
 import {
 	ContactGrid,
 	DetailItem,
@@ -69,7 +70,7 @@ export function ResultCard({ resultado }: ResultCardProps) {
 				{resultado.proprietario.telefone && (
 					<DetailItem>
 						<DetailLabel>Telefone</DetailLabel>
-						<DetailValue>{resultado.proprietario.telefone}</DetailValue>
+						<DetailValue>{formatPhoneBR(resultado.proprietario.telefone)}</DetailValue>
 					</DetailItem>
 				)}
 

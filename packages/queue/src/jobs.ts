@@ -9,3 +9,10 @@ export type BuscarProprietariosJobData = {
   intervaloSegundos: number;
   forceRefresh: boolean;
 };
+
+export type BuscarRegistrosJobData = {
+  buscaPreviaId: string;
+  clienteId: string;
+  logradouro: string;
+  numero: string;
+};

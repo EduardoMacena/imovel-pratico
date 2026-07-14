@@ -8,6 +8,7 @@ import {
 } from "@imovel-pratico/queue";
 import { closeBrowser } from "./playwright/browser.js";
 import { processarBuscaProprietariosJob } from "./processarBuscaProprietariosJob.js";
+import { publicarTarefaAtualizada } from "./realtime/tarefa-realtime.js";
 
 function getWorkerClienteId() {
   const clienteId = process.env.WORKER_CLIENTE_ID?.trim();
@@ -62,7 +63,17 @@ async function main() {
         `[worker-cnd] Processando tarefa ${job.data.tarefaId} do cliente ${cliente.nome}`
       );
 
-      await processarBuscaProprietariosJob(job);
+      const realtimeInterval = setInterval(() => {
+        void publicarTarefaAtualizada(job.data.tarefaId);
+      }, 2000);
+
+      try {
+        await publicarTarefaAtualizada(job.data.tarefaId);
+        await processarBuscaProprietariosJob(job);
+      } finally {
+        clearInterval(realtimeInterval);
+        await publicarTarefaAtualizada(job.data.tarefaId);
+      }
     },
     {
       connection: redisConnection,

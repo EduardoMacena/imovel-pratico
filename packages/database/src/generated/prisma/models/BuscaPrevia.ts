@@ -428,8 +428,8 @@ export type BuscaPreviaCreateInput = {
   status?: $Enums.BuscaPreviaStatus
   logradouro: string
   numero: string
-  quantidadeRegistros: number
-  registros: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  quantidadeRegistros?: number
+  registros?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   consultasDisponiveisNoMomento: number
   consultasExcedentesEstimadas: number
   valorConsultaAdicionalCentavos: number
@@ -450,8 +450,8 @@ export type BuscaPreviaUncheckedCreateInput = {
   status?: $Enums.BuscaPreviaStatus
   logradouro: string
   numero: string
-  quantidadeRegistros: number
-  registros: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  quantidadeRegistros?: number
+  registros?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   consultasDisponiveisNoMomento: number
   consultasExcedentesEstimadas: number
   valorConsultaAdicionalCentavos: number
@@ -513,8 +513,8 @@ export type BuscaPreviaCreateManyInput = {
   status?: $Enums.BuscaPreviaStatus
   logradouro: string
   numero: string
-  quantidadeRegistros: number
-  registros: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  quantidadeRegistros?: number
+  registros?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   consultasDisponiveisNoMomento: number
   consultasExcedentesEstimadas: number
   valorConsultaAdicionalCentavos: number
@@ -722,8 +722,8 @@ export type BuscaPreviaCreateWithoutClienteInput = {
   status?: $Enums.BuscaPreviaStatus
   logradouro: string
   numero: string
-  quantidadeRegistros: number
-  registros: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  quantidadeRegistros?: number
+  registros?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   consultasDisponiveisNoMomento: number
   consultasExcedentesEstimadas: number
   valorConsultaAdicionalCentavos: number
@@ -742,8 +742,8 @@ export type BuscaPreviaUncheckedCreateWithoutClienteInput = {
   status?: $Enums.BuscaPreviaStatus
   logradouro: string
   numero: string
-  quantidadeRegistros: number
-  registros: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  quantidadeRegistros?: number
+  registros?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   consultasDisponiveisNoMomento: number
   consultasExcedentesEstimadas: number
   valorConsultaAdicionalCentavos: number
@@ -811,8 +811,8 @@ export type BuscaPreviaCreateWithoutTarefasInput = {
   status?: $Enums.BuscaPreviaStatus
   logradouro: string
   numero: string
-  quantidadeRegistros: number
-  registros: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  quantidadeRegistros?: number
+  registros?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   consultasDisponiveisNoMomento: number
   consultasExcedentesEstimadas: number
   valorConsultaAdicionalCentavos: number
@@ -832,8 +832,8 @@ export type BuscaPreviaUncheckedCreateWithoutTarefasInput = {
   status?: $Enums.BuscaPreviaStatus
   logradouro: string
   numero: string
-  quantidadeRegistros: number
-  registros: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  quantidadeRegistros?: number
+  registros?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   consultasDisponiveisNoMomento: number
   consultasExcedentesEstimadas: number
   valorConsultaAdicionalCentavos: number
@@ -907,8 +907,8 @@ export type BuscaPreviaCreateManyClienteInput = {
   status?: $Enums.BuscaPreviaStatus
   logradouro: string
   numero: string
-  quantidadeRegistros: number
-  registros: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  quantidadeRegistros?: number
+  registros?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   consultasDisponiveisNoMomento: number
   consultasExcedentesEstimadas: number
   valorConsultaAdicionalCentavos: number

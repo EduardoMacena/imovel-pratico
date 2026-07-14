@@ -1,6 +1,7 @@
 "use client";
 
 import type { MinhaAssinaturaResponse } from "../../features/busca/types";
+import { formatCurrencyFromCents, formatDateOnlyBR, formatNumberBR } from "../../lib/formatters";
 import {
   Badge,
   Grid,
@@ -36,12 +37,7 @@ function formatNumber(value: number) {
   return new Intl.NumberFormat("pt-BR").format(value);
 }
 
-function formatCurrencyFromCents(value: number) {
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(value / 100);
-}
+
 
 function calcularPercentualUsado(usadas: number, limite: number) {
   if (limite <= 0) {
@@ -63,6 +59,11 @@ export function SubscriptionSummary({ assinatura }: SubscriptionSummaryProps) {
   const percentualUsado = calcularPercentualUsado(
     assinatura.uso.consultasUsadas,
     assinatura.uso.limiteMensal
+  );
+
+  const consultasExcedentes = Math.max(
+    assinatura.uso.consultasUsadas - assinatura.uso.limiteMensal,
+    0
   );
 
   return (
@@ -104,8 +105,13 @@ export function SubscriptionSummary({ assinatura }: SubscriptionSummaryProps) {
         </Item>
 
         <Item>
-          <Label>Restantes</Label>
+          <Label>Inclusas restantes</Label>
           <Value>{formatNumber(assinatura.uso.consultasRestantes)}</Value>
+        </Item>
+
+        <Item>
+          <Label>Excedentes no mês</Label>
+          <Value>{formatNumber(consultasExcedentes)}</Value>
         </Item>
 
         <Item>

@@ -29,7 +29,9 @@ export async function preverBuscaNoWorkerRegistro(params: {
       logradouro: params.logradouro,
       numero: params.numero,
     }),
-    signal: AbortSignal.timeout(90000),
+    signal: AbortSignal.timeout(
+      Number(process.env.WORKER_REGISTRO_TIMEOUT_MS ?? 300000)
+    ),
   });
 
   const data = (await response.json().catch(() => ({}))) as

@@ -2,6 +2,7 @@
 
 import { ReactNode, useState } from "react";
 import type { DadosContato } from "../../features/admin/types";
+import { formatBirthdayBR, formatCurrencyBRL, formatPhoneBR } from "../../lib/formatters";
 import {
   Grid,
   Item,
@@ -119,15 +120,15 @@ export function OwnerDetails({
     },
     {
       label: "Data nascimento",
-      value: dados.dataNascimento,
+      value: formatBirthdayBR(dados.dataNascimento),
     },
     {
       label: "Renda estimada",
-      value: dados.rendaEstimada,
+      value: dados.rendaEstimada ? formatCurrencyBRL(Number(dados.rendaEstimada)) : "-",
     },
     {
       label: "Faixa salarial",
-      value: dados.rendaFaixaSalarial,
+      value: valueOrDash(dados.rendaFaixaSalarial),
     },
   ];
 
@@ -152,7 +153,7 @@ export function OwnerDetails({
                 <Grid>
                   <Item>
                     <Label>Telefone</Label>
-                    <Value>{valueOrDash(telefone.telefoneComDDD)}</Value>
+                    <Value>{formatPhoneBR(telefone.telefoneComDDD)}</Value>
                   </Item>
 
                   <Item>

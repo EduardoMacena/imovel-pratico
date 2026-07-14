@@ -183,11 +183,6 @@ export async function processarBuscaProprietariosJob(
 					return;
 				}
 
-				await validarLimiteMensalAntesDeSalvarResultado(
-					job.data.clienteId,
-					job.data.tarefaId
-				);
-
 				const item = progress.item;
 
 				await prisma.tarefaResultado.create({

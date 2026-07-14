@@ -20,6 +20,7 @@ import type {
 import { buildCsv } from "../../utils/csv.js";
 import { buildExcelBuffer } from "../../utils/excel.js";
 import { formatDateOnlyFromDate, parseDateOnlyToUtcNoon } from "../../utils/date-only.js";
+import { buildPdfResultadosProprietarios, montarLinhasResultadoExportacao } from "../../utils/exportacao-resultados.js";
 
 function gerarSlugBase(value: string) {
 	return value
@@ -159,8 +160,6 @@ export async function atualizarCliente(
 			status: data.status,
 			workerUrl: data.workerUrl,
 			planoId: data.planoId,
-      pagamentoStatus: data.pagamentoStatus,
-      pagamentoVenceEm: data.pagamentoVenceEm === undefined ? undefined : parseDateOnlyToUtcNoon(data.pagamentoVenceEm),
 		},
 	});
 
@@ -782,134 +781,87 @@ export async function reprocessarTarefaAdmin(id: string) {
 }
 
 export async function exportarResultadosTarefaAdminCsv(id: string) {
-	const tarefa = await prisma.tarefa.findUnique({
-		where: {
-			id,
-		},
-		include: {
-			cliente: {
-				select: {
-					nome: true,
-					slug: true,
-				},
-			},
-			resultados: {
-				orderBy: {
-					createdAt: "asc",
-				},
-			},
-		},
-	});
+  const tarefa = await prisma.tarefa.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      cliente: {
+        select: {
+          nome: true,
+          slug: true,
+        },
+      },
+      resultados: {
+        orderBy: {
+          createdAt: "asc",
+        },
+      },
+    },
+  });
 
-	if (!tarefa) {
-		return null;
-	}
+  if (!tarefa) {
+    return null;
+  }
 
-	const rows = tarefa.resultados.map((resultado) => ({
-		cliente: tarefa.cliente.nome,
-		tarefaId: tarefa.id,
-		statusTarefa: tarefa.status,
-		logradouroBusca: tarefa.logradouro,
-		numeroBusca: tarefa.numero,
-		mesAnoInicio: tarefa.mesAnoInicio,
-		mesAnoFinal: tarefa.mesAnoFinal,
-		statusResultado: resultado.status,
-		indiceCadastral: resultado.indiceCadastral,
-		logradouro: resultado.logradouro,
-		numero: resultado.numero,
-		complemento: resultado.complemento,
-		nome: resultado.nome,
-		cpf: resultado.cpf,
-		endereco: resultado.endereco,
-		telefone: resultado.telefone,
-		email: resultado.email,
-		erro: resultado.erro,
-		consultadoEm: resultado.createdAt.toISOString(),
-	}));
+  const rows = montarLinhasResultadoExportacao(tarefa);
 
-	const csv = buildCsv(
-		rows.length > 0
-			? rows
-			: [
-					{
-						cliente: tarefa.cliente.nome,
-						tarefaId: tarefa.id,
-						statusTarefa: tarefa.status,
-						mensagem: "Nenhum resultado encontrado para esta tarefa",
-					},
-				]
-	);
+  const csv = buildCsv(
+    rows.length > 0
+      ? rows
+      : [
+          {
+            mensagem: "Nenhum resultado encontrado para esta tarefa",
+          },
+        ]
+  );
 
-	return {
-		filename: `resultados-admin-${tarefa.cliente.slug}-${tarefa.id}.csv`,
-		csv,
-	};
+  return {
+    filename: `proprietarios-admin-${tarefa.cliente.slug}-${tarefa.id}.csv`,
+    csv,
+  };
 }
 
 export async function exportarResultadosTarefaAdminExcel(id: string) {
-	const tarefa = await prisma.tarefa.findUnique({
-		where: {
-			id,
-		},
-		include: {
-			cliente: {
-				select: {
-					nome: true,
-					slug: true,
-				},
-			},
-			resultados: {
-				orderBy: {
-					createdAt: "asc",
-				},
-			},
-		},
-	});
+  const tarefa = await prisma.tarefa.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      cliente: {
+        select: {
+          nome: true,
+          slug: true,
+        },
+      },
+      resultados: {
+        orderBy: {
+          createdAt: "asc",
+        },
+      },
+    },
+  });
 
-	if (!tarefa) {
-		return null;
-	}
+  if (!tarefa) {
+    return null;
+  }
 
-	const rows =
-		tarefa.resultados.length > 0
-			? tarefa.resultados.map((resultado) => ({
-					cliente: tarefa.cliente.nome,
-					tarefaId: tarefa.id,
-					statusTarefa: tarefa.status,
-					logradouroBusca: tarefa.logradouro,
-					numeroBusca: tarefa.numero,
-					mesAnoInicio: tarefa.mesAnoInicio,
-					mesAnoFinal: tarefa.mesAnoFinal,
-					statusResultado: resultado.status,
-					indiceCadastral: resultado.indiceCadastral,
-					logradouro: resultado.logradouro,
-					numero: resultado.numero,
-					complemento: resultado.complemento,
-					nome: resultado.nome,
-					cpf: resultado.cpf,
-					endereco: resultado.endereco,
-					telefone: resultado.telefone,
-					email: resultado.email,
-					erro: resultado.erro,
-					consultadoEm: resultado.createdAt.toISOString(),
-				}))
-			: [
-					{
-						cliente: tarefa.cliente.nome,
-						tarefaId: tarefa.id,
-						statusTarefa: tarefa.status,
-						mensagem: "Nenhum resultado encontrado para esta tarefa",
-					},
-				];
+  const rows =
+    tarefa.resultados.length > 0
+      ? montarLinhasResultadoExportacao(tarefa)
+      : [
+          {
+            mensagem: "Nenhum resultado encontrado para esta tarefa",
+          },
+        ];
 
-	const buffer = await buildExcelBuffer(rows, "Resultados");
+  const buffer = await buildExcelBuffer(rows, "Proprietarios");
 
-	return {
-		filename: `resultados-admin-${tarefa.cliente.slug}-${tarefa.id}.xlsx`,
-		buffer,
-	};
+  return {
+    filename: `proprietarios-admin-${tarefa.cliente.slug}-${tarefa.id}.xlsx`,
+    buffer,
+  };
 }
-
 
 export async function listarPlanos() {
   return prisma.plano.findMany({
@@ -1176,4 +1128,40 @@ export async function listarConsumoClientesAdmin() {
   );
 
   return consumos.filter(Boolean);
+}
+
+export async function exportarResultadosTarefaAdminPdf(id: string) {
+  const tarefa = await prisma.tarefa.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      cliente: {
+        select: {
+          nome: true,
+          slug: true,
+        },
+      },
+      resultados: {
+        orderBy: {
+          createdAt: "asc",
+        },
+      },
+    },
+  });
+
+  if (!tarefa) {
+    return null;
+  }
+
+  const rows = montarLinhasResultadoExportacao(tarefa);
+  const buffer = await buildPdfResultadosProprietarios({
+    tarefa,
+    rows,
+  });
+
+  return {
+    filename: `proprietarios-admin-${tarefa.cliente.slug}-${tarefa.id}.pdf`,
+    buffer,
+  };
 }

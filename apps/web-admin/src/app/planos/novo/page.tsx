@@ -9,6 +9,33 @@ import { Select } from "../../../components/Select";
 import { criarPlano } from "../../../features/admin/api";
 import type { CriarPlanoRequest } from "../../../features/admin/types";
 import { useRequireSuperAdmin } from "../../../hooks/useRequireSuperAdmin";
+
+
+function formatMoneyInput(value: string) {
+  const digits = value.replace(/\D/g, "");
+
+  if (!digits) {
+    return "";
+  }
+
+  return new Intl.NumberFormat("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(Number(digits) / 100);
+}
+
+function moneyToCents(value: string) {
+  const digits = value.replace(/\D/g, "");
+
+  return Number(digits || 0);
+}
+
+function centsToMoneyInput(value?: number | null) {
+  return new Intl.NumberFormat("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(Number(value ?? 0) / 100);
+}
 import {
   Actions,
   BackLink,
@@ -35,22 +62,6 @@ import {
 
 type PlanoStatus = CriarPlanoRequest["status"];
 
-function moneyToCents(value: string) {
-  const normalized = value
-    .replace(/\s/g, "")
-    .replace("R$", "")
-    .replace(/\./g, "")
-    .replace(",", ".");
-
-  const numberValue = Number(normalized);
-
-  if (Number.isNaN(numberValue)) {
-    return 0;
-  }
-
-  return Math.round(numberValue * 100);
-}
-
 export default function NovoPlanoPage() {
   const { isCheckingAuth } = useRequireSuperAdmin();
   const router = useRouter();
@@ -59,7 +70,7 @@ export default function NovoPlanoPage() {
   const [descricao, setDescricao] = useState("");
   const [limiteMensalConsultas, setLimiteMensalConsultas] = useState("1000");
   const [intervaloSegundos, setIntervaloSegundos] = useState("60");
-  const [precoMensal, setPrecoMensal] = useState("1497");
+  const [precoMensal, setPrecoMensal] = useState("1.497,00");
   const [valorConsultaAdicional, setValorConsultaAdicional] = useState("1,80");
   const [limiteCorretores, setLimiteCorretores] = useState("26");
   const [status, setStatus] = useState<PlanoStatus>("ATIVO");
@@ -226,7 +237,7 @@ export default function NovoPlanoPage() {
                 <Input
                   label="Preço mensal em reais"
                   value={precoMensal}
-                  onChange={event => setPrecoMensal(event.target.value)}
+                  onChange={event => setPrecoMensal(formatMoneyInput(event.target.value))}
                   placeholder="1497"
                   required
                 />
@@ -234,7 +245,9 @@ export default function NovoPlanoPage() {
                 <Input
                   label="Valor da consulta adicional"
                   value={valorConsultaAdicional}
-                  onChange={event => setValorConsultaAdicional(event.target.value)}
+                  onChange={event =>
+                  setValorConsultaAdicional(formatMoneyInput(event.target.value))
+                }
                   placeholder="1,80"
                   required
                 />

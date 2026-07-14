@@ -1,0 +1,95 @@
+import type { FastifyReply, FastifyRequest } from "fastify";
+import {
+  buscarProprietariosSchema,
+  preverBuscaSchema,
+  previaIdParamsSchema,
+} from "./imovel.schemas.js";
+import {
+  buscarPreviaBusca,
+  cancelarPreviaBusca,
+  confirmarPreviaECriarTarefa,
+  criarPreviaBusca,
+  listarPreviasPendentes,
+} from "./busca-previa.service.js";
+
+export async function criarPreviaBuscaController(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  const body = preverBuscaSchema.parse(request.body);
+
+  const result = await criarPreviaBusca(request.auth.clienteId, body);
+
+  return reply.status(202).send(result);
+}
+
+export async function buscarPreviaBuscaController(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  const { id } = previaIdParamsSchema.parse(request.params);
+
+  const result = await buscarPreviaBusca(request.auth.clienteId, id);
+
+  if (!result) {
+    return reply.status(404).send({
+      error: "NotFound",
+      message: "Prévia não encontrada",
+    });
+  }
+
+  return reply.status(200).send(result);
+}
+
+export async function listarPreviasPendentesController(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  const previas = await listarPreviasPendentes(request.auth.clienteId);
+
+  return reply.status(200).send({
+    previas,
+  });
+}
+
+export async function cancelarPreviaBuscaController(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  const { id } = previaIdParamsSchema.parse(request.params);
+
+  const result = await cancelarPreviaBusca(request.auth.clienteId, id);
+
+  if (!result) {
+    return reply.status(404).send({
+      error: "NotFound",
+      message: "Prévia não encontrada",
+    });
+  }
+
+  return reply.status(200).send(result);
+}
+
+export async function confirmarPreviaBuscaController(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  const body = buscarProprietariosSchema.parse(request.body);
+
+  try {
+    const result = await confirmarPreviaECriarTarefa(
+      request.auth.clienteId,
+      body
+    );
+
+    return reply.status(result.precisaConfirmarExcedente ? 409 : 202).send(result);
+  } catch (error) {
+    return reply.status(400).send({
+      error: "BadRequest",
+      message:
+        error instanceof Error
+          ? error.message
+          : "Erro ao confirmar prévia da busca",
+    });
+  }
+}
