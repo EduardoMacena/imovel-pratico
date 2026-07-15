@@ -751,3 +751,29 @@ export const SmallDangerButton = styled.button`
     cursor: not-allowed;
   }
 `;
+
+export const NoResultsBox = styled.div`
+  display: grid;
+  gap: ${({ theme }) => theme.spacing.sm};
+  padding: ${({ theme }) => theme.spacing.lg};
+  border-radius: 22px;
+  background: rgba(245, 158, 11, 0.10);
+  border: 1px solid rgba(245, 158, 11, 0.22);
+  color: ${({ theme }) => theme.colors.text};
+  line-height: 1.6;
+
+  p {
+    margin: 0;
+    color: ${({ theme }) => theme.colors.textMuted};
+    font-size: 14px;
+  }
+`;
+
+export const NoResultsTitle = styled.h3`
+  margin: 0;
+  color: #92400e;
+  font-size: 18px;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+`;
+

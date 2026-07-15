@@ -33,6 +33,7 @@ export async function buscarUsoMensalCliente(clienteId: string) {
 
   const consultasUsadas = await prisma.tarefaResultado.count({
     where: {
+      status: "SUCCESS",
       tarefa: {
         clienteId,
       },

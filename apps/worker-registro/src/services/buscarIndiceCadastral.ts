@@ -35,6 +35,47 @@ async function preencherEndereco(frame: Frame, logradouro: string, numero: strin
   await frame.locator("#numero").fill(numero);
 }
 
+async function aguardarResultadoPesquisa(frame: Frame) {
+  const timeoutMs = 30000;
+  const startedAt = Date.now();
+
+  const nenhumImovel = frame.getByText(/Nenhum im[oó]vel encontrado/i).first();
+
+  const verImoveis = frame
+    .locator("a", {
+      hasText: /Ver im[oó]veis relacionados/i,
+    })
+    .first();
+
+  while (Date.now() - startedAt < timeoutMs) {
+    const encontrouMensagemVazia = await nenhumImovel
+      .isVisible()
+      .catch(() => false);
+
+    if (encontrouMensagemVazia) {
+      return {
+        status: "EMPTY" as const,
+        verImoveis,
+      };
+    }
+
+    const encontrouLinkResultado = await verImoveis
+      .isVisible()
+      .catch(() => false);
+
+    if (encontrouLinkResultado) {
+      return {
+        status: "FOUND" as const,
+        verImoveis,
+      };
+    }
+
+    await frame.page().waitForTimeout(300);
+  }
+
+  throw new Error("Resultado da pesquisa 1RIBH não carregou dentro do tempo esperado");
+}
+
 export async function buscarIndiceCadastral(
   logradouro: string,
   numero: string
@@ -57,16 +98,15 @@ export async function buscarIndiceCadastral(
 
     await frame.locator('button[type="submit"]').click();
 
-    const verImoveis = frame.locator("a", {
-      hasText: /Ver imoveis relacionados/i,
-    });
+    const resultadoPesquisa = await aguardarResultadoPesquisa(frame);
 
-    await verImoveis.first().waitFor({
-      state: "visible",
-      timeout: 30000,
-    });
+    if (resultadoPesquisa.status === "EMPTY") {
+      console.log("[worker-registro] Nenhum imóvel encontrado no 1RIBH.");
 
-    await verImoveis.first().click();
+      return [];
+    }
+
+    await resultadoPesquisa.verImoveis.click();
 
     const linhas = frame.locator("table.table tbody tr");
 

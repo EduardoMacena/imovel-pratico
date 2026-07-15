@@ -111,6 +111,7 @@ async function calcularDadosFatura({
 
   const consultasUsadas = await prisma.tarefaResultado.count({
     where: {
+      status: "SUCCESS",
       tarefa: {
         clienteId,
       },

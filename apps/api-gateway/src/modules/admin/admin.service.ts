@@ -491,7 +491,11 @@ export async function buscarDashboardAdmin() {
 			},
 		}),
 
-		prisma.tarefaResultado.count(),
+		prisma.tarefaResultado.count({
+      where: {
+        status: "SUCCESS",
+      },
+    }),
 
 		prisma.tarefa.findMany({
 			orderBy: {
@@ -1058,7 +1062,8 @@ export async function buscarConsumoClienteAdmin(clienteId: string) {
   ] = await prisma.$transaction([
     prisma.tarefaResultado.count({
       where: {
-        tarefa: {
+        status: "SUCCESS",
+      tarefa: {
           clienteId,
         },
         createdAt: {

@@ -84,7 +84,8 @@ async function validarLimiteMensalAntesDeSalvarResultado(clienteId: string, tare
 
 	const consultasUsadas = await prisma.tarefaResultado.count({
 		where: {
-			tarefa: {
+			status: "SUCCESS",
+      tarefa: {
 				clienteId,
 			},
 			createdAt: {

@@ -54,6 +54,8 @@ import {
   HeroTitle,
   InlineHint,
   MainGrid,
+  NoResultsBox,
+  NoResultsTitle,
   ModalActions,
   ModalCancelButton,
   ModalCard,
@@ -215,12 +217,18 @@ function NovaBuscaContent() {
     previaBusca &&
     STATUS_PROCESSANDO_PREVIA.includes(previaBusca.previa.status);
 
+  const previaSemRegistros =
+    previaBusca?.previa.status === "PRONTA" &&
+    previaBusca.previa.quantidadeRegistros <= 0;
+
   const previaProntaSemExcedente =
     previaBusca?.previa.status === "PRONTA" &&
+    previaBusca.previa.quantidadeRegistros > 0 &&
     !previaBusca.precisaConfirmarExcedente;
 
   const previaAguardandoExcedente =
-    previaBusca?.previa.status === "AGUARDANDO_AUTORIZACAO_EXCEDENTE";
+    previaBusca?.previa.status === "AGUARDANDO_AUTORIZACAO_EXCEDENTE" &&
+    previaBusca.previa.quantidadeRegistros > 0;
 
   async function carregarAssinatura() {
     try {
@@ -252,6 +260,21 @@ function NovaBuscaContent() {
     previaId: string,
     confirmarExcedente: boolean
   ) {
+    const previaSelecionada =
+      previaBusca?.previa.id === previaId
+        ? previaBusca
+        : pendencias.find(item => item.previa.id === previaId);
+
+    if (
+      previaSelecionada?.previa.status === "PRONTA" &&
+      previaSelecionada.previa.quantidadeRegistros <= 0
+    ) {
+      setErro(
+        "Não é possível iniciar o processamento porque o 1RIBH não encontrou imóveis para este endereço."
+      );
+      return;
+    }
+
     setErro(null);
     setIsLoading(true);
 
@@ -799,6 +822,21 @@ function NovaBuscaContent() {
                         <ErrorBox>{previaBusca.previa.erro}</ErrorBox>
                       )}
 
+                      {previaSemRegistros && (
+                        <NoResultsBox>
+                          <NoResultsTitle>
+                            Nenhum imóvel encontrado para este endereço.
+                          </NoResultsTitle>
+
+                          <p>
+                            O 1RIBH não retornou índice cadastral para o
+                            logradouro e número informados. Confira se o
+                            endereço está correto, ajuste os dados e tente uma
+                            nova busca.
+                          </p>
+                        </NoResultsBox>
+                      )}
+
                       {previaProcessando && (
                         <EmptyState>
                           A prévia ainda está sendo processada. Assim que
@@ -933,40 +971,60 @@ function NovaBuscaContent() {
 
                 {!isLoadingPendencias && pendencias.length > 0 && (
                   <PendingPreviewList>
-                    {pendencias.map(item => (
+                    {pendencias.map(item => {
+                      const itemSemRegistros =
+                        item.previa.status === "PRONTA" &&
+                        item.previa.quantidadeRegistros <= 0;
+
+                      return (
                       <PendingPreviewItem key={item.previa.id}>
                         <strong>
                           {item.previa.logradouro}, nº {item.previa.numero}
                         </strong>
 
                         <span>
-                          {getPreviaStatusLabel(item.previa.status)} ·{" "}
-                          {formatNumberBR(item.previa.quantidadeRegistros)}{" "}
-                          registro(s) · Excedente estimado:{" "}
-                          {formatCurrencyFromCents(
-                            item.excedente.valorExcedenteEstimadoCentavos
+                          {itemSemRegistros ? (
+                            <>
+                              Sem imóveis encontrados · confira o endereço e
+                              faça uma nova busca.
+                            </>
+                          ) : (
+                            <>
+                              {getPreviaStatusLabel(item.previa.status)} ·{" "}
+                              {formatNumberBR(
+                                item.previa.quantidadeRegistros
+                              )}{" "}
+                              registro(s) · Excedente estimado:{" "}
+                              {formatCurrencyFromCents(
+                                item.excedente
+                                  .valorExcedenteEstimadoCentavos
+                              )}
+                            </>
                           )}
                         </span>
 
                         <PendingPreviewActions>
-                          <SmallActionButton
+                          {!itemSemRegistros && (
+                            <SmallActionButton
                             type="button"
                             disabled={isLoading}
                             onClick={() => revisarPendencia(item.previa.id)}
                           >
                             Revisar
                           </SmallActionButton>
+                          )}
 
                           <SmallDangerButton
                             type="button"
                             disabled={isLoading}
                             onClick={() => cancelarPreviaPorId(item.previa.id)}
                           >
-                            Cancelar
+                            {itemSemRegistros ? "Descartar" : "Cancelar"}
                           </SmallDangerButton>
                         </PendingPreviewActions>
                       </PendingPreviewItem>
-                    ))}
+                      );
+                    })}
                   </PendingPreviewList>
                 )}
               </SidebarCard>
