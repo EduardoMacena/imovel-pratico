@@ -1,0 +1,172 @@
+name: imovel-pratico-staging
+
+services:
+  postgres-staging:
+    image: postgres:17-alpine
+    container_name: imovel-pratico-postgres-staging
+    restart: unless-stopped
+    env_file:
+      - .env.staging
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_staging_data:/var/lib/postgresql/data
+    networks:
+      - imovel-pratico-staging
+
+  redis-staging:
+    image: redis:8-alpine
+    container_name: imovel-pratico-redis-staging
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_staging_data:/data
+    networks:
+      - imovel-pratico-staging
+
+  api-gateway-staging:
+    container_name: imovel-pratico-api-gateway-staging
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+      args:
+        APP_NAME: "@imovel-pratico/api-gateway"
+    env_file:
+      - .env.staging
+    environment:
+      PORT: 3333
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+      NODE_ENV: production
+      TRUST_PROXY: "true"
+    depends_on:
+      - postgres-staging
+      - redis-staging
+    ports:
+      - "127.0.0.1:13333:3333"
+    networks:
+      - imovel-pratico-staging
+
+  web-home-staging:
+    container_name: imovel-pratico-web-home-staging
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.next
+      args:
+        APP_NAME: "@imovel-pratico/web-home"
+        APP_PORT: "3000"
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+    env_file:
+      - .env.staging
+    environment:
+      PORT: 3000
+      NODE_ENV: production
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+    depends_on:
+      - api-gateway-staging
+    ports:
+      - "127.0.0.1:13000:3000"
+    networks:
+      - imovel-pratico-staging
+
+  web-client-staging:
+    container_name: imovel-pratico-web-client-staging
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.next
+      args:
+        APP_NAME: "@imovel-pratico/web-client"
+        APP_PORT: "3001"
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+    env_file:
+      - .env.staging
+    environment:
+      PORT: 3001
+      NODE_ENV: production
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+    depends_on:
+      - api-gateway-staging
+    ports:
+      - "127.0.0.1:13001:3001"
+    networks:
+      - imovel-pratico-staging
+
+  web-admin-staging:
+    container_name: imovel-pratico-web-admin-staging
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.next
+      args:
+        APP_NAME: "@imovel-pratico/web-admin"
+        APP_PORT: "3002"
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+    env_file:
+      - .env.staging
+    environment:
+      PORT: 3002
+      NODE_ENV: production
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+    depends_on:
+      - api-gateway-staging
+    ports:
+      - "127.0.0.1:13002:3002"
+    networks:
+      - imovel-pratico-staging
+
+  worker-registro-staging:
+    container_name: imovel-pratico-worker-registro-staging
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.worker
+      args:
+        APP_NAME: "@imovel-pratico/worker-registro"
+    env_file:
+      - .env.staging
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+      PLAYWRIGHT_HEADLESS: "true"
+      PLAYWRIGHT_SLOW_MO: "0"
+    depends_on:
+      - postgres-staging
+      - redis-staging
+    networks:
+      - imovel-pratico-staging
+
+  worker-cnd-staging:
+    container_name: imovel-pratico-worker-cnd-staging
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.worker
+      args:
+        APP_NAME: "@imovel-pratico/worker-cnd"
+    env_file:
+      - .env.staging
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+      PLAYWRIGHT_HEADLESS: "true"
+      PLAYWRIGHT_SLOW_MO: "0"
+    depends_on:
+      - postgres-staging
+      - redis-staging
+    networks:
+      - imovel-pratico-staging
+
+volumes:
+  postgres_staging_data:
+  redis_staging_data:
+
+networks:
+  imovel-pratico-staging:
+    driver: bridge
