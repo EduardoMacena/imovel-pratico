@@ -8,6 +8,12 @@ import {
 } from "@imovel-pratico/queue";
 import { closeBrowser } from "./playwright/browser.js";
 import { processarBuscaRegistrosJob } from "./processarBuscaRegistrosJob.js";
+import {
+  iniciarHeartbeatWorker,
+  registrarErroOperacao,
+  registrarHeartbeatWorker,
+  registrarOperacaoEvento,
+} from "./monitoramento/operacao-monitoramento.js";
 
 function getWorkerClienteId() {
   const clienteId = process.env.WORKER_CLIENTE_ID?.trim();
@@ -52,6 +58,32 @@ async function main() {
   const clienteId = getWorkerClienteId();
   const cliente = await validarClienteDoWorker(clienteId);
   const queueName = getBuscarRegistrosQueueName(cliente.id);
+  const identificador =
+    process.env.WORKER_NAME?.trim() || `worker-registro-${cliente.id}`;
+
+  const heartbeatInterval = iniciarHeartbeatWorker({
+    clienteId: cliente.id,
+    servico: "WORKER_REGISTRO",
+    identificador,
+    fila: queueName,
+    metadata: {
+      clienteNome: cliente.nome,
+      pid: process.pid,
+      startedAt: new Date().toISOString(),
+    },
+  });
+
+  await registrarOperacaoEvento({
+    clienteId: cliente.id,
+    servico: "WORKER_REGISTRO",
+    tipo: "WORKER_INICIADO",
+    mensagem: `Worker Registro iniciado para ${cliente.nome}`,
+    metadata: {
+      queueName,
+      identificador,
+      pid: process.pid,
+    },
+  });
 
   const worker = new Worker<BuscarRegistrosJobData>(
     queueName,
@@ -60,7 +92,52 @@ async function main() {
         `[worker-registro] Processando prévia ${job.data.buscaPreviaId} do cliente ${cliente.nome}`
       );
 
-      await processarBuscaRegistrosJob(job);
+      await registrarOperacaoEvento({
+        clienteId: job.data.clienteId,
+        buscaPreviaId: job.data.buscaPreviaId,
+        servico: "WORKER_REGISTRO",
+        tipo: "JOB_RECEBIDO",
+        mensagem: `Worker Registro recebeu a prévia ${job.data.buscaPreviaId}`,
+        metadata: {
+          jobId: job.id,
+          attemptsMade: job.attemptsMade,
+          queueName,
+        },
+      });
+
+      try {
+        await processarBuscaRegistrosJob(job);
+
+        await registrarOperacaoEvento({
+          clienteId: job.data.clienteId,
+          buscaPreviaId: job.data.buscaPreviaId,
+          servico: "WORKER_REGISTRO",
+          tipo: "JOB_FINALIZADO",
+          mensagem: `Worker Registro finalizou a prévia ${job.data.buscaPreviaId}`,
+          metadata: {
+            jobId: job.id,
+            queueName,
+          },
+        });
+      } catch (error) {
+        await registrarErroOperacao(
+          {
+            clienteId: job.data.clienteId,
+            buscaPreviaId: job.data.buscaPreviaId,
+            servico: "WORKER_REGISTRO",
+            tipo: "JOB_ERRO",
+            mensagem: `Worker Registro falhou ao processar a prévia ${job.data.buscaPreviaId}`,
+            metadata: {
+              jobId: job.id,
+              attemptsMade: job.attemptsMade,
+              queueName,
+            },
+          },
+          error
+        );
+
+        throw error;
+      }
     },
     {
       connection: redisConnection,
@@ -80,6 +157,20 @@ async function main() {
   worker.on("failed", (job, error) => {
     if (!job) {
       console.error("[worker-registro] Job falhou sem referência:", error);
+
+      void registrarErroOperacao(
+        {
+          clienteId: cliente.id,
+          servico: "WORKER_REGISTRO",
+          tipo: "JOB_FALHOU_SEM_REFERENCIA",
+          mensagem: "Worker Registro recebeu falha sem referência de job",
+          metadata: {
+            queueName,
+          },
+        },
+        error
+      );
+
       return;
     }
 
@@ -91,6 +182,18 @@ async function main() {
 
   worker.on("stalled", jobId => {
     console.warn(`[worker-registro] Job ${jobId} ficou stalled`);
+
+    void registrarOperacaoEvento({
+      clienteId: cliente.id,
+      servico: "WORKER_REGISTRO",
+      nivel: "WARN",
+      tipo: "JOB_STALLED",
+      mensagem: `Job ${jobId} ficou stalled no worker Registro`,
+      metadata: {
+        jobId,
+        queueName,
+      },
+    });
   });
 
   console.log(
@@ -99,6 +202,31 @@ async function main() {
 
   async function shutdown() {
     console.log("[worker-registro] Encerrando worker...");
+
+    clearInterval(heartbeatInterval);
+
+    await registrarOperacaoEvento({
+      clienteId: cliente.id,
+      servico: "WORKER_REGISTRO",
+      nivel: "WARN",
+      tipo: "WORKER_ENCERRANDO",
+      mensagem: `Worker Registro encerrando para ${cliente.nome}`,
+      metadata: {
+        queueName,
+        identificador,
+      },
+    });
+
+    await registrarHeartbeatWorker({
+      clienteId: cliente.id,
+      servico: "WORKER_REGISTRO",
+      identificador,
+      fila: queueName,
+      status: "OFFLINE",
+      metadata: {
+        stoppedAt: new Date().toISOString(),
+      },
+    });
 
     await worker.close();
     await closeBrowser();

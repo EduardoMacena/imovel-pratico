@@ -32,12 +32,21 @@ import {
   listarFaturasController,
   marcarFaturaPagaController,
 } from "./admin-faturas.controller.js";
+import {
+  buscarResumoMonitoramentoController,
+  listarEventosMonitoramentoController,
+  listarFilasMonitoramentoController,
+} from "./admin-monitoramento.controller.js";
 
 export async function adminRoutes(app: FastifyInstance) {
 	app.addHook("preHandler", authMiddleware);
 	app.addHook("preHandler", adminMiddleware);
 
 	app.get("/admin/dashboard", buscarDashboardAdminController);
+
+  app.get("/admin/monitoramento/resumo", buscarResumoMonitoramentoController);
+  app.get("/admin/monitoramento/eventos", listarEventosMonitoramentoController);
+  app.get("/admin/monitoramento/filas", listarFilasMonitoramentoController);
 
 	app.get("/admin/consumo/clientes", listarConsumoClientesController);
 	app.get("/admin/consumo/clientes/:id", buscarConsumoClienteController);

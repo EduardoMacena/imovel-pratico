@@ -326,6 +326,7 @@ export type BuscaPreviaWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"BuscaPrevia"> | Date | string
   cliente?: Prisma.XOR<Prisma.ClienteScalarRelationFilter, Prisma.ClienteWhereInput>
   tarefas?: Prisma.TarefaListRelationFilter
+  eventos?: Prisma.OperacaoEventoListRelationFilter
 }
 
 export type BuscaPreviaOrderByWithRelationInput = {
@@ -348,6 +349,7 @@ export type BuscaPreviaOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   cliente?: Prisma.ClienteOrderByWithRelationInput
   tarefas?: Prisma.TarefaOrderByRelationAggregateInput
+  eventos?: Prisma.OperacaoEventoOrderByRelationAggregateInput
 }
 
 export type BuscaPreviaWhereUniqueInput = Prisma.AtLeast<{
@@ -373,6 +375,7 @@ export type BuscaPreviaWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"BuscaPrevia"> | Date | string
   cliente?: Prisma.XOR<Prisma.ClienteScalarRelationFilter, Prisma.ClienteWhereInput>
   tarefas?: Prisma.TarefaListRelationFilter
+  eventos?: Prisma.OperacaoEventoListRelationFilter
 }, "id">
 
 export type BuscaPreviaOrderByWithAggregationInput = {
@@ -442,6 +445,7 @@ export type BuscaPreviaCreateInput = {
   updatedAt?: Date | string
   cliente: Prisma.ClienteCreateNestedOneWithoutBuscasPreviasInput
   tarefas?: Prisma.TarefaCreateNestedManyWithoutBuscaPreviaInput
+  eventos?: Prisma.OperacaoEventoCreateNestedManyWithoutBuscaPreviaInput
 }
 
 export type BuscaPreviaUncheckedCreateInput = {
@@ -463,6 +467,7 @@ export type BuscaPreviaUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutBuscaPreviaInput
+  eventos?: Prisma.OperacaoEventoUncheckedCreateNestedManyWithoutBuscaPreviaInput
 }
 
 export type BuscaPreviaUpdateInput = {
@@ -484,6 +489,7 @@ export type BuscaPreviaUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cliente?: Prisma.ClienteUpdateOneRequiredWithoutBuscasPreviasNestedInput
   tarefas?: Prisma.TarefaUpdateManyWithoutBuscaPreviaNestedInput
+  eventos?: Prisma.OperacaoEventoUpdateManyWithoutBuscaPreviaNestedInput
 }
 
 export type BuscaPreviaUncheckedUpdateInput = {
@@ -505,6 +511,7 @@ export type BuscaPreviaUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutBuscaPreviaNestedInput
+  eventos?: Prisma.OperacaoEventoUncheckedUpdateManyWithoutBuscaPreviaNestedInput
 }
 
 export type BuscaPreviaCreateManyInput = {
@@ -717,6 +724,22 @@ export type EnumBuscaPreviaStatusFieldUpdateOperationsInput = {
   set?: $Enums.BuscaPreviaStatus
 }
 
+export type BuscaPreviaCreateNestedOneWithoutEventosInput = {
+  create?: Prisma.XOR<Prisma.BuscaPreviaCreateWithoutEventosInput, Prisma.BuscaPreviaUncheckedCreateWithoutEventosInput>
+  connectOrCreate?: Prisma.BuscaPreviaCreateOrConnectWithoutEventosInput
+  connect?: Prisma.BuscaPreviaWhereUniqueInput
+}
+
+export type BuscaPreviaUpdateOneWithoutEventosNestedInput = {
+  create?: Prisma.XOR<Prisma.BuscaPreviaCreateWithoutEventosInput, Prisma.BuscaPreviaUncheckedCreateWithoutEventosInput>
+  connectOrCreate?: Prisma.BuscaPreviaCreateOrConnectWithoutEventosInput
+  upsert?: Prisma.BuscaPreviaUpsertWithoutEventosInput
+  disconnect?: Prisma.BuscaPreviaWhereInput | boolean
+  delete?: Prisma.BuscaPreviaWhereInput | boolean
+  connect?: Prisma.BuscaPreviaWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.BuscaPreviaUpdateToOneWithWhereWithoutEventosInput, Prisma.BuscaPreviaUpdateWithoutEventosInput>, Prisma.BuscaPreviaUncheckedUpdateWithoutEventosInput>
+}
+
 export type BuscaPreviaCreateWithoutClienteInput = {
   id?: string
   status?: $Enums.BuscaPreviaStatus
@@ -735,6 +758,7 @@ export type BuscaPreviaCreateWithoutClienteInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tarefas?: Prisma.TarefaCreateNestedManyWithoutBuscaPreviaInput
+  eventos?: Prisma.OperacaoEventoCreateNestedManyWithoutBuscaPreviaInput
 }
 
 export type BuscaPreviaUncheckedCreateWithoutClienteInput = {
@@ -755,6 +779,7 @@ export type BuscaPreviaUncheckedCreateWithoutClienteInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutBuscaPreviaInput
+  eventos?: Prisma.OperacaoEventoUncheckedCreateNestedManyWithoutBuscaPreviaInput
 }
 
 export type BuscaPreviaCreateOrConnectWithoutClienteInput = {
@@ -824,6 +849,7 @@ export type BuscaPreviaCreateWithoutTarefasInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   cliente: Prisma.ClienteCreateNestedOneWithoutBuscasPreviasInput
+  eventos?: Prisma.OperacaoEventoCreateNestedManyWithoutBuscaPreviaInput
 }
 
 export type BuscaPreviaUncheckedCreateWithoutTarefasInput = {
@@ -844,6 +870,7 @@ export type BuscaPreviaUncheckedCreateWithoutTarefasInput = {
   confirmadaEm?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  eventos?: Prisma.OperacaoEventoUncheckedCreateNestedManyWithoutBuscaPreviaInput
 }
 
 export type BuscaPreviaCreateOrConnectWithoutTarefasInput = {
@@ -880,6 +907,7 @@ export type BuscaPreviaUpdateWithoutTarefasInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cliente?: Prisma.ClienteUpdateOneRequiredWithoutBuscasPreviasNestedInput
+  eventos?: Prisma.OperacaoEventoUpdateManyWithoutBuscaPreviaNestedInput
 }
 
 export type BuscaPreviaUncheckedUpdateWithoutTarefasInput = {
@@ -900,6 +928,107 @@ export type BuscaPreviaUncheckedUpdateWithoutTarefasInput = {
   confirmadaEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  eventos?: Prisma.OperacaoEventoUncheckedUpdateManyWithoutBuscaPreviaNestedInput
+}
+
+export type BuscaPreviaCreateWithoutEventosInput = {
+  id?: string
+  status?: $Enums.BuscaPreviaStatus
+  logradouro: string
+  numero: string
+  quantidadeRegistros?: number
+  registros?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  consultasDisponiveisNoMomento: number
+  consultasExcedentesEstimadas: number
+  valorConsultaAdicionalCentavos: number
+  valorExcedenteEstimadoCentavos: number
+  workerUrl?: string | null
+  erro?: string | null
+  expiraEm: Date | string
+  confirmadaEm?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  cliente: Prisma.ClienteCreateNestedOneWithoutBuscasPreviasInput
+  tarefas?: Prisma.TarefaCreateNestedManyWithoutBuscaPreviaInput
+}
+
+export type BuscaPreviaUncheckedCreateWithoutEventosInput = {
+  id?: string
+  clienteId: string
+  status?: $Enums.BuscaPreviaStatus
+  logradouro: string
+  numero: string
+  quantidadeRegistros?: number
+  registros?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  consultasDisponiveisNoMomento: number
+  consultasExcedentesEstimadas: number
+  valorConsultaAdicionalCentavos: number
+  valorExcedenteEstimadoCentavos: number
+  workerUrl?: string | null
+  erro?: string | null
+  expiraEm: Date | string
+  confirmadaEm?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutBuscaPreviaInput
+}
+
+export type BuscaPreviaCreateOrConnectWithoutEventosInput = {
+  where: Prisma.BuscaPreviaWhereUniqueInput
+  create: Prisma.XOR<Prisma.BuscaPreviaCreateWithoutEventosInput, Prisma.BuscaPreviaUncheckedCreateWithoutEventosInput>
+}
+
+export type BuscaPreviaUpsertWithoutEventosInput = {
+  update: Prisma.XOR<Prisma.BuscaPreviaUpdateWithoutEventosInput, Prisma.BuscaPreviaUncheckedUpdateWithoutEventosInput>
+  create: Prisma.XOR<Prisma.BuscaPreviaCreateWithoutEventosInput, Prisma.BuscaPreviaUncheckedCreateWithoutEventosInput>
+  where?: Prisma.BuscaPreviaWhereInput
+}
+
+export type BuscaPreviaUpdateToOneWithWhereWithoutEventosInput = {
+  where?: Prisma.BuscaPreviaWhereInput
+  data: Prisma.XOR<Prisma.BuscaPreviaUpdateWithoutEventosInput, Prisma.BuscaPreviaUncheckedUpdateWithoutEventosInput>
+}
+
+export type BuscaPreviaUpdateWithoutEventosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumBuscaPreviaStatusFieldUpdateOperationsInput | $Enums.BuscaPreviaStatus
+  logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  numero?: Prisma.StringFieldUpdateOperationsInput | string
+  quantidadeRegistros?: Prisma.IntFieldUpdateOperationsInput | number
+  registros?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  consultasDisponiveisNoMomento?: Prisma.IntFieldUpdateOperationsInput | number
+  consultasExcedentesEstimadas?: Prisma.IntFieldUpdateOperationsInput | number
+  valorConsultaAdicionalCentavos?: Prisma.IntFieldUpdateOperationsInput | number
+  valorExcedenteEstimadoCentavos?: Prisma.IntFieldUpdateOperationsInput | number
+  workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expiraEm?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  confirmadaEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cliente?: Prisma.ClienteUpdateOneRequiredWithoutBuscasPreviasNestedInput
+  tarefas?: Prisma.TarefaUpdateManyWithoutBuscaPreviaNestedInput
+}
+
+export type BuscaPreviaUncheckedUpdateWithoutEventosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  clienteId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumBuscaPreviaStatusFieldUpdateOperationsInput | $Enums.BuscaPreviaStatus
+  logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  numero?: Prisma.StringFieldUpdateOperationsInput | string
+  quantidadeRegistros?: Prisma.IntFieldUpdateOperationsInput | number
+  registros?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  consultasDisponiveisNoMomento?: Prisma.IntFieldUpdateOperationsInput | number
+  consultasExcedentesEstimadas?: Prisma.IntFieldUpdateOperationsInput | number
+  valorConsultaAdicionalCentavos?: Prisma.IntFieldUpdateOperationsInput | number
+  valorExcedenteEstimadoCentavos?: Prisma.IntFieldUpdateOperationsInput | number
+  workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expiraEm?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  confirmadaEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutBuscaPreviaNestedInput
 }
 
 export type BuscaPreviaCreateManyClienteInput = {
@@ -939,6 +1068,7 @@ export type BuscaPreviaUpdateWithoutClienteInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tarefas?: Prisma.TarefaUpdateManyWithoutBuscaPreviaNestedInput
+  eventos?: Prisma.OperacaoEventoUpdateManyWithoutBuscaPreviaNestedInput
 }
 
 export type BuscaPreviaUncheckedUpdateWithoutClienteInput = {
@@ -959,6 +1089,7 @@ export type BuscaPreviaUncheckedUpdateWithoutClienteInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutBuscaPreviaNestedInput
+  eventos?: Prisma.OperacaoEventoUncheckedUpdateManyWithoutBuscaPreviaNestedInput
 }
 
 export type BuscaPreviaUncheckedUpdateManyWithoutClienteInput = {
@@ -987,10 +1118,12 @@ export type BuscaPreviaUncheckedUpdateManyWithoutClienteInput = {
 
 export type BuscaPreviaCountOutputType = {
   tarefas: number
+  eventos: number
 }
 
 export type BuscaPreviaCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tarefas?: boolean | BuscaPreviaCountOutputTypeCountTarefasArgs
+  eventos?: boolean | BuscaPreviaCountOutputTypeCountEventosArgs
 }
 
 /**
@@ -1008,6 +1141,13 @@ export type BuscaPreviaCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.
  */
 export type BuscaPreviaCountOutputTypeCountTarefasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.TarefaWhereInput
+}
+
+/**
+ * BuscaPreviaCountOutputType without action
+ */
+export type BuscaPreviaCountOutputTypeCountEventosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.OperacaoEventoWhereInput
 }
 
 
@@ -1031,6 +1171,7 @@ export type BuscaPreviaSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   updatedAt?: boolean
   cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
   tarefas?: boolean | Prisma.BuscaPrevia$tarefasArgs<ExtArgs>
+  eventos?: boolean | Prisma.BuscaPrevia$eventosArgs<ExtArgs>
   _count?: boolean | Prisma.BuscaPreviaCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["buscaPrevia"]>
 
@@ -1100,6 +1241,7 @@ export type BuscaPreviaOmit<ExtArgs extends runtime.Types.Extensions.InternalArg
 export type BuscaPreviaInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
   tarefas?: boolean | Prisma.BuscaPrevia$tarefasArgs<ExtArgs>
+  eventos?: boolean | Prisma.BuscaPrevia$eventosArgs<ExtArgs>
   _count?: boolean | Prisma.BuscaPreviaCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type BuscaPreviaIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1114,6 +1256,7 @@ export type $BuscaPreviaPayload<ExtArgs extends runtime.Types.Extensions.Interna
   objects: {
     cliente: Prisma.$ClientePayload<ExtArgs>
     tarefas: Prisma.$TarefaPayload<ExtArgs>[]
+    eventos: Prisma.$OperacaoEventoPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1529,6 +1672,7 @@ export interface Prisma__BuscaPreviaClient<T, Null = never, ExtArgs extends runt
   readonly [Symbol.toStringTag]: "PrismaPromise"
   cliente<T extends Prisma.ClienteDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClienteDefaultArgs<ExtArgs>>): Prisma.Prisma__ClienteClient<runtime.Types.Result.GetResult<Prisma.$ClientePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   tarefas<T extends Prisma.BuscaPrevia$tarefasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BuscaPrevia$tarefasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TarefaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  eventos<T extends Prisma.BuscaPrevia$eventosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BuscaPrevia$eventosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OperacaoEventoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1997,6 +2141,30 @@ export type BuscaPrevia$tarefasArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   distinct?: Prisma.TarefaScalarFieldEnum | Prisma.TarefaScalarFieldEnum[]
+}
+
+/**
+ * BuscaPrevia.eventos
+ */
+export type BuscaPrevia$eventosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the OperacaoEvento
+   */
+  select?: Prisma.OperacaoEventoSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the OperacaoEvento
+   */
+  omit?: Prisma.OperacaoEventoOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OperacaoEventoInclude<ExtArgs> | null
+  where?: Prisma.OperacaoEventoWhereInput
+  orderBy?: Prisma.OperacaoEventoOrderByWithRelationInput | Prisma.OperacaoEventoOrderByWithRelationInput[]
+  cursor?: Prisma.OperacaoEventoWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.OperacaoEventoScalarFieldEnum | Prisma.OperacaoEventoScalarFieldEnum[]
 }
 
 /**

@@ -45,6 +45,13 @@ export function AppHeader() {
           <NavLink href="/financeiro" $active={pathname.startsWith("/financeiro")}>
             Financeiro
           </NavLink>
+
+          <NavLink
+            href="/monitoramento"
+            $active={pathname.startsWith("/monitoramento")}
+          >
+            Monitoramento
+          </NavLink>
         </Nav>
 
         <HeaderActions>

@@ -85,6 +85,26 @@ enum FaturaItemTipo {
   DESCONTO
 }
 
+enum OperacaoEventoNivel {
+  INFO
+  WARN
+  ERROR
+}
+
+enum OperacaoEventoServico {
+  API_GATEWAY
+  WORKER_REGISTRO
+  WORKER_CND
+  QUEUE
+  REALTIME
+}
+
+enum WorkerHeartbeatStatus {
+  ONLINE
+  OFFLINE
+  ERROR
+}
+
 model Plano {
   id   String @id @default(uuid())
   nome String
@@ -128,6 +148,8 @@ model Cliente {
   usuarios      Usuario[]
   tarefas       Tarefa[]
   consultasLogs ConsultaLog[]
+  operacaoEventos OperacaoEvento[]
+  workerHeartbeats WorkerHeartbeat[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -195,6 +217,7 @@ model Tarefa {
   cliente    Cliente           @relation(fields: [clienteId], references: [id])
   buscaPrevia BuscaPrevia? @relation(fields: [buscaPreviaId], references: [id], onDelete: SetNull)
   resultados TarefaResultado[]
+  eventos    OperacaoEvento[]
 
   createdAt   DateTime  @default(now())
   startedAt   DateTime?
@@ -232,6 +255,7 @@ model BuscaPrevia {
   confirmadaEm DateTime?
 
   tarefas Tarefa[]
+  eventos OperacaoEvento[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -382,4 +406,62 @@ model ConsultaLog {
   @@index([fonte])
   @@index([createdAt])
   @@map("consultas_logs")
+}
+
+model OperacaoEvento {
+  id String @id @default(uuid())
+
+  clienteId    String?
+  tarefaId     String?
+  buscaPreviaId String?
+
+  nivel   OperacaoEventoNivel @default(INFO)
+  servico OperacaoEventoServico
+
+  tipo     String
+  mensagem String
+
+  detalhes String?
+  metadata Json?
+
+  cliente    Cliente?    @relation(fields: [clienteId], references: [id], onDelete: SetNull)
+  tarefa     Tarefa?     @relation(fields: [tarefaId], references: [id], onDelete: SetNull)
+  buscaPrevia BuscaPrevia? @relation(fields: [buscaPreviaId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+
+  @@index([clienteId])
+  @@index([tarefaId])
+  @@index([buscaPreviaId])
+  @@index([nivel])
+  @@index([servico])
+  @@index([tipo])
+  @@index([createdAt])
+  @@map("operacao_eventos")
+}
+
+model WorkerHeartbeat {
+  id String @id @default(uuid())
+
+  clienteId String
+  cliente   Cliente @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+
+  servico       OperacaoEventoServico
+  identificador String
+  fila          String?
+
+  status WorkerHeartbeatStatus @default(ONLINE)
+
+  ultimoSinalEm DateTime @default(now())
+  metadata      Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([clienteId, servico, identificador])
+  @@index([clienteId])
+  @@index([servico])
+  @@index([status])
+  @@index([ultimoSinalEm])
+  @@map("worker_heartbeats")
 }

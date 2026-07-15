@@ -60,7 +60,9 @@ export const ModelName = {
   FaturaItem: 'FaturaItem',
   TarefaResultado: 'TarefaResultado',
   ImovelCache: 'ImovelCache',
-  ConsultaLog: 'ConsultaLog'
+  ConsultaLog: 'ConsultaLog',
+  OperacaoEvento: 'OperacaoEvento',
+  WorkerHeartbeat: 'WorkerHeartbeat'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -286,6 +288,39 @@ export const ConsultaLogScalarFieldEnum = {
 } as const
 
 export type ConsultaLogScalarFieldEnum = (typeof ConsultaLogScalarFieldEnum)[keyof typeof ConsultaLogScalarFieldEnum]
+
+
+export const OperacaoEventoScalarFieldEnum = {
+  id: 'id',
+  clienteId: 'clienteId',
+  tarefaId: 'tarefaId',
+  buscaPreviaId: 'buscaPreviaId',
+  nivel: 'nivel',
+  servico: 'servico',
+  tipo: 'tipo',
+  mensagem: 'mensagem',
+  detalhes: 'detalhes',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+} as const
+
+export type OperacaoEventoScalarFieldEnum = (typeof OperacaoEventoScalarFieldEnum)[keyof typeof OperacaoEventoScalarFieldEnum]
+
+
+export const WorkerHeartbeatScalarFieldEnum = {
+  id: 'id',
+  clienteId: 'clienteId',
+  servico: 'servico',
+  identificador: 'identificador',
+  fila: 'fila',
+  status: 'status',
+  ultimoSinalEm: 'ultimoSinalEm',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WorkerHeartbeatScalarFieldEnum = (typeof WorkerHeartbeatScalarFieldEnum)[keyof typeof WorkerHeartbeatScalarFieldEnum]
 
 
 export const SortOrder = {

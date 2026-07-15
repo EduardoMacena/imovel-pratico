@@ -67,3 +67,13 @@ export type ImovelCache = Prisma.ImovelCacheModel
  * 
  */
 export type ConsultaLog = Prisma.ConsultaLogModel
+/**
+ * Model OperacaoEvento
+ * 
+ */
+export type OperacaoEvento = Prisma.OperacaoEventoModel
+/**
+ * Model WorkerHeartbeat
+ * 
+ */
+export type WorkerHeartbeat = Prisma.WorkerHeartbeatModel

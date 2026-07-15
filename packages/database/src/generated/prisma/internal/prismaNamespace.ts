@@ -393,7 +393,9 @@ export const ModelName = {
   FaturaItem: 'FaturaItem',
   TarefaResultado: 'TarefaResultado',
   ImovelCache: 'ImovelCache',
-  ConsultaLog: 'ConsultaLog'
+  ConsultaLog: 'ConsultaLog',
+  OperacaoEvento: 'OperacaoEvento',
+  WorkerHeartbeat: 'WorkerHeartbeat'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -409,7 +411,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "plano" | "cliente" | "usuario" | "tarefa" | "buscaPrevia" | "fatura" | "faturaItem" | "tarefaResultado" | "imovelCache" | "consultaLog"
+    modelProps: "plano" | "cliente" | "usuario" | "tarefa" | "buscaPrevia" | "fatura" | "faturaItem" | "tarefaResultado" | "imovelCache" | "consultaLog" | "operacaoEvento" | "workerHeartbeat"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1153,6 +1155,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    OperacaoEvento: {
+      payload: Prisma.$OperacaoEventoPayload<ExtArgs>
+      fields: Prisma.OperacaoEventoFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.OperacaoEventoFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperacaoEventoPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.OperacaoEventoFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperacaoEventoPayload>
+        }
+        findFirst: {
+          args: Prisma.OperacaoEventoFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperacaoEventoPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.OperacaoEventoFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperacaoEventoPayload>
+        }
+        findMany: {
+          args: Prisma.OperacaoEventoFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperacaoEventoPayload>[]
+        }
+        create: {
+          args: Prisma.OperacaoEventoCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperacaoEventoPayload>
+        }
+        createMany: {
+          args: Prisma.OperacaoEventoCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.OperacaoEventoCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperacaoEventoPayload>[]
+        }
+        delete: {
+          args: Prisma.OperacaoEventoDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperacaoEventoPayload>
+        }
+        update: {
+          args: Prisma.OperacaoEventoUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperacaoEventoPayload>
+        }
+        deleteMany: {
+          args: Prisma.OperacaoEventoDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.OperacaoEventoUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.OperacaoEventoUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperacaoEventoPayload>[]
+        }
+        upsert: {
+          args: Prisma.OperacaoEventoUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperacaoEventoPayload>
+        }
+        aggregate: {
+          args: Prisma.OperacaoEventoAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateOperacaoEvento>
+        }
+        groupBy: {
+          args: Prisma.OperacaoEventoGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OperacaoEventoGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.OperacaoEventoCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OperacaoEventoCountAggregateOutputType> | number
+        }
+      }
+    }
+    WorkerHeartbeat: {
+      payload: Prisma.$WorkerHeartbeatPayload<ExtArgs>
+      fields: Prisma.WorkerHeartbeatFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WorkerHeartbeatFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerHeartbeatPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WorkerHeartbeatFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerHeartbeatPayload>
+        }
+        findFirst: {
+          args: Prisma.WorkerHeartbeatFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerHeartbeatPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WorkerHeartbeatFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerHeartbeatPayload>
+        }
+        findMany: {
+          args: Prisma.WorkerHeartbeatFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerHeartbeatPayload>[]
+        }
+        create: {
+          args: Prisma.WorkerHeartbeatCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerHeartbeatPayload>
+        }
+        createMany: {
+          args: Prisma.WorkerHeartbeatCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WorkerHeartbeatCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerHeartbeatPayload>[]
+        }
+        delete: {
+          args: Prisma.WorkerHeartbeatDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerHeartbeatPayload>
+        }
+        update: {
+          args: Prisma.WorkerHeartbeatUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerHeartbeatPayload>
+        }
+        deleteMany: {
+          args: Prisma.WorkerHeartbeatDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WorkerHeartbeatUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WorkerHeartbeatUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerHeartbeatPayload>[]
+        }
+        upsert: {
+          args: Prisma.WorkerHeartbeatUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerHeartbeatPayload>
+        }
+        aggregate: {
+          args: Prisma.WorkerHeartbeatAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWorkerHeartbeat>
+        }
+        groupBy: {
+          args: Prisma.WorkerHeartbeatGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WorkerHeartbeatGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WorkerHeartbeatCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WorkerHeartbeatCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1399,6 +1549,39 @@ export const ConsultaLogScalarFieldEnum = {
 } as const
 
 export type ConsultaLogScalarFieldEnum = (typeof ConsultaLogScalarFieldEnum)[keyof typeof ConsultaLogScalarFieldEnum]
+
+
+export const OperacaoEventoScalarFieldEnum = {
+  id: 'id',
+  clienteId: 'clienteId',
+  tarefaId: 'tarefaId',
+  buscaPreviaId: 'buscaPreviaId',
+  nivel: 'nivel',
+  servico: 'servico',
+  tipo: 'tipo',
+  mensagem: 'mensagem',
+  detalhes: 'detalhes',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+} as const
+
+export type OperacaoEventoScalarFieldEnum = (typeof OperacaoEventoScalarFieldEnum)[keyof typeof OperacaoEventoScalarFieldEnum]
+
+
+export const WorkerHeartbeatScalarFieldEnum = {
+  id: 'id',
+  clienteId: 'clienteId',
+  servico: 'servico',
+  identificador: 'identificador',
+  fila: 'fila',
+  status: 'status',
+  ultimoSinalEm: 'ultimoSinalEm',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WorkerHeartbeatScalarFieldEnum = (typeof WorkerHeartbeatScalarFieldEnum)[keyof typeof WorkerHeartbeatScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1659,6 +1842,48 @@ export type ListEnumCacheStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$
 
 
 /**
+ * Reference to a field of type 'OperacaoEventoNivel'
+ */
+export type EnumOperacaoEventoNivelFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OperacaoEventoNivel'>
+    
+
+
+/**
+ * Reference to a field of type 'OperacaoEventoNivel[]'
+ */
+export type ListEnumOperacaoEventoNivelFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OperacaoEventoNivel[]'>
+    
+
+
+/**
+ * Reference to a field of type 'OperacaoEventoServico'
+ */
+export type EnumOperacaoEventoServicoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OperacaoEventoServico'>
+    
+
+
+/**
+ * Reference to a field of type 'OperacaoEventoServico[]'
+ */
+export type ListEnumOperacaoEventoServicoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OperacaoEventoServico[]'>
+    
+
+
+/**
+ * Reference to a field of type 'WorkerHeartbeatStatus'
+ */
+export type EnumWorkerHeartbeatStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkerHeartbeatStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'WorkerHeartbeatStatus[]'
+ */
+export type ListEnumWorkerHeartbeatStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkerHeartbeatStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -1791,6 +2016,8 @@ export type GlobalOmitConfig = {
   tarefaResultado?: Prisma.TarefaResultadoOmit
   imovelCache?: Prisma.ImovelCacheOmit
   consultaLog?: Prisma.ConsultaLogOmit
+  operacaoEvento?: Prisma.OperacaoEventoOmit
+  workerHeartbeat?: Prisma.WorkerHeartbeatOmit
 }
 
 /* Types for Logging */

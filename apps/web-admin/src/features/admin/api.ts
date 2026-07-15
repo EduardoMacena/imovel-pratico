@@ -27,6 +27,10 @@ import type {
   FaturaResponse,
   GerarFaturaRequest,
   ListarFaturasResponse,
+  ListarEventosMonitoramentoRequest,
+  ListarEventosMonitoramentoResponse,
+  ListarFilasMonitoramentoResponse,
+  MonitoramentoResumoResponse,
 } from "./types";
 
 export function listarClientes() {
@@ -223,5 +227,65 @@ export function exportarResultadosTarefaAdminCsv(tarefaId: string) {
   return apiDownload(
     `/admin/tarefas/${tarefaId}/exportar`,
     `proprietarios-admin-tarefa-${tarefaId}.csv`
+  );
+}
+
+export function buscarResumoMonitoramento(params?: { clienteId?: string }) {
+  const searchParams = new URLSearchParams();
+
+  if (params?.clienteId) {
+    searchParams.set("clienteId", params.clienteId);
+  }
+
+  const query = searchParams.toString();
+
+  return apiRequest<MonitoramentoResumoResponse>(
+    `/admin/monitoramento/resumo${query ? `?${query}` : ""}`
+  );
+}
+
+export function listarEventosMonitoramento(
+  params?: ListarEventosMonitoramentoRequest
+) {
+  const searchParams = new URLSearchParams();
+
+  if (params?.clienteId) {
+    searchParams.set("clienteId", params.clienteId);
+  }
+
+  if (params?.nivel) {
+    searchParams.set("nivel", params.nivel);
+  }
+
+  if (params?.servico) {
+    searchParams.set("servico", params.servico);
+  }
+
+  if (params?.tipo) {
+    searchParams.set("tipo", params.tipo);
+  }
+
+  if (params?.take) {
+    searchParams.set("take", String(params.take));
+  }
+
+  const query = searchParams.toString();
+
+  return apiRequest<ListarEventosMonitoramentoResponse>(
+    `/admin/monitoramento/eventos${query ? `?${query}` : ""}`
+  );
+}
+
+export function listarFilasMonitoramento(params?: { clienteId?: string }) {
+  const searchParams = new URLSearchParams();
+
+  if (params?.clienteId) {
+    searchParams.set("clienteId", params.clienteId);
+  }
+
+  const query = searchParams.toString();
+
+  return apiRequest<ListarFilasMonitoramentoResponse>(
+    `/admin/monitoramento/filas${query ? `?${query}` : ""}`
   );
 }

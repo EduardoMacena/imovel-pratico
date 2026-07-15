@@ -2,6 +2,9 @@ import type { Job } from "bullmq";
 import { Prisma, prisma } from "@imovel-pratico/database";
 import type { BuscarProprietariosJobData } from "@imovel-pratico/queue";
 import { buscarProprietariosPorEndereco } from "./services/buscarProprietariosPorEndereco.js";
+import {
+	registrarOperacaoEvento,
+} from "./monitoramento/operacao-monitoramento.js";
 
 function toPrismaJson(
 	value: Record<string, unknown> | null | undefined
@@ -130,6 +133,21 @@ export async function processarBuscaProprietariosJob(
 			},
 		});
 
+		await registrarOperacaoEvento({
+			clienteId: job.data.clienteId,
+			tarefaId: job.data.tarefaId,
+			buscaPreviaId: job.data.buscaPreviaId ?? null,
+			servico: "WORKER_CND",
+			tipo: "TAREFA_PROCESSAMENTO_INICIADO",
+			mensagem: "Processamento da tarefa iniciado no worker CND",
+			metadata: {
+				mesAnoInicio: job.data.mesAnoInicio,
+				mesAnoFinal: job.data.mesAnoFinal,
+				intervaloSegundos: job.data.intervaloSegundos,
+				forceRefresh: job.data.forceRefresh,
+			},
+		});
+
 		const tarefaComPrevia = await prisma.tarefa.findUnique({
 			where: {
 				id: job.data.tarefaId,
@@ -204,6 +222,27 @@ export async function processarBuscaProprietariosJob(
 						fonteContato: item.fonteContato ?? null,
 						dadosContato: toPrismaJson(item.dadosContato),
 
+						erro: item.error ?? null,
+					},
+				});
+
+
+				await registrarOperacaoEvento({
+					clienteId: job.data.clienteId,
+					tarefaId: job.data.tarefaId,
+					buscaPreviaId: job.data.buscaPreviaId ?? null,
+					servico: "WORKER_CND",
+					nivel: item.status === "success" ? "INFO" : "WARN",
+					tipo: "RESULTADO_PROCESSADO",
+					mensagem:
+						item.status === "success"
+							? "Resultado processado com sucesso"
+							: "Resultado processado com erro",
+					metadata: {
+						indiceCadastral: item.indiceCadastral,
+						complemento: item.imovel,
+						fromCache: item.fromCache ?? false,
+						fonteContato: item.fonteContato ?? null,
 						erro: item.error ?? null,
 					},
 				});

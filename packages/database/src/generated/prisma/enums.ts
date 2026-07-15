@@ -111,3 +111,32 @@ export const FaturaItemTipo = {
 } as const
 
 export type FaturaItemTipo = (typeof FaturaItemTipo)[keyof typeof FaturaItemTipo]
+
+
+export const OperacaoEventoNivel = {
+  INFO: 'INFO',
+  WARN: 'WARN',
+  ERROR: 'ERROR'
+} as const
+
+export type OperacaoEventoNivel = (typeof OperacaoEventoNivel)[keyof typeof OperacaoEventoNivel]
+
+
+export const OperacaoEventoServico = {
+  API_GATEWAY: 'API_GATEWAY',
+  WORKER_REGISTRO: 'WORKER_REGISTRO',
+  WORKER_CND: 'WORKER_CND',
+  QUEUE: 'QUEUE',
+  REALTIME: 'REALTIME'
+} as const
+
+export type OperacaoEventoServico = (typeof OperacaoEventoServico)[keyof typeof OperacaoEventoServico]
+
+
+export const WorkerHeartbeatStatus = {
+  ONLINE: 'ONLINE',
+  OFFLINE: 'OFFLINE',
+  ERROR: 'ERROR'
+} as const
+
+export type WorkerHeartbeatStatus = (typeof WorkerHeartbeatStatus)[keyof typeof WorkerHeartbeatStatus]

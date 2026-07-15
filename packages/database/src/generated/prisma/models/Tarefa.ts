@@ -399,6 +399,7 @@ export type TarefaWhereInput = {
   cliente?: Prisma.XOR<Prisma.ClienteScalarRelationFilter, Prisma.ClienteWhereInput>
   buscaPrevia?: Prisma.XOR<Prisma.BuscaPreviaNullableScalarRelationFilter, Prisma.BuscaPreviaWhereInput> | null
   resultados?: Prisma.TarefaResultadoListRelationFilter
+  eventos?: Prisma.OperacaoEventoListRelationFilter
 }
 
 export type TarefaOrderByWithRelationInput = {
@@ -429,6 +430,7 @@ export type TarefaOrderByWithRelationInput = {
   cliente?: Prisma.ClienteOrderByWithRelationInput
   buscaPrevia?: Prisma.BuscaPreviaOrderByWithRelationInput
   resultados?: Prisma.TarefaResultadoOrderByRelationAggregateInput
+  eventos?: Prisma.OperacaoEventoOrderByRelationAggregateInput
 }
 
 export type TarefaWhereUniqueInput = Prisma.AtLeast<{
@@ -462,6 +464,7 @@ export type TarefaWhereUniqueInput = Prisma.AtLeast<{
   cliente?: Prisma.XOR<Prisma.ClienteScalarRelationFilter, Prisma.ClienteWhereInput>
   buscaPrevia?: Prisma.XOR<Prisma.BuscaPreviaNullableScalarRelationFilter, Prisma.BuscaPreviaWhereInput> | null
   resultados?: Prisma.TarefaResultadoListRelationFilter
+  eventos?: Prisma.OperacaoEventoListRelationFilter
 }, "id">
 
 export type TarefaOrderByWithAggregationInput = {
@@ -552,6 +555,7 @@ export type TarefaCreateInput = {
   cliente: Prisma.ClienteCreateNestedOneWithoutTarefasInput
   buscaPrevia?: Prisma.BuscaPreviaCreateNestedOneWithoutTarefasInput
   resultados?: Prisma.TarefaResultadoCreateNestedManyWithoutTarefaInput
+  eventos?: Prisma.OperacaoEventoCreateNestedManyWithoutTarefaInput
 }
 
 export type TarefaUncheckedCreateInput = {
@@ -580,6 +584,7 @@ export type TarefaUncheckedCreateInput = {
   completedAt?: Date | string | null
   updatedAt?: Date | string
   resultados?: Prisma.TarefaResultadoUncheckedCreateNestedManyWithoutTarefaInput
+  eventos?: Prisma.OperacaoEventoUncheckedCreateNestedManyWithoutTarefaInput
 }
 
 export type TarefaUpdateInput = {
@@ -608,6 +613,7 @@ export type TarefaUpdateInput = {
   cliente?: Prisma.ClienteUpdateOneRequiredWithoutTarefasNestedInput
   buscaPrevia?: Prisma.BuscaPreviaUpdateOneWithoutTarefasNestedInput
   resultados?: Prisma.TarefaResultadoUpdateManyWithoutTarefaNestedInput
+  eventos?: Prisma.OperacaoEventoUpdateManyWithoutTarefaNestedInput
 }
 
 export type TarefaUncheckedUpdateInput = {
@@ -636,6 +642,7 @@ export type TarefaUncheckedUpdateInput = {
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   resultados?: Prisma.TarefaResultadoUncheckedUpdateManyWithoutTarefaNestedInput
+  eventos?: Prisma.OperacaoEventoUncheckedUpdateManyWithoutTarefaNestedInput
 }
 
 export type TarefaCreateManyInput = {
@@ -835,6 +842,11 @@ export type TarefaScalarRelationFilter = {
   isNot?: Prisma.TarefaWhereInput
 }
 
+export type TarefaNullableScalarRelationFilter = {
+  is?: Prisma.TarefaWhereInput | null
+  isNot?: Prisma.TarefaWhereInput | null
+}
+
 export type TarefaCreateNestedManyWithoutClienteInput = {
   create?: Prisma.XOR<Prisma.TarefaCreateWithoutClienteInput, Prisma.TarefaUncheckedCreateWithoutClienteInput> | Prisma.TarefaCreateWithoutClienteInput[] | Prisma.TarefaUncheckedCreateWithoutClienteInput[]
   connectOrCreate?: Prisma.TarefaCreateOrConnectWithoutClienteInput | Prisma.TarefaCreateOrConnectWithoutClienteInput[]
@@ -937,6 +949,22 @@ export type TarefaUpdateOneRequiredWithoutResultadosNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.TarefaUpdateToOneWithWhereWithoutResultadosInput, Prisma.TarefaUpdateWithoutResultadosInput>, Prisma.TarefaUncheckedUpdateWithoutResultadosInput>
 }
 
+export type TarefaCreateNestedOneWithoutEventosInput = {
+  create?: Prisma.XOR<Prisma.TarefaCreateWithoutEventosInput, Prisma.TarefaUncheckedCreateWithoutEventosInput>
+  connectOrCreate?: Prisma.TarefaCreateOrConnectWithoutEventosInput
+  connect?: Prisma.TarefaWhereUniqueInput
+}
+
+export type TarefaUpdateOneWithoutEventosNestedInput = {
+  create?: Prisma.XOR<Prisma.TarefaCreateWithoutEventosInput, Prisma.TarefaUncheckedCreateWithoutEventosInput>
+  connectOrCreate?: Prisma.TarefaCreateOrConnectWithoutEventosInput
+  upsert?: Prisma.TarefaUpsertWithoutEventosInput
+  disconnect?: Prisma.TarefaWhereInput | boolean
+  delete?: Prisma.TarefaWhereInput | boolean
+  connect?: Prisma.TarefaWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TarefaUpdateToOneWithWhereWithoutEventosInput, Prisma.TarefaUpdateWithoutEventosInput>, Prisma.TarefaUncheckedUpdateWithoutEventosInput>
+}
+
 export type TarefaCreateWithoutClienteInput = {
   id?: string
   status?: $Enums.TarefaStatus
@@ -962,6 +990,7 @@ export type TarefaCreateWithoutClienteInput = {
   updatedAt?: Date | string
   buscaPrevia?: Prisma.BuscaPreviaCreateNestedOneWithoutTarefasInput
   resultados?: Prisma.TarefaResultadoCreateNestedManyWithoutTarefaInput
+  eventos?: Prisma.OperacaoEventoCreateNestedManyWithoutTarefaInput
 }
 
 export type TarefaUncheckedCreateWithoutClienteInput = {
@@ -989,6 +1018,7 @@ export type TarefaUncheckedCreateWithoutClienteInput = {
   completedAt?: Date | string | null
   updatedAt?: Date | string
   resultados?: Prisma.TarefaResultadoUncheckedCreateNestedManyWithoutTarefaInput
+  eventos?: Prisma.OperacaoEventoUncheckedCreateNestedManyWithoutTarefaInput
 }
 
 export type TarefaCreateOrConnectWithoutClienteInput = {
@@ -1072,6 +1102,7 @@ export type TarefaCreateWithoutBuscaPreviaInput = {
   updatedAt?: Date | string
   cliente: Prisma.ClienteCreateNestedOneWithoutTarefasInput
   resultados?: Prisma.TarefaResultadoCreateNestedManyWithoutTarefaInput
+  eventos?: Prisma.OperacaoEventoCreateNestedManyWithoutTarefaInput
 }
 
 export type TarefaUncheckedCreateWithoutBuscaPreviaInput = {
@@ -1099,6 +1130,7 @@ export type TarefaUncheckedCreateWithoutBuscaPreviaInput = {
   completedAt?: Date | string | null
   updatedAt?: Date | string
   resultados?: Prisma.TarefaResultadoUncheckedCreateNestedManyWithoutTarefaInput
+  eventos?: Prisma.OperacaoEventoUncheckedCreateNestedManyWithoutTarefaInput
 }
 
 export type TarefaCreateOrConnectWithoutBuscaPreviaInput = {
@@ -1152,6 +1184,7 @@ export type TarefaCreateWithoutResultadosInput = {
   updatedAt?: Date | string
   cliente: Prisma.ClienteCreateNestedOneWithoutTarefasInput
   buscaPrevia?: Prisma.BuscaPreviaCreateNestedOneWithoutTarefasInput
+  eventos?: Prisma.OperacaoEventoCreateNestedManyWithoutTarefaInput
 }
 
 export type TarefaUncheckedCreateWithoutResultadosInput = {
@@ -1179,6 +1212,7 @@ export type TarefaUncheckedCreateWithoutResultadosInput = {
   startedAt?: Date | string | null
   completedAt?: Date | string | null
   updatedAt?: Date | string
+  eventos?: Prisma.OperacaoEventoUncheckedCreateNestedManyWithoutTarefaInput
 }
 
 export type TarefaCreateOrConnectWithoutResultadosInput = {
@@ -1222,6 +1256,7 @@ export type TarefaUpdateWithoutResultadosInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cliente?: Prisma.ClienteUpdateOneRequiredWithoutTarefasNestedInput
   buscaPrevia?: Prisma.BuscaPreviaUpdateOneWithoutTarefasNestedInput
+  eventos?: Prisma.OperacaoEventoUpdateManyWithoutTarefaNestedInput
 }
 
 export type TarefaUncheckedUpdateWithoutResultadosInput = {
@@ -1249,6 +1284,135 @@ export type TarefaUncheckedUpdateWithoutResultadosInput = {
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  eventos?: Prisma.OperacaoEventoUncheckedUpdateManyWithoutTarefaNestedInput
+}
+
+export type TarefaCreateWithoutEventosInput = {
+  id?: string
+  status?: $Enums.TarefaStatus
+  logradouro: string
+  numero: string
+  mesAnoInicio: string
+  mesAnoFinal: string
+  intervaloSegundos?: number
+  forceRefresh?: boolean
+  excedenteAutorizado?: boolean
+  excedenteAutorizadoEm?: Date | string | null
+  consultasEstimadas?: number | null
+  consultasDisponiveisNoMomento?: number | null
+  consultasExcedentesEstimadas?: number | null
+  valorConsultaAdicionalCentavos?: number | null
+  valorExcedenteEstimadoCentavos?: number | null
+  total?: number
+  current?: number
+  erro?: string | null
+  createdAt?: Date | string
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
+  updatedAt?: Date | string
+  cliente: Prisma.ClienteCreateNestedOneWithoutTarefasInput
+  buscaPrevia?: Prisma.BuscaPreviaCreateNestedOneWithoutTarefasInput
+  resultados?: Prisma.TarefaResultadoCreateNestedManyWithoutTarefaInput
+}
+
+export type TarefaUncheckedCreateWithoutEventosInput = {
+  id?: string
+  clienteId: string
+  buscaPreviaId?: string | null
+  status?: $Enums.TarefaStatus
+  logradouro: string
+  numero: string
+  mesAnoInicio: string
+  mesAnoFinal: string
+  intervaloSegundos?: number
+  forceRefresh?: boolean
+  excedenteAutorizado?: boolean
+  excedenteAutorizadoEm?: Date | string | null
+  consultasEstimadas?: number | null
+  consultasDisponiveisNoMomento?: number | null
+  consultasExcedentesEstimadas?: number | null
+  valorConsultaAdicionalCentavos?: number | null
+  valorExcedenteEstimadoCentavos?: number | null
+  total?: number
+  current?: number
+  erro?: string | null
+  createdAt?: Date | string
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
+  updatedAt?: Date | string
+  resultados?: Prisma.TarefaResultadoUncheckedCreateNestedManyWithoutTarefaInput
+}
+
+export type TarefaCreateOrConnectWithoutEventosInput = {
+  where: Prisma.TarefaWhereUniqueInput
+  create: Prisma.XOR<Prisma.TarefaCreateWithoutEventosInput, Prisma.TarefaUncheckedCreateWithoutEventosInput>
+}
+
+export type TarefaUpsertWithoutEventosInput = {
+  update: Prisma.XOR<Prisma.TarefaUpdateWithoutEventosInput, Prisma.TarefaUncheckedUpdateWithoutEventosInput>
+  create: Prisma.XOR<Prisma.TarefaCreateWithoutEventosInput, Prisma.TarefaUncheckedCreateWithoutEventosInput>
+  where?: Prisma.TarefaWhereInput
+}
+
+export type TarefaUpdateToOneWithWhereWithoutEventosInput = {
+  where?: Prisma.TarefaWhereInput
+  data: Prisma.XOR<Prisma.TarefaUpdateWithoutEventosInput, Prisma.TarefaUncheckedUpdateWithoutEventosInput>
+}
+
+export type TarefaUpdateWithoutEventosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTarefaStatusFieldUpdateOperationsInput | $Enums.TarefaStatus
+  logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  numero?: Prisma.StringFieldUpdateOperationsInput | string
+  mesAnoInicio?: Prisma.StringFieldUpdateOperationsInput | string
+  mesAnoFinal?: Prisma.StringFieldUpdateOperationsInput | string
+  intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
+  forceRefresh?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excedenteAutorizado?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excedenteAutorizadoEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  consultasEstimadas?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  consultasDisponiveisNoMomento?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  consultasExcedentesEstimadas?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  valorConsultaAdicionalCentavos?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  valorExcedenteEstimadoCentavos?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  total?: Prisma.IntFieldUpdateOperationsInput | number
+  current?: Prisma.IntFieldUpdateOperationsInput | number
+  erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cliente?: Prisma.ClienteUpdateOneRequiredWithoutTarefasNestedInput
+  buscaPrevia?: Prisma.BuscaPreviaUpdateOneWithoutTarefasNestedInput
+  resultados?: Prisma.TarefaResultadoUpdateManyWithoutTarefaNestedInput
+}
+
+export type TarefaUncheckedUpdateWithoutEventosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  clienteId?: Prisma.StringFieldUpdateOperationsInput | string
+  buscaPreviaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumTarefaStatusFieldUpdateOperationsInput | $Enums.TarefaStatus
+  logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  numero?: Prisma.StringFieldUpdateOperationsInput | string
+  mesAnoInicio?: Prisma.StringFieldUpdateOperationsInput | string
+  mesAnoFinal?: Prisma.StringFieldUpdateOperationsInput | string
+  intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
+  forceRefresh?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excedenteAutorizado?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excedenteAutorizadoEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  consultasEstimadas?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  consultasDisponiveisNoMomento?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  consultasExcedentesEstimadas?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  valorConsultaAdicionalCentavos?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  valorExcedenteEstimadoCentavos?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  total?: Prisma.IntFieldUpdateOperationsInput | number
+  current?: Prisma.IntFieldUpdateOperationsInput | number
+  erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  resultados?: Prisma.TarefaResultadoUncheckedUpdateManyWithoutTarefaNestedInput
 }
 
 export type TarefaCreateManyClienteInput = {
@@ -1302,6 +1466,7 @@ export type TarefaUpdateWithoutClienteInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   buscaPrevia?: Prisma.BuscaPreviaUpdateOneWithoutTarefasNestedInput
   resultados?: Prisma.TarefaResultadoUpdateManyWithoutTarefaNestedInput
+  eventos?: Prisma.OperacaoEventoUpdateManyWithoutTarefaNestedInput
 }
 
 export type TarefaUncheckedUpdateWithoutClienteInput = {
@@ -1329,6 +1494,7 @@ export type TarefaUncheckedUpdateWithoutClienteInput = {
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   resultados?: Prisma.TarefaResultadoUncheckedUpdateManyWithoutTarefaNestedInput
+  eventos?: Prisma.OperacaoEventoUncheckedUpdateManyWithoutTarefaNestedInput
 }
 
 export type TarefaUncheckedUpdateManyWithoutClienteInput = {
@@ -1408,6 +1574,7 @@ export type TarefaUpdateWithoutBuscaPreviaInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cliente?: Prisma.ClienteUpdateOneRequiredWithoutTarefasNestedInput
   resultados?: Prisma.TarefaResultadoUpdateManyWithoutTarefaNestedInput
+  eventos?: Prisma.OperacaoEventoUpdateManyWithoutTarefaNestedInput
 }
 
 export type TarefaUncheckedUpdateWithoutBuscaPreviaInput = {
@@ -1435,6 +1602,7 @@ export type TarefaUncheckedUpdateWithoutBuscaPreviaInput = {
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   resultados?: Prisma.TarefaResultadoUncheckedUpdateManyWithoutTarefaNestedInput
+  eventos?: Prisma.OperacaoEventoUncheckedUpdateManyWithoutTarefaNestedInput
 }
 
 export type TarefaUncheckedUpdateManyWithoutBuscaPreviaInput = {
@@ -1470,10 +1638,12 @@ export type TarefaUncheckedUpdateManyWithoutBuscaPreviaInput = {
 
 export type TarefaCountOutputType = {
   resultados: number
+  eventos: number
 }
 
 export type TarefaCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   resultados?: boolean | TarefaCountOutputTypeCountResultadosArgs
+  eventos?: boolean | TarefaCountOutputTypeCountEventosArgs
 }
 
 /**
@@ -1491,6 +1661,13 @@ export type TarefaCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Exten
  */
 export type TarefaCountOutputTypeCountResultadosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.TarefaResultadoWhereInput
+}
+
+/**
+ * TarefaCountOutputType without action
+ */
+export type TarefaCountOutputTypeCountEventosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.OperacaoEventoWhereInput
 }
 
 
@@ -1522,6 +1699,7 @@ export type TarefaSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
   buscaPrevia?: boolean | Prisma.Tarefa$buscaPreviaArgs<ExtArgs>
   resultados?: boolean | Prisma.Tarefa$resultadosArgs<ExtArgs>
+  eventos?: boolean | Prisma.Tarefa$eventosArgs<ExtArgs>
   _count?: boolean | Prisma.TarefaCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tarefa"]>
 
@@ -1615,6 +1793,7 @@ export type TarefaInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
   buscaPrevia?: boolean | Prisma.Tarefa$buscaPreviaArgs<ExtArgs>
   resultados?: boolean | Prisma.Tarefa$resultadosArgs<ExtArgs>
+  eventos?: boolean | Prisma.Tarefa$eventosArgs<ExtArgs>
   _count?: boolean | Prisma.TarefaCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TarefaIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1632,6 +1811,7 @@ export type $TarefaPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     cliente: Prisma.$ClientePayload<ExtArgs>
     buscaPrevia: Prisma.$BuscaPreviaPayload<ExtArgs> | null
     resultados: Prisma.$TarefaResultadoPayload<ExtArgs>[]
+    eventos: Prisma.$OperacaoEventoPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2055,6 +2235,7 @@ export interface Prisma__TarefaClient<T, Null = never, ExtArgs extends runtime.T
   cliente<T extends Prisma.ClienteDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClienteDefaultArgs<ExtArgs>>): Prisma.Prisma__ClienteClient<runtime.Types.Result.GetResult<Prisma.$ClientePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   buscaPrevia<T extends Prisma.Tarefa$buscaPreviaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tarefa$buscaPreviaArgs<ExtArgs>>): Prisma.Prisma__BuscaPreviaClient<runtime.Types.Result.GetResult<Prisma.$BuscaPreviaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   resultados<T extends Prisma.Tarefa$resultadosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tarefa$resultadosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TarefaResultadoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  eventos<T extends Prisma.Tarefa$eventosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tarefa$eventosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OperacaoEventoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2549,6 +2730,30 @@ export type Tarefa$resultadosArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   distinct?: Prisma.TarefaResultadoScalarFieldEnum | Prisma.TarefaResultadoScalarFieldEnum[]
+}
+
+/**
+ * Tarefa.eventos
+ */
+export type Tarefa$eventosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the OperacaoEvento
+   */
+  select?: Prisma.OperacaoEventoSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the OperacaoEvento
+   */
+  omit?: Prisma.OperacaoEventoOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OperacaoEventoInclude<ExtArgs> | null
+  where?: Prisma.OperacaoEventoWhereInput
+  orderBy?: Prisma.OperacaoEventoOrderByWithRelationInput | Prisma.OperacaoEventoOrderByWithRelationInput[]
+  cursor?: Prisma.OperacaoEventoWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.OperacaoEventoScalarFieldEnum | Prisma.OperacaoEventoScalarFieldEnum[]
 }
 
 /**

@@ -474,6 +474,57 @@ export type EnumCacheStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumCacheStatusFilter<$PrismaModel>
 }
 
+export type EnumOperacaoEventoNivelFilter<$PrismaModel = never> = {
+  equals?: $Enums.OperacaoEventoNivel | Prisma.EnumOperacaoEventoNivelFieldRefInput<$PrismaModel>
+  in?: $Enums.OperacaoEventoNivel[] | Prisma.ListEnumOperacaoEventoNivelFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OperacaoEventoNivel[] | Prisma.ListEnumOperacaoEventoNivelFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOperacaoEventoNivelFilter<$PrismaModel> | $Enums.OperacaoEventoNivel
+}
+
+export type EnumOperacaoEventoServicoFilter<$PrismaModel = never> = {
+  equals?: $Enums.OperacaoEventoServico | Prisma.EnumOperacaoEventoServicoFieldRefInput<$PrismaModel>
+  in?: $Enums.OperacaoEventoServico[] | Prisma.ListEnumOperacaoEventoServicoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OperacaoEventoServico[] | Prisma.ListEnumOperacaoEventoServicoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOperacaoEventoServicoFilter<$PrismaModel> | $Enums.OperacaoEventoServico
+}
+
+export type EnumOperacaoEventoNivelWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.OperacaoEventoNivel | Prisma.EnumOperacaoEventoNivelFieldRefInput<$PrismaModel>
+  in?: $Enums.OperacaoEventoNivel[] | Prisma.ListEnumOperacaoEventoNivelFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OperacaoEventoNivel[] | Prisma.ListEnumOperacaoEventoNivelFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOperacaoEventoNivelWithAggregatesFilter<$PrismaModel> | $Enums.OperacaoEventoNivel
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumOperacaoEventoNivelFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumOperacaoEventoNivelFilter<$PrismaModel>
+}
+
+export type EnumOperacaoEventoServicoWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.OperacaoEventoServico | Prisma.EnumOperacaoEventoServicoFieldRefInput<$PrismaModel>
+  in?: $Enums.OperacaoEventoServico[] | Prisma.ListEnumOperacaoEventoServicoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OperacaoEventoServico[] | Prisma.ListEnumOperacaoEventoServicoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOperacaoEventoServicoWithAggregatesFilter<$PrismaModel> | $Enums.OperacaoEventoServico
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumOperacaoEventoServicoFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumOperacaoEventoServicoFilter<$PrismaModel>
+}
+
+export type EnumWorkerHeartbeatStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.WorkerHeartbeatStatus | Prisma.EnumWorkerHeartbeatStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.WorkerHeartbeatStatus[] | Prisma.ListEnumWorkerHeartbeatStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.WorkerHeartbeatStatus[] | Prisma.ListEnumWorkerHeartbeatStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumWorkerHeartbeatStatusFilter<$PrismaModel> | $Enums.WorkerHeartbeatStatus
+}
+
+export type EnumWorkerHeartbeatStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.WorkerHeartbeatStatus | Prisma.EnumWorkerHeartbeatStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.WorkerHeartbeatStatus[] | Prisma.ListEnumWorkerHeartbeatStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.WorkerHeartbeatStatus[] | Prisma.ListEnumWorkerHeartbeatStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumWorkerHeartbeatStatusWithAggregatesFilter<$PrismaModel> | $Enums.WorkerHeartbeatStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumWorkerHeartbeatStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumWorkerHeartbeatStatusFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -891,6 +942,57 @@ export type NestedEnumCacheStatusWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumCacheStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumCacheStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumOperacaoEventoNivelFilter<$PrismaModel = never> = {
+  equals?: $Enums.OperacaoEventoNivel | Prisma.EnumOperacaoEventoNivelFieldRefInput<$PrismaModel>
+  in?: $Enums.OperacaoEventoNivel[] | Prisma.ListEnumOperacaoEventoNivelFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OperacaoEventoNivel[] | Prisma.ListEnumOperacaoEventoNivelFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOperacaoEventoNivelFilter<$PrismaModel> | $Enums.OperacaoEventoNivel
+}
+
+export type NestedEnumOperacaoEventoServicoFilter<$PrismaModel = never> = {
+  equals?: $Enums.OperacaoEventoServico | Prisma.EnumOperacaoEventoServicoFieldRefInput<$PrismaModel>
+  in?: $Enums.OperacaoEventoServico[] | Prisma.ListEnumOperacaoEventoServicoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OperacaoEventoServico[] | Prisma.ListEnumOperacaoEventoServicoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOperacaoEventoServicoFilter<$PrismaModel> | $Enums.OperacaoEventoServico
+}
+
+export type NestedEnumOperacaoEventoNivelWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.OperacaoEventoNivel | Prisma.EnumOperacaoEventoNivelFieldRefInput<$PrismaModel>
+  in?: $Enums.OperacaoEventoNivel[] | Prisma.ListEnumOperacaoEventoNivelFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OperacaoEventoNivel[] | Prisma.ListEnumOperacaoEventoNivelFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOperacaoEventoNivelWithAggregatesFilter<$PrismaModel> | $Enums.OperacaoEventoNivel
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumOperacaoEventoNivelFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumOperacaoEventoNivelFilter<$PrismaModel>
+}
+
+export type NestedEnumOperacaoEventoServicoWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.OperacaoEventoServico | Prisma.EnumOperacaoEventoServicoFieldRefInput<$PrismaModel>
+  in?: $Enums.OperacaoEventoServico[] | Prisma.ListEnumOperacaoEventoServicoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OperacaoEventoServico[] | Prisma.ListEnumOperacaoEventoServicoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOperacaoEventoServicoWithAggregatesFilter<$PrismaModel> | $Enums.OperacaoEventoServico
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumOperacaoEventoServicoFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumOperacaoEventoServicoFilter<$PrismaModel>
+}
+
+export type NestedEnumWorkerHeartbeatStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.WorkerHeartbeatStatus | Prisma.EnumWorkerHeartbeatStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.WorkerHeartbeatStatus[] | Prisma.ListEnumWorkerHeartbeatStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.WorkerHeartbeatStatus[] | Prisma.ListEnumWorkerHeartbeatStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumWorkerHeartbeatStatusFilter<$PrismaModel> | $Enums.WorkerHeartbeatStatus
+}
+
+export type NestedEnumWorkerHeartbeatStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.WorkerHeartbeatStatus | Prisma.EnumWorkerHeartbeatStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.WorkerHeartbeatStatus[] | Prisma.ListEnumWorkerHeartbeatStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.WorkerHeartbeatStatus[] | Prisma.ListEnumWorkerHeartbeatStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumWorkerHeartbeatStatusWithAggregatesFilter<$PrismaModel> | $Enums.WorkerHeartbeatStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumWorkerHeartbeatStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumWorkerHeartbeatStatusFilter<$PrismaModel>
 }
 
 

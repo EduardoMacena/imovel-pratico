@@ -452,3 +452,126 @@ export type GerarFaturaRequest = {
 export type FaturaResponse = {
   fatura: FaturaResumo;
 };
+
+export type MonitoramentoNivel = "INFO" | "WARN" | "ERROR";
+
+export type MonitoramentoServico =
+  | "API_GATEWAY"
+  | "WORKER_REGISTRO"
+  | "WORKER_CND"
+  | "QUEUE"
+  | "REALTIME";
+
+export type MonitoramentoStatusGeral = "OPERACIONAL" | "ATENCAO";
+
+export type WorkerStatusOperacional = "ONLINE" | "OFFLINE" | "ERROR";
+
+export type MonitoramentoEvento = {
+  id: string;
+  clienteId: string | null;
+  tarefaId: string | null;
+  buscaPreviaId: string | null;
+  nivel: MonitoramentoNivel;
+  servico: MonitoramentoServico;
+  tipo: string;
+  mensagem: string;
+  detalhes: string | null;
+  metadata: unknown;
+  cliente: {
+    id: string;
+    nome: string;
+    slug: string;
+  } | null;
+  tarefa: {
+    id: string;
+    status: string;
+    endereco: {
+      logradouro: string;
+      numero: string;
+    };
+  } | null;
+  buscaPrevia: {
+    id: string;
+    status: string;
+    endereco: {
+      logradouro: string;
+      numero: string;
+    };
+  } | null;
+  createdAt: string;
+};
+
+export type WorkerHeartbeatResumo = {
+  id: string;
+  cliente: {
+    id: string;
+    nome: string;
+    slug: string;
+  };
+  servico: MonitoramentoServico;
+  identificador: string;
+  fila: string | null;
+  status: WorkerStatusOperacional;
+  statusRegistrado: WorkerStatusOperacional;
+  ultimoSinalEm: string;
+  metadata: unknown;
+};
+
+export type MonitoramentoResumoResponse = {
+  resumo: {
+    atualizadoEm: string;
+    statusGeral: MonitoramentoStatusGeral;
+    tarefas: {
+      pendentes: number;
+      processando: number;
+      comErroHoje: number;
+    };
+    eventos: {
+      errosUltimas24h: number;
+    };
+    workers: {
+      total: number;
+      online: number;
+      offline: number;
+      itens: WorkerHeartbeatResumo[];
+    };
+    ultimosErros: MonitoramentoEvento[];
+  };
+};
+
+export type ListarEventosMonitoramentoRequest = {
+  clienteId?: string;
+  nivel?: string;
+  servico?: string;
+  tipo?: string;
+  take?: number;
+};
+
+export type ListarEventosMonitoramentoResponse = {
+  eventos: MonitoramentoEvento[];
+};
+
+export type ListarFilasMonitoramentoResponse = {
+  atualizadoEm: string;
+  itens: {
+    cliente: {
+      id: string;
+      nome: string;
+      slug: string;
+      status: ClienteStatus;
+    };
+    filas: {
+      nome: string;
+      tipo: MonitoramentoServico;
+      descricao: string;
+      counts: {
+        waiting: number;
+        active: number;
+        delayed: number;
+        failed: number;
+        completed: number;
+        paused: number;
+      };
+    }[];
+  }[];
+};
