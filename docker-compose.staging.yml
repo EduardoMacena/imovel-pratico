@@ -120,6 +120,7 @@ services:
       - imovel-pratico-staging
 
   worker-registro-staging:
+    profiles: ["workers"]
     container_name: imovel-pratico-worker-registro-staging
     restart: unless-stopped
     build:
@@ -142,6 +143,7 @@ services:
       - imovel-pratico-staging
 
   worker-cnd-staging:
+    profiles: ["workers"]
     container_name: imovel-pratico-worker-cnd-staging
     restart: unless-stopped
     build:

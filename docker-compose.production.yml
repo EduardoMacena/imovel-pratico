@@ -120,6 +120,7 @@ services:
       - imovel-pratico-production
 
   worker-registro-prod:
+    profiles: ["workers"]
     container_name: imovel-pratico-worker-registro-prod
     restart: unless-stopped
     build:
@@ -142,6 +143,7 @@ services:
       - imovel-pratico-production
 
   worker-cnd-prod:
+    profiles: ["workers"]
     container_name: imovel-pratico-worker-cnd-prod
     restart: unless-stopped
     build:
