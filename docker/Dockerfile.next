@@ -1,0 +1,42 @@
+FROM node:20.19.5-bookworm-slim
+
+WORKDIR /app
+
+ARG APP_NAME
+ARG APP_PORT=3000
+ARG NEXT_PUBLIC_API_URL
+
+ENV APP_NAME=${APP_NAME}
+ENV NODE_ENV=production
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+ENV PNPM_HOME=/pnpm
+ENV PATH=$PNPM_HOME:$PATH
+ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends ca-certificates openssl \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN corepack enable
+
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
+
+COPY apps/api-gateway/package.json ./apps/api-gateway/package.json
+COPY apps/web-home/package.json ./apps/web-home/package.json
+COPY apps/web-admin/package.json ./apps/web-admin/package.json
+COPY apps/web-client/package.json ./apps/web-client/package.json
+COPY apps/worker-cnd/package.json ./apps/worker-cnd/package.json
+COPY apps/worker-registro/package.json ./apps/worker-registro/package.json
+
+COPY packages/database/package.json ./packages/database/package.json
+COPY packages/queue/package.json ./packages/queue/package.json
+
+RUN pnpm install --frozen-lockfile
+
+COPY . .
+
+RUN pnpm --filter "${APP_NAME}..." build
+
+EXPOSE ${APP_PORT}
+
+CMD ["sh", "-c", "pnpm --filter ${APP_NAME} start"]
