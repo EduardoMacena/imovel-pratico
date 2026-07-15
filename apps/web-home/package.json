@@ -1,0 +1,26 @@
+{
+  "name": "@imovel-pratico/web-home",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3000",
+    "build": "next build",
+    "start": "next start -p 3000",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "echo \"lint web-home\""
+  },
+  "dependencies": {
+    "next": "16.2.10",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "styled-components": "latest",
+    "framer-motion": "latest"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "@types/styled-components": "latest"
+  }
+}

@@ -1,257 +1,474 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
-import { AppHeader } from "../components/AppHeader";
-import { useRequireAuth } from "../hooks/useRequireAuth";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Button } from "../components/Button";
-import { Card } from "../components/Card";
-import { Input } from "../components/Input";
-import { ProgressBar } from "../components/ProgressBar";
-import { ResultCard } from "../components/ResultCard";
+import { useRouter } from "next/navigation";
+import { AppHeader } from "../components/AppHeader";
 import { StatusBadge } from "../components/StatusBadge";
-import {
-	buscarProgressoTarefa,
-	criarTarefaBusca,
-	buscarMinhaAssinatura,
-} from "../features/busca/api";
+import { useRequireAuth } from "../hooks/useRequireAuth";
+import { buscarMinhaAssinatura, listarTarefas } from "../features/busca/api";
 import type {
-	ProgressoTarefaResponse,
-	MinhaAssinaturaResponse,
+  MinhaAssinaturaResponse,
+  TarefaResumo,
 } from "../features/busca/types";
+import { getAuthUser } from "../lib/auth-storage";
 import {
-	Actions,
-	EmptyState,
-	ErrorBox,
-	FormGrid,
-	Header,
-	PageContainer,
-	ProductBadge,
-	ResultsCount,
-	ResultsHeader,
-	ResultsList,
-	ResultsSection,
-	ResultsTitle,
-	Subtitle,
-	TaskId,
-	Title,
-	HeaderActions,
-	HeaderLink,
+  ActionCard,
+  ActionDescription,
+  ActionGrid,
+  ActionLink,
+  ActionTitle,
+  BarFill,
+  BarInfo,
+  BarLabel,
+  BarRow,
+  BarTrack,
+  ChartCard,
+  ChartList,
+  DashboardGrid,
+  EmptyState,
+  ErrorBox,
+  HeaderActions,
+  HeroCard,
+  HeroContent,
+  HeroEyebrow,
+  HeroGrid,
+  HeroSubtitle,
+  HeroTitle,
+  MetricCard,
+  MetricGrid,
+  MetricHint,
+  MetricLabel,
+  MetricValue,
+  PageContainer,
+  PageShell,
+  PanelCard,
+  PanelHeader,
+  PanelSubtitle,
+  PanelTitle,
+  PlanCard,
+  PlanGrid,
+  PlanLabel,
+  PlanValue,
+  PrimaryLink,
+  RecentAddress,
+  RecentContent,
+  RecentDate,
+  RecentItem,
+  RecentList,
+  SecondaryLink,
+  SideColumn,
+  StatusPill,
+  UsageBar,
+  UsageBarFill,
+  UsageCard,
+  UsageFooter,
+  UsageMetric,
+  UsageMetricGrid,
 } from "./page.styles";
-import { SubscriptionSummary } from "../components/SubscriptionSummary";
 
-export default function HomePage() {
-	const { isCheckingAuth } = useRequireAuth();
+type PlanoInfo = {
+  nome?: string;
+  status?: string;
+  intervaloSegundos?: number;
+  limiteMensalConsultas?: number;
+};
 
-	const [logradouro, setLogradouro] = useState(
-		"RUA DESEMBARGADOR JORGE FONTANA"
-	);
-	const [numero, setNumero] = useState("200");
+type UsoInfo = {
+  consultasUsadas?: number;
+  limiteMensal?: number;
+  consultasRestantes?: number;
+  percentualUsado?: number;
+};
 
-	const [assinatura, setAssinatura] = useState<MinhaAssinaturaResponse | null>(
-		null
-	);
+function getSaudacao() {
+  const hora = new Date().getHours();
 
-	const [jobId, setJobId] = useState<string | null>(null);
-	const [progresso, setProgresso] = useState<ProgressoTarefaResponse | null>(
-		null
-	);
-	const [isLoading, setIsLoading] = useState(false);
-	const [erro, setErro] = useState<string | null>(null);
+  if (hora < 12) return "Bom dia";
+  if (hora < 18) return "Boa tarde";
 
-	const isFinalizado = useMemo(() => {
-		return (
-			progresso?.status === "COMPLETED" ||
-			progresso?.status === "ERROR" ||
-			progresso?.status === "CANCELED"
-		);
-	}, [progresso?.status]);
+  return "Boa noite";
+}
 
-	async function carregarAssinatura() {
-		try {
-			const data = await buscarMinhaAssinatura();
+function formatNumber(value: number | undefined | null) {
+  if (typeof value !== "number") return "-";
 
-			setAssinatura(data);
-		} catch (error) {
-			setErro(
-				error instanceof Error ? error.message : "Erro ao carregar assinatura"
-			);
-		}
-	}
+  return new Intl.NumberFormat("pt-BR").format(value);
+}
 
-	async function criarTarefa(event: FormEvent<HTMLFormElement>) {
-		event.preventDefault();
+function formatDate(value: string | null) {
+  if (!value) return "-";
 
-		setErro(null);
-		setProgresso(null);
-		setJobId(null);
-		setIsLoading(true);
+  return new Intl.DateTimeFormat("pt-BR", {
+    dateStyle: "short",
+    timeStyle: "short",
+  }).format(new Date(value));
+}
 
-		try {
-			const data = await criarTarefaBusca({
-				logradouro,
-				numero,
-			});
+export default function DashboardPage() {
+  const { isCheckingAuth } = useRequireAuth();
+  const router = useRouter();
 
-			setJobId(data.jobId);
-		} catch (error) {
-			setErro(
-				error instanceof Error
-					? error.message
-					: "Erro desconhecido ao criar tarefa"
-			);
-		} finally {
-			setIsLoading(false);
-		}
-	}
+  const [nomeUsuario, setNomeUsuario] = useState("sua equipe");
+  const [assinatura, setAssinatura] = useState<MinhaAssinaturaResponse | null>(
+    null
+  );
+  const [tarefas, setTarefas] = useState<TarefaResumo[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [erro, setErro] = useState<string | null>(null);
 
-	useEffect(() => {
-		if (!isCheckingAuth) {
-      carregarAssinatura();
+  const plano = assinatura?.plano as PlanoInfo | undefined;
+  const uso = assinatura?.uso as UsoInfo | undefined;
 
-			if (!jobId || isFinalizado) {
-				return;
-			}
+  const consultasUsadas = uso?.consultasUsadas ?? 0;
+  const consultasRestantes = uso?.consultasRestantes ?? 0;
+  const limiteMensal =
+    uso?.limiteMensal ?? plano?.limiteMensalConsultas ?? consultasRestantes;
+  const percentualUsado = uso?.percentualUsado ?? 0;
 
-			let isMounted = true;
+  const resumo = useMemo(() => {
+    const finalizadas = tarefas.filter(
+      tarefa => tarefa.status === "COMPLETED"
+    ).length;
 
-			async function carregarProgresso() {
-				if (!jobId) {
-					return;
-				}
+    const emAndamento = tarefas.filter(
+      tarefa => tarefa.status === "PENDING" || tarefa.status === "PROCESSING"
+    ).length;
 
-				try {
-					const data = await buscarProgressoTarefa(jobId);
+    const comErro = tarefas.filter(
+      tarefa => tarefa.status === "ERROR" || tarefa.status === "CANCELED"
+    ).length;
 
-					if (isMounted) {
-						setProgresso(data);
-					}
-				} catch (error) {
-					if (isMounted) {
-						setErro(
-							error instanceof Error
-								? error.message
-								: "Erro desconhecido ao buscar progresso"
-						);
-					}
-				}
-			}
+    const resultados = tarefas.reduce((total, tarefa) => {
+      return total + tarefa.totalResultados;
+    }, 0);
 
-			carregarProgresso();
+    return {
+      finalizadas,
+      emAndamento,
+      comErro,
+      resultados,
+    };
+  }, [tarefas]);
 
-			const interval = window.setInterval(carregarProgresso, 3000);
+  const distribuicao = [
+    {
+      label: "Finalizadas",
+      value: resumo.finalizadas,
+      status: "COMPLETED",
+    },
+    {
+      label: "Em andamento",
+      value: resumo.emAndamento,
+      status: "PROCESSING",
+    },
+    {
+      label: "Com erro/canceladas",
+      value: resumo.comErro,
+      status: "ERROR",
+    },
+  ];
 
-			return () => {
-				isMounted = false;
-				window.clearInterval(interval);
-			};
-		}
-	}, [jobId, isFinalizado, isCheckingAuth]);
+  const maiorValorGrafico = Math.max(
+    1,
+    ...distribuicao.map(item => item.value)
+  );
 
-	if (isCheckingAuth) {
-		return null;
-	}
+  const tarefasRecentes = tarefas.slice(0, 5);
 
-	const buscaBloqueada =
-		assinatura?.cliente.pagamentoStatus !== "PAGO" ||
-		assinatura?.cliente.status !== "ATIVO" ||
-		assinatura?.plano.status !== "ATIVO" ||
-		assinatura?.uso.consultasRestantes === 0;
+  const operacaoAtiva =
+    Boolean(assinatura) &&
+    assinatura?.cliente.status === "ATIVO" &&
+    assinatura?.cliente.pagamentoStatus === "PAGO" &&
+    assinatura?.plano.status === "ATIVO";
 
-	return (
-		<>
-			<AppHeader />
+  const estaEmExcedente =
+    operacaoAtiva &&
+    consultasRestantes <= 0 &&
+    consultasUsadas >= limiteMensal;
 
-			<PageContainer>
-			{assinatura && <SubscriptionSummary assinatura={assinatura} />}
-				<Header>
-					<ProductBadge>Imóvel Prático</ProductBadge>
+  const statusOperacao = !operacaoAtiva
+    ? "Bloqueado"
+    : estaEmExcedente
+      ? "Excedente ativo"
+      : "Ativo";
 
-					<Title>Captação inteligente de imóveis</Title>
+  async function carregarDashboard() {
+    try {
+      setErro(null);
 
-					<Subtitle>
-						Inicie uma busca por endereço, acompanhe o progresso da tarefa e
-						veja os proprietários encontrados automaticamente.
-					</Subtitle>
+      const [assinaturaData, tarefasData] = await Promise.all([
+        buscarMinhaAssinatura(),
+        listarTarefas(),
+      ]);
 
-					<HeaderActions>
-						<Link href="/historico" passHref legacyBehavior>
-							<HeaderLink>Ver histórico de buscas</HeaderLink>
-						</Link>
-					</HeaderActions>
-				</Header>
+      setAssinatura(assinaturaData);
+      setTarefas(tarefasData.tarefas);
+    } catch (error) {
+      setErro(
+        error instanceof Error
+          ? error.message
+          : "Erro desconhecido ao carregar dashboard"
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
-				<Card>
-					{buscaBloqueada && assinatura && (
-						<ErrorBox>
-							{assinatura.cliente.pagamentoStatus !== "PAGO"
-								? "Seu plano está pendente ou vencido. Regularize o pagamento para iniciar novas buscas."
-								: "Você atingiu o limite mensal de consultas do seu plano."}
-						</ErrorBox>
-					)}
-					<form onSubmit={criarTarefa}>
-						<FormGrid>
-							<Input
-								label="Logradouro"
-								value={logradouro}
-								onChange={(event) => setLogradouro(event.target.value)}
-								placeholder="Ex: Rua Desembargador Jorge Fontana"
-								required
-							/>
+  useEffect(() => {
+    if (!isCheckingAuth) {
+      const user = getAuthUser();
 
-							<Input
-								label="Número"
-								value={numero}
-								onChange={(event) => setNumero(event.target.value)}
-								placeholder="Ex: 200"
-								required
-							/>
-						</FormGrid>
+      setNomeUsuario(user?.nome ?? "sua equipe");
+      carregarDashboard();
+    }
+  }, [isCheckingAuth]);
 
-						<Actions>
-							<Button type="submit" disabled={isLoading || buscaBloqueada}>
-								{isLoading ? "Criando tarefa..." : "Iniciar busca"}
-							</Button>
+  if (isCheckingAuth) {
+    return null;
+  }
 
-							{progresso?.status && <StatusBadge status={progresso.status} />}
+  return (
+    <>
+      <AppHeader />
 
-							{jobId && <TaskId>Tarefa: {jobId}</TaskId>}
-						</Actions>
-					</form>
+      <PageShell>
+        <PageContainer>
+          <HeroGrid>
+            <HeroCard>
+              <HeroContent>
+                <HeroEyebrow>{operacaoAtiva ? "Operação ativa" : "Atenção operacional"}</HeroEyebrow>
 
-					{erro && <ErrorBox>{erro}</ErrorBox>}
+                <HeroTitle>
+                  {getSaudacao()}, {nomeUsuario}.
+                </HeroTitle>
 
-					{progresso && (
-						<ProgressBar
-							status={progresso.status}
-							total={progresso.progress.total}
-							current={progresso.progress.current}
-							percentage={progresso.progress.percentage}
-						/>
-					)}
+                <HeroSubtitle>
+                  Acompanhe consumo, tarefas, resultados e status da sua operação
+                  de captação em uma visão executiva simples e objetiva.
+                </HeroSubtitle>
 
-					{jobId && !progresso && !erro && (
-						<EmptyState>Carregando progresso da tarefa...</EmptyState>
-					)}
+                <HeaderActions>
+                  <Link href="/nova-busca" passHref legacyBehavior>
+                    <PrimaryLink>Iniciar nova busca</PrimaryLink>
+                  </Link>
 
-					{progresso?.resultados && progresso.resultados.length > 0 && (
-						<ResultsSection>
-							<ResultsHeader>
-								<ResultsTitle>Resultados encontrados</ResultsTitle>
-								<ResultsCount>
-									{progresso.resultados.length} resultado(s)
-								</ResultsCount>
-							</ResultsHeader>
+                  <Link href="/historico" passHref legacyBehavior>
+                    <SecondaryLink>Ver histórico</SecondaryLink>
+                  </Link>
+                </HeaderActions>
+              </HeroContent>
+            </HeroCard>
 
-							<ResultsList>
-								{progresso.resultados.map((resultado) => (
-									<ResultCard key={resultado.id} resultado={resultado} />
-								))}
-							</ResultsList>
-						</ResultsSection>
-					)}
-				</Card>
-			</PageContainer>
-		</>
-	);
+            <UsageCard>
+              <PanelHeader>
+                <div>
+                  <PanelTitle>{plano?.nome ?? "Plano"}</PanelTitle>
+                  <PanelSubtitle>Resumo do consumo mensal</PanelSubtitle>
+                </div>
+
+                <StatusPill $active={operacaoAtiva}>
+                  {statusOperacao}
+                </StatusPill>
+              </PanelHeader>
+
+              <UsageMetricGrid>
+                <UsageMetric>
+                  <span>Inclusas restantes</span>
+                  <strong>{formatNumber(consultasRestantes)}</strong>
+                </UsageMetric>
+
+                <UsageMetric>
+                  <span>Usadas</span>
+                  <strong>{formatNumber(consultasUsadas)}</strong>
+                </UsageMetric>
+
+                <UsageMetric>
+                  <span>Uso</span>
+                  <strong>{Math.round(percentualUsado)}%</strong>
+                </UsageMetric>
+              </UsageMetricGrid>
+
+              <UsageBar>
+                <UsageBarFill $percentage={Math.min(percentualUsado, 100)} />
+              </UsageBar>
+
+              <UsageFooter>
+                {formatNumber(consultasUsadas)} de {formatNumber(limiteMensal)}{" "}
+                consultas inclusas · intervalo{" "}
+                {plano?.intervaloSegundos ? `${plano.intervaloSegundos}s` : "-"}
+              </UsageFooter>
+            </UsageCard>
+          </HeroGrid>
+
+          <MetricGrid>
+            <MetricCard>
+              <MetricLabel>Buscas totais</MetricLabel>
+              <MetricValue>{formatNumber(tarefas.length)}</MetricValue>
+              <MetricHint>Histórico operacional da conta</MetricHint>
+            </MetricCard>
+
+            <MetricCard>
+              <MetricLabel>Finalizadas</MetricLabel>
+              <MetricValue>{formatNumber(resumo.finalizadas)}</MetricValue>
+              <MetricHint>Tarefas concluídas com processamento finalizado</MetricHint>
+            </MetricCard>
+
+            <MetricCard>
+              <MetricLabel>Em andamento</MetricLabel>
+              <MetricValue>{formatNumber(resumo.emAndamento)}</MetricValue>
+              <MetricHint>Fila pendente ou processando agora</MetricHint>
+            </MetricCard>
+
+            <MetricCard>
+              <MetricLabel>Resultados</MetricLabel>
+              <MetricValue>{formatNumber(resumo.resultados)}</MetricValue>
+              <MetricHint>Registros encontrados nas buscas</MetricHint>
+            </MetricCard>
+          </MetricGrid>
+
+          {erro && <ErrorBox>{erro}</ErrorBox>}
+
+          {isLoading && (
+            <EmptyState>
+              Carregando visão executiva da sua operação.
+            </EmptyState>
+          )}
+
+          {!isLoading && (
+            <DashboardGrid>
+              <ChartCard>
+                <PanelHeader>
+                  <div>
+                    <PanelTitle>Performance operacional</PanelTitle>
+                    <PanelSubtitle>
+                      Distribuição das buscas por status no histórico.
+                    </PanelSubtitle>
+                  </div>
+                </PanelHeader>
+
+                <ChartList>
+                  {distribuicao.map(item => (
+                    <BarRow key={item.label}>
+                      <BarInfo>
+                        <BarLabel>{item.label}</BarLabel>
+                        <strong>{item.value}</strong>
+                      </BarInfo>
+
+                      <BarTrack>
+                        <BarFill
+                          $percentage={(item.value / maiorValorGrafico) * 100}
+                        />
+                      </BarTrack>
+                    </BarRow>
+                  ))}
+                </ChartList>
+              </ChartCard>
+
+              <PanelCard>
+                <PanelHeader>
+                  <div>
+                    <PanelTitle>Últimas atividades</PanelTitle>
+                    <PanelSubtitle>
+                      Buscas recentes executadas pela sua equipe.
+                    </PanelSubtitle>
+                  </div>
+                </PanelHeader>
+
+                {tarefasRecentes.length === 0 && (
+                  <EmptyState>
+                    Nenhuma busca registrada ainda. Inicie uma nova busca para
+                    visualizar as atividades aqui.
+                  </EmptyState>
+                )}
+
+                {tarefasRecentes.length > 0 && (
+                  <RecentList>
+                    {tarefasRecentes.map(tarefa => (
+                      <RecentItem key={tarefa.id}>
+                        <RecentContent>
+                          <RecentAddress>
+                            {tarefa.endereco.logradouro}, {tarefa.endereco.numero}
+                          </RecentAddress>
+
+                          <RecentDate>
+                            {formatDate(tarefa.createdAt)} ·{" "}
+                            {tarefa.totalResultados} resultado(s)
+                          </RecentDate>
+                        </RecentContent>
+
+                        <StatusBadge status={tarefa.status} />
+                      </RecentItem>
+                    ))}
+                  </RecentList>
+                )}
+              </PanelCard>
+
+              <SideColumn>
+                <PlanCard>
+                  <PanelHeader>
+                    <div>
+                      <PanelTitle>Plano e acesso</PanelTitle>
+                      <PanelSubtitle>
+                        Condição atual da operação.
+                      </PanelSubtitle>
+                    </div>
+                  </PanelHeader>
+
+                  <PlanGrid>
+                    <div>
+                      <PlanLabel>Plano</PlanLabel>
+                      <PlanValue>{plano?.nome ?? "-"}</PlanValue>
+                    </div>
+
+                    <div>
+                      <PlanLabel>Status financeiro</PlanLabel>
+                      <PlanValue>
+                        {assinatura?.cliente.pagamentoStatus ?? "-"}
+                      </PlanValue>
+                    </div>
+
+                    <div>
+                      <PlanLabel>Status da conta</PlanLabel>
+                      <PlanValue>{assinatura?.cliente.status ?? "-"}</PlanValue>
+                    </div>
+
+                    <div>
+                      <PlanLabel>Intervalo</PlanLabel>
+                      <PlanValue>
+                        {plano?.intervaloSegundos
+                          ? `${plano.intervaloSegundos}s`
+                          : "-"}
+                      </PlanValue>
+                    </div>
+                  </PlanGrid>
+                </PlanCard>
+
+                <ActionCard>
+                  <ActionTitle>Atalhos operacionais</ActionTitle>
+                  <ActionDescription>
+                    Acesse rapidamente as principais ações da plataforma.
+                  </ActionDescription>
+
+                  <ActionGrid>
+                    <Link href="/nova-busca" passHref legacyBehavior>
+                      <ActionLink>Nova busca</ActionLink>
+                    </Link>
+
+                    <Link href="/historico" passHref legacyBehavior>
+                      <ActionLink>Histórico</ActionLink>
+                    </Link>
+
+                    <Link href="/trocar-senha" passHref legacyBehavior>
+                      <ActionLink>Perfil e senha</ActionLink>
+                    </Link>
+                  </ActionGrid>
+                </ActionCard>
+              </SideColumn>
+            </DashboardGrid>
+          )}
+        </PageContainer>
+      </PageShell>
+    </>
+  );
 }

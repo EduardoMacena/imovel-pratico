@@ -1,11 +1,13 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { getAuthToken } from "../lib/auth-storage";
+import { getAuthToken, getAuthUser } from "../lib/auth-storage";
 
 export function useRequireAuth() {
   const router = useRouter();
+  const pathname = usePathname();
+
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
   useEffect(() => {
@@ -16,8 +18,17 @@ export function useRequireAuth() {
       return;
     }
 
+    const user = getAuthUser();
+    const precisaTrocarSenha = user?.precisaTrocarSenha === true;
+    const estaNaTelaDeTrocaSenha = pathname === "/trocar-senha";
+
+    if (precisaTrocarSenha && !estaNaTelaDeTrocaSenha) {
+      router.replace("/trocar-senha");
+      return;
+    }
+
     setIsCheckingAuth(false);
-  }, [router]);
+  }, [pathname, router]);
 
   return {
     isCheckingAuth,

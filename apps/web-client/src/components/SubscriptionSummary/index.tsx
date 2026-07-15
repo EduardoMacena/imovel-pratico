@@ -1,72 +1,144 @@
 "use client";
 
 import type { MinhaAssinaturaResponse } from "../../features/busca/types";
+import { formatCurrencyFromCents, formatDateOnlyBR, formatNumberBR } from "../../lib/formatters";
 import {
-	Badge,
-	Grid,
-	Header,
-	Item,
-	Label,
-	Title,
-	Value,
-	Wrapper,
+  Badge,
+  Grid,
+  Header,
+  Item,
+  Label,
+  PlanName,
+  ProgressBar,
+  ProgressHeader,
+  ProgressTrack,
+  ProgressValue,
+  Title,
+  Value,
+  Wrapper,
 } from "./styles";
 
 type SubscriptionSummaryProps = {
-	assinatura: MinhaAssinaturaResponse;
+  assinatura: MinhaAssinaturaResponse;
 };
 
 function formatDate(value?: string | null) {
-	if (!value) {
-		return "-";
-	}
+  if (!value) {
+    return "-";
+  }
 
-	return new Intl.DateTimeFormat("pt-BR", {
-		dateStyle: "short",
-	}).format(new Date(value));
+  return new Intl.DateTimeFormat("pt-BR", {
+    dateStyle: "short",
+    timeZone: "UTC",
+  }).format(new Date(`${value}T12:00:00.000Z`));
+}
+
+function formatNumber(value: number) {
+  return new Intl.NumberFormat("pt-BR").format(value);
+}
+
+
+
+function calcularPercentualUsado(usadas: number, limite: number) {
+  if (limite <= 0) {
+    return 0;
+  }
+
+  return Math.min(Math.round((usadas / limite) * 100), 100);
+}
+
+function getPagamentoLabel(status: string) {
+  if (status === "PAGO") {
+    return "Pago";
+  }
+
+  return status;
 }
 
 export function SubscriptionSummary({ assinatura }: SubscriptionSummaryProps) {
-	return (
-		<Wrapper>
-			<Header>
-				<div>
-					<Title>
-						{assinatura.cliente.nome} — Plano {assinatura.plano.nome}
-					</Title>
-				</div>
+  const percentualUsado = calcularPercentualUsado(
+    assinatura.uso.consultasUsadas,
+    assinatura.uso.limiteMensal
+  );
 
-				<Badge $status={assinatura.cliente.pagamentoStatus}>
-					{assinatura.cliente.pagamentoStatus}
-				</Badge>
-			</Header>
+  const consultasExcedentes = Math.max(
+    assinatura.uso.consultasUsadas - assinatura.uso.limiteMensal,
+    0
+  );
 
-			<Grid>
-				<Item>
-					<Label>Plano mensal</Label>
-					<Value>{assinatura.uso.limiteMensal}</Value>
-				</Item>
+  return (
+    <Wrapper>
+      <Header>
+        <div>
+          <Title>{assinatura.cliente.nome}</Title>
+          <PlanName>Plano {assinatura.plano.nome}</PlanName>
+        </div>
 
-				<Item>
-					<Label>Intervalo do plano</Label>
-					<Value>{assinatura.plano.intervaloSegundos}s</Value>
-				</Item>
+        <Badge $status={assinatura.cliente.pagamentoStatus}>
+          {getPagamentoLabel(assinatura.cliente.pagamentoStatus)}
+        </Badge>
+      </Header>
 
-				<Item>
-					<Label>Consultas usadas</Label>
-					<Value>{assinatura.uso.consultasUsadas}</Value>
-				</Item>
+      <ProgressHeader>
+        <Label>Uso mensal do plano</Label>
+        <ProgressValue>{percentualUsado}% usado</ProgressValue>
+      </ProgressHeader>
 
-				<Item>
-					<Label>Consultas restantes</Label>
-					<Value>{assinatura.uso.consultasRestantes}</Value>
-				</Item>
+      <ProgressTrack>
+        <ProgressBar $percent={percentualUsado} />
+      </ProgressTrack>
 
-				<Item>
-					<Label>Vencimento</Label>
-					<Value>{formatDate(assinatura.cliente.pagamentoVenceEm)}</Value>
-				</Item>
-			</Grid>
-		</Wrapper>
-	);
+      <Grid>
+        <Item>
+          <Label>Limite mensal</Label>
+          <Value>{formatNumber(assinatura.uso.limiteMensal)}</Value>
+        </Item>
+
+        <Item>
+          <Label>Intervalo</Label>
+          <Value>{assinatura.plano.intervaloSegundos}s</Value>
+        </Item>
+
+        <Item>
+          <Label>Usadas</Label>
+          <Value>{formatNumber(assinatura.uso.consultasUsadas)}</Value>
+        </Item>
+
+        <Item>
+          <Label>Inclusas restantes</Label>
+          <Value>{formatNumber(assinatura.uso.consultasRestantes)}</Value>
+        </Item>
+
+        <Item>
+          <Label>Excedentes no mês</Label>
+          <Value>{formatNumber(consultasExcedentes)}</Value>
+        </Item>
+
+        <Item>
+          <Label>Excedentes</Label>
+          <Value>{formatNumber(assinatura.uso.consultasExcedentes)}</Value>
+        </Item>
+
+        <Item>
+          <Label>Valor excedente</Label>
+          <Value>{formatCurrencyFromCents(assinatura.uso.valorExcedenteCentavos)}</Value>
+        </Item>
+
+        <Item>
+          <Label>Total estimado</Label>
+          <Value>{formatCurrencyFromCents(assinatura.uso.totalEstimadoCentavos)}</Value>
+        </Item>
+
+        <Item>
+          <Label>Corretores</Label>
+          <Value>{assinatura.plano.limiteCorretores ?? "-"}</Value>
+        </Item>
+
+        <Item $wide>
+          <Label>Vencimento</Label>
+          <Value>{formatDate(assinatura.cliente.pagamentoVenceEm)}</Value>
+        </Item>
+      </Grid>
+    </Wrapper>
+  );
 }

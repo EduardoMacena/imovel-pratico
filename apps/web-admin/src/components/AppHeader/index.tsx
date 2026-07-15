@@ -1,56 +1,65 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { removeAuthToken } from "../../lib/auth-storage";
+import { Button } from "../Button";
 import {
-	getAuthUser,
-	removeAuthToken,
-	type AuthUser,
-} from "../../lib/auth-storage";
-import {
-	Brand,
-	HeaderContent,
-	HeaderWrapper,
-	LogoutButton,
-	Nav,
-	NavLink,
-	UserInfo,
+  Brand,
+  HeaderActions,
+  HeaderInner,
+  HeaderWrapper,
+  LogoMark,
+  Nav,
+  NavLink,
 } from "./styles";
 
 export function AppHeader() {
-	const router = useRouter();
-	const [user, setUser] = useState<AuthUser | null>(null);
+  const router = useRouter();
+  const pathname = usePathname();
 
-	useEffect(() => {
-		setUser(getAuthUser());
-	}, []);
+  function handleLogout() {
+    removeAuthToken();
+    router.push("/login");
+  }
 
-	function handleLogout() {
-		removeAuthToken();
-		router.replace("/login");
-	}
+  return (
+    <HeaderWrapper>
+      <HeaderInner>
+        <Brand href="/dashboard">
+          <LogoMark src="/logo-imovel-pratico.svg" alt="Imóvel Prático" />
+        </Brand>
 
-	return (
-		<HeaderWrapper>
-			<HeaderContent>
-				<Brand href="/clientes">Imóvel Prático Admin</Brand>
+        <Nav>
+          <NavLink href="/dashboard" $active={pathname === "/dashboard"}>
+            Dashboard
+          </NavLink>
 
-				<Nav>
-					<NavLink href="/dashboard">Dashboard</NavLink>
-					<NavLink href="/clientes">Clientes</NavLink>
-          <NavLink href="/planos">Planos</NavLink>
+          <NavLink href="/clientes" $active={pathname.startsWith("/clientes")}>
+            Clientes
+          </NavLink>
 
-					{user && (
-						<UserInfo>
-							{user.nome} • {user.role}
-						</UserInfo>
-					)}
+          <NavLink href="/planos" $active={pathname.startsWith("/planos")}>
+            Planos
+          </NavLink>
 
-					<LogoutButton type="button" onClick={handleLogout}>
-						Sair
-					</LogoutButton>
-				</Nav>
-			</HeaderContent>
-		</HeaderWrapper>
-	);
+          <NavLink href="/financeiro" $active={pathname.startsWith("/financeiro")}>
+            Financeiro
+          </NavLink>
+
+          <NavLink
+            href="/monitoramento"
+            $active={pathname.startsWith("/monitoramento")}
+          >
+            Monitoramento
+          </NavLink>
+        </Nav>
+
+        <HeaderActions>
+          <Button type="button" variant="ghost" onClick={handleLogout}>
+            Sair
+          </Button>
+        </HeaderActions>
+      </HeaderInner>
+    </HeaderWrapper>
+  );
 }

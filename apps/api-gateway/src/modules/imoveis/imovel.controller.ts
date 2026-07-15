@@ -1,14 +1,32 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
-import { buscarProprietariosSchema } from "./imovel.schemas.js";
+import {
+  buscarProprietariosSchema,
+  preverBuscaSchema,
+} from "./imovel.schemas.js";
 import {
   buscarProgressoTarefaPorId,
   buscarTarefaPorId,
   criarTarefaBuscaProprietarios,
+  preverBuscaProprietarios,
   exportarResultadosTarefaCsv,
   exportarResultadosTarefaExcel,
   listarTarefasRecentes,
 } from "./imovel.service.js";
+
+export async function preverBuscaController(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  const body = preverBuscaSchema.parse(request.body);
+
+  const result = await preverBuscaProprietarios(
+    request.auth.clienteId,
+    body
+  );
+
+  return reply.status(200).send(result);
+}
 
 export async function buscarProprietariosController(
   request: FastifyRequest,

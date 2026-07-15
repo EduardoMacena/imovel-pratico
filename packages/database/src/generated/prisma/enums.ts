@@ -73,3 +73,70 @@ export const PlanoStatus = {
 } as const
 
 export type PlanoStatus = (typeof PlanoStatus)[keyof typeof PlanoStatus]
+
+
+export const BuscaPreviaStatus = {
+  PENDENTE: 'PENDENTE',
+  PROCESSANDO: 'PROCESSANDO',
+  AGUARDANDO_INTERVALO: 'AGUARDANDO_INTERVALO',
+  CONSULTANDO_REGISTRO: 'CONSULTANDO_REGISTRO',
+  PRONTA: 'PRONTA',
+  AGUARDANDO_AUTORIZACAO_EXCEDENTE: 'AGUARDANDO_AUTORIZACAO_EXCEDENTE',
+  AUTORIZANDO: 'AUTORIZANDO',
+  CONFIRMADA: 'CONFIRMADA',
+  CANCELADA: 'CANCELADA',
+  EXPIRADA: 'EXPIRADA',
+  ERRO: 'ERRO'
+} as const
+
+export type BuscaPreviaStatus = (typeof BuscaPreviaStatus)[keyof typeof BuscaPreviaStatus]
+
+
+export const FaturaStatus = {
+  ABERTA: 'ABERTA',
+  FECHADA: 'FECHADA',
+  PAGA: 'PAGA',
+  VENCIDA: 'VENCIDA',
+  CANCELADA: 'CANCELADA'
+} as const
+
+export type FaturaStatus = (typeof FaturaStatus)[keyof typeof FaturaStatus]
+
+
+export const FaturaItemTipo = {
+  MENSALIDADE: 'MENSALIDADE',
+  CONSULTA_EXCEDENTE: 'CONSULTA_EXCEDENTE',
+  AJUSTE: 'AJUSTE',
+  DESCONTO: 'DESCONTO'
+} as const
+
+export type FaturaItemTipo = (typeof FaturaItemTipo)[keyof typeof FaturaItemTipo]
+
+
+export const OperacaoEventoNivel = {
+  INFO: 'INFO',
+  WARN: 'WARN',
+  ERROR: 'ERROR'
+} as const
+
+export type OperacaoEventoNivel = (typeof OperacaoEventoNivel)[keyof typeof OperacaoEventoNivel]
+
+
+export const OperacaoEventoServico = {
+  API_GATEWAY: 'API_GATEWAY',
+  WORKER_REGISTRO: 'WORKER_REGISTRO',
+  WORKER_CND: 'WORKER_CND',
+  QUEUE: 'QUEUE',
+  REALTIME: 'REALTIME'
+} as const
+
+export type OperacaoEventoServico = (typeof OperacaoEventoServico)[keyof typeof OperacaoEventoServico]
+
+
+export const WorkerHeartbeatStatus = {
+  ONLINE: 'ONLINE',
+  OFFLINE: 'OFFLINE',
+  ERROR: 'ERROR'
+} as const
+
+export type WorkerHeartbeatStatus = (typeof WorkerHeartbeatStatus)[keyof typeof WorkerHeartbeatStatus]

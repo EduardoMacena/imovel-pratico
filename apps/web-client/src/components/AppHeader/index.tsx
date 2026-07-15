@@ -1,61 +1,64 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import {
-  getAuthCliente,
-  getAuthUser,
-  removeAuthToken,
-  type AuthCliente,
-  type AuthUser,
-} from "../../lib/auth-storage";
+import { usePathname, useRouter } from "next/navigation";
+import { removeAuthToken } from "../../lib/auth-storage";
+import { Button } from "../Button";
 import {
   Brand,
-  HeaderContent,
+  HeaderActions,
+  HeaderInner,
   HeaderWrapper,
-  LogoutButton,
+  LogoMark,
   Nav,
   NavLink,
-  UserInfo,
 } from "./styles";
 
 export function AppHeader() {
   const router = useRouter();
-
-  const [user, setUser] = useState<AuthUser | null>(null);
-  const [cliente, setCliente] = useState<AuthCliente | null>(null);
-
-  useEffect(() => {
-    setUser(getAuthUser());
-    setCliente(getAuthCliente());
-  }, []);
+  const pathname = usePathname();
 
   function handleLogout() {
     removeAuthToken();
-    router.replace("/login");
+    router.push("/login");
   }
 
   return (
     <HeaderWrapper>
-      <HeaderContent>
-        <Brand href="/">Imóvel Prático</Brand>
+      <HeaderInner>
+        <Brand href="/">
+          <LogoMark src="/logo-imovel-pratico.svg" alt="Imóvel Prático" />
+        </Brand>
 
         <Nav>
-          <NavLink href="/">Nova busca</NavLink>
-          <NavLink href="/historico">Histórico</NavLink>
+          <NavLink href="/" $active={pathname === "/"}>
+            Dashboard
+          </NavLink>
 
-          {user && (
-            <UserInfo>
-              {user.nome}
-              {cliente ? ` • ${cliente.nome}` : ""}
-            </UserInfo>
-          )}
+          <NavLink
+            href="/nova-busca"
+            $active={pathname.startsWith("/nova-busca")}
+          >
+            Nova busca
+          </NavLink>
 
-          <LogoutButton type="button" onClick={handleLogout}>
-            Sair
-          </LogoutButton>
+          <NavLink href="/historico" $active={pathname.startsWith("/historico")}>
+            Histórico
+          </NavLink>
+
+          <NavLink
+            href="/trocar-senha"
+            $active={pathname.startsWith("/trocar-senha")}
+          >
+            Perfil
+          </NavLink>
         </Nav>
-      </HeaderContent>
+
+        <HeaderActions>
+          <Button type="button" variant="ghost" onClick={handleLogout}>
+            Sair
+          </Button>
+        </HeaderActions>
+      </HeaderInner>
     </HeaderWrapper>
   );
 }

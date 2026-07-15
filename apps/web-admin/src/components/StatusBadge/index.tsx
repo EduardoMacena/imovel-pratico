@@ -3,29 +3,87 @@
 import { Badge } from "./styles";
 
 type StatusBadgeProps = {
-  status: string;
+  status?: string | null;
 };
 
-function getVariant(status: string) {
-  if (status === "ATIVO" || status === "SUPER_ADMIN" || status === "ADMIN") {
-    return "success";
+function getStatusConfig(status?: string | null) {
+  if (!status) {
+    return {
+      label: "Indefinido",
+      variant: "info" as const,
+    };
   }
 
-  if (status === "INATIVO" || status === "SUSPENSO") {
-    return "error";
+  const normalized = status.toUpperCase();
+
+  if (
+    normalized === "ATIVO" ||
+    normalized === "SUPER_ADMIN" ||
+    normalized === "ADMIN" ||
+    normalized === "COMPLETED" ||
+    normalized === "SUCCESS" ||
+    normalized === "PAGO"
+  ) {
+    return {
+      variant: "success" as const,
+      label:
+        normalized === "COMPLETED"
+          ? "Concluída"
+          : normalized === "SUCCESS"
+            ? "Sucesso"
+            : normalized === "PAGO"
+              ? "Pago"
+              : normalized === "ATIVO"
+                ? "Ativo"
+                : status,
+    };
   }
 
-  if (status === "GERENTE") {
-    return "info";
+  if (
+    normalized === "INATIVO" ||
+    normalized === "SUSPENSO" ||
+    normalized === "ERROR" ||
+    normalized === "CANCELED" ||
+    normalized === "VENCIDO" ||
+    normalized === "CANCELADO"
+  ) {
+    return {
+      variant: "error" as const,
+      label:
+        normalized === "ERROR"
+          ? "Erro"
+          : normalized === "CANCELED"
+            ? "Cancelada"
+            : status,
+    };
   }
 
-  if (status === "OPERADOR") {
-    return "warning";
+  if (normalized === "GERENTE" || normalized === "PROCESSING") {
+    return {
+      variant: "info" as const,
+      label: normalized === "PROCESSING" ? "Processando" : status,
+    };
   }
 
-  return "neutral";
+  if (
+    normalized === "OPERADOR" ||
+    normalized === "PENDING" ||
+    normalized === "PENDENTE"
+  ) {
+    return {
+      variant: "warning" as const,
+      label: normalized === "PENDING" ? "Pendente" : status,
+    };
+  }
+
+  return {
+    variant: "info" as const,
+    label: status,
+  };
 }
 
 export function StatusBadge({ status }: StatusBadgeProps) {
-  return <Badge $variant={getVariant(status)}>{status}</Badge>;
+  const config = getStatusConfig(status);
+
+  return <Badge $variant={config.variant}>{config.label}</Badge>;
 }

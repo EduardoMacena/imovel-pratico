@@ -56,6 +56,55 @@ enum PlanoStatus {
   INATIVO
 }
 
+enum BuscaPreviaStatus {
+  PENDENTE
+  PROCESSANDO
+  AGUARDANDO_INTERVALO
+  CONSULTANDO_REGISTRO
+  PRONTA
+  AGUARDANDO_AUTORIZACAO_EXCEDENTE
+  AUTORIZANDO
+  CONFIRMADA
+  CANCELADA
+  EXPIRADA
+  ERRO
+}
+
+enum FaturaStatus {
+  ABERTA
+  FECHADA
+  PAGA
+  VENCIDA
+  CANCELADA
+}
+
+enum FaturaItemTipo {
+  MENSALIDADE
+  CONSULTA_EXCEDENTE
+  AJUSTE
+  DESCONTO
+}
+
+enum OperacaoEventoNivel {
+  INFO
+  WARN
+  ERROR
+}
+
+enum OperacaoEventoServico {
+  API_GATEWAY
+  WORKER_REGISTRO
+  WORKER_CND
+  QUEUE
+  REALTIME
+}
+
+enum WorkerHeartbeatStatus {
+  ONLINE
+  OFFLINE
+  ERROR
+}
+
 model Plano {
   id   String @id @default(uuid())
   nome String
@@ -63,9 +112,11 @@ model Plano {
 
   descricao String?
 
-  limiteMensalConsultas Int
-  intervaloSegundos     Int
-  precoCentavos         Int
+  limiteMensalConsultas          Int
+  intervaloSegundos              Int
+  precoCentavos                  Int
+  valorConsultaAdicionalCentavos Int @default(0)
+  limiteCorretores               Int?
 
   status PlanoStatus @default(ATIVO)
 
@@ -97,12 +148,16 @@ model Cliente {
   usuarios      Usuario[]
   tarefas       Tarefa[]
   consultasLogs ConsultaLog[]
+  operacaoEventos OperacaoEvento[]
+  workerHeartbeats WorkerHeartbeat[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([planoId])
   @@map("clientes")
+  buscasPrevias BuscaPrevia[]
+  faturas Fatura[]
 }
 
 model Usuario {
@@ -116,6 +171,13 @@ model Usuario {
 
   ativo Boolean @default(true)
 
+  precisaTrocarSenha Boolean @default(false)
+  senhaAlteradaEm     DateTime?
+
+  resetSenhaTokenHash String?   @unique
+  resetSenhaExpiraEm   DateTime?
+  resetSenhaUsadoEm    DateTime?
+
   cliente Cliente @relation(fields: [clienteId], references: [id])
 
   createdAt DateTime @default(now())
@@ -128,6 +190,7 @@ model Usuario {
 model Tarefa {
   id        String       @id @default(uuid())
   clienteId String
+  buscaPreviaId String?
   status    TarefaStatus @default(PENDING)
 
   logradouro String
@@ -138,13 +201,23 @@ model Tarefa {
   intervaloSegundos Int     @default(30)
   forceRefresh      Boolean @default(false)
 
+  excedenteAutorizado              Boolean   @default(false)
+  excedenteAutorizadoEm            DateTime?
+  consultasEstimadas               Int?
+  consultasDisponiveisNoMomento    Int?
+  consultasExcedentesEstimadas     Int?
+  valorConsultaAdicionalCentavos   Int?
+  valorExcedenteEstimadoCentavos   Int?
+
   total   Int @default(0)
   current Int @default(0)
 
   erro String?
 
   cliente    Cliente           @relation(fields: [clienteId], references: [id])
+  buscaPrevia BuscaPrevia? @relation(fields: [buscaPreviaId], references: [id], onDelete: SetNull)
   resultados TarefaResultado[]
+  eventos    OperacaoEvento[]
 
   createdAt   DateTime  @default(now())
   startedAt   DateTime?
@@ -154,6 +227,102 @@ model Tarefa {
   @@index([clienteId])
   @@index([status])
   @@map("tarefas")
+}
+
+model BuscaPrevia {
+  id String @id @default(uuid())
+
+  clienteId String
+  cliente   Cliente @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+
+  status BuscaPreviaStatus @default(PROCESSANDO)
+
+  logradouro String
+  numero     String
+
+  quantidadeRegistros Int @default(0)
+  registros            Json @default("[]")
+
+  consultasDisponiveisNoMomento  Int
+  consultasExcedentesEstimadas   Int
+  valorConsultaAdicionalCentavos Int
+  valorExcedenteEstimadoCentavos Int
+
+  workerUrl String?
+  erro      String?
+
+  expiraEm     DateTime
+  confirmadaEm DateTime?
+
+  tarefas Tarefa[]
+  eventos OperacaoEvento[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([clienteId])
+  @@index([status])
+  @@index([expiraEm])
+  @@map("buscas_previas")
+}
+
+model Fatura {
+  id String @id @default(uuid())
+
+  clienteId String
+  cliente   Cliente @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+
+  status FaturaStatus @default(ABERTA)
+
+  referenciaMes Int
+  referenciaAno Int
+
+  planoId   String?
+  planoNome String?
+
+  consultasInclusas   Int @default(0)
+  consultasUsadas     Int @default(0)
+  consultasExcedentes Int @default(0)
+
+  valorMensalidadeCentavos       Int @default(0)
+  valorConsultaAdicionalCentavos Int @default(0)
+  valorExcedenteCentavos         Int @default(0)
+  valorTotalCentavos             Int @default(0)
+
+  vencimentoEm DateTime?
+  pagaEm       DateTime?
+
+  observacao String?
+
+  itens FaturaItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([clienteId, referenciaMes, referenciaAno])
+  @@index([clienteId])
+  @@index([status])
+  @@index([vencimentoEm])
+  @@map("faturas")
+}
+
+model FaturaItem {
+  id String @id @default(uuid())
+
+  faturaId String
+  fatura   Fatura @relation(fields: [faturaId], references: [id], onDelete: Cascade)
+
+  tipo FaturaItemTipo
+  descricao String
+
+  quantidade Int @default(1)
+  valorUnitarioCentavos Int
+  valorTotalCentavos    Int
+
+  createdAt DateTime @default(now())
+
+  @@index([faturaId])
+  @@map("fatura_itens")
 }
 
 model TarefaResultado {
@@ -237,4 +406,62 @@ model ConsultaLog {
   @@index([fonte])
   @@index([createdAt])
   @@map("consultas_logs")
+}
+
+model OperacaoEvento {
+  id String @id @default(uuid())
+
+  clienteId    String?
+  tarefaId     String?
+  buscaPreviaId String?
+
+  nivel   OperacaoEventoNivel @default(INFO)
+  servico OperacaoEventoServico
+
+  tipo     String
+  mensagem String
+
+  detalhes String?
+  metadata Json?
+
+  cliente    Cliente?    @relation(fields: [clienteId], references: [id], onDelete: SetNull)
+  tarefa     Tarefa?     @relation(fields: [tarefaId], references: [id], onDelete: SetNull)
+  buscaPrevia BuscaPrevia? @relation(fields: [buscaPreviaId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+
+  @@index([clienteId])
+  @@index([tarefaId])
+  @@index([buscaPreviaId])
+  @@index([nivel])
+  @@index([servico])
+  @@index([tipo])
+  @@index([createdAt])
+  @@map("operacao_eventos")
+}
+
+model WorkerHeartbeat {
+  id String @id @default(uuid())
+
+  clienteId String
+  cliente   Cliente @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+
+  servico       OperacaoEventoServico
+  identificador String
+  fila          String?
+
+  status WorkerHeartbeatStatus @default(ONLINE)
+
+  ultimoSinalEm DateTime @default(now())
+  metadata      Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([clienteId, servico, identificador])
+  @@index([clienteId])
+  @@index([servico])
+  @@index([status])
+  @@index([ultimoSinalEm])
+  @@map("worker_heartbeats")
 }

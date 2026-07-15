@@ -1,9 +1,17 @@
-import { prisma } from "@imovel-pratico/database";
+import { Prisma, prisma } from "@imovel-pratico/database";
 import { adicionarBuscaProprietariosNaFila } from "@imovel-pratico/queue";
-import type { BuscarProprietariosInput } from "./imovel.schemas.js";
+import type {
+  BuscarProprietariosInput,
+  PreverBuscaInput,
+} from "./imovel.schemas.js";
 import { buildCsv } from "../../utils/csv.js";
 import { buildExcelBuffer } from "../../utils/excel.js";
-import { validarClientePodeCriarBusca } from "../assinatura/assinatura.service.js";
+import { preverBuscaNoWorkerRegistro } from "./registro-worker.client.js";
+import { buildPdfResultadosProprietarios, montarLinhasResultadoExportacao } from "../../utils/exportacao-resultados.js";
+import {
+  calcularResumoExcedenteBusca,
+  validarClientePodeCriarBusca,
+} from "../assinatura/assinatura.service.js";
 
 function getMesAnoInicioAtual() {
 	const now = new Date();
@@ -18,68 +26,280 @@ function getMesAnoFinalAtual() {
 	return `${mes}/${now.getFullYear()}`;
 }
 
-export async function criarTarefaBuscaProprietarios(
-	clienteId: string,
-	data: BuscarProprietariosInput
+function adicionarMinutos(date: Date, minutos: number) {
+  const nextDate = new Date(date);
+
+  nextDate.setMinutes(nextDate.getMinutes() + minutos);
+
+  return nextDate;
+}
+
+function toPrismaJson(value: unknown): Prisma.InputJsonValue {
+  return JSON.parse(JSON.stringify(value)) as Prisma.InputJsonValue;
+}
+
+function normalizarRegistrosPrevia(value: unknown) {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value
+    .map(item => {
+      const registro = item as {
+        indiceCadastral?: unknown;
+        complemento?: unknown;
+      };
+
+      return {
+        indiceCadastral:
+          typeof registro.indiceCadastral === "string"
+            ? registro.indiceCadastral.trim()
+            : "",
+        complemento:
+          typeof registro.complemento === "string"
+            ? registro.complemento.trim() || null
+            : null,
+      };
+    })
+    .filter(registro => registro.indiceCadastral.length > 0);
+}
+
+function montarPreviaResponse(previa: {
+  id: string;
+  logradouro: string;
+  numero: string;
+  quantidadeRegistros: number;
+  registros: unknown;
+  expiraEm: Date;
+}) {
+  return {
+    id: previa.id,
+    logradouro: previa.logradouro,
+    numero: previa.numero,
+    quantidadeRegistros: previa.quantidadeRegistros,
+    registros: normalizarRegistrosPrevia(previa.registros),
+    expiraEm: previa.expiraEm,
+  };
+}
+
+export async function preverBuscaProprietarios(
+  clienteId: string,
+  data: PreverBuscaInput
 ) {
-	const { cliente, plano, uso } = await validarClientePodeCriarBusca(clienteId);
+  const { cliente, plano, uso } = await validarClientePodeCriarBusca(clienteId);
 
-	if (!cliente) {
-		throw new Error("Cliente não encontrado");
-	}
+  const workerUrl = cliente.workerUrl?.trim();
 
-	const tarefa = await prisma.tarefa.create({
-		data: {
-			clienteId: cliente.id,
-			status: "PENDING",
-			logradouro: data.logradouro,
-			numero: data.numero,
-			mesAnoInicio: getMesAnoInicioAtual(),
-			mesAnoFinal: getMesAnoFinalAtual(),
-			intervaloSegundos: plano.intervaloSegundos,
-			forceRefresh: data.forceRefresh,
-		},
-	});
+  if (!workerUrl) {
+    throw new Error("Worker URL não configurada para este cliente");
+  }
 
-	const job = await adicionarBuscaProprietariosNaFila({
-		tarefaId: tarefa.id,
-		clienteId: cliente.id,
-		logradouro: tarefa.logradouro,
-		numero: tarefa.numero,
-		mesAnoInicio: tarefa.mesAnoInicio,
-		mesAnoFinal: tarefa.mesAnoFinal,
-		intervaloSegundos: tarefa.intervaloSegundos,
-		forceRefresh: tarefa.forceRefresh,
-	});
+  const resultadoWorker = await preverBuscaNoWorkerRegistro({
+    workerUrl,
+    logradouro: data.logradouro,
+    numero: data.numero,
+  });
 
-	return {
-		jobId: job.id,
-		status: tarefa.status,
-		message: "Tarefa criada e adicionada na fila com sucesso",
-		cliente: {
-			id: cliente.id,
-			nome: cliente.nome,
-			slug: cliente.slug,
-		},
+  const registros = resultadoWorker.registros;
+  const quantidadeRegistros = registros.length;
+
+  const excedente = calcularResumoExcedenteBusca({
+    consultasEstimadas: quantidadeRegistros,
+    consultasRestantes: uso.consultasRestantes,
+    valorConsultaAdicionalCentavos: plano.valorConsultaAdicionalCentavos,
+  });
+
+  const previa = await prisma.buscaPrevia.create({
+    data: {
+      clienteId: cliente.id,
+      status: "PENDENTE",
+      logradouro: resultadoWorker.logradouro,
+      numero: resultadoWorker.numero,
+      quantidadeRegistros,
+      registros: toPrismaJson(registros),
+      consultasDisponiveisNoMomento:
+        excedente.consultasDisponiveisNoMomento,
+      consultasExcedentesEstimadas:
+        excedente.consultasExcedentesEstimadas,
+      valorConsultaAdicionalCentavos:
+        excedente.valorConsultaAdicionalCentavos,
+      valorExcedenteEstimadoCentavos:
+        excedente.valorExcedenteEstimadoCentavos,
+      workerUrl,
+      expiraEm: adicionarMinutos(new Date(), 30),
+    },
+  });
+
+  return {
+    previa: montarPreviaResponse(previa),
+    precisaConfirmarExcedente:
+      excedente.consultasExcedentesEstimadas > 0,
+    excedente,
+    uso,
     plano: {
       id: plano.id,
       nome: plano.nome,
       limiteMensalConsultas: plano.limiteMensalConsultas,
       intervaloSegundos: plano.intervaloSegundos,
+      precoCentavos: plano.precoCentavos,
+      valorConsultaAdicionalCentavos: plano.valorConsultaAdicionalCentavos,
+      limiteCorretores: plano.limiteCorretores,
+    },
+  };
+}
+
+export async function criarTarefaBuscaProprietarios(
+  clienteId: string,
+  data: BuscarProprietariosInput
+) {
+  const { cliente, plano, uso } = await validarClientePodeCriarBusca(clienteId);
+
+  const previa = await prisma.buscaPrevia.findFirst({
+    where: {
+      id: data.previaId,
+      clienteId,
+    },
+  });
+
+  if (!previa) {
+    throw new Error("Prévia da busca não encontrada");
+  }
+
+  if (previa.status !== "PENDENTE") {
+    throw new Error("Esta prévia não está mais disponível para confirmação");
+  }
+
+  if (previa.expiraEm < new Date()) {
+    await prisma.buscaPrevia.update({
+      where: {
+        id: previa.id,
+      },
+      data: {
+        status: "EXPIRADA",
+      },
+    });
+
+    throw new Error("Esta prévia expirou. Faça uma nova busca.");
+  }
+
+  if (
+    previa.consultasExcedentesEstimadas > 0 &&
+    !data.confirmarExcedente
+  ) {
+    return {
+      precisaConfirmarExcedente: true,
+      message:
+        "Esta busca pode ultrapassar o limite de consultas inclusas do seu plano.",
+      previa: montarPreviaResponse(previa),
+      uso,
+      excedente: {
+        consultasEstimadas: previa.quantidadeRegistros,
+        consultasDisponiveisNoMomento:
+          previa.consultasDisponiveisNoMomento,
+        consultasExcedentesEstimadas:
+          previa.consultasExcedentesEstimadas,
+        valorConsultaAdicionalCentavos:
+          previa.valorConsultaAdicionalCentavos,
+        valorExcedenteEstimadoCentavos:
+          previa.valorExcedenteEstimadoCentavos,
+      },
+    };
+  }
+
+  const excedenteAutorizado = previa.consultasExcedentesEstimadas > 0;
+
+  const tarefa = await prisma.tarefa.create({
+    data: {
+      clienteId: cliente.id,
+      buscaPreviaId: previa.id,
+      status: "PENDING",
+      logradouro: previa.logradouro,
+      numero: previa.numero,
+      mesAnoInicio: getMesAnoInicioAtual(),
+      mesAnoFinal: getMesAnoFinalAtual(),
+      intervaloSegundos: plano.intervaloSegundos,
+      forceRefresh: data.forceRefresh,
+      excedenteAutorizado,
+      excedenteAutorizadoEm: excedenteAutorizado ? new Date() : null,
+      consultasEstimadas: previa.quantidadeRegistros,
+      consultasDisponiveisNoMomento:
+        previa.consultasDisponiveisNoMomento,
+      consultasExcedentesEstimadas:
+        previa.consultasExcedentesEstimadas,
+      valorConsultaAdicionalCentavos:
+        previa.valorConsultaAdicionalCentavos,
+      valorExcedenteEstimadoCentavos:
+        previa.valorExcedenteEstimadoCentavos,
+    },
+  });
+
+  await prisma.buscaPrevia.update({
+    where: {
+      id: previa.id,
+    },
+    data: {
+      status: "CONFIRMADA",
+      confirmadaEm: new Date(),
+    },
+  });
+
+  const job = await adicionarBuscaProprietariosNaFila({
+    tarefaId: tarefa.id,
+    clienteId: cliente.id,
+    buscaPreviaId: previa.id,
+    logradouro: tarefa.logradouro,
+    numero: tarefa.numero,
+    mesAnoInicio: tarefa.mesAnoInicio,
+    mesAnoFinal: tarefa.mesAnoFinal,
+    intervaloSegundos: tarefa.intervaloSegundos,
+    forceRefresh: tarefa.forceRefresh,
+  });
+
+  return {
+    precisaConfirmarExcedente: false,
+    jobId: job.id,
+    status: tarefa.status,
+    message: "Tarefa criada e adicionada na fila com sucesso",
+    cliente: {
+      id: cliente.id,
+      nome: cliente.nome,
+      slug: cliente.slug,
+    },
+    plano: {
+      id: plano.id,
+      nome: plano.nome,
+      limiteMensalConsultas: plano.limiteMensalConsultas,
+      intervaloSegundos: plano.intervaloSegundos,
+      precoCentavos: plano.precoCentavos,
+      valorConsultaAdicionalCentavos: plano.valorConsultaAdicionalCentavos,
+      limiteCorretores: plano.limiteCorretores,
     },
     uso,
-		tarefa: {
-			id: tarefa.id,
-			status: tarefa.status,
-			logradouro: tarefa.logradouro,
-			numero: tarefa.numero,
-			mesAnoInicio: tarefa.mesAnoInicio,
-			mesAnoFinal: tarefa.mesAnoFinal,
-			intervaloSegundos: tarefa.intervaloSegundos,
-			forceRefresh: tarefa.forceRefresh,
-			createdAt: tarefa.createdAt,
-		},
-	};
+    previa: montarPreviaResponse(previa),
+    tarefa: {
+      id: tarefa.id,
+      status: tarefa.status,
+      logradouro: tarefa.logradouro,
+      numero: tarefa.numero,
+      mesAnoInicio: tarefa.mesAnoInicio,
+      mesAnoFinal: tarefa.mesAnoFinal,
+      intervaloSegundos: tarefa.intervaloSegundos,
+      forceRefresh: tarefa.forceRefresh,
+      buscaPreviaId: tarefa.buscaPreviaId,
+      excedenteAutorizado: tarefa.excedenteAutorizado,
+      excedenteAutorizadoEm: tarefa.excedenteAutorizadoEm,
+      consultasEstimadas: tarefa.consultasEstimadas,
+      consultasDisponiveisNoMomento:
+        tarefa.consultasDisponiveisNoMomento,
+      consultasExcedentesEstimadas:
+        tarefa.consultasExcedentesEstimadas,
+      valorConsultaAdicionalCentavos:
+        tarefa.valorConsultaAdicionalCentavos,
+      valorExcedenteEstimadoCentavos:
+        tarefa.valorExcedenteEstimadoCentavos,
+      createdAt: tarefa.createdAt,
+    },
+  };
 }
 
 export async function buscarTarefaPorId(clienteId: string, id: string) {
@@ -151,6 +371,19 @@ export async function buscarProgressoTarefaPorId(
 			total: tarefa.total,
 			current: tarefa.current,
 			percentage,
+		},
+		excedente: {
+			autorizado: tarefa.excedenteAutorizado,
+			autorizadoEm: tarefa.excedenteAutorizadoEm,
+			consultasEstimadas: tarefa.consultasEstimadas,
+			consultasDisponiveisNoMomento:
+				tarefa.consultasDisponiveisNoMomento,
+			consultasExcedentesEstimadas:
+				tarefa.consultasExcedentesEstimadas,
+			valorConsultaAdicionalCentavos:
+				tarefa.valorConsultaAdicionalCentavos,
+			valorExcedenteEstimadoCentavos:
+				tarefa.valorExcedenteEstimadoCentavos,
 		},
 		erro: tarefa.erro,
 		resultados: tarefa.resultados.map((resultado) => ({
@@ -234,165 +467,132 @@ export async function listarTarefasRecentes(clienteId: string) {
 }
 
 export async function exportarResultadosTarefaCsv(
-	clienteId: string,
-	id: string
+  clienteId: string,
+  id: string
 ) {
-	const tarefa = await prisma.tarefa.findFirst({
-		where: {
-			id,
-			clienteId,
-		},
-		include: {
-			cliente: {
-				select: {
-					nome: true,
-					slug: true,
-				},
-			},
-			resultados: {
-				orderBy: {
-					createdAt: "asc",
-				},
-			},
-		},
-	});
+  const tarefa = await prisma.tarefa.findFirst({
+    where: {
+      id,
+      clienteId,
+    },
+    include: {
+      cliente: {
+        select: {
+          nome: true,
+          slug: true,
+        },
+      },
+      resultados: {
+        orderBy: {
+          createdAt: "asc",
+        },
+      },
+    },
+  });
 
-	if (!tarefa) {
-		return null;
-	}
+  if (!tarefa) {
+    return null;
+  }
 
-	const rows = tarefa.resultados.map((resultado) => ({
-		cliente: tarefa.cliente.nome,
-		tarefaId: tarefa.id,
-		statusTarefa: tarefa.status,
-		logradouroBusca: tarefa.logradouro,
-		numeroBusca: tarefa.numero,
-		mesAnoInicio: tarefa.mesAnoInicio,
-		mesAnoFinal: tarefa.mesAnoFinal,
-		statusResultado: resultado.status,
-		indiceCadastral: resultado.indiceCadastral,
-		logradouro: resultado.logradouro,
-		numero: resultado.numero,
-		complemento: resultado.complemento,
-		nome: resultado.nome,
-		cpf: resultado.cpf,
-		endereco: resultado.endereco,
-		telefone: resultado.telefone,
-		email: resultado.email,
-		fonteContato: resultado.fonteContato,
-		sexo: (resultado.dadosContato as any)?.sexo,
-		idade: (resultado.dadosContato as any)?.idade,
-		signo: (resultado.dadosContato as any)?.signo,
-		nomeMae: (resultado.dadosContato as any)?.nomeMae,
-		dataNascimento: (resultado.dadosContato as any)?.dataNascimento,
-		rendaEstimada: (resultado.dadosContato as any)?.rendaEstimada,
-		rendaFaixaSalarial: (resultado.dadosContato as any)?.rendaFaixaSalarial,
-		telefones: JSON.stringify((resultado.dadosContato as any)?.telefones ?? []),
-		emails: JSON.stringify((resultado.dadosContato as any)?.emails ?? []),
-		enderecos: JSON.stringify((resultado.dadosContato as any)?.enderecos ?? []),
-		erro: resultado.erro,
-		consultadoEm: resultado.createdAt.toISOString(),
-	}));
+  const rows = montarLinhasResultadoExportacao(tarefa);
 
-	const csv = buildCsv(
-		rows.length > 0
-			? rows
-			: [
-					{
-						cliente: tarefa.cliente.nome,
-						tarefaId: tarefa.id,
-						statusTarefa: tarefa.status,
-						mensagem: "Nenhum resultado encontrado para esta tarefa",
-					},
-				]
-	);
+  const csv = buildCsv(
+    rows.length > 0
+      ? rows
+      : [
+          {
+            mensagem: "Nenhum resultado encontrado para esta tarefa",
+          },
+        ]
+  );
 
-	return {
-		filename: `resultados-${tarefa.cliente.slug}-${tarefa.id}.csv`,
-		csv,
-	};
+  return {
+    filename: `proprietarios-${tarefa.cliente.slug}-${tarefa.id}.csv`,
+    csv,
+  };
 }
 
 export async function exportarResultadosTarefaExcel(
-	clienteId: string,
-	id: string
+  clienteId: string,
+  id: string
 ) {
-	const tarefa = await prisma.tarefa.findFirst({
-		where: {
-			id,
-			clienteId,
-		},
-		include: {
-			cliente: {
-				select: {
-					nome: true,
-					slug: true,
-				},
-			},
-			resultados: {
-				orderBy: {
-					createdAt: "asc",
-				},
-			},
-		},
-	});
+  const tarefa = await prisma.tarefa.findFirst({
+    where: {
+      id,
+      clienteId,
+    },
+    include: {
+      cliente: {
+        select: {
+          nome: true,
+          slug: true,
+        },
+      },
+      resultados: {
+        orderBy: {
+          createdAt: "asc",
+        },
+      },
+    },
+  });
 
-	if (!tarefa) {
-		return null;
-	}
+  if (!tarefa) {
+    return null;
+  }
 
-	const rows =
-		tarefa.resultados.length > 0
-			? tarefa.resultados.map((resultado) => ({
-					cliente: tarefa.cliente.nome,
-					tarefaId: tarefa.id,
-					statusTarefa: tarefa.status,
-					logradouroBusca: tarefa.logradouro,
-					numeroBusca: tarefa.numero,
-					mesAnoInicio: tarefa.mesAnoInicio,
-					mesAnoFinal: tarefa.mesAnoFinal,
-					statusResultado: resultado.status,
-					indiceCadastral: resultado.indiceCadastral,
-					logradouro: resultado.logradouro,
-					numero: resultado.numero,
-					complemento: resultado.complemento,
-					nome: resultado.nome,
-					cpf: resultado.cpf,
-					endereco: resultado.endereco,
-					telefone: resultado.telefone,
-					email: resultado.email,
-					fonteContato: resultado.fonteContato,
-					sexo: (resultado.dadosContato as any)?.sexo,
-					idade: (resultado.dadosContato as any)?.idade,
-					signo: (resultado.dadosContato as any)?.signo,
-					nomeMae: (resultado.dadosContato as any)?.nomeMae,
-					dataNascimento: (resultado.dadosContato as any)?.dataNascimento,
-					rendaEstimada: (resultado.dadosContato as any)?.rendaEstimada,
-					rendaFaixaSalarial: (resultado.dadosContato as any)
-						?.rendaFaixaSalarial,
-					telefones: JSON.stringify(
-						(resultado.dadosContato as any)?.telefones ?? []
-					),
-					emails: JSON.stringify((resultado.dadosContato as any)?.emails ?? []),
-					enderecos: JSON.stringify(
-						(resultado.dadosContato as any)?.enderecos ?? []
-					),
-					erro: resultado.erro,
-					consultadoEm: resultado.createdAt.toISOString(),
-				}))
-			: [
-					{
-						cliente: tarefa.cliente.nome,
-						tarefaId: tarefa.id,
-						statusTarefa: tarefa.status,
-						mensagem: "Nenhum resultado encontrado para esta tarefa",
-					},
-				];
+  const rows =
+    tarefa.resultados.length > 0
+      ? montarLinhasResultadoExportacao(tarefa)
+      : [
+          {
+            mensagem: "Nenhum resultado encontrado para esta tarefa",
+          },
+        ];
 
-	const buffer = await buildExcelBuffer(rows, "Resultados");
+  const buffer = await buildExcelBuffer(rows, "Proprietarios");
 
-	return {
-		filename: `resultados-${tarefa.cliente.slug}-${tarefa.id}.xlsx`,
-		buffer,
-	};
+  return {
+    filename: `proprietarios-${tarefa.cliente.slug}-${tarefa.id}.xlsx`,
+    buffer,
+  };
+}
+
+export async function exportarResultadosTarefaPdf(
+  clienteId: string,
+  id: string
+) {
+  const tarefa = await prisma.tarefa.findFirst({
+    where: {
+      id,
+      clienteId,
+    },
+    include: {
+      cliente: {
+        select: {
+          nome: true,
+          slug: true,
+        },
+      },
+      resultados: {
+        orderBy: {
+          createdAt: "asc",
+        },
+      },
+    },
+  });
+
+  if (!tarefa) {
+    return null;
+  }
+
+  const rows = montarLinhasResultadoExportacao(tarefa);
+  const buffer = await buildPdfResultadosProprietarios({
+    tarefa,
+    rows,
+  });
+
+  return {
+    filename: `proprietarios-${tarefa.cliente.slug}-${tarefa.id}.pdf`,
+    buffer,
+  };
 }

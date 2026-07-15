@@ -3,11 +3,19 @@
 import type { ResultadoBusca } from "../../features/busca/types";
 import { OwnerDetails } from "../OwnerDetails";
 import { StatusBadge } from "../StatusBadge";
+import { formatPhoneBR } from "../../lib/formatters";
 import {
+	ContactGrid,
+	DetailItem,
+	DetailLabel,
+	DetailValue,
 	ErrorText,
+	ResultEyebrow,
 	ResultItem,
-	ResultText,
+	ResultMeta,
+	ResultMetaItem,
 	ResultTitle,
+	ResultTitleGroup,
 	ResultTop,
 } from "./styles";
 
@@ -19,46 +27,68 @@ export function ResultCard({ resultado }: ResultCardProps) {
 	return (
 		<ResultItem>
 			<ResultTop>
-				<ResultTitle>
-					{resultado.complemento || "Imóvel sem complemento"}
-				</ResultTitle>
+				<ResultTitleGroup>
+					<ResultEyebrow>Imóvel encontrado</ResultEyebrow>
+
+					<ResultTitle>
+						{resultado.complemento || "Imóvel sem complemento"}
+					</ResultTitle>
+				</ResultTitleGroup>
 
 				<StatusBadge status={resultado.status} />
 			</ResultTop>
 
-			<ResultText>
-				<strong>Índice cadastral:</strong> {resultado.indiceCadastral}
-			</ResultText>
+			<ResultMeta>
+				<ResultMetaItem>
+					<strong>Índice cadastral</strong>
+					<span>{resultado.indiceCadastral}</span>
+				</ResultMetaItem>
 
-			{resultado.proprietario.nome && (
-				<ResultText>
-					<strong>Proprietário:</strong> {resultado.proprietario.nome}
-				</ResultText>
-			)}
+				{resultado.fonteContato && (
+					<ResultMetaItem>
+						<strong>Fonte do contato</strong>
+						<span>{resultado.fonteContato}</span>
+					</ResultMetaItem>
+				)}
+			</ResultMeta>
 
-			{resultado.proprietario.cpf && (
-				<ResultText>
-					<strong>CPF:</strong> {resultado.proprietario.cpf}
-				</ResultText>
-			)}
+			<ContactGrid>
+				{resultado.proprietario.nome && (
+					<DetailItem $highlight>
+						<DetailLabel>Proprietário</DetailLabel>
+						<DetailValue>{resultado.proprietario.nome}</DetailValue>
+					</DetailItem>
+				)}
 
-			{resultado.proprietario.endereco && (
-				<ResultText>
-					<strong>Endereço:</strong> {resultado.proprietario.endereco}
-				</ResultText>
-			)}
+				{resultado.proprietario.cpf && (
+					<DetailItem>
+						<DetailLabel>CPF</DetailLabel>
+						<DetailValue>{resultado.proprietario.cpf}</DetailValue>
+					</DetailItem>
+				)}
 
-			{resultado.proprietario.telefone && (
-				<ResultText>
-					<strong>Telefone:</strong> {resultado.proprietario.telefone}
-				</ResultText>
-			)}
+				{resultado.proprietario.telefone && (
+					<DetailItem>
+						<DetailLabel>Telefone</DetailLabel>
+						<DetailValue>{formatPhoneBR(resultado.proprietario.telefone)}</DetailValue>
+					</DetailItem>
+				)}
 
-			{resultado.proprietario.email && (
-				<ResultText>
-					<strong>E-mail:</strong> {resultado.proprietario.email}
-				</ResultText>
-			)}
+				{resultado.proprietario.email && (
+					<DetailItem>
+						<DetailLabel>E-mail</DetailLabel>
+						<DetailValue>{resultado.proprietario.email}</DetailValue>
+					</DetailItem>
+				)}
+
+				{resultado.proprietario.endereco && (
+					<DetailItem $wide>
+						<DetailLabel>Endereço do proprietário</DetailLabel>
+						<DetailValue>{resultado.proprietario.endereco}</DetailValue>
+					</DetailItem>
+				)}
+			</ContactGrid>
+
 			<OwnerDetails
 				fonteContato={resultado.fonteContato}
 				dadosContato={resultado.dadosContato}

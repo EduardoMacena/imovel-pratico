@@ -1,19 +1,20 @@
 "use client";
 
-import type { InputHTMLAttributes } from "react";
-import { Field, Label, StyledInput } from "./styles";
+import { InputHTMLAttributes, useId } from "react";
+import { Field, InputElement, Label } from "./styles";
 
 type InputProps = InputHTMLAttributes<HTMLInputElement> & {
-  label: string;
+  label?: string;
 };
 
 export function Input({ label, id, ...props }: InputProps) {
-  const inputId = id ?? label.toLowerCase().replaceAll(" ", "-");
+  const generatedId = useId();
+  const inputId = id ?? props.name ?? generatedId;
 
   return (
-    <Field>
-      <Label htmlFor={inputId}>{label}</Label>
-      <StyledInput id={inputId} {...props} />
+    <Field htmlFor={inputId}>
+      {label && <Label>{label}</Label>}
+      <InputElement id={inputId} {...props} />
     </Field>
   );
 }

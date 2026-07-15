@@ -1,63 +1,121 @@
 "use client";
 
 import Link from "next/link";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
-export const HeaderWrapper = styled.div`
-  width: 100%;
-  background: ${({ theme }) => theme.colors.surface};
+export const HeaderWrapper = styled.header`
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(244, 241, 234, 0.78);
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+  backdrop-filter: blur(18px);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
 `;
 
-export const HeaderContent = styled.div`
-  width: 100%;
-  max-width: 1120px;
+export const HeaderInner = styled.div`
+  width: min(1320px, calc(100% - 40px));
+  min-height: 76px;
   margin: 0 auto;
-  padding: 14px 20px;
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
-  gap: ${({ theme }) => theme.spacing.md};
+  gap: ${({ theme }) => theme.spacing.lg};
 
-  @media (max-width: 720px) {
-    flex-direction: column;
-    align-items: flex-start;
+  @media (max-width: 880px) {
+    width: min(100% - 24px, 1320px);
+    grid-template-columns: 1fr auto;
   }
 `;
 
 export const Brand = styled(Link)`
-  font-weight: 900;
-`;
-
-export const Nav = styled.nav`
-  display: flex;
+  width: fit-content;
+  display: inline-flex;
   align-items: center;
-  gap: ${({ theme }) => theme.spacing.md};
-  flex-wrap: wrap;
+  gap: ${({ theme }) => theme.spacing.sm};
+  color: ${({ theme }) => theme.colors.primary};
+  font-weight: 950;
+  font-size: 18px;
+  letter-spacing: -0.04em;
+  text-decoration: none;
 `;
 
-export const NavLink = styled(Link)`
-  color: ${({ theme }) => theme.colors.textMuted};
-  font-size: 14px;
-  font-weight: 800;
+export const BrandText = styled.span`
+  white-space: nowrap;
 
-  &:hover {
-    color: ${({ theme }) => theme.colors.text};
+  @media (max-width: 420px) {
+    display: none;
   }
 `;
 
-export const UserInfo = styled.div`
-  color: ${({ theme }) => theme.colors.textMuted};
-  font-size: 14px;
+export const LogoMark = styled.img`
+  width: 148px;
+  max-width: 42vw;
+  height: auto;
+  max-height: 52px;
+  display: block;
+  flex: 0 0 auto;
+  object-fit: contain;
+
+  @media (max-width: 420px) {
+    width: 126px;
+  }
 `;
 
-export const LogoutButton = styled.button`
-  height: 36px;
-  padding: 0 14px;
-  border-radius: ${({ theme }) => theme.radii.md};
-  background: ${({ theme }) => theme.colors.primary};
-  color: ${({ theme }) => theme.colors.white};
+export const Nav = styled.nav`
+  justify-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px;
+  border-radius: ${({ theme }) => theme.radii.pill};
+  background: rgba(255, 255, 255, 0.56);
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  box-shadow:
+    0 10px 24px rgba(15, 23, 42, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.70);
+
+  @media (max-width: 880px) {
+    display: none;
+  }
+`;
+
+export const NavLink = styled(Link)<{ $active?: boolean }>`
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  border-radius: ${({ theme }) => theme.radii.pill};
+  color: ${({ theme }) => theme.colors.textMuted};
   font-size: 14px;
-  font-weight: 800;
-  cursor: pointer;
+  font-weight: 850;
+  text-decoration: none;
+  transition:
+    color 0.18s ease,
+    background 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.18s ease;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.primary};
+    background: ${({ theme }) => theme.colors.surface};
+    transform: translateY(-1px);
+  }
+
+  ${({ theme, $active }) =>
+    $active &&
+    css`
+      color: ${theme.colors.primary};
+      background: ${theme.colors.surface};
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+      font-weight: 950;
+    `}
+`;
+
+export const HeaderActions = styled.div`
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.sm};
 `;
