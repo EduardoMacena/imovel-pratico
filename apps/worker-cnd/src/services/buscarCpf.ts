@@ -1,3 +1,4 @@
+import { mkdir } from "node:fs/promises";
 import type { BrowserContext, Page } from "playwright";
 import { getBrowser } from "../playwright/browser.js";
 
@@ -14,6 +15,39 @@ export type ProprietarioEncontrado = {
   indiceCadastral: string | null;
   periodoPesquisado: string;
 };
+
+
+function isCndDebugScreenshotsEnabled() {
+  return process.env.CND_DEBUG_SCREENSHOTS === "true";
+}
+
+function normalizarNomeArquivo(value: string) {
+  return value.replace(/[^a-zA-Z0-9_-]/g, "-").replace(/-+/g, "-");
+}
+
+async function salvarScreenshotCnd(
+  page: Page,
+  etapa: string,
+  indiceCadastral: string
+) {
+  if (!isCndDebugScreenshotsEnabled()) {
+    return;
+  }
+
+  const dir = "/tmp/cnd-debug";
+  await mkdir(dir, { recursive: true });
+
+  const arquivo = `${dir}/${Date.now()}-${normalizarNomeArquivo(
+    indiceCadastral
+  )}-${etapa}.png`;
+
+  await page.screenshot({
+    path: arquivo,
+    fullPage: true,
+  });
+
+  console.log("Screenshot CND PBH salvo:", arquivo);
+}
 
 function limitarTexto(texto: string, limite = 1500) {
   return texto.replace(/\s+/g, " ").trim().slice(0, limite);
@@ -279,10 +313,21 @@ export async function buscarCpf({
       }
     );
 
-    const paginaResultado = await clicarPesquisarEObterPaginaResultado(
-      context,
-      page
-    );
+    await salvarScreenshotCnd(page, "antes-pesquisar", indiceCadastral);
+
+    let paginaResultado: Page;
+
+    try {
+      paginaResultado = await clicarPesquisarEObterPaginaResultado(
+        context,
+        page
+      );
+    } catch (error) {
+      await salvarScreenshotCnd(page, "erro-apos-pesquisar", indiceCadastral);
+      throw error;
+    }
+
+    await salvarScreenshotCnd(paginaResultado, "pagina-resultado", indiceCadastral);
 
     console.log("Página resultado CND PBH:", paginaResultado.url());
 
