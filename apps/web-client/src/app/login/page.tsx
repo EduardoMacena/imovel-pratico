@@ -32,8 +32,8 @@ import { login } from "../../features/auth/api";
 export default function LoginPage() {
 	const router = useRouter();
 
-	const [email, setEmail] = useState("admin@twa.com.br");
-	const [senha, setSenha] = useState("123456");
+	const [email, setEmail] = useState("");
+	const [senha, setSenha] = useState("");
 
 	const [isLoading, setIsLoading] = useState(false);
 	const [erro, setErro] = useState<string | null>(null);

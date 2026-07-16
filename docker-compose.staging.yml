@@ -60,12 +60,16 @@ services:
         APP_NAME: "@imovel-pratico/web-home"
         APP_PORT: "3000"
         NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+        NEXT_PUBLIC_WEB_ADMIN_URL: ${NEXT_PUBLIC_WEB_ADMIN_URL}
+        NEXT_PUBLIC_WEB_CLIENT_URL: ${NEXT_PUBLIC_WEB_CLIENT_URL}
     env_file:
       - .env.staging
     environment:
       PORT: 3000
       NODE_ENV: production
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+        NEXT_PUBLIC_WEB_ADMIN_URL: ${NEXT_PUBLIC_WEB_ADMIN_URL}
+        NEXT_PUBLIC_WEB_CLIENT_URL: ${NEXT_PUBLIC_WEB_CLIENT_URL}
     depends_on:
       - api-gateway-staging
     ports:
@@ -83,12 +87,16 @@ services:
         APP_NAME: "@imovel-pratico/web-client"
         APP_PORT: "3001"
         NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+        NEXT_PUBLIC_WEB_ADMIN_URL: ${NEXT_PUBLIC_WEB_ADMIN_URL}
+        NEXT_PUBLIC_WEB_CLIENT_URL: ${NEXT_PUBLIC_WEB_CLIENT_URL}
     env_file:
       - .env.staging
     environment:
       PORT: 3001
       NODE_ENV: production
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+        NEXT_PUBLIC_WEB_ADMIN_URL: ${NEXT_PUBLIC_WEB_ADMIN_URL}
+        NEXT_PUBLIC_WEB_CLIENT_URL: ${NEXT_PUBLIC_WEB_CLIENT_URL}
     depends_on:
       - api-gateway-staging
     ports:
@@ -106,12 +114,16 @@ services:
         APP_NAME: "@imovel-pratico/web-admin"
         APP_PORT: "3002"
         NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+        NEXT_PUBLIC_WEB_ADMIN_URL: ${NEXT_PUBLIC_WEB_ADMIN_URL}
+        NEXT_PUBLIC_WEB_CLIENT_URL: ${NEXT_PUBLIC_WEB_CLIENT_URL}
     env_file:
       - .env.staging
     environment:
       PORT: 3002
       NODE_ENV: production
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+        NEXT_PUBLIC_WEB_ADMIN_URL: ${NEXT_PUBLIC_WEB_ADMIN_URL}
+        NEXT_PUBLIC_WEB_CLIENT_URL: ${NEXT_PUBLIC_WEB_CLIENT_URL}
     depends_on:
       - api-gateway-staging
     ports:

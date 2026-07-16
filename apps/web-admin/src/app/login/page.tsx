@@ -47,8 +47,8 @@ type LoginResponse = {
 export default function LoginPage() {
 	const router = useRouter();
 
-	const [email, setEmail] = useState("dudumacen@gmail.com");
-	const [senha, setSenha] = useState("123456");
+	const [email, setEmail] = useState("");
+	const [senha, setSenha] = useState("");
 
 	const [isLoading, setIsLoading] = useState(false);
 	const [erro, setErro] = useState<string | null>(null);
