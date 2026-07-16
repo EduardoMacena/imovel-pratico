@@ -37,6 +37,7 @@ RUN pnpm --filter "${APP_NAME}" exec playwright install --with-deps chromium
 
 COPY . .
 
+RUN pnpm install --frozen-lockfile --prod=false
 RUN prisma generate --schema=packages/database/prisma/schema.prisma
 RUN pnpm --filter "${APP_NAME}..." build
 
