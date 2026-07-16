@@ -1,3 +1,4 @@
+import type { BrowserContext, Page } from "playwright";
 import { getBrowser } from "../playwright/browser.js";
 
 export type BuscarCpfParams = {
@@ -13,6 +14,138 @@ export type ProprietarioEncontrado = {
   indiceCadastral: string | null;
   periodoPesquisado: string;
 };
+
+function limitarTexto(texto: string, limite = 1000) {
+  return texto.replace(/\s+/g, " ").trim().slice(0, limite);
+}
+
+async function aguardarMarcadorResultado(page: Page, timeoutMs: number) {
+  const startedAt = Date.now();
+  const tabelaResultado = page.locator("#tabelaPrincipal").first();
+
+  while (Date.now() - startedAt < timeoutMs) {
+    const encontrouTabela = await tabelaResultado
+      .isVisible()
+      .catch(() => false);
+
+    if (encontrouTabela) {
+      return;
+    }
+
+    const textoPagina = await page
+      .locator("body")
+      .innerText({ timeout: 1000 })
+      .catch(() => "");
+
+    if (
+      /Nome:\s/i.test(textoPagina) ||
+      /CPF:\s/i.test(textoPagina) ||
+      /Endere[cç]o:\s/i.test(textoPagina) ||
+      /[ÍI]ndice cadastral/i.test(textoPagina) ||
+      /nenhum/i.test(textoPagina) ||
+      /n[aã]o encontrado/i.test(textoPagina) ||
+      /n[aã]o foi poss[ií]vel/i.test(textoPagina) ||
+      /inv[aá]lid/i.test(textoPagina) ||
+      /obrigat[oó]rio/i.test(textoPagina) ||
+      /erro/i.test(textoPagina)
+    ) {
+      return;
+    }
+
+    await page.waitForTimeout(500);
+  }
+
+  throw new Error(
+    `Resultado CND PBH não apareceu dentro de ${timeoutMs}ms. URL atual: ${page.url()}`
+  );
+}
+
+async function clicarPesquisarEAguardarResultado(
+  context: BrowserContext,
+  page: Page
+) {
+  const novaPaginaPromise = context
+    .waitForEvent("page", {
+      timeout: 60000,
+    })
+    .catch(() => null);
+
+  await page.evaluate(() => {
+    const btn = document.getElementById(
+      "meuForm:pesquisar"
+    ) as HTMLElement | null;
+
+    if (!btn) {
+      throw new Error("Botão pesquisar não encontrado");
+    }
+
+    btn.click();
+  });
+
+  const mesmaPaginaPromise = aguardarMarcadorResultado(page, 60000)
+    .then(() => page)
+    .catch(() => null);
+
+  const paginaEncontrada = await Promise.race([
+    novaPaginaPromise,
+    mesmaPaginaPromise,
+  ]);
+
+  const paginaResultado =
+    paginaEncontrada ??
+    context.pages().find(pagina => pagina !== page && !pagina.isClosed()) ??
+    page;
+
+  await paginaResultado
+    .waitForLoadState("load", {
+      timeout: 60000,
+    })
+    .catch(() => undefined);
+
+  await aguardarMarcadorResultado(paginaResultado, 60000).catch(async error => {
+    const textoPagina = await paginaResultado
+      .locator("body")
+      .innerText({ timeout: 2000 })
+      .catch(() => "");
+
+    throw new Error(
+      `${error.message}. URL: ${paginaResultado.url()}. Texto da página: ${limitarTexto(
+        textoPagina
+      )}`
+    );
+  });
+
+  return paginaResultado;
+}
+
+async function obterTextoResultado(page: Page) {
+  const tabelaResultado = page.locator("#tabelaPrincipal").first();
+
+  const encontrouTabela = await tabelaResultado.isVisible().catch(() => false);
+
+  if (encontrouTabela) {
+    return tabelaResultado.innerText();
+  }
+
+  const textoPagina = await page
+    .locator("body")
+    .innerText({ timeout: 5000 })
+    .catch(() => "");
+
+  if (!textoPagina) {
+    throw new Error(`CND PBH não retornou conteúdo. URL: ${page.url()}`);
+  }
+
+  if (!/Nome:\s/i.test(textoPagina) && !/CPF:\s/i.test(textoPagina)) {
+    throw new Error(
+      `CND PBH não retornou dados do proprietário. URL: ${page.url()}. Texto da página: ${limitarTexto(
+        textoPagina
+      )}`
+    );
+  }
+
+  return textoPagina;
+}
 
 export async function buscarCpf({
   indiceCadastral,
@@ -85,45 +218,24 @@ export async function buscarCpf({
       }
     );
 
-    const [novaPagina] = await Promise.all([
-      context.waitForEvent("page", {
-        timeout: 60000,
-      }),
-      page.evaluate(() => {
-        const btn = document.getElementById(
-          "meuForm:pesquisar"
-        ) as HTMLElement | null;
+    const paginaResultado = await clicarPesquisarEAguardarResultado(
+      context,
+      page
+    );
 
-        if (!btn) {
-          throw new Error("Botão pesquisar não encontrado");
-        }
-
-        btn.click();
-      }),
-    ]);
-
-    await novaPagina.waitForLoadState("load", {
-      timeout: 60000,
-    });
-
-    const tabelaResultado = novaPagina.locator("#tabelaPrincipal").first();
-
-    await tabelaResultado.waitFor({
-      state: "visible",
-      timeout: 30000,
-    });
-
-    const texto = await tabelaResultado.innerText();
+    const texto = await obterTextoResultado(paginaResultado);
 
     const nome = texto.match(/Nome:\s*(.+)/i)?.[1]?.trim() ?? null;
 
     const cpf = texto.match(/CPF:\s*([0-9.\-]+)/i)?.[1]?.trim() ?? null;
 
-    const endereco = texto.match(/Endereco:\s*(.+)/i)?.[1]?.trim() ?? null;
+    const endereco =
+      texto.match(/Endere[cç]o:\s*(.+)/i)?.[1]?.trim() ?? null;
 
     const indiceResultado =
-      texto.match(/Indice cadastral do IPTU:\s*([0-9A-Z\s]+)/i)?.[1]?.trim() ??
-      indiceCadastral;
+      texto
+        .match(/[ÍI]ndice cadastral do IPTU:\s*([^\n\r]+)/i)?.[1]
+        ?.trim() ?? indiceCadastral;
 
     return {
       nome,
