@@ -161,14 +161,15 @@ services:
       dockerfile: docker/Dockerfile.worker
       args:
         APP_NAME: "@imovel-pratico/worker-cnd"
+    command: ["sh", "-c", "xvfb-run -a pnpm --filter @imovel-pratico/worker-cnd start"]
     env_file:
       - .env.staging
     environment:
       NODE_ENV: production
       DATABASE_URL: ${DATABASE_URL}
       REDIS_URL: ${REDIS_URL}
-      PLAYWRIGHT_HEADLESS: "true"
-      PLAYWRIGHT_SLOW_MO: "0"
+      PLAYWRIGHT_HEADLESS: "false"
+      PLAYWRIGHT_SLOW_MO: "300"
     depends_on:
       - postgres-staging
       - redis-staging
