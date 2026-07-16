@@ -9,7 +9,6 @@ ENV NODE_ENV=production
 ENV PORT=3333
 ENV PNPM_HOME=/pnpm
 ENV PATH=$PNPM_HOME:$PATH
-ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 ENV PNPM_VERSION=10.0.0
 
 RUN apt-get update \
@@ -17,21 +16,6 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/*
 
 RUN npm install -g pnpm@${PNPM_VERSION} prisma@7.8.0
-RUN printf "node-linker=hoisted\nstrict-peer-dependencies=false\n" > .npmrc
-
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
-
-COPY apps/api-gateway/package.json ./apps/api-gateway/package.json
-COPY apps/web-home/package.json ./apps/web-home/package.json
-COPY apps/web-admin/package.json ./apps/web-admin/package.json
-COPY apps/web-client/package.json ./apps/web-client/package.json
-COPY apps/worker-cnd/package.json ./apps/worker-cnd/package.json
-COPY apps/worker-registro/package.json ./apps/worker-registro/package.json
-
-COPY packages/database/package.json ./packages/database/package.json
-COPY packages/queue/package.json ./packages/queue/package.json
-
-RUN pnpm install --frozen-lockfile --prod=false
 
 COPY . .
 
