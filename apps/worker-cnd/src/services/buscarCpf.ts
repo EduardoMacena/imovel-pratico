@@ -41,7 +41,12 @@ async function aguardarMarcadorResultado(page: Page, timeoutMs: number) {
       /Nome:\s/i.test(textoPagina) ||
       /CPF:\s/i.test(textoPagina) ||
       /Endere[cç]o:\s/i.test(textoPagina) ||
-      /[ÍI]ndice cadastral/i.test(textoPagina) ||
+      /guiaCND\.xhtml/i.test(page.url()) ||
+      /Certid[aã]o Negativa/i.test(textoPagina) ||
+      /Certid[aã]o Positiva/i.test(textoPagina) ||
+      /Nome\s*[:\n]/i.test(textoPagina) ||
+      /CPF\s*[:\n]/i.test(textoPagina) ||
+      /CPF\/CNPJ\s*[:\n]/i.test(textoPagina) ||
       /nenhum/i.test(textoPagina) ||
       /n[aã]o encontrado/i.test(textoPagina) ||
       /n[aã]o foi poss[ií]vel/i.test(textoPagina) ||
@@ -147,6 +152,67 @@ async function obterTextoResultado(page: Page) {
   return textoPagina;
 }
 
+
+function normalizarTexto(texto: string) {
+  return texto.replace(/\s+/g, " ").trim();
+}
+
+
+function extrairCampo(texto: string, labels: string[], proximosLabels: string[]) {
+  const textoNormalizado = normalizarTexto(texto);
+
+  for (const label of labels) {
+    const proximos = proximosLabels.join("|");
+
+    const regexComDoisPontos = new RegExp(
+      `${label}\\s*:\\s*(.+?)(?=\\s+(?:${proximos})\\s*:|$)`,
+      "i"
+    );
+
+    const matchComDoisPontos = textoNormalizado.match(regexComDoisPontos);
+
+    if (matchComDoisPontos?.[1]) {
+      return matchComDoisPontos[1].trim();
+    }
+
+    const regexSemDoisPontos = new RegExp(
+      `${label}\\s+(.+?)(?=\\s+(?:${proximos})(?:\\s|:)|$)`,
+      "i"
+    );
+
+    const matchSemDoisPontos = textoNormalizado.match(regexSemDoisPontos);
+
+    if (matchSemDoisPontos?.[1]) {
+      return matchSemDoisPontos[1].trim();
+    }
+  }
+
+  return null;
+}
+
+
+function extrairCpf(texto: string) {
+  const cpfMatch = texto.match(/\b\d{3}\.\d{3}\.\d{3}-\d{2}\b/);
+
+  if (cpfMatch?.[0]) {
+    return cpfMatch[0];
+  }
+
+  const cpfNumericoMatch = texto.match(/\b\d{11}\b/);
+
+  if (cpfNumericoMatch?.[0]) {
+    return cpfNumericoMatch[0];
+  }
+
+  return extrairCampo(texto, ["CPF", "CPF/CNPJ"], [
+    "Nome",
+    "Endereço",
+    "Endereco",
+    "Índice",
+    "Indice",
+  ]);
+}
+
 export async function buscarCpf({
   indiceCadastral,
   mesAnoInicio,
@@ -225,17 +291,46 @@ export async function buscarCpf({
 
     const texto = await obterTextoResultado(paginaResultado);
 
-    const nome = texto.match(/Nome:\s*(.+)/i)?.[1]?.trim() ?? null;
+    console.log("Texto bruto CND PBH:", limitarTexto(texto, 2000));
 
-    const cpf = texto.match(/CPF:\s*([0-9.\-]+)/i)?.[1]?.trim() ?? null;
+    const nome = extrairCampo(texto, ["Nome"], [
+      "CPF",
+      "CPF/CNPJ",
+      "Endereço",
+      "Endereco",
+      "Índice",
+      "Indice",
+    ]);
 
-    const endereco =
-      texto.match(/Endere[cç]o:\s*(.+)/i)?.[1]?.trim() ?? null;
+    const cpf = extrairCpf(texto);
+
+    const endereco = extrairCampo(texto, ["Endereço", "Endereco"], [
+      "Nome",
+      "CPF",
+      "CPF/CNPJ",
+      "Índice",
+      "Indice",
+    ]);
 
     const indiceResultado =
       texto
-        .match(/[ÍI]ndice cadastral do IPTU:\s*([^\n\r]+)/i)?.[1]
-        ?.trim() ?? indiceCadastral;
+        .match(/[ÍI]ndice cadastral do IPTU\s*:?\s*([^\n\r]+)/i)?.[1]
+        ?.trim() ??
+      extrairCampo(texto, ["Índice cadastral do IPTU", "Indice cadastral do IPTU"], [
+        "Nome",
+        "CPF",
+        "CPF/CNPJ",
+        "Endereço",
+        "Endereco",
+      ]) ??
+      indiceCadastral;
+
+    console.log("Dados extraídos CND PBH:", {
+      nome,
+      cpf,
+      endereco,
+      indiceCadastral: indiceResultado,
+    });
 
     return {
       nome,
