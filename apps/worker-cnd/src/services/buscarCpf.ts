@@ -15,148 +15,13 @@ export type ProprietarioEncontrado = {
   periodoPesquisado: string;
 };
 
-function limitarTexto(texto: string, limite = 1000) {
+function limitarTexto(texto: string, limite = 1500) {
   return texto.replace(/\s+/g, " ").trim().slice(0, limite);
 }
-
-async function aguardarMarcadorResultado(page: Page, timeoutMs: number) {
-  const startedAt = Date.now();
-  const tabelaResultado = page.locator("#tabelaPrincipal").first();
-
-  while (Date.now() - startedAt < timeoutMs) {
-    const encontrouTabela = await tabelaResultado
-      .isVisible()
-      .catch(() => false);
-
-    if (encontrouTabela) {
-      return;
-    }
-
-    const textoPagina = await page
-      .locator("body")
-      .innerText({ timeout: 1000 })
-      .catch(() => "");
-
-    if (
-      /Nome:\s/i.test(textoPagina) ||
-      /CPF:\s/i.test(textoPagina) ||
-      /Endere[cç]o:\s/i.test(textoPagina) ||
-      /guiaCND\.xhtml/i.test(page.url()) ||
-      /Certid[aã]o Negativa/i.test(textoPagina) ||
-      /Certid[aã]o Positiva/i.test(textoPagina) ||
-      /Nome\s*[:\n]/i.test(textoPagina) ||
-      /CPF\s*[:\n]/i.test(textoPagina) ||
-      /CPF\/CNPJ\s*[:\n]/i.test(textoPagina) ||
-      /nenhum/i.test(textoPagina) ||
-      /n[aã]o encontrado/i.test(textoPagina) ||
-      /n[aã]o foi poss[ií]vel/i.test(textoPagina) ||
-      /inv[aá]lid/i.test(textoPagina) ||
-      /obrigat[oó]rio/i.test(textoPagina) ||
-      /erro/i.test(textoPagina)
-    ) {
-      return;
-    }
-
-    await page.waitForTimeout(500);
-  }
-
-  throw new Error(
-    `Resultado CND PBH não apareceu dentro de ${timeoutMs}ms. URL atual: ${page.url()}`
-  );
-}
-
-async function clicarPesquisarEAguardarResultado(
-  context: BrowserContext,
-  page: Page
-) {
-  const novaPaginaPromise = context
-    .waitForEvent("page", {
-      timeout: 60000,
-    })
-    .catch(() => null);
-
-  await page.evaluate(() => {
-    const btn = document.getElementById(
-      "meuForm:pesquisar"
-    ) as HTMLElement | null;
-
-    if (!btn) {
-      throw new Error("Botão pesquisar não encontrado");
-    }
-
-    btn.click();
-  });
-
-  const mesmaPaginaPromise = aguardarMarcadorResultado(page, 60000)
-    .then(() => page)
-    .catch(() => null);
-
-  const paginaEncontrada = await Promise.race([
-    novaPaginaPromise,
-    mesmaPaginaPromise,
-  ]);
-
-  const paginaResultado =
-    paginaEncontrada ??
-    context.pages().find(pagina => pagina !== page && !pagina.isClosed()) ??
-    page;
-
-  await paginaResultado
-    .waitForLoadState("load", {
-      timeout: 60000,
-    })
-    .catch(() => undefined);
-
-  await aguardarMarcadorResultado(paginaResultado, 60000).catch(async error => {
-    const textoPagina = await paginaResultado
-      .locator("body")
-      .innerText({ timeout: 2000 })
-      .catch(() => "");
-
-    throw new Error(
-      `${error.message}. URL: ${paginaResultado.url()}. Texto da página: ${limitarTexto(
-        textoPagina
-      )}`
-    );
-  });
-
-  return paginaResultado;
-}
-
-async function obterTextoResultado(page: Page) {
-  const tabelaResultado = page.locator("#tabelaPrincipal").first();
-
-  const encontrouTabela = await tabelaResultado.isVisible().catch(() => false);
-
-  if (encontrouTabela) {
-    return tabelaResultado.innerText();
-  }
-
-  const textoPagina = await page
-    .locator("body")
-    .innerText({ timeout: 5000 })
-    .catch(() => "");
-
-  if (!textoPagina) {
-    throw new Error(`CND PBH não retornou conteúdo. URL: ${page.url()}`);
-  }
-
-  if (!/Nome:\s/i.test(textoPagina) && !/CPF:\s/i.test(textoPagina)) {
-    throw new Error(
-      `CND PBH não retornou dados do proprietário. URL: ${page.url()}. Texto da página: ${limitarTexto(
-        textoPagina
-      )}`
-    );
-  }
-
-  return textoPagina;
-}
-
 
 function normalizarTexto(texto: string) {
   return texto.replace(/\s+/g, " ").trim();
 }
-
 
 function extrairCampo(texto: string, labels: string[], proximosLabels: string[]) {
   const textoNormalizado = normalizarTexto(texto);
@@ -190,18 +55,17 @@ function extrairCampo(texto: string, labels: string[], proximosLabels: string[])
   return null;
 }
 
-
 function extrairCpf(texto: string) {
-  const cpfMatch = texto.match(/\b\d{3}\.\d{3}\.\d{3}-\d{2}\b/);
+  const cpfFormatado = texto.match(/\b\d{3}\.\d{3}\.\d{3}-\d{2}\b/);
 
-  if (cpfMatch?.[0]) {
-    return cpfMatch[0];
+  if (cpfFormatado?.[0]) {
+    return cpfFormatado[0];
   }
 
-  const cpfNumericoMatch = texto.match(/\b\d{11}\b/);
+  const cpfNumerico = texto.match(/\b\d{11}\b/);
 
-  if (cpfNumericoMatch?.[0]) {
-    return cpfNumericoMatch[0];
+  if (cpfNumerico?.[0]) {
+    return cpfNumerico[0];
   }
 
   return extrairCampo(texto, ["CPF", "CPF/CNPJ"], [
@@ -211,6 +75,91 @@ function extrairCpf(texto: string) {
     "Índice",
     "Indice",
   ]);
+}
+
+async function obterTextoDaPagina(page: Page) {
+  return page
+    .locator("body")
+    .innerText({ timeout: 5000 })
+    .catch(() => "");
+}
+
+async function aguardarTabelaResultado(page: Page) {
+  const tabelaResultado = page.locator("#tabelaPrincipal").first();
+
+  try {
+    await tabelaResultado.waitFor({
+      state: "visible",
+      timeout: 60000,
+    });
+
+    return tabelaResultado;
+  } catch (error) {
+    const textoPagina = await obterTextoDaPagina(page);
+
+    throw new Error(
+      `A página da CND abriu, mas a tabela #tabelaPrincipal não apareceu. URL: ${page.url()}. Texto da página: ${limitarTexto(
+        textoPagina
+      )}`
+    );
+  }
+}
+
+async function clicarPesquisarEObterPaginaResultado(
+  context: BrowserContext,
+  page: Page
+) {
+  const novaPaginaPromise = context
+    .waitForEvent("page", {
+      timeout: 60000,
+    })
+    .catch(() => null);
+
+  const mesmaPaginaResultadoPromise = Promise.race([
+    page
+      .waitForURL(/guiaCND\.xhtml/i, {
+        timeout: 60000,
+      })
+      .then(() => page)
+      .catch(() => null),
+    page
+      .locator("#tabelaPrincipal")
+      .first()
+      .waitFor({
+        state: "visible",
+        timeout: 60000,
+      })
+      .then(() => page)
+      .catch(() => null),
+  ]);
+
+  await page.locator("#meuForm\\:pesquisar").click({
+    force: true,
+    timeout: 30000,
+  });
+
+  const paginaResultado = await Promise.race([
+    novaPaginaPromise,
+    mesmaPaginaResultadoPromise,
+  ]);
+
+  if (!paginaResultado) {
+    const textoPagina = await obterTextoDaPagina(page);
+
+    throw new Error(
+      `A CND PBH não abriu a página de resultado do IPTU. URL atual: ${page.url()}. Texto da página inicial: ${limitarTexto(
+        textoPagina
+      )}`
+    );
+  }
+
+  await paginaResultado
+    .waitForLoadState("load", {
+      timeout: 60000,
+    })
+    .catch(() => undefined);
+
+  return paginaResultado;
 }
 
 export async function buscarCpf({
@@ -284,14 +233,18 @@ export async function buscarCpf({
       }
     );
 
-    const paginaResultado = await clicarPesquisarEAguardarResultado(
+    const paginaResultado = await clicarPesquisarEObterPaginaResultado(
       context,
       page
     );
 
-    const texto = await obterTextoResultado(paginaResultado);
+    console.log("Página resultado CND PBH:", paginaResultado.url());
 
-    console.log("Texto bruto CND PBH:", limitarTexto(texto, 2000));
+    const tabelaResultado = await aguardarTabelaResultado(paginaResultado);
+
+    const texto = await tabelaResultado.innerText();
+
+    console.log("Texto bruto tabela CND PBH:", limitarTexto(texto, 2000));
 
     const nome = extrairCampo(texto, ["Nome"], [
       "CPF",
@@ -313,17 +266,11 @@ export async function buscarCpf({
     ]);
 
     const indiceResultado =
-      texto
-        .match(/[ÍI]ndice cadastral do IPTU\s*:?\s*([^\n\r]+)/i)?.[1]
-        ?.trim() ??
-      extrairCampo(texto, ["Índice cadastral do IPTU", "Indice cadastral do IPTU"], [
-        "Nome",
-        "CPF",
-        "CPF/CNPJ",
-        "Endereço",
-        "Endereco",
-      ]) ??
-      indiceCadastral;
+      extrairCampo(
+        texto,
+        ["Índice cadastral do IPTU", "Indice cadastral do IPTU"],
+        ["Nome", "CPF", "CPF/CNPJ", "Endereço", "Endereco"]
+      ) ?? indiceCadastral;
 
     console.log("Dados extraídos CND PBH:", {
       nome,
@@ -331,6 +278,14 @@ export async function buscarCpf({
       endereco,
       indiceCadastral: indiceResultado,
     });
+
+    if (!nome && !cpf) {
+      throw new Error(
+        `A CND abriu a página de resultado, mas não foi possível extrair Nome/CPF. Texto da tabela: ${limitarTexto(
+          texto
+        )}`
+      );
+    }
 
     return {
       nome,
