@@ -10,12 +10,20 @@ function getSlowMoValue() {
   return Number(process.env.PLAYWRIGHT_SLOW_MO ?? 300);
 }
 
+function getBrowserLocale() {
+  return process.env.PLAYWRIGHT_LOCALE ?? "pt-BR";
+}
+
 export async function getBrowser() {
   if (!browser) {
     browser = await chromium.launch({
       headless: getHeadlessValue(),
       slowMo: getSlowMoValue(),
-      args: ["--no-sandbox", "--disable-dev-shm-usage"],
+      args: [
+        "--no-sandbox",
+        "--disable-dev-shm-usage",
+        `--lang=${getBrowserLocale()}`,
+      ],
     });
   }
 

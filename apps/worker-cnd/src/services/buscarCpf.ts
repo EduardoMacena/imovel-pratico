@@ -17,6 +17,23 @@ export type ProprietarioEncontrado = {
 };
 
 
+
+function getBrowserContextOptions() {
+  return {
+    locale: process.env.PLAYWRIGHT_LOCALE ?? "pt-BR",
+    timezoneId: process.env.PLAYWRIGHT_TIMEZONE ?? "America/Sao_Paulo",
+    viewport: {
+      width: 1366,
+      height: 768,
+    },
+    extraHTTPHeaders: {
+      "Accept-Language":
+        process.env.PLAYWRIGHT_ACCEPT_LANGUAGE ??
+        "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
+    },
+  };
+}
+
 function isCndDebugScreenshotsEnabled() {
   return process.env.CND_DEBUG_SCREENSHOTS === "true";
 }
@@ -253,6 +270,9 @@ async function obterEstadoCaptcha(page: Page) {
       return {
         grecaptchaDisponivel: typeof (window as typeof window & { grecaptcha?: unknown }).grecaptcha !== "undefined",
         responseLength: response?.value?.length ?? 0,
+        idioma: navigator.language,
+        idiomas: navigator.languages,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         iframes,
       };
     })
@@ -295,7 +315,7 @@ export async function buscarCpf({
   mesAnoFinal,
 }: BuscarCpfParams): Promise<ProprietarioEncontrado> {
   const browser = await getBrowser();
-  const context = await browser.newContext();
+  const context = await browser.newContext(getBrowserContextOptions());
   const page = await context.newPage();
 
   try {

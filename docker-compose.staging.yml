@@ -169,7 +169,13 @@ services:
       DATABASE_URL: ${DATABASE_URL}
       REDIS_URL: ${REDIS_URL}
       PLAYWRIGHT_HEADLESS: "false"
-      PLAYWRIGHT_SLOW_MO: "300"
+      PLAYWRIGHT_SLOW_MO: "800"
+      PLAYWRIGHT_ACCEPT_LANGUAGE: "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7"
+      PLAYWRIGHT_TIMEZONE: "America/Sao_Paulo"
+      PLAYWRIGHT_LOCALE: "pt-BR"
+      TZ: "America/Sao_Paulo"
+      CND_DEBUG_SCREENSHOTS: "true"
+      CND_BEFORE_SEARCH_DELAY_MS: "15000"
     depends_on:
       - postgres-staging
       - redis-staging
