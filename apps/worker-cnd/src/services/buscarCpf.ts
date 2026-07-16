@@ -208,23 +208,70 @@ async function obterMensagensDaPagina(page: Page) {
     .catch(() => []);
 }
 
+
+async function clicarBotaoPesquisarComoUsuario(page: Page) {
+  const botaoPesquisar = page.locator("#meuForm\\:pesquisar").first();
+
+  await botaoPesquisar.waitFor({
+    state: "visible",
+    timeout: 30000,
+  });
+
+  await botaoPesquisar.scrollIntoViewIfNeeded();
+
+  const box = await botaoPesquisar.boundingBox();
+
+  if (!box) {
+    throw new Error("Botão pesquisar não possui posição visível na tela");
+  }
+
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2, {
+    steps: 20,
+  });
+
+  await page.waitForTimeout(800);
+
+  await page.mouse.down();
+  await page.waitForTimeout(250);
+  await page.mouse.up();
+}
+
+async function obterEstadoCaptcha(page: Page) {
+  return page
+    .evaluate(() => {
+      const response = document.querySelector<HTMLTextAreaElement>(
+        'textarea[name="g-recaptcha-response"]'
+      );
+
+      const iframes = Array.from(document.querySelectorAll("iframe")).map(
+        iframe => ({
+          title: iframe.getAttribute("title"),
+          src: iframe.getAttribute("src"),
+        })
+      );
+
+      return {
+        grecaptchaDisponivel: typeof (window as typeof window & { grecaptcha?: unknown }).grecaptcha !== "undefined",
+        responseLength: response?.value?.length ?? 0,
+        iframes,
+      };
+    })
+    .catch(error => ({
+      erro: error instanceof Error ? error.message : String(error),
+    }));
+}
+
 async function clicarPesquisarEObterPaginaResultado(
   context: BrowserContext,
   page: Page
 ) {
   const paginaGuiaPromise = aguardarPaginaGuiaCnd(context, page, 60000);
 
-  await page.evaluate(() => {
-    const btn = document.getElementById(
-      "meuForm:pesquisar"
-    ) as HTMLElement | null;
+  console.log("Estado captcha antes do clique:", await obterEstadoCaptcha(page));
 
-    if (!btn) {
-      throw new Error("Botão pesquisar não encontrado");
-    }
+  await clicarBotaoPesquisarComoUsuario(page);
 
-    btn.click();
-  });
+  console.log("Estado captcha depois do clique:", await obterEstadoCaptcha(page));
 
   const paginaResultado = await paginaGuiaPromise;
 
