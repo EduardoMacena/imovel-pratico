@@ -105,59 +105,105 @@ async function aguardarTabelaResultado(page: Page) {
   }
 }
 
+async function aguardarPaginaGuiaCnd(
+  context: BrowserContext,
+  page: Page,
+  timeoutMs: number
+) {
+  const startedAt = Date.now();
+
+  while (Date.now() - startedAt < timeoutMs) {
+    const paginas = context.pages();
+
+    for (const pagina of paginas) {
+      if (pagina.isClosed()) {
+        continue;
+      }
+
+      const url = pagina.url();
+
+      if (/guiaCND\.xhtml/i.test(url)) {
+        await pagina
+          .waitForLoadState("load", {
+            timeout: 60000,
+          })
+          .catch(() => undefined);
+
+        return pagina;
+      }
+    }
+
+    if (/guiaCND\.xhtml/i.test(page.url())) {
+      await page
+        .waitForLoadState("load", {
+          timeout: 60000,
+        })
+        .catch(() => undefined);
+
+      return page;
+    }
+
+    await page.waitForTimeout(500);
+  }
+
+  return null;
+}
+
+async function obterMensagensDaPagina(page: Page) {
+  return page
+    .evaluate(() => {
+      const seletores = [
+        ".ui-message",
+        ".ui-messages",
+        ".ui-messages-error",
+        ".ui-message-error",
+        ".ui-growl",
+        ".ui-growl-message",
+        ".ui-state-error",
+        "[role='alert']",
+      ];
+
+      return seletores
+        .flatMap(seletor =>
+          Array.from(document.querySelectorAll(seletor)).map(elemento =>
+            (elemento.textContent ?? "").replace(/\\s+/g, " ").trim()
+          )
+        )
+        .filter(Boolean);
+    })
+    .catch(() => []);
+}
+
 async function clicarPesquisarEObterPaginaResultado(
   context: BrowserContext,
   page: Page
 ) {
-  const novaPaginaPromise = context
-    .waitForEvent("page", {
-      timeout: 60000,
-    })
-    .catch(() => null);
+  const paginaGuiaPromise = aguardarPaginaGuiaCnd(context, page, 60000);
 
-  const mesmaPaginaResultadoPromise = Promise.race([
-    page
-      .waitForURL(/guiaCND\.xhtml/i, {
-        timeout: 60000,
-      })
-      .then(() => page)
-      .catch(() => null),
-    page
-      .locator("#tabelaPrincipal")
-      .first()
-      .waitFor({
-        state: "visible",
-        timeout: 60000,
-      })
-      .then(() => page)
-      .catch(() => null),
-  ]);
+  await page.evaluate(() => {
+    const btn = document.getElementById(
+      "meuForm:pesquisar"
+    ) as HTMLElement | null;
 
-  await page.locator("#meuForm\\:pesquisar").click({
-    force: true,
-    timeout: 30000,
+    if (!btn) {
+      throw new Error("Botão pesquisar não encontrado");
+    }
+
+    btn.click();
   });
 
-  const paginaResultado = await Promise.race([
-    novaPaginaPromise,
-    mesmaPaginaResultadoPromise,
-  ]);
+  const paginaResultado = await paginaGuiaPromise;
 
   if (!paginaResultado) {
+    const mensagens = await obterMensagensDaPagina(page);
     const textoPagina = await obterTextoDaPagina(page);
 
     throw new Error(
-      `A CND PBH não abriu a página de resultado do IPTU. URL atual: ${page.url()}. Texto da página inicial: ${limitarTexto(
-        textoPagina
-      )}`
+      `A CND PBH não abriu a guiaCND.xhtml após clicar em Pesquisar. URL atual: ${page.url()}. Mensagens: ${JSON.stringify(
+        mensagens
+      )}. Texto da página: ${limitarTexto(textoPagina)}`
     );
   }
-
-  await paginaResultado
-    .waitForLoadState("load", {
-      timeout: 60000,
-    })
-    .catch(() => undefined);
 
   return paginaResultado;
 }
@@ -239,6 +285,16 @@ export async function buscarCpf({
     );
 
     console.log("Página resultado CND PBH:", paginaResultado.url());
+
+    if (!/guiaCND\\.xhtml/i.test(paginaResultado.url())) {
+      const textoPagina = await obterTextoDaPagina(paginaResultado);
+
+      throw new Error(
+        `Página inválida para extração da CND. Esperado guiaCND.xhtml, recebido ${paginaResultado.url()}. Texto: ${limitarTexto(
+          textoPagina
+        )}`
+      );
+    }
 
     const tabelaResultado = await aguardarTabelaResultado(paginaResultado);
 
