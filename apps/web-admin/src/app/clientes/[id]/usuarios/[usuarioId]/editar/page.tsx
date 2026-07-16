@@ -7,6 +7,7 @@ import { Button } from "../../../../../../components/Button";
 import { Card } from "../../../../../../components/Card";
 import { Input } from "../../../../../../components/Input";
 import { Select } from "../../../../../../components/Select";
+import { StatusBadge } from "../../../../../../components/StatusBadge";
 import {
   atualizarUsuario,
   buscarUsuario,
@@ -17,9 +18,21 @@ import {
   Actions,
   BackLink,
   EmptyState,
+  EmptyStateTitle,
   ErrorBox,
   Form,
+  FormGrid,
+  FormHeader,
+  FormSection,
+  FormSectionTitle,
   Header,
+  HeaderContent,
+  HeaderEyebrow,
+  HeaderGrid,
+  HeaderPanel,
+  HeaderPanelItem,
+  HeaderPanelLabel,
+  HeaderPanelValue,
   PageContainer,
   Subtitle,
   SuccessBox,
@@ -41,6 +54,7 @@ export default function EditarUsuarioPage() {
   const [senha, setSenha] = useState("");
   const [role, setRole] = useState<UsuarioRoleCliente>("OPERADOR");
   const [ativo, setAtivo] = useState("true");
+  const [precisaTrocarSenha, setPrecisaTrocarSenha] = useState("false");
 
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -61,6 +75,9 @@ export default function EditarUsuarioPage() {
           : (data.usuario.role as UsuarioRoleCliente)
       );
       setAtivo(data.usuario.ativo ? "true" : "false");
+      setPrecisaTrocarSenha(
+        data.usuario.precisaTrocarSenha ? "true" : "false"
+      );
     } catch (error) {
       setErro(
         error instanceof Error
@@ -80,13 +97,22 @@ export default function EditarUsuarioPage() {
     setIsSaving(true);
 
     try {
+      const novaSenhaInformada = senha.trim().length > 0;
+
       await atualizarUsuario(usuarioId, {
         nome,
         email,
-        senha: senha.trim() || undefined,
+        senha: novaSenhaInformada ? senha.trim() : undefined,
         role,
         ativo: ativo === "true",
+        precisaTrocarSenha: novaSenhaInformada
+          ? true
+          : precisaTrocarSenha === "true",
       });
+
+      if (novaSenhaInformada) {
+        setPrecisaTrocarSenha("true");
+      }
 
       setSenha("");
       setSucesso("Usuário atualizado com sucesso.");
@@ -121,60 +147,149 @@ export default function EditarUsuarioPage() {
         </BackLink>
 
         <Header>
-          <Title>Editar usuário</Title>
-          <Subtitle>
-            Atualize os dados, perfil de acesso e status do usuário.
-          </Subtitle>
+          <HeaderGrid>
+            <HeaderContent>
+              <HeaderEyebrow>Gestão de acesso</HeaderEyebrow>
+
+              <Title>Editar usuário</Title>
+
+              <Subtitle>
+                Atualize dados de acesso, perfil operacional, status do usuário
+                e controle se ele deverá trocar a senha no próximo login.
+              </Subtitle>
+            </HeaderContent>
+
+            <HeaderPanel>
+              <HeaderPanelItem>
+                <HeaderPanelLabel>Perfil atual</HeaderPanelLabel>
+                <HeaderPanelValue>
+                  <StatusBadge status={role} />
+                </HeaderPanelValue>
+              </HeaderPanelItem>
+
+              <HeaderPanelItem>
+                <HeaderPanelLabel>Status</HeaderPanelLabel>
+                <HeaderPanelValue>
+                  <StatusBadge status={ativo === "true" ? "ATIVO" : "INATIVO"} />
+                </HeaderPanelValue>
+              </HeaderPanelItem>
+
+              <HeaderPanelItem>
+                <HeaderPanelLabel>Troca de senha</HeaderPanelLabel>
+                <HeaderPanelValue>
+                  <StatusBadge
+                    status={precisaTrocarSenha === "true" ? "PENDENTE" : "ATIVO"}
+                  />
+                </HeaderPanelValue>
+              </HeaderPanelItem>
+
+              <HeaderPanelItem>
+                <HeaderPanelLabel>Usuário</HeaderPanelLabel>
+                <HeaderPanelValue>{nome || "-"}</HeaderPanelValue>
+              </HeaderPanelItem>
+            </HeaderPanel>
+          </HeaderGrid>
         </Header>
 
-        {isLoading && <EmptyState>Carregando usuário...</EmptyState>}
+        {isLoading && (
+          <EmptyState>
+            <EmptyStateTitle>Carregando usuário...</EmptyStateTitle>
+            Estamos buscando os dados do usuário selecionado.
+          </EmptyState>
+        )}
 
         {!isLoading && (
           <Card>
+            <FormHeader>
+              <FormSectionTitle>Configurações do usuário</FormSectionTitle>
+              <Subtitle>
+                Altere as informações principais e salve para aplicar as novas
+                permissões de acesso.
+              </Subtitle>
+            </FormHeader>
+
             <Form onSubmit={handleSubmit}>
-              <Input
-                label="Nome"
-                value={nome}
-                onChange={event => setNome(event.target.value)}
-                required
-              />
+              <FormSection>
+                <FormSectionTitle>Identificação</FormSectionTitle>
 
-              <Input
-                label="E-mail"
-                type="email"
-                value={email}
-                onChange={event => setEmail(event.target.value)}
-                required
-              />
+                <FormGrid>
+                  <Input
+                    label="Nome"
+                    value={nome}
+                    onChange={event => setNome(event.target.value)}
+                    required
+                  />
 
-              <Input
-                label="Nova senha"
-                type="text"
-                value={senha}
-                onChange={event => setSenha(event.target.value)}
-                placeholder="Deixe vazio para manter a senha atual"
-              />
+                  <Input
+                    label="E-mail"
+                    type="email"
+                    value={email}
+                    onChange={event => setEmail(event.target.value)}
+                    required
+                  />
+                </FormGrid>
+              </FormSection>
 
-              <Select
-                label="Perfil"
-                value={role}
-                onChange={event =>
-                  setRole(event.target.value as UsuarioRoleCliente)
-                }
-              >
-                <option value="ADMIN">ADMIN</option>
-                <option value="GERENTE">GERENTE</option>
-                <option value="OPERADOR">OPERADOR</option>
-              </Select>
+              <FormSection>
+                <FormSectionTitle>Acesso</FormSectionTitle>
 
-              <Select
-                label="Status"
-                value={ativo}
-                onChange={event => setAtivo(event.target.value)}
-              >
-                <option value="true">ATIVO</option>
-                <option value="false">INATIVO</option>
-              </Select>
+                <FormGrid>
+                  <Select
+                    label="Perfil"
+                    value={role}
+                    onChange={event =>
+                      setRole(event.target.value as UsuarioRoleCliente)
+                    }
+                  >
+                    <option value="ADMIN">ADMIN</option>
+                    <option value="GERENTE">GERENTE</option>
+                    <option value="OPERADOR">OPERADOR</option>
+                  </Select>
+
+                  <Select
+                    label="Status"
+                    value={ativo}
+                    onChange={event => setAtivo(event.target.value)}
+                  >
+                    <option value="true">ATIVO</option>
+                    <option value="false">INATIVO</option>
+                  </Select>
+                </FormGrid>
+              </FormSection>
+
+              <FormSection>
+                <FormSectionTitle>Senha</FormSectionTitle>
+
+                <Subtitle>
+                  Se uma nova senha for informada, ela será considerada
+                  temporária e o usuário será obrigado a trocar no próximo login.
+                </Subtitle>
+
+                <FormGrid>
+                  <Input
+                    label="Nova senha temporária"
+                    type="text"
+                    value={senha}
+                    onChange={event => {
+                      setSenha(event.target.value);
+
+                      if (event.target.value.trim()) {
+                        setPrecisaTrocarSenha("true");
+                      }
+                    }}
+                    placeholder="Deixe vazio para manter a senha atual"
+                  />
+
+                  <Select
+                    label="Forçar troca no próximo login"
+                    value={precisaTrocarSenha}
+                    onChange={event => setPrecisaTrocarSenha(event.target.value)}
+                  >
+                    <option value="true">Sim, obrigar troca</option>
+                    <option value="false">Não obrigar</option>
+                  </Select>
+                </FormGrid>
+              </FormSection>
 
               {erro && <ErrorBox>{erro}</ErrorBox>}
               {sucesso && <SuccessBox>{sucesso}</SuccessBox>}
@@ -186,6 +301,7 @@ export default function EditarUsuarioPage() {
 
                 <Button
                   type="button"
+                  variant="ghost"
                   onClick={() => router.push(`/clientes/${clienteId}/usuarios`)}
                 >
                   Voltar para usuários

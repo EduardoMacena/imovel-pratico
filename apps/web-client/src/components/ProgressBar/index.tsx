@@ -3,6 +3,8 @@
 import {
   ProgressFill,
   ProgressHeader,
+  ProgressMeta,
+  ProgressStatus,
   ProgressTrack,
   ProgressWrapper,
 } from "./styles";
@@ -14,6 +16,18 @@ type ProgressBarProps = {
   percentage: number;
 };
 
+function getStatusLabel(status: string) {
+  const labels: Record<string, string> = {
+    PENDING: "Pendente",
+    PROCESSING: "Processando",
+    COMPLETED: "Concluída",
+    ERROR: "Erro",
+    CANCELED: "Cancelada",
+  };
+
+  return labels[status] ?? status;
+}
+
 export function ProgressBar({
   status,
   total,
@@ -23,10 +37,11 @@ export function ProgressBar({
   return (
     <ProgressWrapper>
       <ProgressHeader>
-        <span>Status: {status}</span>
-        <span>
-          {current}/{total} — {percentage}%
-        </span>
+        <ProgressStatus>{getStatusLabel(status)}</ProgressStatus>
+
+        <ProgressMeta>
+          {current}/{total} · {percentage}%
+        </ProgressMeta>
       </ProgressHeader>
 
       <ProgressTrack>

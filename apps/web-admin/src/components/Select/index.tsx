@@ -1,21 +1,22 @@
 "use client";
 
-import type { SelectHTMLAttributes } from "react";
-import { Field, Label, StyledSelect } from "./styles";
+import { SelectHTMLAttributes, useId } from "react";
+import { Field, Label, SelectElement } from "./styles";
 
 type SelectProps = SelectHTMLAttributes<HTMLSelectElement> & {
-  label: string;
+  label?: string;
 };
 
 export function Select({ label, id, children, ...props }: SelectProps) {
-  const selectId = id ?? label.toLowerCase().replaceAll(" ", "-");
+  const generatedId = useId();
+  const selectId = id ?? props.name ?? generatedId;
 
   return (
-    <Field>
-      <Label htmlFor={selectId}>{label}</Label>
-      <StyledSelect id={selectId} {...props}>
+    <Field htmlFor={selectId}>
+      {label && <Label>{label}</Label>}
+      <SelectElement id={selectId} {...props}>
         {children}
-      </StyledSelect>
+      </SelectElement>
     </Field>
   );
 }

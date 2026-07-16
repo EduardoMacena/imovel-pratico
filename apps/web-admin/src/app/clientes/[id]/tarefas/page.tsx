@@ -14,26 +14,36 @@ import {
 	Address,
 	BackLink,
 	EmptyState,
+	EmptyStateTitle,
 	ErrorBox,
 	Header,
-	HeaderTop,
+	HeaderContent,
+	HeaderEyebrow,
+	HeaderGrid,
+	HeaderPanel,
+	HeaderPanelItem,
+	HeaderPanelLabel,
+	HeaderPanelValue,
 	InfoBox,
 	InfoGrid,
 	InfoLabel,
 	InfoValue,
 	List,
+	ListHeader,
+	ListSubtitle,
+	ListTitle,
 	PageContainer,
+	StatCard,
+	StatGrid,
+	StatLabel,
+	StatValue,
 	Subtitle,
-	SummaryBox,
-	SummaryGrid,
-	SummaryLabel,
-	SummaryValue,
+	TaskActions,
 	TaskId,
 	TaskItem,
+	TaskLink,
 	TaskTop,
 	Title,
-	TitleGroup,
-	TaskLink,
 } from "./page.styles";
 
 type Cliente = {
@@ -129,52 +139,96 @@ export default function TarefasClientePage() {
 				<BackLink href="/clientes">← Voltar para clientes</BackLink>
 
 				<Header>
-					<HeaderTop>
-						<TitleGroup>
+					<HeaderGrid>
+						<HeaderContent>
+							<HeaderEyebrow>Monitoramento operacional</HeaderEyebrow>
+
 							<Title>Tarefas do cliente</Title>
 
 							<Subtitle>
 								{cliente
 									? `${cliente.nome} • ${cliente.slug}`
-									: "Visualize as buscas executadas por este cliente."}
+									: "Visualize as buscas executadas por este cliente, acompanhe progresso, resultados e falhas."}
 							</Subtitle>
-						</TitleGroup>
+						</HeaderContent>
 
-						{cliente?.status && <StatusBadge status={cliente.status} />}
-					</HeaderTop>
+						<HeaderPanel>
+							<HeaderPanelItem>
+								<HeaderPanelLabel>Status do cliente</HeaderPanelLabel>
+								<HeaderPanelValue>
+									{cliente?.status ? (
+										<StatusBadge status={cliente.status} />
+									) : (
+										"-"
+									)}
+								</HeaderPanelValue>
+							</HeaderPanelItem>
+
+							<HeaderPanelItem>
+								<HeaderPanelLabel>Total de tarefas</HeaderPanelLabel>
+								<HeaderPanelValue>{resumo.total}</HeaderPanelValue>
+							</HeaderPanelItem>
+
+							<HeaderPanelItem>
+								<HeaderPanelLabel>Resultados encontrados</HeaderPanelLabel>
+								<HeaderPanelValue>{resumo.resultados}</HeaderPanelValue>
+							</HeaderPanelItem>
+						</HeaderPanel>
+					</HeaderGrid>
 				</Header>
 
 				{erro && <ErrorBox>{erro}</ErrorBox>}
 
-				{isLoading && <EmptyState>Carregando tarefas...</EmptyState>}
+				{isLoading && (
+					<EmptyState>
+						<EmptyStateTitle>Carregando tarefas...</EmptyStateTitle>
+						Estamos buscando as tarefas executadas por este cliente.
+					</EmptyState>
+				)}
 
 				{!isLoading && !erro && (
 					<>
-						<SummaryGrid>
-							<SummaryBox>
-								<SummaryLabel>Total de tarefas</SummaryLabel>
-								<SummaryValue>{resumo.total}</SummaryValue>
-							</SummaryBox>
+						<StatGrid>
+							<StatCard>
+								<StatLabel>Total de tarefas</StatLabel>
+								<StatValue>{resumo.total}</StatValue>
+							</StatCard>
 
-							<SummaryBox>
-								<SummaryLabel>Concluídas</SummaryLabel>
-								<SummaryValue>{resumo.completed}</SummaryValue>
-							</SummaryBox>
+							<StatCard>
+								<StatLabel>Concluídas</StatLabel>
+								<StatValue>{resumo.completed}</StatValue>
+							</StatCard>
 
-							<SummaryBox>
-								<SummaryLabel>Em andamento</SummaryLabel>
-								<SummaryValue>{resumo.processing}</SummaryValue>
-							</SummaryBox>
+							<StatCard>
+								<StatLabel>Em andamento</StatLabel>
+								<StatValue>{resumo.processing}</StatValue>
+							</StatCard>
 
-							<SummaryBox>
-								<SummaryLabel>Resultados</SummaryLabel>
-								<SummaryValue>{resumo.resultados}</SummaryValue>
-							</SummaryBox>
-						</SummaryGrid>
+							<StatCard>
+								<StatLabel>Com erro</StatLabel>
+								<StatValue>{resumo.error}</StatValue>
+							</StatCard>
+
+							<StatCard>
+								<StatLabel>Resultados</StatLabel>
+								<StatValue>{resumo.resultados}</StatValue>
+							</StatCard>
+						</StatGrid>
+
+						<ListHeader>
+							<div>
+								<ListTitle>Histórico de tarefas</ListTitle>
+								<ListSubtitle>
+									Veja cada busca executada, seu status, período, progresso e
+									quantidade de resultados encontrados.
+								</ListSubtitle>
+							</div>
+						</ListHeader>
 
 						{tarefas.length === 0 && (
 							<EmptyState>
-								Nenhuma tarefa encontrada para este cliente.
+								<EmptyStateTitle>Nenhuma tarefa encontrada.</EmptyStateTitle>
+								Este cliente ainda não executou buscas na plataforma.
 							</EmptyState>
 						)}
 
@@ -188,7 +242,7 @@ export default function TarefasClientePage() {
 													{tarefa.endereco.logradouro}, {tarefa.endereco.numero}
 												</Address>
 
-												<TaskId>{tarefa.id}</TaskId>
+												<TaskId>Tarefa: {tarefa.id}</TaskId>
 											</div>
 
 											<StatusBadge status={tarefa.status} />
@@ -206,7 +260,7 @@ export default function TarefasClientePage() {
 											<InfoBox>
 												<InfoLabel>Progresso</InfoLabel>
 												<InfoValue>
-													{tarefa.progress.current}/{tarefa.progress.total} —{" "}
+													{tarefa.progress.current}/{tarefa.progress.total} ·{" "}
 													{tarefa.progress.percentage}%
 												</InfoValue>
 											</InfoBox>
@@ -221,10 +275,14 @@ export default function TarefasClientePage() {
 												<InfoValue>{formatDate(tarefa.createdAt)}</InfoValue>
 											</InfoBox>
 										</InfoGrid>
-										<TaskLink href={`/tarefas/${tarefa.id}`}>
-											Ver detalhe da tarefa
-										</TaskLink>
+
 										{tarefa.erro && <ErrorBox>{tarefa.erro}</ErrorBox>}
+
+										<TaskActions>
+											<TaskLink href={`/tarefas/${tarefa.id}`}>
+												Ver detalhe da tarefa
+											</TaskLink>
+										</TaskActions>
 									</TaskItem>
 								))}
 							</List>

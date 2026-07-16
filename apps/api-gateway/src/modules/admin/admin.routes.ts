@@ -1,6 +1,7 @@
 import type { FastifyInstance } from "fastify";
 import { authMiddleware } from "../auth/auth.middleware.js";
 import { adminMiddleware } from "./admin.middleware.js";
+import { exportarResultadosTarefaAdminPdfController } from "./admin-exportacao-pdf.controller.js";
 import {
 	atualizarClienteController,
 	atualizarUsuarioController,
@@ -24,6 +25,18 @@ import {
 	buscarConsumoClienteController,
 	listarConsumoClientesController,
 } from "./admin.controller.js";
+import {
+  buscarFaturaController,
+  cancelarFaturaController,
+  gerarFaturaController,
+  listarFaturasController,
+  marcarFaturaPagaController,
+} from "./admin-faturas.controller.js";
+import {
+  buscarResumoMonitoramentoController,
+  listarEventosMonitoramentoController,
+  listarFilasMonitoramentoController,
+} from "./admin-monitoramento.controller.js";
 
 export async function adminRoutes(app: FastifyInstance) {
 	app.addHook("preHandler", authMiddleware);
@@ -31,8 +44,18 @@ export async function adminRoutes(app: FastifyInstance) {
 
 	app.get("/admin/dashboard", buscarDashboardAdminController);
 
+  app.get("/admin/monitoramento/resumo", buscarResumoMonitoramentoController);
+  app.get("/admin/monitoramento/eventos", listarEventosMonitoramentoController);
+  app.get("/admin/monitoramento/filas", listarFilasMonitoramentoController);
+
 	app.get("/admin/consumo/clientes", listarConsumoClientesController);
 	app.get("/admin/consumo/clientes/:id", buscarConsumoClienteController);
+
+  app.get("/admin/faturas", listarFaturasController);
+  app.post("/admin/faturas/gerar", gerarFaturaController);
+  app.get("/admin/faturas/:id", buscarFaturaController);
+  app.post("/admin/faturas/:id/marcar-paga", marcarFaturaPagaController);
+  app.post("/admin/faturas/:id/cancelar", cancelarFaturaController);
 
 	app.get("/admin/planos", listarPlanosController);
 	app.post("/admin/planos", criarPlanoController);
@@ -50,6 +73,11 @@ export async function adminRoutes(app: FastifyInstance) {
 		"/admin/tarefas/:id/exportar-excel",
 		exportarResultadosTarefaAdminExcelController
 	);
+
+  app.get(
+    "/admin/tarefas/:id/exportar-pdf",
+    exportarResultadosTarefaAdminPdfController
+  );
 
 	app.post("/admin/tarefas/:id/cancelar", cancelarTarefaAdminController);
 	app.post("/admin/tarefas/:id/reprocessar", reprocessarTarefaAdminController);

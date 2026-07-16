@@ -4,119 +4,166 @@ import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "../../components/Button";
 import { Input } from "../../components/Input";
-import { login } from "../../features/auth/api";
 import {
-  getAuthToken,
-  removeAuthToken,
-  setAuthCliente,
-  setAuthToken,
-  setAuthUser,
+	getAuthToken,
+	setAuthToken,
+	setAuthCliente,
+	setAuthUser,
 } from "../../lib/auth-storage";
 import {
-  Badge,
-  ErrorBox,
-  Form,
-  Hint,
-  LoginCard,
-  PageContainer,
-  Subtitle,
-  Title,
+	Badge,
+	ErrorBox,
+	FooterText,
+	Form,
+	Hero,
+	HeroContent,
+	HeroText,
+	HeroTitle,
+	LoginArea,
+	LoginCard,
+	LoginSubtitle,
+	LoginTitle,
+	Page,
 } from "./page.styles";
+import { login } from "../../features/auth/api";
+
+type LoginResponse = {
+	token?: string;
+	accessToken?: string;
+	usuario?: {
+		id: string;
+		nome: string;
+		email: string;
+		role: string;
+	};
+	user?: {
+		id: string;
+		nome?: string;
+		email: string;
+		role?: string;
+	};
+};
 
 export default function LoginPage() {
-  const router = useRouter();
+	const router = useRouter();
 
-  const [email, setEmail] = useState("dudumacen@gmail.com");
-  const [senha, setSenha] = useState("123456");
-  const [isLoading, setIsLoading] = useState(false);
-  const [erro, setErro] = useState<string | null>(null);
+	const [email, setEmail] = useState("dudumacen@gmail.com");
+	const [senha, setSenha] = useState("123456");
 
-  useEffect(() => {
-    const token = getAuthToken();
+	const [isLoading, setIsLoading] = useState(false);
+	const [erro, setErro] = useState<string | null>(null);
 
-    if (token) {
-      router.replace("/clientes");
-    }
-  }, [router]);
+	useEffect(() => {
+		const token = getAuthToken();
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+		if (token) {
+			router.replace("/dashboard");
+		}
+	}, [router]);
 
-    setErro(null);
-    setIsLoading(true);
+	async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+		event.preventDefault();
 
-    try {
-      const response = await login({
-        email,
-        senha,
-      });
+		setErro(null);
+		setIsLoading(true);
 
-      if (response.usuario.role !== "SUPER_ADMIN") {
-        removeAuthToken();
-        setErro("Acesso permitido apenas para super administradores");
-        return;
-      }
+		try {
+			const response = await login({
+				email,
+				senha,
+			});
 
-      setAuthToken(response.token);
-      setAuthUser(response.usuario);
-      setAuthCliente(response.cliente);
+			if (!response) {
+				throw new Error("E-mail ou senha inválidos");
+			}
 
-      router.replace("/clientes");
-    } catch (error) {
-      setErro(
-        error instanceof Error
-          ? error.message
-          : "Erro desconhecido ao fazer login"
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  }
+			const token = response.token;
 
-  return (
-    <PageContainer>
-      <LoginCard>
-        <Badge>Imóvel Prático Admin</Badge>
+			if (!token) {
+				throw new Error("Token não retornado pela API");
+			}
 
-        <Title>Entrar no painel</Title>
+			const role = response.usuario?.role;
 
-        <Subtitle>
-          Acesse o painel administrativo para gerenciar clientes e usuários do
-          SaaS.
-        </Subtitle>
+			if (role && role !== "SUPER_ADMIN") {
+				throw new Error("Usuário sem permissão para acessar o painel admin");
+			}
 
-        <Form onSubmit={handleSubmit}>
-          <Input
-            label="E-mail"
-            type="email"
-            value={email}
-            onChange={event => setEmail(event.target.value)}
-            required
-          />
+			setAuthToken(token);
+			setAuthUser(response.usuario);
+			setAuthCliente(response.cliente);
 
-          <Input
-            label="Senha"
-            type="password"
-            value={senha}
-            onChange={event => setSenha(event.target.value)}
-            required
-          />
+			router.push("/dashboard");
+		} catch (error) {
+			setErro(
+				error instanceof Error
+					? error.message
+					: "Erro desconhecido ao fazer login"
+			);
+		} finally {
+			setIsLoading(false);
+		}
+	}
 
-          {erro && <ErrorBox>{erro}</ErrorBox>}
+	return (
+		<Page>
+			<Hero>
+				<HeroContent>
+					<Badge>Painel administrativo</Badge>
 
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? "Entrando..." : "Entrar"}
-          </Button>
-        </Form>
+					<HeroTitle>
+						Gestão premium para uma operação imobiliária inteligente.
+					</HeroTitle>
 
-        <Hint>
-          Super admin inicial:
-          <br />
-          <strong>E-mail:</strong> dudumacen@gmail.com
-          <br />
-          <strong>Senha:</strong> 123456
-        </Hint>
-      </LoginCard>
-    </PageContainer>
-  );
+					<HeroText>
+						Controle clientes, planos, consumo mensal, tarefas e processamento
+						de consultas em uma plataforma preparada para escalar.
+					</HeroText>
+				</HeroContent>
+			</Hero>
+
+			<LoginArea>
+				<LoginCard>
+					<LoginTitle>Entrar no admin</LoginTitle>
+
+					<LoginSubtitle>
+						Acesse com seu usuário administrador para gerenciar clientes, planos
+						e operação do Imóvel Prático.
+					</LoginSubtitle>
+
+					<Form onSubmit={handleSubmit}>
+						<Input
+							label="E-mail"
+							type="email"
+							value={email}
+							onChange={(event) => setEmail(event.target.value)}
+							placeholder="seu@email.com"
+							autoComplete="email"
+							required
+						/>
+
+						<Input
+							label="Senha"
+							type="password"
+							value={senha}
+							onChange={(event) => setSenha(event.target.value)}
+							placeholder="Digite sua senha"
+							autoComplete="current-password"
+							required
+						/>
+
+						{erro && <ErrorBox>{erro}</ErrorBox>}
+
+						<Button type="submit" fullWidth disabled={isLoading}>
+							{isLoading ? "Entrando..." : "Entrar"}
+						</Button>
+					</Form>
+
+					<FooterText>
+						Imóvel Prático · Automação de prospecção imobiliária
+					</FooterText>
+				</LoginCard>
+			</LoginArea>
+		</Page>
+	);
 }

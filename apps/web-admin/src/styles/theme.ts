@@ -1,60 +1,84 @@
 export const theme = {
   colors: {
-    primary: "#111827",
-    primaryHover: "#020617",
+    background: "#F4F1EA",
+    backgroundSoft: "#FAF8F3",
 
-    background: "#f3f4f6",
-    surface: "#ffffff",
-    surfaceMuted: "#f9fafb",
+    surface: "#FFFFFF",
+    surfaceMuted: "#F7F4EE",
+    surfaceDark: "#07111F",
+    surfaceDarkSoft: "#0B1F33",
 
-    border: "#e5e7eb",
-    borderStrong: "#d1d5db",
+    primary: "#0B1F33",
+    primaryHover: "#102B45",
+    primarySoft: "#E8EEF4",
 
-    text: "#111827",
-    textMuted: "#6b7280",
-    textSoft: "#4b5563",
+    secondary: "#1F6F5B",
+    secondaryHover: "#185846",
+    secondarySoft: "#E5F3EF",
 
-    success: "#166534",
-    successBg: "#dcfce7",
-    successBorder: "#bbf7d0",
+    accent: "#C8A45D",
+    accentHover: "#B38F49",
+    accentSoft: "#F6EEDC",
 
-    danger: "#991b1b",
-    dangerBg: "#fef2f2",
-    dangerBorder: "#fecaca",
+    text: "#172033",
+    textMuted: "#6B7280",
+    textSoft: "#9CA3AF",
+    textInverted: "#FFFFFF",
 
-    warning: "#92400e",
-    warningBg: "#fffbeb",
-    warningBorder: "#fde68a",
+    border: "#E3DED3",
+    borderStrong: "#CFC7B8",
 
-    info: "#1d4ed8",
-    infoBg: "#eff6ff",
-    infoBorder: "#bfdbfe",
+    danger: "#B42318",
+    dangerBg: "#FEE4E2",
+    dangerBorder: "#FECDCA",
 
-    white: "#ffffff"
-  },
+    success: "#027A48",
+    successBg: "#D1FADF",
+    successBorder: "#A6F4C5",
 
-  radii: {
-    sm: "8px",
-    md: "12px",
-    lg: "18px",
-    xl: "24px",
-    pill: "999px"
-  },
+    warning: "#B54708",
+    warningBg: "#FEF0C7",
+    warningBorder: "#FEDF89",
 
-  shadows: {
-    card: "0 10px 30px rgba(15, 23, 42, 0.06)",
-    soft: "0 4px 16px rgba(15, 23, 42, 0.06)"
+    info: "#175CD3",
+    infoBg: "#D1E9FF",
+    infoBorder: "#84CAFF",
+
+    glowBlue: "rgba(15, 76, 92, 0.28)",
+    glowGold: "rgba(200, 164, 93, 0.22)",
   },
 
   spacing: {
     xs: "4px",
     sm: "8px",
-    md: "12px",
-    lg: "16px",
-    xl: "24px",
-    "2xl": "32px",
-    "3xl": "48px"
-  }
-};
+    md: "16px",
+    lg: "24px",
+    xl: "32px",
+    "2xl": "48px",
+    "3xl": "64px",
+  },
+
+  radii: {
+    sm: "10px",
+    md: "14px",
+    lg: "20px",
+    xl: "28px",
+    pill: "999px",
+  },
+
+  shadows: {
+    card: "0 18px 45px rgba(15, 23, 42, 0.08)",
+    cardHover: "0 24px 60px rgba(15, 23, 42, 0.12)",
+    header: "0 12px 30px rgba(15, 23, 42, 0.08)",
+    button: "0 12px 24px rgba(11, 31, 51, 0.18)",
+    dark: "0 28px 80px rgba(7, 17, 31, 0.28)",
+    glow: "0 0 54px rgba(200, 164, 93, 0.14)",
+  },
+
+  typography: {
+    fontFamily:
+      "'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+  },
+} as const;
 
 export type AppTheme = typeof theme;

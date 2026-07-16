@@ -30,12 +30,16 @@ export type PlanoAvgAggregateOutputType = {
   limiteMensalConsultas: number | null
   intervaloSegundos: number | null
   precoCentavos: number | null
+  valorConsultaAdicionalCentavos: number | null
+  limiteCorretores: number | null
 }
 
 export type PlanoSumAggregateOutputType = {
   limiteMensalConsultas: number | null
   intervaloSegundos: number | null
   precoCentavos: number | null
+  valorConsultaAdicionalCentavos: number | null
+  limiteCorretores: number | null
 }
 
 export type PlanoMinAggregateOutputType = {
@@ -46,6 +50,8 @@ export type PlanoMinAggregateOutputType = {
   limiteMensalConsultas: number | null
   intervaloSegundos: number | null
   precoCentavos: number | null
+  valorConsultaAdicionalCentavos: number | null
+  limiteCorretores: number | null
   status: $Enums.PlanoStatus | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -59,6 +65,8 @@ export type PlanoMaxAggregateOutputType = {
   limiteMensalConsultas: number | null
   intervaloSegundos: number | null
   precoCentavos: number | null
+  valorConsultaAdicionalCentavos: number | null
+  limiteCorretores: number | null
   status: $Enums.PlanoStatus | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -72,6 +80,8 @@ export type PlanoCountAggregateOutputType = {
   limiteMensalConsultas: number
   intervaloSegundos: number
   precoCentavos: number
+  valorConsultaAdicionalCentavos: number
+  limiteCorretores: number
   status: number
   createdAt: number
   updatedAt: number
@@ -83,12 +93,16 @@ export type PlanoAvgAggregateInputType = {
   limiteMensalConsultas?: true
   intervaloSegundos?: true
   precoCentavos?: true
+  valorConsultaAdicionalCentavos?: true
+  limiteCorretores?: true
 }
 
 export type PlanoSumAggregateInputType = {
   limiteMensalConsultas?: true
   intervaloSegundos?: true
   precoCentavos?: true
+  valorConsultaAdicionalCentavos?: true
+  limiteCorretores?: true
 }
 
 export type PlanoMinAggregateInputType = {
@@ -99,6 +113,8 @@ export type PlanoMinAggregateInputType = {
   limiteMensalConsultas?: true
   intervaloSegundos?: true
   precoCentavos?: true
+  valorConsultaAdicionalCentavos?: true
+  limiteCorretores?: true
   status?: true
   createdAt?: true
   updatedAt?: true
@@ -112,6 +128,8 @@ export type PlanoMaxAggregateInputType = {
   limiteMensalConsultas?: true
   intervaloSegundos?: true
   precoCentavos?: true
+  valorConsultaAdicionalCentavos?: true
+  limiteCorretores?: true
   status?: true
   createdAt?: true
   updatedAt?: true
@@ -125,6 +143,8 @@ export type PlanoCountAggregateInputType = {
   limiteMensalConsultas?: true
   intervaloSegundos?: true
   precoCentavos?: true
+  valorConsultaAdicionalCentavos?: true
+  limiteCorretores?: true
   status?: true
   createdAt?: true
   updatedAt?: true
@@ -225,6 +245,8 @@ export type PlanoGroupByOutputType = {
   limiteMensalConsultas: number
   intervaloSegundos: number
   precoCentavos: number
+  valorConsultaAdicionalCentavos: number
+  limiteCorretores: number | null
   status: $Enums.PlanoStatus
   createdAt: Date
   updatedAt: Date
@@ -261,6 +283,8 @@ export type PlanoWhereInput = {
   limiteMensalConsultas?: Prisma.IntFilter<"Plano"> | number
   intervaloSegundos?: Prisma.IntFilter<"Plano"> | number
   precoCentavos?: Prisma.IntFilter<"Plano"> | number
+  valorConsultaAdicionalCentavos?: Prisma.IntFilter<"Plano"> | number
+  limiteCorretores?: Prisma.IntNullableFilter<"Plano"> | number | null
   status?: Prisma.EnumPlanoStatusFilter<"Plano"> | $Enums.PlanoStatus
   createdAt?: Prisma.DateTimeFilter<"Plano"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Plano"> | Date | string
@@ -275,6 +299,8 @@ export type PlanoOrderByWithRelationInput = {
   limiteMensalConsultas?: Prisma.SortOrder
   intervaloSegundos?: Prisma.SortOrder
   precoCentavos?: Prisma.SortOrder
+  valorConsultaAdicionalCentavos?: Prisma.SortOrder
+  limiteCorretores?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -292,6 +318,8 @@ export type PlanoWhereUniqueInput = Prisma.AtLeast<{
   limiteMensalConsultas?: Prisma.IntFilter<"Plano"> | number
   intervaloSegundos?: Prisma.IntFilter<"Plano"> | number
   precoCentavos?: Prisma.IntFilter<"Plano"> | number
+  valorConsultaAdicionalCentavos?: Prisma.IntFilter<"Plano"> | number
+  limiteCorretores?: Prisma.IntNullableFilter<"Plano"> | number | null
   status?: Prisma.EnumPlanoStatusFilter<"Plano"> | $Enums.PlanoStatus
   createdAt?: Prisma.DateTimeFilter<"Plano"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Plano"> | Date | string
@@ -306,6 +334,8 @@ export type PlanoOrderByWithAggregationInput = {
   limiteMensalConsultas?: Prisma.SortOrder
   intervaloSegundos?: Prisma.SortOrder
   precoCentavos?: Prisma.SortOrder
+  valorConsultaAdicionalCentavos?: Prisma.SortOrder
+  limiteCorretores?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -327,6 +357,8 @@ export type PlanoScalarWhereWithAggregatesInput = {
   limiteMensalConsultas?: Prisma.IntWithAggregatesFilter<"Plano"> | number
   intervaloSegundos?: Prisma.IntWithAggregatesFilter<"Plano"> | number
   precoCentavos?: Prisma.IntWithAggregatesFilter<"Plano"> | number
+  valorConsultaAdicionalCentavos?: Prisma.IntWithAggregatesFilter<"Plano"> | number
+  limiteCorretores?: Prisma.IntNullableWithAggregatesFilter<"Plano"> | number | null
   status?: Prisma.EnumPlanoStatusWithAggregatesFilter<"Plano"> | $Enums.PlanoStatus
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Plano"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Plano"> | Date | string
@@ -340,6 +372,8 @@ export type PlanoCreateInput = {
   limiteMensalConsultas: number
   intervaloSegundos: number
   precoCentavos: number
+  valorConsultaAdicionalCentavos?: number
+  limiteCorretores?: number | null
   status?: $Enums.PlanoStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -354,6 +388,8 @@ export type PlanoUncheckedCreateInput = {
   limiteMensalConsultas: number
   intervaloSegundos: number
   precoCentavos: number
+  valorConsultaAdicionalCentavos?: number
+  limiteCorretores?: number | null
   status?: $Enums.PlanoStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -368,6 +404,8 @@ export type PlanoUpdateInput = {
   limiteMensalConsultas?: Prisma.IntFieldUpdateOperationsInput | number
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
   precoCentavos?: Prisma.IntFieldUpdateOperationsInput | number
+  valorConsultaAdicionalCentavos?: Prisma.IntFieldUpdateOperationsInput | number
+  limiteCorretores?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumPlanoStatusFieldUpdateOperationsInput | $Enums.PlanoStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -382,6 +420,8 @@ export type PlanoUncheckedUpdateInput = {
   limiteMensalConsultas?: Prisma.IntFieldUpdateOperationsInput | number
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
   precoCentavos?: Prisma.IntFieldUpdateOperationsInput | number
+  valorConsultaAdicionalCentavos?: Prisma.IntFieldUpdateOperationsInput | number
+  limiteCorretores?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumPlanoStatusFieldUpdateOperationsInput | $Enums.PlanoStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -396,6 +436,8 @@ export type PlanoCreateManyInput = {
   limiteMensalConsultas: number
   intervaloSegundos: number
   precoCentavos: number
+  valorConsultaAdicionalCentavos?: number
+  limiteCorretores?: number | null
   status?: $Enums.PlanoStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -409,6 +451,8 @@ export type PlanoUpdateManyMutationInput = {
   limiteMensalConsultas?: Prisma.IntFieldUpdateOperationsInput | number
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
   precoCentavos?: Prisma.IntFieldUpdateOperationsInput | number
+  valorConsultaAdicionalCentavos?: Prisma.IntFieldUpdateOperationsInput | number
+  limiteCorretores?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumPlanoStatusFieldUpdateOperationsInput | $Enums.PlanoStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -422,6 +466,8 @@ export type PlanoUncheckedUpdateManyInput = {
   limiteMensalConsultas?: Prisma.IntFieldUpdateOperationsInput | number
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
   precoCentavos?: Prisma.IntFieldUpdateOperationsInput | number
+  valorConsultaAdicionalCentavos?: Prisma.IntFieldUpdateOperationsInput | number
+  limiteCorretores?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumPlanoStatusFieldUpdateOperationsInput | $Enums.PlanoStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -435,6 +481,8 @@ export type PlanoCountOrderByAggregateInput = {
   limiteMensalConsultas?: Prisma.SortOrder
   intervaloSegundos?: Prisma.SortOrder
   precoCentavos?: Prisma.SortOrder
+  valorConsultaAdicionalCentavos?: Prisma.SortOrder
+  limiteCorretores?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -444,6 +492,8 @@ export type PlanoAvgOrderByAggregateInput = {
   limiteMensalConsultas?: Prisma.SortOrder
   intervaloSegundos?: Prisma.SortOrder
   precoCentavos?: Prisma.SortOrder
+  valorConsultaAdicionalCentavos?: Prisma.SortOrder
+  limiteCorretores?: Prisma.SortOrder
 }
 
 export type PlanoMaxOrderByAggregateInput = {
@@ -454,6 +504,8 @@ export type PlanoMaxOrderByAggregateInput = {
   limiteMensalConsultas?: Prisma.SortOrder
   intervaloSegundos?: Prisma.SortOrder
   precoCentavos?: Prisma.SortOrder
+  valorConsultaAdicionalCentavos?: Prisma.SortOrder
+  limiteCorretores?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -467,6 +519,8 @@ export type PlanoMinOrderByAggregateInput = {
   limiteMensalConsultas?: Prisma.SortOrder
   intervaloSegundos?: Prisma.SortOrder
   precoCentavos?: Prisma.SortOrder
+  valorConsultaAdicionalCentavos?: Prisma.SortOrder
+  limiteCorretores?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -476,6 +530,8 @@ export type PlanoSumOrderByAggregateInput = {
   limiteMensalConsultas?: Prisma.SortOrder
   intervaloSegundos?: Prisma.SortOrder
   precoCentavos?: Prisma.SortOrder
+  valorConsultaAdicionalCentavos?: Prisma.SortOrder
+  limiteCorretores?: Prisma.SortOrder
 }
 
 export type PlanoNullableScalarRelationFilter = {
@@ -493,6 +549,14 @@ export type NullableStringFieldUpdateOperationsInput = {
 
 export type IntFieldUpdateOperationsInput = {
   set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
+export type NullableIntFieldUpdateOperationsInput = {
+  set?: number | null
   increment?: number
   decrement?: number
   multiply?: number
@@ -531,6 +595,8 @@ export type PlanoCreateWithoutClientesInput = {
   limiteMensalConsultas: number
   intervaloSegundos: number
   precoCentavos: number
+  valorConsultaAdicionalCentavos?: number
+  limiteCorretores?: number | null
   status?: $Enums.PlanoStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -544,6 +610,8 @@ export type PlanoUncheckedCreateWithoutClientesInput = {
   limiteMensalConsultas: number
   intervaloSegundos: number
   precoCentavos: number
+  valorConsultaAdicionalCentavos?: number
+  limiteCorretores?: number | null
   status?: $Enums.PlanoStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -573,6 +641,8 @@ export type PlanoUpdateWithoutClientesInput = {
   limiteMensalConsultas?: Prisma.IntFieldUpdateOperationsInput | number
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
   precoCentavos?: Prisma.IntFieldUpdateOperationsInput | number
+  valorConsultaAdicionalCentavos?: Prisma.IntFieldUpdateOperationsInput | number
+  limiteCorretores?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumPlanoStatusFieldUpdateOperationsInput | $Enums.PlanoStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -586,6 +656,8 @@ export type PlanoUncheckedUpdateWithoutClientesInput = {
   limiteMensalConsultas?: Prisma.IntFieldUpdateOperationsInput | number
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
   precoCentavos?: Prisma.IntFieldUpdateOperationsInput | number
+  valorConsultaAdicionalCentavos?: Prisma.IntFieldUpdateOperationsInput | number
+  limiteCorretores?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumPlanoStatusFieldUpdateOperationsInput | $Enums.PlanoStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -630,6 +702,8 @@ export type PlanoSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   limiteMensalConsultas?: boolean
   intervaloSegundos?: boolean
   precoCentavos?: boolean
+  valorConsultaAdicionalCentavos?: boolean
+  limiteCorretores?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -645,6 +719,8 @@ export type PlanoSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   limiteMensalConsultas?: boolean
   intervaloSegundos?: boolean
   precoCentavos?: boolean
+  valorConsultaAdicionalCentavos?: boolean
+  limiteCorretores?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -658,6 +734,8 @@ export type PlanoSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   limiteMensalConsultas?: boolean
   intervaloSegundos?: boolean
   precoCentavos?: boolean
+  valorConsultaAdicionalCentavos?: boolean
+  limiteCorretores?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -671,12 +749,14 @@ export type PlanoSelectScalar = {
   limiteMensalConsultas?: boolean
   intervaloSegundos?: boolean
   precoCentavos?: boolean
+  valorConsultaAdicionalCentavos?: boolean
+  limiteCorretores?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type PlanoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nome" | "slug" | "descricao" | "limiteMensalConsultas" | "intervaloSegundos" | "precoCentavos" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["plano"]>
+export type PlanoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nome" | "slug" | "descricao" | "limiteMensalConsultas" | "intervaloSegundos" | "precoCentavos" | "valorConsultaAdicionalCentavos" | "limiteCorretores" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["plano"]>
 export type PlanoInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   clientes?: boolean | Prisma.Plano$clientesArgs<ExtArgs>
   _count?: boolean | Prisma.PlanoCountOutputTypeDefaultArgs<ExtArgs>
@@ -697,6 +777,8 @@ export type $PlanoPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     limiteMensalConsultas: number
     intervaloSegundos: number
     precoCentavos: number
+    valorConsultaAdicionalCentavos: number
+    limiteCorretores: number | null
     status: $Enums.PlanoStatus
     createdAt: Date
     updatedAt: Date
@@ -1131,6 +1213,8 @@ export interface PlanoFieldRefs {
   readonly limiteMensalConsultas: Prisma.FieldRef<"Plano", 'Int'>
   readonly intervaloSegundos: Prisma.FieldRef<"Plano", 'Int'>
   readonly precoCentavos: Prisma.FieldRef<"Plano", 'Int'>
+  readonly valorConsultaAdicionalCentavos: Prisma.FieldRef<"Plano", 'Int'>
+  readonly limiteCorretores: Prisma.FieldRef<"Plano", 'Int'>
   readonly status: Prisma.FieldRef<"Plano", 'PlanoStatus'>
   readonly createdAt: Prisma.FieldRef<"Plano", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Plano", 'DateTime'>

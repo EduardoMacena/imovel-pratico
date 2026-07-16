@@ -7,6 +7,10 @@ export type AuthUser = {
   nome: string;
   email: string;
   role: string;
+  ativo?: boolean;
+  clienteId?: string;
+  precisaTrocarSenha: boolean;
+  senhaAlteradaEm?: string | null;
 };
 
 export type AuthCliente = {
@@ -48,7 +52,11 @@ export function getAuthUser(): AuthUser | null {
     return null;
   }
 
-  return JSON.parse(value) as AuthUser;
+  try {
+    return JSON.parse(value) as AuthUser;
+  } catch {
+    return null;
+  }
 }
 
 export function setAuthCliente(cliente: AuthCliente) {
@@ -66,7 +74,11 @@ export function getAuthCliente(): AuthCliente | null {
     return null;
   }
 
-  return JSON.parse(value) as AuthCliente;
+  try {
+    return JSON.parse(value) as AuthCliente;
+  } catch {
+    return null;
+  }
 }
 
 export function isAuthenticated() {

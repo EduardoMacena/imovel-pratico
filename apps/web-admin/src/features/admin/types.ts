@@ -46,6 +46,8 @@ export type UsuarioResumo = {
 	email: string;
 	role: UsuarioRole;
 	ativo: boolean;
+	precisaTrocarSenha: boolean;
+	senhaAlteradaEm: string | null;
 	createdAt: string;
 	updatedAt: string;
 };
@@ -60,6 +62,7 @@ export type CriarUsuarioRequest = {
 	senha: string;
 	role: Exclude<UsuarioRole, "SUPER_ADMIN">;
 	ativo: boolean;
+	precisaTrocarSenha?: boolean;
 };
 
 export type CriarUsuarioResponse = {
@@ -111,8 +114,6 @@ export type AtualizarClienteRequest = {
 	intervaloSegundos?: number;
 	limiteDiario?: number;
 	planoId?: string;
-	pagamentoStatus?: PagamentoStatus;
-	pagamentoVenceEm?: string | null;
 };
 
 export type AtualizarClienteResponse = {
@@ -135,6 +136,7 @@ export type AtualizarUsuarioRequest = {
 	senha?: string;
 	role?: UsuarioRole;
 	ativo?: boolean;
+	precisaTrocarSenha?: boolean;
 };
 
 export type AtualizarUsuarioResponse = {
@@ -305,6 +307,8 @@ export type PlanoResumo = {
 	limiteMensalConsultas: number;
 	intervaloSegundos: number;
 	precoCentavos: number;
+	valorConsultaAdicionalCentavos: number;
+	limiteCorretores: number | null;
 	status: PlanoStatus;
 	createdAt: string;
 	updatedAt: string;
@@ -325,6 +329,8 @@ export type CriarPlanoRequest = {
 	limiteMensalConsultas: number;
 	intervaloSegundos: number;
 	precoCentavos: number;
+	valorConsultaAdicionalCentavos: number;
+	limiteCorretores: number | null;
 	status: PlanoStatus;
 };
 
@@ -353,6 +359,10 @@ export type ConsumoClienteResumo = {
 		consultasUsadas: number;
 		limiteMensal: number;
 		consultasRestantes: number;
+		consultasExcedentes: number;
+		valorConsultaAdicionalCentavos: number;
+		valorExcedenteCentavos: number;
+		totalEstimadoCentavos: number;
 		percentualUsado: number;
 		inicioMes: string;
 		fimMes: string;
@@ -372,4 +382,196 @@ export type ListarConsumoClientesResponse = {
 
 export type BuscarConsumoClienteResponse = {
 	consumo: ConsumoClienteResumo;
+};
+
+export type FaturaStatus =
+  | "ABERTA"
+  | "FECHADA"
+  | "PAGA"
+  | "VENCIDA"
+  | "CANCELADA";
+
+export type FaturaItemTipo =
+  | "MENSALIDADE"
+  | "CONSULTA_EXCEDENTE"
+  | "AJUSTE"
+  | "DESCONTO";
+
+export type FaturaItemResumo = {
+  id: string;
+  tipo: FaturaItemTipo;
+  descricao: string;
+  quantidade: number;
+  valorUnitarioCentavos: number;
+  valorTotalCentavos: number;
+  createdAt: string;
+};
+
+export type FaturaResumo = {
+  id: string;
+  clienteId: string;
+  cliente: {
+    id: string;
+    nome: string;
+    slug: string;
+    status: ClienteStatus;
+  };
+  status: FaturaStatus;
+  referenciaMes: number;
+  referenciaAno: number;
+  referenciaLabel: string;
+  planoId: string | null;
+  planoNome: string | null;
+  consultasInclusas: number;
+  consultasUsadas: number;
+  consultasExcedentes: number;
+  valorMensalidadeCentavos: number;
+  valorConsultaAdicionalCentavos: number;
+  valorExcedenteCentavos: number;
+  valorTotalCentavos: number;
+  vencimentoEm: string | null;
+  pagaEm: string | null;
+  observacao: string | null;
+  itens: FaturaItemResumo[];
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ListarFaturasResponse = {
+  faturas: FaturaResumo[];
+};
+
+export type GerarFaturaRequest = {
+  clienteId: string;
+  referenciaMes: number;
+  referenciaAno: number;
+  vencimentoEm?: string | null;
+  observacao?: string | null;
+};
+
+export type FaturaResponse = {
+  fatura: FaturaResumo;
+};
+
+export type MonitoramentoNivel = "INFO" | "WARN" | "ERROR";
+
+export type MonitoramentoServico =
+  | "API_GATEWAY"
+  | "WORKER_REGISTRO"
+  | "WORKER_CND"
+  | "QUEUE"
+  | "REALTIME";
+
+export type MonitoramentoStatusGeral = "OPERACIONAL" | "ATENCAO";
+
+export type WorkerStatusOperacional = "ONLINE" | "OFFLINE" | "ERROR";
+
+export type MonitoramentoEvento = {
+  id: string;
+  clienteId: string | null;
+  tarefaId: string | null;
+  buscaPreviaId: string | null;
+  nivel: MonitoramentoNivel;
+  servico: MonitoramentoServico;
+  tipo: string;
+  mensagem: string;
+  detalhes: string | null;
+  metadata: unknown;
+  cliente: {
+    id: string;
+    nome: string;
+    slug: string;
+  } | null;
+  tarefa: {
+    id: string;
+    status: string;
+    endereco: {
+      logradouro: string;
+      numero: string;
+    };
+  } | null;
+  buscaPrevia: {
+    id: string;
+    status: string;
+    endereco: {
+      logradouro: string;
+      numero: string;
+    };
+  } | null;
+  createdAt: string;
+};
+
+export type WorkerHeartbeatResumo = {
+  id: string;
+  cliente: {
+    id: string;
+    nome: string;
+    slug: string;
+  };
+  servico: MonitoramentoServico;
+  identificador: string;
+  fila: string | null;
+  status: WorkerStatusOperacional;
+  statusRegistrado: WorkerStatusOperacional;
+  ultimoSinalEm: string;
+  metadata: unknown;
+};
+
+export type MonitoramentoResumoResponse = {
+  resumo: {
+    atualizadoEm: string;
+    statusGeral: MonitoramentoStatusGeral;
+    tarefas: {
+      pendentes: number;
+      processando: number;
+      comErroHoje: number;
+    };
+    eventos: {
+      errosUltimas24h: number;
+    };
+    workers: {
+      total: number;
+      online: number;
+      offline: number;
+      itens: WorkerHeartbeatResumo[];
+    };
+    ultimosErros: MonitoramentoEvento[];
+  };
+};
+
+export type ListarEventosMonitoramentoRequest = {
+  clienteId?: string;
+  nivel?: string;
+  servico?: string;
+  tipo?: string;
+  take?: number;
+};
+
+export type ListarEventosMonitoramentoResponse = {
+  eventos: MonitoramentoEvento[];
+};
+
+export type ListarFilasMonitoramentoResponse = {
+  atualizadoEm: string;
+  itens: {
+    cliente: {
+      id: string;
+      nome: string;
+      slug: string;
+      status: ClienteStatus;
+    };
+    filas: {
+      nome: string;
+      tipo: MonitoramentoServico;
+      descricao: string;
+      counts: {
+        waiting: number;
+        active: number;
+        delayed: number;
+        failed: number;
+        completed: number;
+        paused: number;
+      };
+    }[];
+  }[];
 };

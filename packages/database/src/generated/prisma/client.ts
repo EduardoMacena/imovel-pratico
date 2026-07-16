@@ -62,6 +62,21 @@ export type Usuario = Prisma.UsuarioModel
  */
 export type Tarefa = Prisma.TarefaModel
 /**
+ * Model BuscaPrevia
+ * 
+ */
+export type BuscaPrevia = Prisma.BuscaPreviaModel
+/**
+ * Model Fatura
+ * 
+ */
+export type Fatura = Prisma.FaturaModel
+/**
+ * Model FaturaItem
+ * 
+ */
+export type FaturaItem = Prisma.FaturaItemModel
+/**
  * Model TarefaResultado
  * 
  */
@@ -76,3 +91,13 @@ export type ImovelCache = Prisma.ImovelCacheModel
  * 
  */
 export type ConsultaLog = Prisma.ConsultaLogModel
+/**
+ * Model OperacaoEvento
+ * 
+ */
+export type OperacaoEvento = Prisma.OperacaoEventoModel
+/**
+ * Model WorkerHeartbeat
+ * 
+ */
+export type WorkerHeartbeat = Prisma.WorkerHeartbeatModel
