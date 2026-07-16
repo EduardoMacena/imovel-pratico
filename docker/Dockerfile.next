@@ -12,12 +12,13 @@ ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 ENV PNPM_HOME=/pnpm
 ENV PATH=$PNPM_HOME:$PATH
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+ENV PNPM_VERSION=10.0.0
 
 RUN apt-get update \
   && apt-get install -y --no-install-recommends ca-certificates openssl \
   && rm -rf /var/lib/apt/lists/*
 
-RUN corepack enable
+RUN npm install -g pnpm@${PNPM_VERSION}
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
 
