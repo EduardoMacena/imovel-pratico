@@ -395,7 +395,8 @@ export const ModelName = {
   ImovelCache: 'ImovelCache',
   ConsultaLog: 'ConsultaLog',
   OperacaoEvento: 'OperacaoEvento',
-  WorkerHeartbeat: 'WorkerHeartbeat'
+  WorkerHeartbeat: 'WorkerHeartbeat',
+  WorkerAgent: 'WorkerAgent'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -411,7 +412,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "plano" | "cliente" | "usuario" | "tarefa" | "buscaPrevia" | "fatura" | "faturaItem" | "tarefaResultado" | "imovelCache" | "consultaLog" | "operacaoEvento" | "workerHeartbeat"
+    modelProps: "plano" | "cliente" | "usuario" | "tarefa" | "buscaPrevia" | "fatura" | "faturaItem" | "tarefaResultado" | "imovelCache" | "consultaLog" | "operacaoEvento" | "workerHeartbeat" | "workerAgent"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1303,6 +1304,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    WorkerAgent: {
+      payload: Prisma.$WorkerAgentPayload<ExtArgs>
+      fields: Prisma.WorkerAgentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WorkerAgentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerAgentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WorkerAgentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerAgentPayload>
+        }
+        findFirst: {
+          args: Prisma.WorkerAgentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerAgentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WorkerAgentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerAgentPayload>
+        }
+        findMany: {
+          args: Prisma.WorkerAgentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerAgentPayload>[]
+        }
+        create: {
+          args: Prisma.WorkerAgentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerAgentPayload>
+        }
+        createMany: {
+          args: Prisma.WorkerAgentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WorkerAgentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerAgentPayload>[]
+        }
+        delete: {
+          args: Prisma.WorkerAgentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerAgentPayload>
+        }
+        update: {
+          args: Prisma.WorkerAgentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerAgentPayload>
+        }
+        deleteMany: {
+          args: Prisma.WorkerAgentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WorkerAgentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WorkerAgentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerAgentPayload>[]
+        }
+        upsert: {
+          args: Prisma.WorkerAgentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerAgentPayload>
+        }
+        aggregate: {
+          args: Prisma.WorkerAgentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWorkerAgent>
+        }
+        groupBy: {
+          args: Prisma.WorkerAgentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WorkerAgentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WorkerAgentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WorkerAgentCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1420,6 +1495,9 @@ export const TarefaScalarFieldEnum = {
   total: 'total',
   current: 'current',
   erro: 'erro',
+  agentWorkerId: 'agentWorkerId',
+  agentLeaseExpiraEm: 'agentLeaseExpiraEm',
+  agentTentativas: 'agentTentativas',
   createdAt: 'createdAt',
   startedAt: 'startedAt',
   completedAt: 'completedAt',
@@ -1445,6 +1523,9 @@ export const BuscaPreviaScalarFieldEnum = {
   erro: 'erro',
   expiraEm: 'expiraEm',
   confirmadaEm: 'confirmadaEm',
+  agentWorkerId: 'agentWorkerId',
+  agentLeaseExpiraEm: 'agentLeaseExpiraEm',
+  agentTentativas: 'agentTentativas',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1582,6 +1663,22 @@ export const WorkerHeartbeatScalarFieldEnum = {
 } as const
 
 export type WorkerHeartbeatScalarFieldEnum = (typeof WorkerHeartbeatScalarFieldEnum)[keyof typeof WorkerHeartbeatScalarFieldEnum]
+
+
+export const WorkerAgentScalarFieldEnum = {
+  id: 'id',
+  clienteId: 'clienteId',
+  tipo: 'tipo',
+  identificador: 'identificador',
+  tokenHash: 'tokenHash',
+  status: 'status',
+  ultimoSinalEm: 'ultimoSinalEm',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WorkerAgentScalarFieldEnum = (typeof WorkerAgentScalarFieldEnum)[keyof typeof WorkerAgentScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1884,6 +1981,34 @@ export type ListEnumWorkerHeartbeatStatusFieldRefInput<$PrismaModel> = FieldRefI
 
 
 /**
+ * Reference to a field of type 'WorkerAgentTipo'
+ */
+export type EnumWorkerAgentTipoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkerAgentTipo'>
+    
+
+
+/**
+ * Reference to a field of type 'WorkerAgentTipo[]'
+ */
+export type ListEnumWorkerAgentTipoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkerAgentTipo[]'>
+    
+
+
+/**
+ * Reference to a field of type 'WorkerAgentStatus'
+ */
+export type EnumWorkerAgentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkerAgentStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'WorkerAgentStatus[]'
+ */
+export type ListEnumWorkerAgentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkerAgentStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -2018,6 +2143,7 @@ export type GlobalOmitConfig = {
   consultaLog?: Prisma.ConsultaLogOmit
   operacaoEvento?: Prisma.OperacaoEventoOmit
   workerHeartbeat?: Prisma.WorkerHeartbeatOmit
+  workerAgent?: Prisma.WorkerAgentOmit
 }
 
 /* Types for Logging */

@@ -32,6 +32,7 @@ export type BuscaPreviaAvgAggregateOutputType = {
   consultasExcedentesEstimadas: number | null
   valorConsultaAdicionalCentavos: number | null
   valorExcedenteEstimadoCentavos: number | null
+  agentTentativas: number | null
 }
 
 export type BuscaPreviaSumAggregateOutputType = {
@@ -40,6 +41,7 @@ export type BuscaPreviaSumAggregateOutputType = {
   consultasExcedentesEstimadas: number | null
   valorConsultaAdicionalCentavos: number | null
   valorExcedenteEstimadoCentavos: number | null
+  agentTentativas: number | null
 }
 
 export type BuscaPreviaMinAggregateOutputType = {
@@ -57,6 +59,9 @@ export type BuscaPreviaMinAggregateOutputType = {
   erro: string | null
   expiraEm: Date | null
   confirmadaEm: Date | null
+  agentWorkerId: string | null
+  agentLeaseExpiraEm: Date | null
+  agentTentativas: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -76,6 +81,9 @@ export type BuscaPreviaMaxAggregateOutputType = {
   erro: string | null
   expiraEm: Date | null
   confirmadaEm: Date | null
+  agentWorkerId: string | null
+  agentLeaseExpiraEm: Date | null
+  agentTentativas: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -96,6 +104,9 @@ export type BuscaPreviaCountAggregateOutputType = {
   erro: number
   expiraEm: number
   confirmadaEm: number
+  agentWorkerId: number
+  agentLeaseExpiraEm: number
+  agentTentativas: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -108,6 +119,7 @@ export type BuscaPreviaAvgAggregateInputType = {
   consultasExcedentesEstimadas?: true
   valorConsultaAdicionalCentavos?: true
   valorExcedenteEstimadoCentavos?: true
+  agentTentativas?: true
 }
 
 export type BuscaPreviaSumAggregateInputType = {
@@ -116,6 +128,7 @@ export type BuscaPreviaSumAggregateInputType = {
   consultasExcedentesEstimadas?: true
   valorConsultaAdicionalCentavos?: true
   valorExcedenteEstimadoCentavos?: true
+  agentTentativas?: true
 }
 
 export type BuscaPreviaMinAggregateInputType = {
@@ -133,6 +146,9 @@ export type BuscaPreviaMinAggregateInputType = {
   erro?: true
   expiraEm?: true
   confirmadaEm?: true
+  agentWorkerId?: true
+  agentLeaseExpiraEm?: true
+  agentTentativas?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -152,6 +168,9 @@ export type BuscaPreviaMaxAggregateInputType = {
   erro?: true
   expiraEm?: true
   confirmadaEm?: true
+  agentWorkerId?: true
+  agentLeaseExpiraEm?: true
+  agentTentativas?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -172,6 +191,9 @@ export type BuscaPreviaCountAggregateInputType = {
   erro?: true
   expiraEm?: true
   confirmadaEm?: true
+  agentWorkerId?: true
+  agentLeaseExpiraEm?: true
+  agentTentativas?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -279,6 +301,9 @@ export type BuscaPreviaGroupByOutputType = {
   erro: string | null
   expiraEm: Date
   confirmadaEm: Date | null
+  agentWorkerId: string | null
+  agentLeaseExpiraEm: Date | null
+  agentTentativas: number
   createdAt: Date
   updatedAt: Date
   _count: BuscaPreviaCountAggregateOutputType | null
@@ -322,6 +347,9 @@ export type BuscaPreviaWhereInput = {
   erro?: Prisma.StringNullableFilter<"BuscaPrevia"> | string | null
   expiraEm?: Prisma.DateTimeFilter<"BuscaPrevia"> | Date | string
   confirmadaEm?: Prisma.DateTimeNullableFilter<"BuscaPrevia"> | Date | string | null
+  agentWorkerId?: Prisma.StringNullableFilter<"BuscaPrevia"> | string | null
+  agentLeaseExpiraEm?: Prisma.DateTimeNullableFilter<"BuscaPrevia"> | Date | string | null
+  agentTentativas?: Prisma.IntFilter<"BuscaPrevia"> | number
   createdAt?: Prisma.DateTimeFilter<"BuscaPrevia"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"BuscaPrevia"> | Date | string
   cliente?: Prisma.XOR<Prisma.ClienteScalarRelationFilter, Prisma.ClienteWhereInput>
@@ -345,6 +373,9 @@ export type BuscaPreviaOrderByWithRelationInput = {
   erro?: Prisma.SortOrderInput | Prisma.SortOrder
   expiraEm?: Prisma.SortOrder
   confirmadaEm?: Prisma.SortOrderInput | Prisma.SortOrder
+  agentWorkerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  agentLeaseExpiraEm?: Prisma.SortOrderInput | Prisma.SortOrder
+  agentTentativas?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   cliente?: Prisma.ClienteOrderByWithRelationInput
@@ -371,6 +402,9 @@ export type BuscaPreviaWhereUniqueInput = Prisma.AtLeast<{
   erro?: Prisma.StringNullableFilter<"BuscaPrevia"> | string | null
   expiraEm?: Prisma.DateTimeFilter<"BuscaPrevia"> | Date | string
   confirmadaEm?: Prisma.DateTimeNullableFilter<"BuscaPrevia"> | Date | string | null
+  agentWorkerId?: Prisma.StringNullableFilter<"BuscaPrevia"> | string | null
+  agentLeaseExpiraEm?: Prisma.DateTimeNullableFilter<"BuscaPrevia"> | Date | string | null
+  agentTentativas?: Prisma.IntFilter<"BuscaPrevia"> | number
   createdAt?: Prisma.DateTimeFilter<"BuscaPrevia"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"BuscaPrevia"> | Date | string
   cliente?: Prisma.XOR<Prisma.ClienteScalarRelationFilter, Prisma.ClienteWhereInput>
@@ -394,6 +428,9 @@ export type BuscaPreviaOrderByWithAggregationInput = {
   erro?: Prisma.SortOrderInput | Prisma.SortOrder
   expiraEm?: Prisma.SortOrder
   confirmadaEm?: Prisma.SortOrderInput | Prisma.SortOrder
+  agentWorkerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  agentLeaseExpiraEm?: Prisma.SortOrderInput | Prisma.SortOrder
+  agentTentativas?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.BuscaPreviaCountOrderByAggregateInput
@@ -422,6 +459,9 @@ export type BuscaPreviaScalarWhereWithAggregatesInput = {
   erro?: Prisma.StringNullableWithAggregatesFilter<"BuscaPrevia"> | string | null
   expiraEm?: Prisma.DateTimeWithAggregatesFilter<"BuscaPrevia"> | Date | string
   confirmadaEm?: Prisma.DateTimeNullableWithAggregatesFilter<"BuscaPrevia"> | Date | string | null
+  agentWorkerId?: Prisma.StringNullableWithAggregatesFilter<"BuscaPrevia"> | string | null
+  agentLeaseExpiraEm?: Prisma.DateTimeNullableWithAggregatesFilter<"BuscaPrevia"> | Date | string | null
+  agentTentativas?: Prisma.IntWithAggregatesFilter<"BuscaPrevia"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"BuscaPrevia"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"BuscaPrevia"> | Date | string
 }
@@ -441,6 +481,9 @@ export type BuscaPreviaCreateInput = {
   erro?: string | null
   expiraEm: Date | string
   confirmadaEm?: Date | string | null
+  agentWorkerId?: string | null
+  agentLeaseExpiraEm?: Date | string | null
+  agentTentativas?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   cliente: Prisma.ClienteCreateNestedOneWithoutBuscasPreviasInput
@@ -464,6 +507,9 @@ export type BuscaPreviaUncheckedCreateInput = {
   erro?: string | null
   expiraEm: Date | string
   confirmadaEm?: Date | string | null
+  agentWorkerId?: string | null
+  agentLeaseExpiraEm?: Date | string | null
+  agentTentativas?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutBuscaPreviaInput
@@ -485,6 +531,9 @@ export type BuscaPreviaUpdateInput = {
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiraEm?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   confirmadaEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agentWorkerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentLeaseExpiraEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agentTentativas?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cliente?: Prisma.ClienteUpdateOneRequiredWithoutBuscasPreviasNestedInput
@@ -508,6 +557,9 @@ export type BuscaPreviaUncheckedUpdateInput = {
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiraEm?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   confirmadaEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agentWorkerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentLeaseExpiraEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agentTentativas?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutBuscaPreviaNestedInput
@@ -530,6 +582,9 @@ export type BuscaPreviaCreateManyInput = {
   erro?: string | null
   expiraEm: Date | string
   confirmadaEm?: Date | string | null
+  agentWorkerId?: string | null
+  agentLeaseExpiraEm?: Date | string | null
+  agentTentativas?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -549,6 +604,9 @@ export type BuscaPreviaUpdateManyMutationInput = {
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiraEm?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   confirmadaEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agentWorkerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentLeaseExpiraEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agentTentativas?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -569,6 +627,9 @@ export type BuscaPreviaUncheckedUpdateManyInput = {
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiraEm?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   confirmadaEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agentWorkerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentLeaseExpiraEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agentTentativas?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -604,6 +665,9 @@ export type BuscaPreviaCountOrderByAggregateInput = {
   erro?: Prisma.SortOrder
   expiraEm?: Prisma.SortOrder
   confirmadaEm?: Prisma.SortOrder
+  agentWorkerId?: Prisma.SortOrder
+  agentLeaseExpiraEm?: Prisma.SortOrder
+  agentTentativas?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -614,6 +678,7 @@ export type BuscaPreviaAvgOrderByAggregateInput = {
   consultasExcedentesEstimadas?: Prisma.SortOrder
   valorConsultaAdicionalCentavos?: Prisma.SortOrder
   valorExcedenteEstimadoCentavos?: Prisma.SortOrder
+  agentTentativas?: Prisma.SortOrder
 }
 
 export type BuscaPreviaMaxOrderByAggregateInput = {
@@ -631,6 +696,9 @@ export type BuscaPreviaMaxOrderByAggregateInput = {
   erro?: Prisma.SortOrder
   expiraEm?: Prisma.SortOrder
   confirmadaEm?: Prisma.SortOrder
+  agentWorkerId?: Prisma.SortOrder
+  agentLeaseExpiraEm?: Prisma.SortOrder
+  agentTentativas?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -650,6 +718,9 @@ export type BuscaPreviaMinOrderByAggregateInput = {
   erro?: Prisma.SortOrder
   expiraEm?: Prisma.SortOrder
   confirmadaEm?: Prisma.SortOrder
+  agentWorkerId?: Prisma.SortOrder
+  agentLeaseExpiraEm?: Prisma.SortOrder
+  agentTentativas?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -660,6 +731,7 @@ export type BuscaPreviaSumOrderByAggregateInput = {
   consultasExcedentesEstimadas?: Prisma.SortOrder
   valorConsultaAdicionalCentavos?: Prisma.SortOrder
   valorExcedenteEstimadoCentavos?: Prisma.SortOrder
+  agentTentativas?: Prisma.SortOrder
 }
 
 export type BuscaPreviaCreateNestedManyWithoutClienteInput = {
@@ -755,6 +827,9 @@ export type BuscaPreviaCreateWithoutClienteInput = {
   erro?: string | null
   expiraEm: Date | string
   confirmadaEm?: Date | string | null
+  agentWorkerId?: string | null
+  agentLeaseExpiraEm?: Date | string | null
+  agentTentativas?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   tarefas?: Prisma.TarefaCreateNestedManyWithoutBuscaPreviaInput
@@ -776,6 +851,9 @@ export type BuscaPreviaUncheckedCreateWithoutClienteInput = {
   erro?: string | null
   expiraEm: Date | string
   confirmadaEm?: Date | string | null
+  agentWorkerId?: string | null
+  agentLeaseExpiraEm?: Date | string | null
+  agentTentativas?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutBuscaPreviaInput
@@ -827,6 +905,9 @@ export type BuscaPreviaScalarWhereInput = {
   erro?: Prisma.StringNullableFilter<"BuscaPrevia"> | string | null
   expiraEm?: Prisma.DateTimeFilter<"BuscaPrevia"> | Date | string
   confirmadaEm?: Prisma.DateTimeNullableFilter<"BuscaPrevia"> | Date | string | null
+  agentWorkerId?: Prisma.StringNullableFilter<"BuscaPrevia"> | string | null
+  agentLeaseExpiraEm?: Prisma.DateTimeNullableFilter<"BuscaPrevia"> | Date | string | null
+  agentTentativas?: Prisma.IntFilter<"BuscaPrevia"> | number
   createdAt?: Prisma.DateTimeFilter<"BuscaPrevia"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"BuscaPrevia"> | Date | string
 }
@@ -846,6 +927,9 @@ export type BuscaPreviaCreateWithoutTarefasInput = {
   erro?: string | null
   expiraEm: Date | string
   confirmadaEm?: Date | string | null
+  agentWorkerId?: string | null
+  agentLeaseExpiraEm?: Date | string | null
+  agentTentativas?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   cliente: Prisma.ClienteCreateNestedOneWithoutBuscasPreviasInput
@@ -868,6 +952,9 @@ export type BuscaPreviaUncheckedCreateWithoutTarefasInput = {
   erro?: string | null
   expiraEm: Date | string
   confirmadaEm?: Date | string | null
+  agentWorkerId?: string | null
+  agentLeaseExpiraEm?: Date | string | null
+  agentTentativas?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   eventos?: Prisma.OperacaoEventoUncheckedCreateNestedManyWithoutBuscaPreviaInput
@@ -904,6 +991,9 @@ export type BuscaPreviaUpdateWithoutTarefasInput = {
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiraEm?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   confirmadaEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agentWorkerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentLeaseExpiraEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agentTentativas?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cliente?: Prisma.ClienteUpdateOneRequiredWithoutBuscasPreviasNestedInput
@@ -926,6 +1016,9 @@ export type BuscaPreviaUncheckedUpdateWithoutTarefasInput = {
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiraEm?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   confirmadaEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agentWorkerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentLeaseExpiraEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agentTentativas?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   eventos?: Prisma.OperacaoEventoUncheckedUpdateManyWithoutBuscaPreviaNestedInput
@@ -946,6 +1039,9 @@ export type BuscaPreviaCreateWithoutEventosInput = {
   erro?: string | null
   expiraEm: Date | string
   confirmadaEm?: Date | string | null
+  agentWorkerId?: string | null
+  agentLeaseExpiraEm?: Date | string | null
+  agentTentativas?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   cliente: Prisma.ClienteCreateNestedOneWithoutBuscasPreviasInput
@@ -968,6 +1064,9 @@ export type BuscaPreviaUncheckedCreateWithoutEventosInput = {
   erro?: string | null
   expiraEm: Date | string
   confirmadaEm?: Date | string | null
+  agentWorkerId?: string | null
+  agentLeaseExpiraEm?: Date | string | null
+  agentTentativas?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutBuscaPreviaInput
@@ -1004,6 +1103,9 @@ export type BuscaPreviaUpdateWithoutEventosInput = {
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiraEm?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   confirmadaEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agentWorkerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentLeaseExpiraEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agentTentativas?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cliente?: Prisma.ClienteUpdateOneRequiredWithoutBuscasPreviasNestedInput
@@ -1026,6 +1128,9 @@ export type BuscaPreviaUncheckedUpdateWithoutEventosInput = {
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiraEm?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   confirmadaEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agentWorkerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentLeaseExpiraEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agentTentativas?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutBuscaPreviaNestedInput
@@ -1046,6 +1151,9 @@ export type BuscaPreviaCreateManyClienteInput = {
   erro?: string | null
   expiraEm: Date | string
   confirmadaEm?: Date | string | null
+  agentWorkerId?: string | null
+  agentLeaseExpiraEm?: Date | string | null
+  agentTentativas?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1065,6 +1173,9 @@ export type BuscaPreviaUpdateWithoutClienteInput = {
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiraEm?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   confirmadaEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agentWorkerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentLeaseExpiraEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agentTentativas?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tarefas?: Prisma.TarefaUpdateManyWithoutBuscaPreviaNestedInput
@@ -1086,6 +1197,9 @@ export type BuscaPreviaUncheckedUpdateWithoutClienteInput = {
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiraEm?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   confirmadaEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agentWorkerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentLeaseExpiraEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agentTentativas?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutBuscaPreviaNestedInput
@@ -1107,6 +1221,9 @@ export type BuscaPreviaUncheckedUpdateManyWithoutClienteInput = {
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiraEm?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   confirmadaEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agentWorkerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentLeaseExpiraEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agentTentativas?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1167,6 +1284,9 @@ export type BuscaPreviaSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   erro?: boolean
   expiraEm?: boolean
   confirmadaEm?: boolean
+  agentWorkerId?: boolean
+  agentLeaseExpiraEm?: boolean
+  agentTentativas?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
@@ -1191,6 +1311,9 @@ export type BuscaPreviaSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   erro?: boolean
   expiraEm?: boolean
   confirmadaEm?: boolean
+  agentWorkerId?: boolean
+  agentLeaseExpiraEm?: boolean
+  agentTentativas?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
@@ -1212,6 +1335,9 @@ export type BuscaPreviaSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   erro?: boolean
   expiraEm?: boolean
   confirmadaEm?: boolean
+  agentWorkerId?: boolean
+  agentLeaseExpiraEm?: boolean
+  agentTentativas?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
@@ -1233,11 +1359,14 @@ export type BuscaPreviaSelectScalar = {
   erro?: boolean
   expiraEm?: boolean
   confirmadaEm?: boolean
+  agentWorkerId?: boolean
+  agentLeaseExpiraEm?: boolean
+  agentTentativas?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type BuscaPreviaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "clienteId" | "status" | "logradouro" | "numero" | "quantidadeRegistros" | "registros" | "consultasDisponiveisNoMomento" | "consultasExcedentesEstimadas" | "valorConsultaAdicionalCentavos" | "valorExcedenteEstimadoCentavos" | "workerUrl" | "erro" | "expiraEm" | "confirmadaEm" | "createdAt" | "updatedAt", ExtArgs["result"]["buscaPrevia"]>
+export type BuscaPreviaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "clienteId" | "status" | "logradouro" | "numero" | "quantidadeRegistros" | "registros" | "consultasDisponiveisNoMomento" | "consultasExcedentesEstimadas" | "valorConsultaAdicionalCentavos" | "valorExcedenteEstimadoCentavos" | "workerUrl" | "erro" | "expiraEm" | "confirmadaEm" | "agentWorkerId" | "agentLeaseExpiraEm" | "agentTentativas" | "createdAt" | "updatedAt", ExtArgs["result"]["buscaPrevia"]>
 export type BuscaPreviaInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
   tarefas?: boolean | Prisma.BuscaPrevia$tarefasArgs<ExtArgs>
@@ -1274,6 +1403,9 @@ export type $BuscaPreviaPayload<ExtArgs extends runtime.Types.Extensions.Interna
     erro: string | null
     expiraEm: Date
     confirmadaEm: Date | null
+    agentWorkerId: string | null
+    agentLeaseExpiraEm: Date | null
+    agentTentativas: number
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["buscaPrevia"]>
@@ -1717,6 +1849,9 @@ export interface BuscaPreviaFieldRefs {
   readonly erro: Prisma.FieldRef<"BuscaPrevia", 'String'>
   readonly expiraEm: Prisma.FieldRef<"BuscaPrevia", 'DateTime'>
   readonly confirmadaEm: Prisma.FieldRef<"BuscaPrevia", 'DateTime'>
+  readonly agentWorkerId: Prisma.FieldRef<"BuscaPrevia", 'String'>
+  readonly agentLeaseExpiraEm: Prisma.FieldRef<"BuscaPrevia", 'DateTime'>
+  readonly agentTentativas: Prisma.FieldRef<"BuscaPrevia", 'Int'>
   readonly createdAt: Prisma.FieldRef<"BuscaPrevia", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"BuscaPrevia", 'DateTime'>
 }

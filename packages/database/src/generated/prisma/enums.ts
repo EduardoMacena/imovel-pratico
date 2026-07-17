@@ -140,3 +140,20 @@ export const WorkerHeartbeatStatus = {
 } as const
 
 export type WorkerHeartbeatStatus = (typeof WorkerHeartbeatStatus)[keyof typeof WorkerHeartbeatStatus]
+
+
+export const WorkerAgentTipo = {
+  REGISTRO: 'REGISTRO',
+  CND: 'CND'
+} as const
+
+export type WorkerAgentTipo = (typeof WorkerAgentTipo)[keyof typeof WorkerAgentTipo]
+
+
+export const WorkerAgentStatus = {
+  ATIVO: 'ATIVO',
+  INATIVO: 'INATIVO',
+  REVOGADO: 'REVOGADO'
+} as const
+
+export type WorkerAgentStatus = (typeof WorkerAgentStatus)[keyof typeof WorkerAgentStatus]

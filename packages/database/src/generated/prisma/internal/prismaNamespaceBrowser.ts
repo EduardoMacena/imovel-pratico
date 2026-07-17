@@ -62,7 +62,8 @@ export const ModelName = {
   ImovelCache: 'ImovelCache',
   ConsultaLog: 'ConsultaLog',
   OperacaoEvento: 'OperacaoEvento',
-  WorkerHeartbeat: 'WorkerHeartbeat'
+  WorkerHeartbeat: 'WorkerHeartbeat',
+  WorkerAgent: 'WorkerAgent'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -159,6 +160,9 @@ export const TarefaScalarFieldEnum = {
   total: 'total',
   current: 'current',
   erro: 'erro',
+  agentWorkerId: 'agentWorkerId',
+  agentLeaseExpiraEm: 'agentLeaseExpiraEm',
+  agentTentativas: 'agentTentativas',
   createdAt: 'createdAt',
   startedAt: 'startedAt',
   completedAt: 'completedAt',
@@ -184,6 +188,9 @@ export const BuscaPreviaScalarFieldEnum = {
   erro: 'erro',
   expiraEm: 'expiraEm',
   confirmadaEm: 'confirmadaEm',
+  agentWorkerId: 'agentWorkerId',
+  agentLeaseExpiraEm: 'agentLeaseExpiraEm',
+  agentTentativas: 'agentTentativas',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -321,6 +328,22 @@ export const WorkerHeartbeatScalarFieldEnum = {
 } as const
 
 export type WorkerHeartbeatScalarFieldEnum = (typeof WorkerHeartbeatScalarFieldEnum)[keyof typeof WorkerHeartbeatScalarFieldEnum]
+
+
+export const WorkerAgentScalarFieldEnum = {
+  id: 'id',
+  clienteId: 'clienteId',
+  tipo: 'tipo',
+  identificador: 'identificador',
+  tokenHash: 'tokenHash',
+  status: 'status',
+  ultimoSinalEm: 'ultimoSinalEm',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WorkerAgentScalarFieldEnum = (typeof WorkerAgentScalarFieldEnum)[keyof typeof WorkerAgentScalarFieldEnum]
 
 
 export const SortOrder = {

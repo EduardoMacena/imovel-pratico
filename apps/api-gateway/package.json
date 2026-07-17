@@ -8,7 +8,8 @@
     "build": "tsc -p tsconfig.json",
     "start": "node dist/server.js",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "lint": "echo \"lint api-gateway\""
+    "lint": "echo \"lint api-gateway\"",
+    "worker-agent:create": "tsx src/scripts/create-worker-agent.ts"
   },
   "dependencies": {
     "@fastify/cors": "latest",

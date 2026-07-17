@@ -35,6 +35,7 @@ export type TarefaAvgAggregateOutputType = {
   valorExcedenteEstimadoCentavos: number | null
   total: number | null
   current: number | null
+  agentTentativas: number | null
 }
 
 export type TarefaSumAggregateOutputType = {
@@ -46,6 +47,7 @@ export type TarefaSumAggregateOutputType = {
   valorExcedenteEstimadoCentavos: number | null
   total: number | null
   current: number | null
+  agentTentativas: number | null
 }
 
 export type TarefaMinAggregateOutputType = {
@@ -69,6 +71,9 @@ export type TarefaMinAggregateOutputType = {
   total: number | null
   current: number | null
   erro: string | null
+  agentWorkerId: string | null
+  agentLeaseExpiraEm: Date | null
+  agentTentativas: number | null
   createdAt: Date | null
   startedAt: Date | null
   completedAt: Date | null
@@ -96,6 +101,9 @@ export type TarefaMaxAggregateOutputType = {
   total: number | null
   current: number | null
   erro: string | null
+  agentWorkerId: string | null
+  agentLeaseExpiraEm: Date | null
+  agentTentativas: number | null
   createdAt: Date | null
   startedAt: Date | null
   completedAt: Date | null
@@ -123,6 +131,9 @@ export type TarefaCountAggregateOutputType = {
   total: number
   current: number
   erro: number
+  agentWorkerId: number
+  agentLeaseExpiraEm: number
+  agentTentativas: number
   createdAt: number
   startedAt: number
   completedAt: number
@@ -140,6 +151,7 @@ export type TarefaAvgAggregateInputType = {
   valorExcedenteEstimadoCentavos?: true
   total?: true
   current?: true
+  agentTentativas?: true
 }
 
 export type TarefaSumAggregateInputType = {
@@ -151,6 +163,7 @@ export type TarefaSumAggregateInputType = {
   valorExcedenteEstimadoCentavos?: true
   total?: true
   current?: true
+  agentTentativas?: true
 }
 
 export type TarefaMinAggregateInputType = {
@@ -174,6 +187,9 @@ export type TarefaMinAggregateInputType = {
   total?: true
   current?: true
   erro?: true
+  agentWorkerId?: true
+  agentLeaseExpiraEm?: true
+  agentTentativas?: true
   createdAt?: true
   startedAt?: true
   completedAt?: true
@@ -201,6 +217,9 @@ export type TarefaMaxAggregateInputType = {
   total?: true
   current?: true
   erro?: true
+  agentWorkerId?: true
+  agentLeaseExpiraEm?: true
+  agentTentativas?: true
   createdAt?: true
   startedAt?: true
   completedAt?: true
@@ -228,6 +247,9 @@ export type TarefaCountAggregateInputType = {
   total?: true
   current?: true
   erro?: true
+  agentWorkerId?: true
+  agentLeaseExpiraEm?: true
+  agentTentativas?: true
   createdAt?: true
   startedAt?: true
   completedAt?: true
@@ -342,6 +364,9 @@ export type TarefaGroupByOutputType = {
   total: number
   current: number
   erro: string | null
+  agentWorkerId: string | null
+  agentLeaseExpiraEm: Date | null
+  agentTentativas: number
   createdAt: Date
   startedAt: Date | null
   completedAt: Date | null
@@ -392,6 +417,9 @@ export type TarefaWhereInput = {
   total?: Prisma.IntFilter<"Tarefa"> | number
   current?: Prisma.IntFilter<"Tarefa"> | number
   erro?: Prisma.StringNullableFilter<"Tarefa"> | string | null
+  agentWorkerId?: Prisma.StringNullableFilter<"Tarefa"> | string | null
+  agentLeaseExpiraEm?: Prisma.DateTimeNullableFilter<"Tarefa"> | Date | string | null
+  agentTentativas?: Prisma.IntFilter<"Tarefa"> | number
   createdAt?: Prisma.DateTimeFilter<"Tarefa"> | Date | string
   startedAt?: Prisma.DateTimeNullableFilter<"Tarefa"> | Date | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"Tarefa"> | Date | string | null
@@ -423,6 +451,9 @@ export type TarefaOrderByWithRelationInput = {
   total?: Prisma.SortOrder
   current?: Prisma.SortOrder
   erro?: Prisma.SortOrderInput | Prisma.SortOrder
+  agentWorkerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  agentLeaseExpiraEm?: Prisma.SortOrderInput | Prisma.SortOrder
+  agentTentativas?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   startedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -457,6 +488,9 @@ export type TarefaWhereUniqueInput = Prisma.AtLeast<{
   total?: Prisma.IntFilter<"Tarefa"> | number
   current?: Prisma.IntFilter<"Tarefa"> | number
   erro?: Prisma.StringNullableFilter<"Tarefa"> | string | null
+  agentWorkerId?: Prisma.StringNullableFilter<"Tarefa"> | string | null
+  agentLeaseExpiraEm?: Prisma.DateTimeNullableFilter<"Tarefa"> | Date | string | null
+  agentTentativas?: Prisma.IntFilter<"Tarefa"> | number
   createdAt?: Prisma.DateTimeFilter<"Tarefa"> | Date | string
   startedAt?: Prisma.DateTimeNullableFilter<"Tarefa"> | Date | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"Tarefa"> | Date | string | null
@@ -488,6 +522,9 @@ export type TarefaOrderByWithAggregationInput = {
   total?: Prisma.SortOrder
   current?: Prisma.SortOrder
   erro?: Prisma.SortOrderInput | Prisma.SortOrder
+  agentWorkerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  agentLeaseExpiraEm?: Prisma.SortOrderInput | Prisma.SortOrder
+  agentTentativas?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   startedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -523,6 +560,9 @@ export type TarefaScalarWhereWithAggregatesInput = {
   total?: Prisma.IntWithAggregatesFilter<"Tarefa"> | number
   current?: Prisma.IntWithAggregatesFilter<"Tarefa"> | number
   erro?: Prisma.StringNullableWithAggregatesFilter<"Tarefa"> | string | null
+  agentWorkerId?: Prisma.StringNullableWithAggregatesFilter<"Tarefa"> | string | null
+  agentLeaseExpiraEm?: Prisma.DateTimeNullableWithAggregatesFilter<"Tarefa"> | Date | string | null
+  agentTentativas?: Prisma.IntWithAggregatesFilter<"Tarefa"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Tarefa"> | Date | string
   startedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Tarefa"> | Date | string | null
   completedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Tarefa"> | Date | string | null
@@ -548,6 +588,9 @@ export type TarefaCreateInput = {
   total?: number
   current?: number
   erro?: string | null
+  agentWorkerId?: string | null
+  agentLeaseExpiraEm?: Date | string | null
+  agentTentativas?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
   completedAt?: Date | string | null
@@ -579,6 +622,9 @@ export type TarefaUncheckedCreateInput = {
   total?: number
   current?: number
   erro?: string | null
+  agentWorkerId?: string | null
+  agentLeaseExpiraEm?: Date | string | null
+  agentTentativas?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
   completedAt?: Date | string | null
@@ -606,6 +652,9 @@ export type TarefaUpdateInput = {
   total?: Prisma.IntFieldUpdateOperationsInput | number
   current?: Prisma.IntFieldUpdateOperationsInput | number
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentWorkerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentLeaseExpiraEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agentTentativas?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -637,6 +686,9 @@ export type TarefaUncheckedUpdateInput = {
   total?: Prisma.IntFieldUpdateOperationsInput | number
   current?: Prisma.IntFieldUpdateOperationsInput | number
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentWorkerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentLeaseExpiraEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agentTentativas?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -666,6 +718,9 @@ export type TarefaCreateManyInput = {
   total?: number
   current?: number
   erro?: string | null
+  agentWorkerId?: string | null
+  agentLeaseExpiraEm?: Date | string | null
+  agentTentativas?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
   completedAt?: Date | string | null
@@ -691,6 +746,9 @@ export type TarefaUpdateManyMutationInput = {
   total?: Prisma.IntFieldUpdateOperationsInput | number
   current?: Prisma.IntFieldUpdateOperationsInput | number
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentWorkerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentLeaseExpiraEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agentTentativas?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -718,6 +776,9 @@ export type TarefaUncheckedUpdateManyInput = {
   total?: Prisma.IntFieldUpdateOperationsInput | number
   current?: Prisma.IntFieldUpdateOperationsInput | number
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentWorkerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentLeaseExpiraEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agentTentativas?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -755,6 +816,9 @@ export type TarefaCountOrderByAggregateInput = {
   total?: Prisma.SortOrder
   current?: Prisma.SortOrder
   erro?: Prisma.SortOrder
+  agentWorkerId?: Prisma.SortOrder
+  agentLeaseExpiraEm?: Prisma.SortOrder
+  agentTentativas?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   startedAt?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
@@ -770,6 +834,7 @@ export type TarefaAvgOrderByAggregateInput = {
   valorExcedenteEstimadoCentavos?: Prisma.SortOrder
   total?: Prisma.SortOrder
   current?: Prisma.SortOrder
+  agentTentativas?: Prisma.SortOrder
 }
 
 export type TarefaMaxOrderByAggregateInput = {
@@ -793,6 +858,9 @@ export type TarefaMaxOrderByAggregateInput = {
   total?: Prisma.SortOrder
   current?: Prisma.SortOrder
   erro?: Prisma.SortOrder
+  agentWorkerId?: Prisma.SortOrder
+  agentLeaseExpiraEm?: Prisma.SortOrder
+  agentTentativas?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   startedAt?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
@@ -820,6 +888,9 @@ export type TarefaMinOrderByAggregateInput = {
   total?: Prisma.SortOrder
   current?: Prisma.SortOrder
   erro?: Prisma.SortOrder
+  agentWorkerId?: Prisma.SortOrder
+  agentLeaseExpiraEm?: Prisma.SortOrder
+  agentTentativas?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   startedAt?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
@@ -835,6 +906,7 @@ export type TarefaSumOrderByAggregateInput = {
   valorExcedenteEstimadoCentavos?: Prisma.SortOrder
   total?: Prisma.SortOrder
   current?: Prisma.SortOrder
+  agentTentativas?: Prisma.SortOrder
 }
 
 export type TarefaScalarRelationFilter = {
@@ -984,6 +1056,9 @@ export type TarefaCreateWithoutClienteInput = {
   total?: number
   current?: number
   erro?: string | null
+  agentWorkerId?: string | null
+  agentLeaseExpiraEm?: Date | string | null
+  agentTentativas?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
   completedAt?: Date | string | null
@@ -1013,6 +1088,9 @@ export type TarefaUncheckedCreateWithoutClienteInput = {
   total?: number
   current?: number
   erro?: string | null
+  agentWorkerId?: string | null
+  agentLeaseExpiraEm?: Date | string | null
+  agentTentativas?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
   completedAt?: Date | string | null
@@ -1071,6 +1149,9 @@ export type TarefaScalarWhereInput = {
   total?: Prisma.IntFilter<"Tarefa"> | number
   current?: Prisma.IntFilter<"Tarefa"> | number
   erro?: Prisma.StringNullableFilter<"Tarefa"> | string | null
+  agentWorkerId?: Prisma.StringNullableFilter<"Tarefa"> | string | null
+  agentLeaseExpiraEm?: Prisma.DateTimeNullableFilter<"Tarefa"> | Date | string | null
+  agentTentativas?: Prisma.IntFilter<"Tarefa"> | number
   createdAt?: Prisma.DateTimeFilter<"Tarefa"> | Date | string
   startedAt?: Prisma.DateTimeNullableFilter<"Tarefa"> | Date | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"Tarefa"> | Date | string | null
@@ -1096,6 +1177,9 @@ export type TarefaCreateWithoutBuscaPreviaInput = {
   total?: number
   current?: number
   erro?: string | null
+  agentWorkerId?: string | null
+  agentLeaseExpiraEm?: Date | string | null
+  agentTentativas?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
   completedAt?: Date | string | null
@@ -1125,6 +1209,9 @@ export type TarefaUncheckedCreateWithoutBuscaPreviaInput = {
   total?: number
   current?: number
   erro?: string | null
+  agentWorkerId?: string | null
+  agentLeaseExpiraEm?: Date | string | null
+  agentTentativas?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
   completedAt?: Date | string | null
@@ -1178,6 +1265,9 @@ export type TarefaCreateWithoutResultadosInput = {
   total?: number
   current?: number
   erro?: string | null
+  agentWorkerId?: string | null
+  agentLeaseExpiraEm?: Date | string | null
+  agentTentativas?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
   completedAt?: Date | string | null
@@ -1208,6 +1298,9 @@ export type TarefaUncheckedCreateWithoutResultadosInput = {
   total?: number
   current?: number
   erro?: string | null
+  agentWorkerId?: string | null
+  agentLeaseExpiraEm?: Date | string | null
+  agentTentativas?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
   completedAt?: Date | string | null
@@ -1250,6 +1343,9 @@ export type TarefaUpdateWithoutResultadosInput = {
   total?: Prisma.IntFieldUpdateOperationsInput | number
   current?: Prisma.IntFieldUpdateOperationsInput | number
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentWorkerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentLeaseExpiraEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agentTentativas?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1280,6 +1376,9 @@ export type TarefaUncheckedUpdateWithoutResultadosInput = {
   total?: Prisma.IntFieldUpdateOperationsInput | number
   current?: Prisma.IntFieldUpdateOperationsInput | number
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentWorkerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentLeaseExpiraEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agentTentativas?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1306,6 +1405,9 @@ export type TarefaCreateWithoutEventosInput = {
   total?: number
   current?: number
   erro?: string | null
+  agentWorkerId?: string | null
+  agentLeaseExpiraEm?: Date | string | null
+  agentTentativas?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
   completedAt?: Date | string | null
@@ -1336,6 +1438,9 @@ export type TarefaUncheckedCreateWithoutEventosInput = {
   total?: number
   current?: number
   erro?: string | null
+  agentWorkerId?: string | null
+  agentLeaseExpiraEm?: Date | string | null
+  agentTentativas?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
   completedAt?: Date | string | null
@@ -1378,6 +1483,9 @@ export type TarefaUpdateWithoutEventosInput = {
   total?: Prisma.IntFieldUpdateOperationsInput | number
   current?: Prisma.IntFieldUpdateOperationsInput | number
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentWorkerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentLeaseExpiraEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agentTentativas?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1408,6 +1516,9 @@ export type TarefaUncheckedUpdateWithoutEventosInput = {
   total?: Prisma.IntFieldUpdateOperationsInput | number
   current?: Prisma.IntFieldUpdateOperationsInput | number
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentWorkerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentLeaseExpiraEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agentTentativas?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1435,6 +1546,9 @@ export type TarefaCreateManyClienteInput = {
   total?: number
   current?: number
   erro?: string | null
+  agentWorkerId?: string | null
+  agentLeaseExpiraEm?: Date | string | null
+  agentTentativas?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
   completedAt?: Date | string | null
@@ -1460,6 +1574,9 @@ export type TarefaUpdateWithoutClienteInput = {
   total?: Prisma.IntFieldUpdateOperationsInput | number
   current?: Prisma.IntFieldUpdateOperationsInput | number
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentWorkerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentLeaseExpiraEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agentTentativas?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1489,6 +1606,9 @@ export type TarefaUncheckedUpdateWithoutClienteInput = {
   total?: Prisma.IntFieldUpdateOperationsInput | number
   current?: Prisma.IntFieldUpdateOperationsInput | number
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentWorkerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentLeaseExpiraEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agentTentativas?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1517,6 +1637,9 @@ export type TarefaUncheckedUpdateManyWithoutClienteInput = {
   total?: Prisma.IntFieldUpdateOperationsInput | number
   current?: Prisma.IntFieldUpdateOperationsInput | number
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentWorkerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentLeaseExpiraEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agentTentativas?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1543,6 +1666,9 @@ export type TarefaCreateManyBuscaPreviaInput = {
   total?: number
   current?: number
   erro?: string | null
+  agentWorkerId?: string | null
+  agentLeaseExpiraEm?: Date | string | null
+  agentTentativas?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
   completedAt?: Date | string | null
@@ -1568,6 +1694,9 @@ export type TarefaUpdateWithoutBuscaPreviaInput = {
   total?: Prisma.IntFieldUpdateOperationsInput | number
   current?: Prisma.IntFieldUpdateOperationsInput | number
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentWorkerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentLeaseExpiraEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agentTentativas?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1597,6 +1726,9 @@ export type TarefaUncheckedUpdateWithoutBuscaPreviaInput = {
   total?: Prisma.IntFieldUpdateOperationsInput | number
   current?: Prisma.IntFieldUpdateOperationsInput | number
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentWorkerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentLeaseExpiraEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agentTentativas?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1625,6 +1757,9 @@ export type TarefaUncheckedUpdateManyWithoutBuscaPreviaInput = {
   total?: Prisma.IntFieldUpdateOperationsInput | number
   current?: Prisma.IntFieldUpdateOperationsInput | number
   erro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentWorkerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentLeaseExpiraEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agentTentativas?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1692,6 +1827,9 @@ export type TarefaSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   total?: boolean
   current?: boolean
   erro?: boolean
+  agentWorkerId?: boolean
+  agentLeaseExpiraEm?: boolean
+  agentTentativas?: boolean
   createdAt?: boolean
   startedAt?: boolean
   completedAt?: boolean
@@ -1724,6 +1862,9 @@ export type TarefaSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   total?: boolean
   current?: boolean
   erro?: boolean
+  agentWorkerId?: boolean
+  agentLeaseExpiraEm?: boolean
+  agentTentativas?: boolean
   createdAt?: boolean
   startedAt?: boolean
   completedAt?: boolean
@@ -1753,6 +1894,9 @@ export type TarefaSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   total?: boolean
   current?: boolean
   erro?: boolean
+  agentWorkerId?: boolean
+  agentLeaseExpiraEm?: boolean
+  agentTentativas?: boolean
   createdAt?: boolean
   startedAt?: boolean
   completedAt?: boolean
@@ -1782,13 +1926,16 @@ export type TarefaSelectScalar = {
   total?: boolean
   current?: boolean
   erro?: boolean
+  agentWorkerId?: boolean
+  agentLeaseExpiraEm?: boolean
+  agentTentativas?: boolean
   createdAt?: boolean
   startedAt?: boolean
   completedAt?: boolean
   updatedAt?: boolean
 }
 
-export type TarefaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "clienteId" | "buscaPreviaId" | "status" | "logradouro" | "numero" | "mesAnoInicio" | "mesAnoFinal" | "intervaloSegundos" | "forceRefresh" | "excedenteAutorizado" | "excedenteAutorizadoEm" | "consultasEstimadas" | "consultasDisponiveisNoMomento" | "consultasExcedentesEstimadas" | "valorConsultaAdicionalCentavos" | "valorExcedenteEstimadoCentavos" | "total" | "current" | "erro" | "createdAt" | "startedAt" | "completedAt" | "updatedAt", ExtArgs["result"]["tarefa"]>
+export type TarefaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "clienteId" | "buscaPreviaId" | "status" | "logradouro" | "numero" | "mesAnoInicio" | "mesAnoFinal" | "intervaloSegundos" | "forceRefresh" | "excedenteAutorizado" | "excedenteAutorizadoEm" | "consultasEstimadas" | "consultasDisponiveisNoMomento" | "consultasExcedentesEstimadas" | "valorConsultaAdicionalCentavos" | "valorExcedenteEstimadoCentavos" | "total" | "current" | "erro" | "agentWorkerId" | "agentLeaseExpiraEm" | "agentTentativas" | "createdAt" | "startedAt" | "completedAt" | "updatedAt", ExtArgs["result"]["tarefa"]>
 export type TarefaInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
   buscaPrevia?: boolean | Prisma.Tarefa$buscaPreviaArgs<ExtArgs>
@@ -1834,6 +1981,9 @@ export type $TarefaPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     total: number
     current: number
     erro: string | null
+    agentWorkerId: string | null
+    agentLeaseExpiraEm: Date | null
+    agentTentativas: number
     createdAt: Date
     startedAt: Date | null
     completedAt: Date | null
@@ -2285,6 +2435,9 @@ export interface TarefaFieldRefs {
   readonly total: Prisma.FieldRef<"Tarefa", 'Int'>
   readonly current: Prisma.FieldRef<"Tarefa", 'Int'>
   readonly erro: Prisma.FieldRef<"Tarefa", 'String'>
+  readonly agentWorkerId: Prisma.FieldRef<"Tarefa", 'String'>
+  readonly agentLeaseExpiraEm: Prisma.FieldRef<"Tarefa", 'DateTime'>
+  readonly agentTentativas: Prisma.FieldRef<"Tarefa", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Tarefa", 'DateTime'>
   readonly startedAt: Prisma.FieldRef<"Tarefa", 'DateTime'>
   readonly completedAt: Prisma.FieldRef<"Tarefa", 'DateTime'>

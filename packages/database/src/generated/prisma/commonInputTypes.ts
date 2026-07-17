@@ -525,6 +525,40 @@ export type EnumWorkerHeartbeatStatusWithAggregatesFilter<$PrismaModel = never> 
   _max?: Prisma.NestedEnumWorkerHeartbeatStatusFilter<$PrismaModel>
 }
 
+export type EnumWorkerAgentTipoFilter<$PrismaModel = never> = {
+  equals?: $Enums.WorkerAgentTipo | Prisma.EnumWorkerAgentTipoFieldRefInput<$PrismaModel>
+  in?: $Enums.WorkerAgentTipo[] | Prisma.ListEnumWorkerAgentTipoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.WorkerAgentTipo[] | Prisma.ListEnumWorkerAgentTipoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumWorkerAgentTipoFilter<$PrismaModel> | $Enums.WorkerAgentTipo
+}
+
+export type EnumWorkerAgentStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.WorkerAgentStatus | Prisma.EnumWorkerAgentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.WorkerAgentStatus[] | Prisma.ListEnumWorkerAgentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.WorkerAgentStatus[] | Prisma.ListEnumWorkerAgentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumWorkerAgentStatusFilter<$PrismaModel> | $Enums.WorkerAgentStatus
+}
+
+export type EnumWorkerAgentTipoWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.WorkerAgentTipo | Prisma.EnumWorkerAgentTipoFieldRefInput<$PrismaModel>
+  in?: $Enums.WorkerAgentTipo[] | Prisma.ListEnumWorkerAgentTipoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.WorkerAgentTipo[] | Prisma.ListEnumWorkerAgentTipoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumWorkerAgentTipoWithAggregatesFilter<$PrismaModel> | $Enums.WorkerAgentTipo
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumWorkerAgentTipoFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumWorkerAgentTipoFilter<$PrismaModel>
+}
+
+export type EnumWorkerAgentStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.WorkerAgentStatus | Prisma.EnumWorkerAgentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.WorkerAgentStatus[] | Prisma.ListEnumWorkerAgentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.WorkerAgentStatus[] | Prisma.ListEnumWorkerAgentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumWorkerAgentStatusWithAggregatesFilter<$PrismaModel> | $Enums.WorkerAgentStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumWorkerAgentStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumWorkerAgentStatusFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -993,6 +1027,40 @@ export type NestedEnumWorkerHeartbeatStatusWithAggregatesFilter<$PrismaModel = n
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumWorkerHeartbeatStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumWorkerHeartbeatStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumWorkerAgentTipoFilter<$PrismaModel = never> = {
+  equals?: $Enums.WorkerAgentTipo | Prisma.EnumWorkerAgentTipoFieldRefInput<$PrismaModel>
+  in?: $Enums.WorkerAgentTipo[] | Prisma.ListEnumWorkerAgentTipoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.WorkerAgentTipo[] | Prisma.ListEnumWorkerAgentTipoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumWorkerAgentTipoFilter<$PrismaModel> | $Enums.WorkerAgentTipo
+}
+
+export type NestedEnumWorkerAgentStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.WorkerAgentStatus | Prisma.EnumWorkerAgentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.WorkerAgentStatus[] | Prisma.ListEnumWorkerAgentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.WorkerAgentStatus[] | Prisma.ListEnumWorkerAgentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumWorkerAgentStatusFilter<$PrismaModel> | $Enums.WorkerAgentStatus
+}
+
+export type NestedEnumWorkerAgentTipoWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.WorkerAgentTipo | Prisma.EnumWorkerAgentTipoFieldRefInput<$PrismaModel>
+  in?: $Enums.WorkerAgentTipo[] | Prisma.ListEnumWorkerAgentTipoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.WorkerAgentTipo[] | Prisma.ListEnumWorkerAgentTipoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumWorkerAgentTipoWithAggregatesFilter<$PrismaModel> | $Enums.WorkerAgentTipo
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumWorkerAgentTipoFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumWorkerAgentTipoFilter<$PrismaModel>
+}
+
+export type NestedEnumWorkerAgentStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.WorkerAgentStatus | Prisma.EnumWorkerAgentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.WorkerAgentStatus[] | Prisma.ListEnumWorkerAgentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.WorkerAgentStatus[] | Prisma.ListEnumWorkerAgentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumWorkerAgentStatusWithAggregatesFilter<$PrismaModel> | $Enums.WorkerAgentStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumWorkerAgentStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumWorkerAgentStatusFilter<$PrismaModel>
 }
 
 

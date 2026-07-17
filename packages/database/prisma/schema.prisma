@@ -105,6 +105,17 @@ enum WorkerHeartbeatStatus {
   ERROR
 }
 
+enum WorkerAgentTipo {
+  REGISTRO
+  CND
+}
+
+enum WorkerAgentStatus {
+  ATIVO
+  INATIVO
+  REVOGADO
+}
+
 model Plano {
   id   String @id @default(uuid())
   nome String
@@ -150,6 +161,7 @@ model Cliente {
   consultasLogs ConsultaLog[]
   operacaoEventos OperacaoEvento[]
   workerHeartbeats WorkerHeartbeat[]
+  workerAgents WorkerAgent[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -219,6 +231,10 @@ model Tarefa {
   resultados TarefaResultado[]
   eventos    OperacaoEvento[]
 
+  agentWorkerId      String?
+  agentLeaseExpiraEm DateTime?
+  agentTentativas    Int @default(0)
+
   createdAt   DateTime  @default(now())
   startedAt   DateTime?
   completedAt DateTime?
@@ -226,6 +242,8 @@ model Tarefa {
 
   @@index([clienteId])
   @@index([status])
+  @@index([agentWorkerId])
+  @@index([agentLeaseExpiraEm])
   @@map("tarefas")
 }
 
@@ -257,12 +275,18 @@ model BuscaPrevia {
   tarefas Tarefa[]
   eventos OperacaoEvento[]
 
+  agentWorkerId      String?
+  agentLeaseExpiraEm DateTime?
+  agentTentativas    Int @default(0)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([clienteId])
   @@index([status])
   @@index([expiraEm])
+  @@index([agentWorkerId])
+  @@index([agentLeaseExpiraEm])
   @@map("buscas_previas")
 }
 
@@ -464,4 +488,30 @@ model WorkerHeartbeat {
   @@index([status])
   @@index([ultimoSinalEm])
   @@map("worker_heartbeats")
+}
+
+model WorkerAgent {
+  id String @id @default(uuid())
+
+  clienteId String
+  cliente   Cliente @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+
+  tipo          WorkerAgentTipo
+  identificador String
+  tokenHash     String @unique
+
+  status WorkerAgentStatus @default(ATIVO)
+
+  ultimoSinalEm DateTime?
+  metadata      Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([clienteId, tipo, identificador], name: "worker_agent_cliente_tipo_identificador_unique")
+  @@index([clienteId])
+  @@index([tipo])
+  @@index([status])
+  @@index([ultimoSinalEm])
+  @@map("worker_agents")
 }

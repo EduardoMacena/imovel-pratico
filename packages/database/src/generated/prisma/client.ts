@@ -101,3 +101,8 @@ export type OperacaoEvento = Prisma.OperacaoEventoModel
  * 
  */
 export type WorkerHeartbeat = Prisma.WorkerHeartbeatModel
+/**
+ * Model WorkerAgent
+ * 
+ */
+export type WorkerAgent = Prisma.WorkerAgentModel
