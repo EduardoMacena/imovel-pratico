@@ -1,0 +1,21 @@
+<service>
+  <id>ImovelPraticoWorkerCnd</id>
+  <name>Imóvel Prático Worker CND</name>
+  <description>Worker CND do Imóvel Prático. Processa consultas de proprietários em segundo plano.</description>
+
+  <executable>powershell.exe</executable>
+  <arguments>-NoProfile -ExecutionPolicy Bypass -File "%BASE%\run-worker-cnd.ps1"</arguments>
+  <workingdirectory>%BASE%</workingdirectory>
+
+  <logpath>%BASE%\logs</logpath>
+  <log mode="roll-by-size">
+    <sizeThreshold>10485760</sizeThreshold>
+    <keepFiles>10</keepFiles>
+  </log>
+
+  <onfailure action="restart" delay="10 sec" />
+  <onfailure action="restart" delay="30 sec" />
+  <onfailure action="restart" delay="60 sec" />
+  <resetfailure>1 hour</resetfailure>
+  <stoptimeout>60 sec</stoptimeout>
+</service>

@@ -14,16 +14,48 @@ function getBrowserLocale() {
   return process.env.PLAYWRIGHT_LOCALE ?? "pt-BR";
 }
 
+function getBrowserChannel() {
+  return process.env.PLAYWRIGHT_CHANNEL?.trim() || undefined;
+}
+
+function getExecutablePath() {
+  return process.env.PLAYWRIGHT_EXECUTABLE_PATH?.trim() || undefined;
+}
+
+function getDefaultArgs() {
+  const locale = getBrowserLocale();
+
+  if (process.platform === "win32") {
+    return [`--lang=${locale}`];
+  }
+
+  return ["--no-sandbox", "--disable-dev-shm-usage", `--lang=${locale}`];
+}
+
+function getExtraArgs() {
+  const raw = process.env.PLAYWRIGHT_EXTRA_ARGS?.trim();
+
+  if (!raw) {
+    return [];
+  }
+
+  return raw
+    .split(" ")
+    .map(arg => arg.trim())
+    .filter(Boolean);
+}
+
 export async function getBrowser() {
   if (!browser) {
+    const channel = getBrowserChannel();
+    const executablePath = getExecutablePath();
+
     browser = await chromium.launch({
+      channel,
+      executablePath,
       headless: getHeadlessValue(),
       slowMo: getSlowMoValue(),
-      args: [
-        "--no-sandbox",
-        "--disable-dev-shm-usage",
-        `--lang=${getBrowserLocale()}`,
-      ],
+      args: [...getDefaultArgs(), ...getExtraArgs()],
     });
   }
 
