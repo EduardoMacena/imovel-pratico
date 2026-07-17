@@ -8,14 +8,17 @@
     "build": "tsc -p tsconfig.json",
     "start": "node dist/worker.js",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "lint": "echo \"lint worker-cnd\""
+    "lint": "echo \"lint worker-cnd\"",
+    "agent:dev": "tsx src/agent.ts",
+    "agent:start": "node dist/agent.js"
   },
   "dependencies": {
     "@imovel-pratico/database": "workspace:*",
     "@imovel-pratico/queue": "workspace:*",
     "bullmq": "latest",
     "dotenv": "latest",
-    "playwright": "^1.61.1"
+    "playwright": "^1.61.1",
+    "@imovel-pratico/agent-client": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "latest",

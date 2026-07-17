@@ -189,6 +189,9 @@ importers:
 
   apps/worker-cnd:
     dependencies:
+      '@imovel-pratico/agent-client':
+        specifier: workspace:*
+        version: link:../../packages/agent-client
       '@imovel-pratico/database':
         specifier: workspace:*
         version: link:../../packages/database
