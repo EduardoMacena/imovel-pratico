@@ -102,7 +102,57 @@ export async function registrarHeartbeatAgent(params: {
   };
 }
 
+async function clienteTemRegistroAtivo(clienteId: string) {
+  const now = new Date();
+
+  const ativa = await prisma.buscaPrevia.findFirst({
+    where: {
+      clienteId,
+      agentWorkerId: {
+        not: null,
+      },
+      agentLeaseExpiraEm: {
+        gt: now,
+      },
+      status: {
+        in: ["AGUARDANDO_INTERVALO", "CONSULTANDO_REGISTRO"],
+      },
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  return Boolean(ativa);
+}
+
+async function clienteTemCndAtivo(clienteId: string) {
+  const now = new Date();
+
+  const ativa = await prisma.tarefa.findFirst({
+    where: {
+      clienteId,
+      agentWorkerId: {
+        not: null,
+      },
+      agentLeaseExpiraEm: {
+        gt: now,
+      },
+      status: "PROCESSING",
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  return Boolean(ativa);
+}
+
 async function claimRegistro(agent: WorkerAgentAutenticado) {
+  if (await clienteTemRegistroAtivo(agent.clienteId)) {
+    return null;
+  }
+
   const now = new Date();
   const leaseExpiraEm = adicionarMinutos(now, LEASE_MINUTOS);
 
@@ -195,6 +245,10 @@ async function claimRegistro(agent: WorkerAgentAutenticado) {
 }
 
 async function claimCnd(agent: WorkerAgentAutenticado) {
+  if (await clienteTemCndAtivo(agent.clienteId)) {
+    return null;
+  }
+  
   const now = new Date();
   const leaseExpiraEm = adicionarMinutos(now, LEASE_MINUTOS);
 
