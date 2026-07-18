@@ -17,6 +17,20 @@ type RegistroCndAgent = {
 
 let shuttingDown = false;
 
+function mascararCpfPrimeirosTres(cpf: string | null | undefined) {
+  if (!cpf) {
+    return null;
+  }
+
+  const digits = cpf.replace(/\D/g, "");
+
+  if (digits.length < 3) {
+    return null;
+  }
+
+  return `${digits.slice(0, 3)}.***.***-**`;
+}
+
 function getWorkerMetadata() {
   return {
     pid: process.pid,
@@ -57,9 +71,11 @@ function montarProprietarioFinal(params: {
   proprietario: ProprietarioEncontrado;
   contato: Awaited<ReturnType<typeof buscarContatoPorCpf>>;
 }) {
+  const cpfCompleto = params.proprietario.cpf ?? params.contato.cpf ?? null;
+
   return {
     nome: params.proprietario.nome ?? params.contato.nome ?? null,
-    cpf: params.proprietario.cpf ?? params.contato.cpf ?? null,
+    cpf: mascararCpfPrimeirosTres(cpfCompleto),
     endereco: params.proprietario.endereco ?? params.contato.endereco ?? null,
   };
 }
@@ -104,7 +120,7 @@ async function processarRegistroCnd(params: {
         telefone: contato.telefone,
         email: contato.email,
         fonteContato: contato.fonte,
-        dadosContato: contato.dadosContato,
+        dadosContato: null,
         fromCache: false,
       },
     });
