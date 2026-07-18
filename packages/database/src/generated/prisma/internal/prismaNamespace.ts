@@ -1440,6 +1440,7 @@ export const ClienteScalarFieldEnum = {
   nome: 'nome',
   slug: 'slug',
   status: 'status',
+  modoProcessamento: 'modoProcessamento',
   planoId: 'planoId',
   workerUrl: 'workerUrl',
   intervaloSegundos: 'intervaloSegundos',
@@ -1802,6 +1803,20 @@ export type EnumClienteStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$Pr
  * Reference to a field of type 'ClienteStatus[]'
  */
 export type ListEnumClienteStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClienteStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ClienteModoProcessamento'
+ */
+export type EnumClienteModoProcessamentoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClienteModoProcessamento'>
+    
+
+
+/**
+ * Reference to a field of type 'ClienteModoProcessamento[]'
+ */
+export type ListEnumClienteModoProcessamentoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClienteModoProcessamento[]'>
     
 
 

@@ -105,6 +105,7 @@ export const ClienteScalarFieldEnum = {
   nome: 'nome',
   slug: 'slug',
   status: 'status',
+  modoProcessamento: 'modoProcessamento',
   planoId: 'planoId',
   workerUrl: 'workerUrl',
   intervaloSegundos: 'intervaloSegundos',

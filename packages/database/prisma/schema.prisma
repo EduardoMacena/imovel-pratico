@@ -11,6 +11,11 @@ datasource db {
   provider = "postgresql"
 }
 
+enum ClienteModoProcessamento {
+  QUEUE
+  AGENT
+}
+
 enum ClienteStatus {
   ATIVO
   INATIVO
@@ -144,6 +149,8 @@ model Cliente {
   nome   String
   slug   String        @unique
   status ClienteStatus @default(ATIVO)
+
+  modoProcessamento ClienteModoProcessamento @default(QUEUE)
 
   planoId String?
   plano   Plano? @relation(fields: [planoId], references: [id])

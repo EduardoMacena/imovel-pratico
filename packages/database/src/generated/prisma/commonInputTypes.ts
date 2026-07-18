@@ -188,6 +188,13 @@ export type EnumClienteStatusFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumClienteStatusFilter<$PrismaModel> | $Enums.ClienteStatus
 }
 
+export type EnumClienteModoProcessamentoFilter<$PrismaModel = never> = {
+  equals?: $Enums.ClienteModoProcessamento | Prisma.EnumClienteModoProcessamentoFieldRefInput<$PrismaModel>
+  in?: $Enums.ClienteModoProcessamento[] | Prisma.ListEnumClienteModoProcessamentoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ClienteModoProcessamento[] | Prisma.ListEnumClienteModoProcessamentoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumClienteModoProcessamentoFilter<$PrismaModel> | $Enums.ClienteModoProcessamento
+}
+
 export type EnumPagamentoStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.PagamentoStatus | Prisma.EnumPagamentoStatusFieldRefInput<$PrismaModel>
   in?: $Enums.PagamentoStatus[] | Prisma.ListEnumPagamentoStatusFieldRefInput<$PrismaModel>
@@ -214,6 +221,16 @@ export type EnumClienteStatusWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumClienteStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumClienteStatusFilter<$PrismaModel>
+}
+
+export type EnumClienteModoProcessamentoWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ClienteModoProcessamento | Prisma.EnumClienteModoProcessamentoFieldRefInput<$PrismaModel>
+  in?: $Enums.ClienteModoProcessamento[] | Prisma.ListEnumClienteModoProcessamentoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ClienteModoProcessamento[] | Prisma.ListEnumClienteModoProcessamentoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumClienteModoProcessamentoWithAggregatesFilter<$PrismaModel> | $Enums.ClienteModoProcessamento
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumClienteModoProcessamentoFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumClienteModoProcessamentoFilter<$PrismaModel>
 }
 
 export type EnumPagamentoStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -746,6 +763,13 @@ export type NestedEnumClienteStatusFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumClienteStatusFilter<$PrismaModel> | $Enums.ClienteStatus
 }
 
+export type NestedEnumClienteModoProcessamentoFilter<$PrismaModel = never> = {
+  equals?: $Enums.ClienteModoProcessamento | Prisma.EnumClienteModoProcessamentoFieldRefInput<$PrismaModel>
+  in?: $Enums.ClienteModoProcessamento[] | Prisma.ListEnumClienteModoProcessamentoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ClienteModoProcessamento[] | Prisma.ListEnumClienteModoProcessamentoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumClienteModoProcessamentoFilter<$PrismaModel> | $Enums.ClienteModoProcessamento
+}
+
 export type NestedEnumPagamentoStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.PagamentoStatus | Prisma.EnumPagamentoStatusFieldRefInput<$PrismaModel>
   in?: $Enums.PagamentoStatus[] | Prisma.ListEnumPagamentoStatusFieldRefInput<$PrismaModel>
@@ -772,6 +796,16 @@ export type NestedEnumClienteStatusWithAggregatesFilter<$PrismaModel = never> = 
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumClienteStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumClienteStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumClienteModoProcessamentoWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ClienteModoProcessamento | Prisma.EnumClienteModoProcessamentoFieldRefInput<$PrismaModel>
+  in?: $Enums.ClienteModoProcessamento[] | Prisma.ListEnumClienteModoProcessamentoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ClienteModoProcessamento[] | Prisma.ListEnumClienteModoProcessamentoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumClienteModoProcessamentoWithAggregatesFilter<$PrismaModel> | $Enums.ClienteModoProcessamento
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumClienteModoProcessamentoFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumClienteModoProcessamentoFilter<$PrismaModel>
 }
 
 export type NestedEnumPagamentoStatusWithAggregatesFilter<$PrismaModel = never> = {

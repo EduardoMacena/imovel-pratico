@@ -9,6 +9,14 @@
 * 🟢 You can import this file directly.
 */
 
+export const ClienteModoProcessamento = {
+  QUEUE: 'QUEUE',
+  AGENT: 'AGENT'
+} as const
+
+export type ClienteModoProcessamento = (typeof ClienteModoProcessamento)[keyof typeof ClienteModoProcessamento]
+
+
 export const ClienteStatus = {
   ATIVO: 'ATIVO',
   INATIVO: 'INATIVO',

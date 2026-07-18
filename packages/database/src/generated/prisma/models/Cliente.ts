@@ -43,6 +43,7 @@ export type ClienteMinAggregateOutputType = {
   nome: string | null
   slug: string | null
   status: $Enums.ClienteStatus | null
+  modoProcessamento: $Enums.ClienteModoProcessamento | null
   planoId: string | null
   workerUrl: string | null
   intervaloSegundos: number | null
@@ -59,6 +60,7 @@ export type ClienteMaxAggregateOutputType = {
   nome: string | null
   slug: string | null
   status: $Enums.ClienteStatus | null
+  modoProcessamento: $Enums.ClienteModoProcessamento | null
   planoId: string | null
   workerUrl: string | null
   intervaloSegundos: number | null
@@ -75,6 +77,7 @@ export type ClienteCountAggregateOutputType = {
   nome: number
   slug: number
   status: number
+  modoProcessamento: number
   planoId: number
   workerUrl: number
   intervaloSegundos: number
@@ -105,6 +108,7 @@ export type ClienteMinAggregateInputType = {
   nome?: true
   slug?: true
   status?: true
+  modoProcessamento?: true
   planoId?: true
   workerUrl?: true
   intervaloSegundos?: true
@@ -121,6 +125,7 @@ export type ClienteMaxAggregateInputType = {
   nome?: true
   slug?: true
   status?: true
+  modoProcessamento?: true
   planoId?: true
   workerUrl?: true
   intervaloSegundos?: true
@@ -137,6 +142,7 @@ export type ClienteCountAggregateInputType = {
   nome?: true
   slug?: true
   status?: true
+  modoProcessamento?: true
   planoId?: true
   workerUrl?: true
   intervaloSegundos?: true
@@ -240,6 +246,7 @@ export type ClienteGroupByOutputType = {
   nome: string
   slug: string
   status: $Enums.ClienteStatus
+  modoProcessamento: $Enums.ClienteModoProcessamento
   planoId: string | null
   workerUrl: string | null
   intervaloSegundos: number
@@ -279,6 +286,7 @@ export type ClienteWhereInput = {
   nome?: Prisma.StringFilter<"Cliente"> | string
   slug?: Prisma.StringFilter<"Cliente"> | string
   status?: Prisma.EnumClienteStatusFilter<"Cliente"> | $Enums.ClienteStatus
+  modoProcessamento?: Prisma.EnumClienteModoProcessamentoFilter<"Cliente"> | $Enums.ClienteModoProcessamento
   planoId?: Prisma.StringNullableFilter<"Cliente"> | string | null
   workerUrl?: Prisma.StringNullableFilter<"Cliente"> | string | null
   intervaloSegundos?: Prisma.IntFilter<"Cliente"> | number
@@ -304,6 +312,7 @@ export type ClienteOrderByWithRelationInput = {
   nome?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  modoProcessamento?: Prisma.SortOrder
   planoId?: Prisma.SortOrderInput | Prisma.SortOrder
   workerUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   intervaloSegundos?: Prisma.SortOrder
@@ -332,6 +341,7 @@ export type ClienteWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ClienteWhereInput | Prisma.ClienteWhereInput[]
   nome?: Prisma.StringFilter<"Cliente"> | string
   status?: Prisma.EnumClienteStatusFilter<"Cliente"> | $Enums.ClienteStatus
+  modoProcessamento?: Prisma.EnumClienteModoProcessamentoFilter<"Cliente"> | $Enums.ClienteModoProcessamento
   planoId?: Prisma.StringNullableFilter<"Cliente"> | string | null
   workerUrl?: Prisma.StringNullableFilter<"Cliente"> | string | null
   intervaloSegundos?: Prisma.IntFilter<"Cliente"> | number
@@ -357,6 +367,7 @@ export type ClienteOrderByWithAggregationInput = {
   nome?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  modoProcessamento?: Prisma.SortOrder
   planoId?: Prisma.SortOrderInput | Prisma.SortOrder
   workerUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   intervaloSegundos?: Prisma.SortOrder
@@ -381,6 +392,7 @@ export type ClienteScalarWhereWithAggregatesInput = {
   nome?: Prisma.StringWithAggregatesFilter<"Cliente"> | string
   slug?: Prisma.StringWithAggregatesFilter<"Cliente"> | string
   status?: Prisma.EnumClienteStatusWithAggregatesFilter<"Cliente"> | $Enums.ClienteStatus
+  modoProcessamento?: Prisma.EnumClienteModoProcessamentoWithAggregatesFilter<"Cliente"> | $Enums.ClienteModoProcessamento
   planoId?: Prisma.StringNullableWithAggregatesFilter<"Cliente"> | string | null
   workerUrl?: Prisma.StringNullableWithAggregatesFilter<"Cliente"> | string | null
   intervaloSegundos?: Prisma.IntWithAggregatesFilter<"Cliente"> | number
@@ -397,6 +409,7 @@ export type ClienteCreateInput = {
   nome: string
   slug: string
   status?: $Enums.ClienteStatus
+  modoProcessamento?: $Enums.ClienteModoProcessamento
   workerUrl?: string | null
   intervaloSegundos?: number
   limiteDiario?: number
@@ -421,6 +434,7 @@ export type ClienteUncheckedCreateInput = {
   nome: string
   slug: string
   status?: $Enums.ClienteStatus
+  modoProcessamento?: $Enums.ClienteModoProcessamento
   planoId?: string | null
   workerUrl?: string | null
   intervaloSegundos?: number
@@ -445,6 +459,7 @@ export type ClienteUpdateInput = {
   nome?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumClienteStatusFieldUpdateOperationsInput | $Enums.ClienteStatus
+  modoProcessamento?: Prisma.EnumClienteModoProcessamentoFieldUpdateOperationsInput | $Enums.ClienteModoProcessamento
   workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
   limiteDiario?: Prisma.IntFieldUpdateOperationsInput | number
@@ -469,6 +484,7 @@ export type ClienteUncheckedUpdateInput = {
   nome?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumClienteStatusFieldUpdateOperationsInput | $Enums.ClienteStatus
+  modoProcessamento?: Prisma.EnumClienteModoProcessamentoFieldUpdateOperationsInput | $Enums.ClienteModoProcessamento
   planoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
@@ -493,6 +509,7 @@ export type ClienteCreateManyInput = {
   nome: string
   slug: string
   status?: $Enums.ClienteStatus
+  modoProcessamento?: $Enums.ClienteModoProcessamento
   planoId?: string | null
   workerUrl?: string | null
   intervaloSegundos?: number
@@ -509,6 +526,7 @@ export type ClienteUpdateManyMutationInput = {
   nome?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumClienteStatusFieldUpdateOperationsInput | $Enums.ClienteStatus
+  modoProcessamento?: Prisma.EnumClienteModoProcessamentoFieldUpdateOperationsInput | $Enums.ClienteModoProcessamento
   workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
   limiteDiario?: Prisma.IntFieldUpdateOperationsInput | number
@@ -524,6 +542,7 @@ export type ClienteUncheckedUpdateManyInput = {
   nome?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumClienteStatusFieldUpdateOperationsInput | $Enums.ClienteStatus
+  modoProcessamento?: Prisma.EnumClienteModoProcessamentoFieldUpdateOperationsInput | $Enums.ClienteModoProcessamento
   planoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
@@ -550,6 +569,7 @@ export type ClienteCountOrderByAggregateInput = {
   nome?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  modoProcessamento?: Prisma.SortOrder
   planoId?: Prisma.SortOrder
   workerUrl?: Prisma.SortOrder
   intervaloSegundos?: Prisma.SortOrder
@@ -572,6 +592,7 @@ export type ClienteMaxOrderByAggregateInput = {
   nome?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  modoProcessamento?: Prisma.SortOrder
   planoId?: Prisma.SortOrder
   workerUrl?: Prisma.SortOrder
   intervaloSegundos?: Prisma.SortOrder
@@ -588,6 +609,7 @@ export type ClienteMinOrderByAggregateInput = {
   nome?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  modoProcessamento?: Prisma.SortOrder
   planoId?: Prisma.SortOrder
   workerUrl?: Prisma.SortOrder
   intervaloSegundos?: Prisma.SortOrder
@@ -659,6 +681,10 @@ export type ClienteUncheckedUpdateManyWithoutPlanoNestedInput = {
 
 export type EnumClienteStatusFieldUpdateOperationsInput = {
   set?: $Enums.ClienteStatus
+}
+
+export type EnumClienteModoProcessamentoFieldUpdateOperationsInput = {
+  set?: $Enums.ClienteModoProcessamento
 }
 
 export type EnumPagamentoStatusFieldUpdateOperationsInput = {
@@ -790,6 +816,7 @@ export type ClienteCreateWithoutPlanoInput = {
   nome: string
   slug: string
   status?: $Enums.ClienteStatus
+  modoProcessamento?: $Enums.ClienteModoProcessamento
   workerUrl?: string | null
   intervaloSegundos?: number
   limiteDiario?: number
@@ -813,6 +840,7 @@ export type ClienteUncheckedCreateWithoutPlanoInput = {
   nome: string
   slug: string
   status?: $Enums.ClienteStatus
+  modoProcessamento?: $Enums.ClienteModoProcessamento
   workerUrl?: string | null
   intervaloSegundos?: number
   limiteDiario?: number
@@ -865,6 +893,7 @@ export type ClienteScalarWhereInput = {
   nome?: Prisma.StringFilter<"Cliente"> | string
   slug?: Prisma.StringFilter<"Cliente"> | string
   status?: Prisma.EnumClienteStatusFilter<"Cliente"> | $Enums.ClienteStatus
+  modoProcessamento?: Prisma.EnumClienteModoProcessamentoFilter<"Cliente"> | $Enums.ClienteModoProcessamento
   planoId?: Prisma.StringNullableFilter<"Cliente"> | string | null
   workerUrl?: Prisma.StringNullableFilter<"Cliente"> | string | null
   intervaloSegundos?: Prisma.IntFilter<"Cliente"> | number
@@ -881,6 +910,7 @@ export type ClienteCreateWithoutUsuariosInput = {
   nome: string
   slug: string
   status?: $Enums.ClienteStatus
+  modoProcessamento?: $Enums.ClienteModoProcessamento
   workerUrl?: string | null
   intervaloSegundos?: number
   limiteDiario?: number
@@ -904,6 +934,7 @@ export type ClienteUncheckedCreateWithoutUsuariosInput = {
   nome: string
   slug: string
   status?: $Enums.ClienteStatus
+  modoProcessamento?: $Enums.ClienteModoProcessamento
   planoId?: string | null
   workerUrl?: string | null
   intervaloSegundos?: number
@@ -943,6 +974,7 @@ export type ClienteUpdateWithoutUsuariosInput = {
   nome?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumClienteStatusFieldUpdateOperationsInput | $Enums.ClienteStatus
+  modoProcessamento?: Prisma.EnumClienteModoProcessamentoFieldUpdateOperationsInput | $Enums.ClienteModoProcessamento
   workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
   limiteDiario?: Prisma.IntFieldUpdateOperationsInput | number
@@ -966,6 +998,7 @@ export type ClienteUncheckedUpdateWithoutUsuariosInput = {
   nome?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumClienteStatusFieldUpdateOperationsInput | $Enums.ClienteStatus
+  modoProcessamento?: Prisma.EnumClienteModoProcessamentoFieldUpdateOperationsInput | $Enums.ClienteModoProcessamento
   planoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
@@ -989,6 +1022,7 @@ export type ClienteCreateWithoutTarefasInput = {
   nome: string
   slug: string
   status?: $Enums.ClienteStatus
+  modoProcessamento?: $Enums.ClienteModoProcessamento
   workerUrl?: string | null
   intervaloSegundos?: number
   limiteDiario?: number
@@ -1012,6 +1046,7 @@ export type ClienteUncheckedCreateWithoutTarefasInput = {
   nome: string
   slug: string
   status?: $Enums.ClienteStatus
+  modoProcessamento?: $Enums.ClienteModoProcessamento
   planoId?: string | null
   workerUrl?: string | null
   intervaloSegundos?: number
@@ -1051,6 +1086,7 @@ export type ClienteUpdateWithoutTarefasInput = {
   nome?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumClienteStatusFieldUpdateOperationsInput | $Enums.ClienteStatus
+  modoProcessamento?: Prisma.EnumClienteModoProcessamentoFieldUpdateOperationsInput | $Enums.ClienteModoProcessamento
   workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
   limiteDiario?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1074,6 +1110,7 @@ export type ClienteUncheckedUpdateWithoutTarefasInput = {
   nome?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumClienteStatusFieldUpdateOperationsInput | $Enums.ClienteStatus
+  modoProcessamento?: Prisma.EnumClienteModoProcessamentoFieldUpdateOperationsInput | $Enums.ClienteModoProcessamento
   planoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1097,6 +1134,7 @@ export type ClienteCreateWithoutBuscasPreviasInput = {
   nome: string
   slug: string
   status?: $Enums.ClienteStatus
+  modoProcessamento?: $Enums.ClienteModoProcessamento
   workerUrl?: string | null
   intervaloSegundos?: number
   limiteDiario?: number
@@ -1120,6 +1158,7 @@ export type ClienteUncheckedCreateWithoutBuscasPreviasInput = {
   nome: string
   slug: string
   status?: $Enums.ClienteStatus
+  modoProcessamento?: $Enums.ClienteModoProcessamento
   planoId?: string | null
   workerUrl?: string | null
   intervaloSegundos?: number
@@ -1159,6 +1198,7 @@ export type ClienteUpdateWithoutBuscasPreviasInput = {
   nome?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumClienteStatusFieldUpdateOperationsInput | $Enums.ClienteStatus
+  modoProcessamento?: Prisma.EnumClienteModoProcessamentoFieldUpdateOperationsInput | $Enums.ClienteModoProcessamento
   workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
   limiteDiario?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1182,6 +1222,7 @@ export type ClienteUncheckedUpdateWithoutBuscasPreviasInput = {
   nome?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumClienteStatusFieldUpdateOperationsInput | $Enums.ClienteStatus
+  modoProcessamento?: Prisma.EnumClienteModoProcessamentoFieldUpdateOperationsInput | $Enums.ClienteModoProcessamento
   planoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1205,6 +1246,7 @@ export type ClienteCreateWithoutFaturasInput = {
   nome: string
   slug: string
   status?: $Enums.ClienteStatus
+  modoProcessamento?: $Enums.ClienteModoProcessamento
   workerUrl?: string | null
   intervaloSegundos?: number
   limiteDiario?: number
@@ -1228,6 +1270,7 @@ export type ClienteUncheckedCreateWithoutFaturasInput = {
   nome: string
   slug: string
   status?: $Enums.ClienteStatus
+  modoProcessamento?: $Enums.ClienteModoProcessamento
   planoId?: string | null
   workerUrl?: string | null
   intervaloSegundos?: number
@@ -1267,6 +1310,7 @@ export type ClienteUpdateWithoutFaturasInput = {
   nome?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumClienteStatusFieldUpdateOperationsInput | $Enums.ClienteStatus
+  modoProcessamento?: Prisma.EnumClienteModoProcessamentoFieldUpdateOperationsInput | $Enums.ClienteModoProcessamento
   workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
   limiteDiario?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1290,6 +1334,7 @@ export type ClienteUncheckedUpdateWithoutFaturasInput = {
   nome?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumClienteStatusFieldUpdateOperationsInput | $Enums.ClienteStatus
+  modoProcessamento?: Prisma.EnumClienteModoProcessamentoFieldUpdateOperationsInput | $Enums.ClienteModoProcessamento
   planoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1313,6 +1358,7 @@ export type ClienteCreateWithoutConsultasLogsInput = {
   nome: string
   slug: string
   status?: $Enums.ClienteStatus
+  modoProcessamento?: $Enums.ClienteModoProcessamento
   workerUrl?: string | null
   intervaloSegundos?: number
   limiteDiario?: number
@@ -1336,6 +1382,7 @@ export type ClienteUncheckedCreateWithoutConsultasLogsInput = {
   nome: string
   slug: string
   status?: $Enums.ClienteStatus
+  modoProcessamento?: $Enums.ClienteModoProcessamento
   planoId?: string | null
   workerUrl?: string | null
   intervaloSegundos?: number
@@ -1375,6 +1422,7 @@ export type ClienteUpdateWithoutConsultasLogsInput = {
   nome?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumClienteStatusFieldUpdateOperationsInput | $Enums.ClienteStatus
+  modoProcessamento?: Prisma.EnumClienteModoProcessamentoFieldUpdateOperationsInput | $Enums.ClienteModoProcessamento
   workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
   limiteDiario?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1398,6 +1446,7 @@ export type ClienteUncheckedUpdateWithoutConsultasLogsInput = {
   nome?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumClienteStatusFieldUpdateOperationsInput | $Enums.ClienteStatus
+  modoProcessamento?: Prisma.EnumClienteModoProcessamentoFieldUpdateOperationsInput | $Enums.ClienteModoProcessamento
   planoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1421,6 +1470,7 @@ export type ClienteCreateWithoutOperacaoEventosInput = {
   nome: string
   slug: string
   status?: $Enums.ClienteStatus
+  modoProcessamento?: $Enums.ClienteModoProcessamento
   workerUrl?: string | null
   intervaloSegundos?: number
   limiteDiario?: number
@@ -1444,6 +1494,7 @@ export type ClienteUncheckedCreateWithoutOperacaoEventosInput = {
   nome: string
   slug: string
   status?: $Enums.ClienteStatus
+  modoProcessamento?: $Enums.ClienteModoProcessamento
   planoId?: string | null
   workerUrl?: string | null
   intervaloSegundos?: number
@@ -1483,6 +1534,7 @@ export type ClienteUpdateWithoutOperacaoEventosInput = {
   nome?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumClienteStatusFieldUpdateOperationsInput | $Enums.ClienteStatus
+  modoProcessamento?: Prisma.EnumClienteModoProcessamentoFieldUpdateOperationsInput | $Enums.ClienteModoProcessamento
   workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
   limiteDiario?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1506,6 +1558,7 @@ export type ClienteUncheckedUpdateWithoutOperacaoEventosInput = {
   nome?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumClienteStatusFieldUpdateOperationsInput | $Enums.ClienteStatus
+  modoProcessamento?: Prisma.EnumClienteModoProcessamentoFieldUpdateOperationsInput | $Enums.ClienteModoProcessamento
   planoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1529,6 +1582,7 @@ export type ClienteCreateWithoutWorkerHeartbeatsInput = {
   nome: string
   slug: string
   status?: $Enums.ClienteStatus
+  modoProcessamento?: $Enums.ClienteModoProcessamento
   workerUrl?: string | null
   intervaloSegundos?: number
   limiteDiario?: number
@@ -1552,6 +1606,7 @@ export type ClienteUncheckedCreateWithoutWorkerHeartbeatsInput = {
   nome: string
   slug: string
   status?: $Enums.ClienteStatus
+  modoProcessamento?: $Enums.ClienteModoProcessamento
   planoId?: string | null
   workerUrl?: string | null
   intervaloSegundos?: number
@@ -1591,6 +1646,7 @@ export type ClienteUpdateWithoutWorkerHeartbeatsInput = {
   nome?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumClienteStatusFieldUpdateOperationsInput | $Enums.ClienteStatus
+  modoProcessamento?: Prisma.EnumClienteModoProcessamentoFieldUpdateOperationsInput | $Enums.ClienteModoProcessamento
   workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
   limiteDiario?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1614,6 +1670,7 @@ export type ClienteUncheckedUpdateWithoutWorkerHeartbeatsInput = {
   nome?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumClienteStatusFieldUpdateOperationsInput | $Enums.ClienteStatus
+  modoProcessamento?: Prisma.EnumClienteModoProcessamentoFieldUpdateOperationsInput | $Enums.ClienteModoProcessamento
   planoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1637,6 +1694,7 @@ export type ClienteCreateWithoutWorkerAgentsInput = {
   nome: string
   slug: string
   status?: $Enums.ClienteStatus
+  modoProcessamento?: $Enums.ClienteModoProcessamento
   workerUrl?: string | null
   intervaloSegundos?: number
   limiteDiario?: number
@@ -1660,6 +1718,7 @@ export type ClienteUncheckedCreateWithoutWorkerAgentsInput = {
   nome: string
   slug: string
   status?: $Enums.ClienteStatus
+  modoProcessamento?: $Enums.ClienteModoProcessamento
   planoId?: string | null
   workerUrl?: string | null
   intervaloSegundos?: number
@@ -1699,6 +1758,7 @@ export type ClienteUpdateWithoutWorkerAgentsInput = {
   nome?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumClienteStatusFieldUpdateOperationsInput | $Enums.ClienteStatus
+  modoProcessamento?: Prisma.EnumClienteModoProcessamentoFieldUpdateOperationsInput | $Enums.ClienteModoProcessamento
   workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
   limiteDiario?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1722,6 +1782,7 @@ export type ClienteUncheckedUpdateWithoutWorkerAgentsInput = {
   nome?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumClienteStatusFieldUpdateOperationsInput | $Enums.ClienteStatus
+  modoProcessamento?: Prisma.EnumClienteModoProcessamentoFieldUpdateOperationsInput | $Enums.ClienteModoProcessamento
   planoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1745,6 +1806,7 @@ export type ClienteCreateManyPlanoInput = {
   nome: string
   slug: string
   status?: $Enums.ClienteStatus
+  modoProcessamento?: $Enums.ClienteModoProcessamento
   workerUrl?: string | null
   intervaloSegundos?: number
   limiteDiario?: number
@@ -1760,6 +1822,7 @@ export type ClienteUpdateWithoutPlanoInput = {
   nome?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumClienteStatusFieldUpdateOperationsInput | $Enums.ClienteStatus
+  modoProcessamento?: Prisma.EnumClienteModoProcessamentoFieldUpdateOperationsInput | $Enums.ClienteModoProcessamento
   workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
   limiteDiario?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1783,6 +1846,7 @@ export type ClienteUncheckedUpdateWithoutPlanoInput = {
   nome?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumClienteStatusFieldUpdateOperationsInput | $Enums.ClienteStatus
+  modoProcessamento?: Prisma.EnumClienteModoProcessamentoFieldUpdateOperationsInput | $Enums.ClienteModoProcessamento
   workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
   limiteDiario?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1806,6 +1870,7 @@ export type ClienteUncheckedUpdateManyWithoutPlanoInput = {
   nome?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumClienteStatusFieldUpdateOperationsInput | $Enums.ClienteStatus
+  modoProcessamento?: Prisma.EnumClienteModoProcessamentoFieldUpdateOperationsInput | $Enums.ClienteModoProcessamento
   workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
   limiteDiario?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1915,6 +1980,7 @@ export type ClienteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   nome?: boolean
   slug?: boolean
   status?: boolean
+  modoProcessamento?: boolean
   planoId?: boolean
   workerUrl?: boolean
   intervaloSegundos?: boolean
@@ -1941,6 +2007,7 @@ export type ClienteSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   nome?: boolean
   slug?: boolean
   status?: boolean
+  modoProcessamento?: boolean
   planoId?: boolean
   workerUrl?: boolean
   intervaloSegundos?: boolean
@@ -1958,6 +2025,7 @@ export type ClienteSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   nome?: boolean
   slug?: boolean
   status?: boolean
+  modoProcessamento?: boolean
   planoId?: boolean
   workerUrl?: boolean
   intervaloSegundos?: boolean
@@ -1975,6 +2043,7 @@ export type ClienteSelectScalar = {
   nome?: boolean
   slug?: boolean
   status?: boolean
+  modoProcessamento?: boolean
   planoId?: boolean
   workerUrl?: boolean
   intervaloSegundos?: boolean
@@ -1986,7 +2055,7 @@ export type ClienteSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ClienteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nome" | "slug" | "status" | "planoId" | "workerUrl" | "intervaloSegundos" | "limiteDiario" | "limiteMensalConsultas" | "pagamentoStatus" | "pagamentoVenceEm" | "createdAt" | "updatedAt", ExtArgs["result"]["cliente"]>
+export type ClienteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nome" | "slug" | "status" | "modoProcessamento" | "planoId" | "workerUrl" | "intervaloSegundos" | "limiteDiario" | "limiteMensalConsultas" | "pagamentoStatus" | "pagamentoVenceEm" | "createdAt" | "updatedAt", ExtArgs["result"]["cliente"]>
 export type ClienteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   plano?: boolean | Prisma.Cliente$planoArgs<ExtArgs>
   usuarios?: boolean | Prisma.Cliente$usuariosArgs<ExtArgs>
@@ -2024,6 +2093,7 @@ export type $ClientePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     nome: string
     slug: string
     status: $Enums.ClienteStatus
+    modoProcessamento: $Enums.ClienteModoProcessamento
     planoId: string | null
     workerUrl: string | null
     intervaloSegundos: number
@@ -2469,6 +2539,7 @@ export interface ClienteFieldRefs {
   readonly nome: Prisma.FieldRef<"Cliente", 'String'>
   readonly slug: Prisma.FieldRef<"Cliente", 'String'>
   readonly status: Prisma.FieldRef<"Cliente", 'ClienteStatus'>
+  readonly modoProcessamento: Prisma.FieldRef<"Cliente", 'ClienteModoProcessamento'>
   readonly planoId: Prisma.FieldRef<"Cliente", 'String'>
   readonly workerUrl: Prisma.FieldRef<"Cliente", 'String'>
   readonly intervaloSegundos: Prisma.FieldRef<"Cliente", 'Int'>
