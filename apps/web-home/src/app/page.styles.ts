@@ -36,7 +36,8 @@ const scan = keyframes`
 `;
 
 export const PageShell = styled.main`
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: visible;
   background:
     radial-gradient(circle at 16% 0%, rgba(200, 164, 93, 0.20), transparent 30%),
     radial-gradient(circle at 92% 12%, rgba(15, 76, 92, 0.18), transparent 34%),
