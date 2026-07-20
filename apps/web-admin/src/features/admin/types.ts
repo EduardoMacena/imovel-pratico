@@ -536,6 +536,32 @@ export type MonitoramentoResumoResponse = {
 			offline: number;
 			itens: WorkerHeartbeatResumo[];
 		};
+		agents: {
+			total: number;
+			online: number;
+			instaveis: number;
+			offline: number;
+			revogados: number;
+			comAtencao: number;
+			itens: {
+				id: string;
+				cliente: {
+					id: string;
+					nome: string;
+					slug: string;
+					status: ClienteStatus;
+					modoProcessamento: ClienteModoProcessamento;
+				};
+				tipo: "REGISTRO" | "CND";
+				identificador: string;
+				status: "ONLINE" | "INSTAVEL" | "OFFLINE" | "INATIVO" | "REVOGADO";
+				statusRegistrado: string;
+				ultimoSinalEm: string | null;
+				metadata: Record<string, unknown> | null;
+				createdAt: string;
+				updatedAt: string;
+			}[];
+		};
 		ultimosErros: MonitoramentoEvento[];
 	};
 };
@@ -587,38 +613,38 @@ export type WorkerAgentResumo = {
 	metadata: Record<string, unknown> | null;
 	createdAt: string;
 	updatedAt: string;
-  };
-  
-  export type ListarWorkerAgentsClienteResponse = {
+};
+
+export type ListarWorkerAgentsClienteResponse = {
 	cliente: {
-	  id: string;
-	  nome: string;
-	  slug: string;
-	  modoProcessamento: ClienteModoProcessamento;
+		id: string;
+		nome: string;
+		slug: string;
+		modoProcessamento: ClienteModoProcessamento;
 	};
 	agents: WorkerAgentResumo[];
-  };
-  
-  export type CriarWorkerAgentRequest = {
+};
+
+export type CriarWorkerAgentRequest = {
 	tipo: WorkerAgentTipo;
 	identificador: string;
-  };
-  
-  export type CriarWorkerAgentResponse = {
+};
+
+export type CriarWorkerAgentResponse = {
 	agent: {
-	  id: string;
-	  clienteId: string;
-	  tipo: WorkerAgentTipo;
-	  identificador: string;
-	  status: WorkerAgentStatus;
-	  ultimoSinalEm: string | null;
-	  createdAt: string;
-	  updatedAt: string;
+		id: string;
+		clienteId: string;
+		tipo: WorkerAgentTipo;
+		identificador: string;
+		status: WorkerAgentStatus;
+		ultimoSinalEm: string | null;
+		createdAt: string;
+		updatedAt: string;
 	};
 	token: string;
 	aviso: string;
-  };
-  
-  export type RevogarWorkerAgentResponse = {
+};
+
+export type RevogarWorkerAgentResponse = {
 	agent: WorkerAgentResumo;
-  };
+};
