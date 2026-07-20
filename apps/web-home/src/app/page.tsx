@@ -235,7 +235,7 @@ const plans = [
     description: "Para imobiliárias de alto volume com equipe maior e captação comercial intensa.",
     limit: "1.000 consultas inclusas",
     brokers: "Até 26 corretores",
-    overage: "R$ 1,80 por consulta adicional",
+    overage: "R$ 1,60 por consulta adicional",
     price: "R$ 1.797/mês",
     badge: "Alta performance",
     icon: "P",
