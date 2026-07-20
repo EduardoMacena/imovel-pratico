@@ -24,18 +24,21 @@ import {
 	listarPlanosController,
 	buscarConsumoClienteController,
 	listarConsumoClientesController,
+	criarWorkerAgentClienteController,
+	listarWorkerAgentsClienteController,
+	revogarWorkerAgentController,
 } from "./admin.controller.js";
 import {
-  buscarFaturaController,
-  cancelarFaturaController,
-  gerarFaturaController,
-  listarFaturasController,
-  marcarFaturaPagaController,
+	buscarFaturaController,
+	cancelarFaturaController,
+	gerarFaturaController,
+	listarFaturasController,
+	marcarFaturaPagaController,
 } from "./admin-faturas.controller.js";
 import {
-  buscarResumoMonitoramentoController,
-  listarEventosMonitoramentoController,
-  listarFilasMonitoramentoController,
+	buscarResumoMonitoramentoController,
+	listarEventosMonitoramentoController,
+	listarFilasMonitoramentoController,
 } from "./admin-monitoramento.controller.js";
 
 export async function adminRoutes(app: FastifyInstance) {
@@ -44,18 +47,18 @@ export async function adminRoutes(app: FastifyInstance) {
 
 	app.get("/admin/dashboard", buscarDashboardAdminController);
 
-  app.get("/admin/monitoramento/resumo", buscarResumoMonitoramentoController);
-  app.get("/admin/monitoramento/eventos", listarEventosMonitoramentoController);
-  app.get("/admin/monitoramento/filas", listarFilasMonitoramentoController);
+	app.get("/admin/monitoramento/resumo", buscarResumoMonitoramentoController);
+	app.get("/admin/monitoramento/eventos", listarEventosMonitoramentoController);
+	app.get("/admin/monitoramento/filas", listarFilasMonitoramentoController);
 
 	app.get("/admin/consumo/clientes", listarConsumoClientesController);
 	app.get("/admin/consumo/clientes/:id", buscarConsumoClienteController);
 
-  app.get("/admin/faturas", listarFaturasController);
-  app.post("/admin/faturas/gerar", gerarFaturaController);
-  app.get("/admin/faturas/:id", buscarFaturaController);
-  app.post("/admin/faturas/:id/marcar-paga", marcarFaturaPagaController);
-  app.post("/admin/faturas/:id/cancelar", cancelarFaturaController);
+	app.get("/admin/faturas", listarFaturasController);
+	app.post("/admin/faturas/gerar", gerarFaturaController);
+	app.get("/admin/faturas/:id", buscarFaturaController);
+	app.post("/admin/faturas/:id/marcar-paga", marcarFaturaPagaController);
+	app.post("/admin/faturas/:id/cancelar", cancelarFaturaController);
 
 	app.get("/admin/planos", listarPlanosController);
 	app.post("/admin/planos", criarPlanoController);
@@ -74,10 +77,10 @@ export async function adminRoutes(app: FastifyInstance) {
 		exportarResultadosTarefaAdminExcelController
 	);
 
-  app.get(
-    "/admin/tarefas/:id/exportar-pdf",
-    exportarResultadosTarefaAdminPdfController
-  );
+	app.get(
+		"/admin/tarefas/:id/exportar-pdf",
+		exportarResultadosTarefaAdminPdfController
+	);
 
 	app.post("/admin/tarefas/:id/cancelar", cancelarTarefaAdminController);
 	app.post("/admin/tarefas/:id/reprocessar", reprocessarTarefaAdminController);
@@ -98,6 +101,12 @@ export async function adminRoutes(app: FastifyInstance) {
 	);
 
 	app.post("/admin/clientes/:clienteId/usuarios", criarUsuarioController);
+
+	app.get("/admin/clientes/:id/agents", listarWorkerAgentsClienteController);
+
+	app.post("/admin/clientes/:id/agents", criarWorkerAgentClienteController);
+
+	app.post("/admin/agents/:id/revogar", revogarWorkerAgentController);
 
 	app.get("/admin/usuarios/:id", buscarUsuarioController);
 	app.patch("/admin/usuarios/:id", atualizarUsuarioController);

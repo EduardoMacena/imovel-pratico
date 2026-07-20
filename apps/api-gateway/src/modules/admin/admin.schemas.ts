@@ -20,6 +20,7 @@ export const criarClienteSchema = z.object({
   nome: z.string().min(2, "Nome é obrigatório"),
   slug: z.string().min(2).optional(),
   workerUrl: z.string().url("URL inválida").optional().nullable(),
+  modoProcessamento: z.enum(["QUEUE", "AGENT"]).default("AGENT"),
 
   intervaloSegundos: z.coerce
     .number()
@@ -37,6 +38,7 @@ export const atualizarClienteSchema = z.object({
   slug: z.string().min(2).optional(),
 
   status: z.enum(["ATIVO", "INATIVO", "SUSPENSO"]).optional(),
+  modoProcessamento: z.enum(["QUEUE", "AGENT"]).optional(),
 
   workerUrl: z.string().url("URL inválida").optional().nullable(),
 
@@ -116,6 +118,15 @@ export const atualizarPlanoSchema = z.object({
   status: z.enum(["ATIVO", "INATIVO"]).optional(),
 });
 
+export const workerAgentIdParamsSchema = z.object({
+  id: z.string().uuid(),
+});
+
+export const criarWorkerAgentSchema = z.object({
+  tipo: z.enum(["REGISTRO", "CND"]),
+  identificador: z.string().min(2, "Identificador é obrigatório"),
+});
+
 export type CriarClienteInput = z.infer<typeof criarClienteSchema>;
 export type AtualizarClienteInput = z.infer<typeof atualizarClienteSchema>;
 
@@ -124,3 +135,5 @@ export type AtualizarUsuarioInput = z.infer<typeof atualizarUsuarioSchema>;
 
 export type CriarPlanoInput = z.infer<typeof criarPlanoSchema>;
 export type AtualizarPlanoInput = z.infer<typeof atualizarPlanoSchema>;
+
+export type CriarWorkerAgentInput = z.infer<typeof criarWorkerAgentSchema>;

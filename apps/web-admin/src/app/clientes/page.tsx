@@ -8,357 +8,383 @@ import { Input } from "../../components/Input";
 import { Select } from "../../components/Select";
 import { StatusBadge } from "../../components/StatusBadge";
 import {
-  criarCliente,
-  listarClientes,
-  listarPlanos,
+	criarCliente,
+	listarClientes,
+	listarPlanos,
 } from "../../features/admin/api";
 import type {
-  ClienteResumo,
-  PlanoResumo,
+	ClienteModoProcessamento,
+	ClienteResumo,
+	PlanoResumo,
 } from "../../features/admin/types";
 import { useRequireSuperAdmin } from "../../hooks/useRequireSuperAdmin";
-import { formatCurrencyFromCents, formatDateTimeBR } from "../../lib/formatters";
 import {
-  Actions,
-  ClientItem,
-  ClientMeta,
-  ClientName,
-  ClientTop,
-  DetailsLink,
-  EmptyState,
-  EmptyStateTitle,
-  ErrorBox,
-  Form,
-  FormHeader,
-  FormSubtitle,
-  FormTitle,
-  Grid,
-  Header,
-  HeaderContent,
-  HeaderEyebrow,
-  HeaderGrid,
-  HeaderPanel,
-  HeaderPanelLabel,
-  HeaderPanelValue,
-  InfoBox,
-  InfoGrid,
-  InfoLabel,
-  InfoValue,
-  List,
-  ListHeader,
-  ListSubtitle,
-  ListTitle,
-  PageContainer,
-  Sidebar,
-  StatCard,
-  StatGrid,
-  StatLabel,
-  StatValue,
-  Subtitle,
-  Title,
+	formatCurrencyFromCents,
+	formatDateTimeBR,
+} from "../../lib/formatters";
+import {
+	Actions,
+	ClientItem,
+	ClientMeta,
+	ClientName,
+	ClientTop,
+	DetailsLink,
+	EmptyState,
+	EmptyStateTitle,
+	ErrorBox,
+	Form,
+	FormHeader,
+	FormSubtitle,
+	FormTitle,
+	Grid,
+	Header,
+	HeaderContent,
+	HeaderEyebrow,
+	HeaderGrid,
+	HeaderPanel,
+	HeaderPanelLabel,
+	HeaderPanelValue,
+	InfoBox,
+	InfoGrid,
+	InfoLabel,
+	InfoValue,
+	List,
+	ListHeader,
+	ListSubtitle,
+	ListTitle,
+	PageContainer,
+	Sidebar,
+	StatCard,
+	StatGrid,
+	StatLabel,
+	StatValue,
+	Subtitle,
+	Title,
 } from "./page.styles";
 
 function formatDate(value?: string | null) {
-  if (!value) {
-    return "-";
-  }
+	if (!value) {
+		return "-";
+	}
 
-  return new Intl.DateTimeFormat("pt-BR", {
-    dateStyle: "short",
-  }).format(new Date(value));
+	return new Intl.DateTimeFormat("pt-BR", {
+		dateStyle: "short",
+	}).format(new Date(value));
 }
 
 export default function ClientesPage() {
-  const { isCheckingAuth } = useRequireSuperAdmin();
+	const { isCheckingAuth } = useRequireSuperAdmin();
 
-  const [planos, setPlanos] = useState<PlanoResumo[]>([]);
-  const [planoId, setPlanoId] = useState("");
+	const [modoProcessamento, setModoProcessamento] =
+		useState<ClienteModoProcessamento>("AGENT");
 
-  const [clientes, setClientes] = useState<ClienteResumo[]>([]);
-  const [nome, setNome] = useState("");
+	const [planos, setPlanos] = useState<PlanoResumo[]>([]);
+	const [planoId, setPlanoId] = useState("");
 
-  const [isLoading, setIsLoading] = useState(true);
-  const [isCreating, setIsCreating] = useState(false);
-  const [erro, setErro] = useState<string | null>(null);
+	const [clientes, setClientes] = useState<ClienteResumo[]>([]);
+	const [nome, setNome] = useState("");
 
-  const resumo = useMemo(() => {
-    const ativos = clientes.filter(cliente => cliente.status === "ATIVO").length;
-    const suspensos = clientes.filter(
-      cliente => cliente.status === "SUSPENSO"
-    ).length;
+	const [isLoading, setIsLoading] = useState(true);
+	const [isCreating, setIsCreating] = useState(false);
+	const [erro, setErro] = useState<string | null>(null);
 
-    const totalUsuarios = clientes.reduce((total, cliente) => {
-      return total + cliente.totalUsuarios;
-    }, 0);
+	const resumo = useMemo(() => {
+		const ativos = clientes.filter(
+			(cliente) => cliente.status === "ATIVO"
+		).length;
+		const suspensos = clientes.filter(
+			(cliente) => cliente.status === "SUSPENSO"
+		).length;
 
-    const totalTarefas = clientes.reduce((total, cliente) => {
-      return total + cliente.totalTarefas;
-    }, 0);
+		const totalUsuarios = clientes.reduce((total, cliente) => {
+			return total + cliente.totalUsuarios;
+		}, 0);
 
-    return {
-      ativos,
-      suspensos,
-      totalUsuarios,
-      totalTarefas,
-    };
-  }, [clientes]);
+		const totalTarefas = clientes.reduce((total, cliente) => {
+			return total + cliente.totalTarefas;
+		}, 0);
 
-  async function carregarPlanos() {
-    const data = await listarPlanos();
+		return {
+			ativos,
+			suspensos,
+			totalUsuarios,
+			totalTarefas,
+		};
+	}, [clientes]);
 
-    const planosAtivos = data.planos.filter(plano => plano.status === "ATIVO");
+	async function carregarPlanos() {
+		const data = await listarPlanos();
 
-    setPlanos(planosAtivos);
+		const planosAtivos = data.planos.filter(
+			(plano) => plano.status === "ATIVO"
+		);
 
-    if (!planoId && planosAtivos[0]) {
-      setPlanoId(planosAtivos[0].id);
-    }
-  }
+		setPlanos(planosAtivos);
 
-  async function carregarClientes() {
-    try {
-      setErro(null);
+		if (!planoId && planosAtivos[0]) {
+			setPlanoId(planosAtivos[0].id);
+		}
+	}
 
-      const data = await listarClientes();
+	async function carregarClientes() {
+		try {
+			setErro(null);
 
-      setClientes(data.clientes);
-    } catch (error) {
-      setErro(
-        error instanceof Error
-          ? error.message
-          : "Erro desconhecido ao carregar clientes"
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  }
+			const data = await listarClientes();
 
-  async function handleCriarCliente(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+			setClientes(data.clientes);
+		} catch (error) {
+			setErro(
+				error instanceof Error
+					? error.message
+					: "Erro desconhecido ao carregar clientes"
+			);
+		} finally {
+			setIsLoading(false);
+		}
+	}
 
-    setErro(null);
-    setIsCreating(true);
+	async function handleCriarCliente(event: FormEvent<HTMLFormElement>) {
+		event.preventDefault();
 
-    try {
-      await criarCliente({
-        nome,
-        planoId,
-        intervaloSegundos: 60,
-        limiteDiario: 300,
-      });
+		setErro(null);
+		setIsCreating(true);
 
-      setNome("");
+		try {
+			await criarCliente({
+				nome,
+				planoId,
+				modoProcessamento,
+				intervaloSegundos: 60,
+				limiteDiario: 300,
+			});
 
-      await carregarClientes();
-    } catch (error) {
-      setErro(
-        error instanceof Error
-          ? error.message
-          : "Erro desconhecido ao criar cliente"
-      );
-    } finally {
-      setIsCreating(false);
-    }
-  }
+			setModoProcessamento("AGENT");
+			setNome("");
 
-  useEffect(() => {
-    if (!isCheckingAuth) {
-      carregarClientes();
-      carregarPlanos();
-    }
-  }, [isCheckingAuth]);
+			await carregarClientes();
+		} catch (error) {
+			setErro(
+				error instanceof Error
+					? error.message
+					: "Erro desconhecido ao criar cliente"
+			);
+		} finally {
+			setIsCreating(false);
+		}
+	}
 
-  if (isCheckingAuth) {
-    return null;
-  }
+	useEffect(() => {
+		if (!isCheckingAuth) {
+			carregarClientes();
+			carregarPlanos();
+		}
+	}, [isCheckingAuth]);
 
-  return (
-    <>
-      <AppHeader />
+	if (isCheckingAuth) {
+		return null;
+	}
 
-      <PageContainer>
-        <Header>
-          <HeaderGrid>
-            <HeaderContent>
-              <HeaderEyebrow>Gestão operacional</HeaderEyebrow>
+	return (
+		<>
+			<AppHeader />
 
-              <Title>Clientes</Title>
+			<PageContainer>
+				<Header>
+					<HeaderGrid>
+						<HeaderContent>
+							<HeaderEyebrow>Gestão operacional</HeaderEyebrow>
 
-              <Subtitle>
-                Cadastre imobiliárias, configure plano, worker dedicado,
-                usuários e acompanhe tarefas. A cobrança fica concentrada no
-                módulo financeiro.
-              </Subtitle>
-            </HeaderContent>
+							<Title>Clientes</Title>
 
-            <HeaderPanel>
-              <HeaderPanelLabel>Clientes ativos</HeaderPanelLabel>
-              <HeaderPanelValue>{resumo.ativos}</HeaderPanelValue>
-            </HeaderPanel>
-          </HeaderGrid>
-        </Header>
+							<Subtitle>
+								Cadastre imobiliárias, configure plano, worker dedicado,
+								usuários e acompanhe tarefas. A cobrança fica concentrada no
+								módulo financeiro.
+							</Subtitle>
+						</HeaderContent>
 
-        <StatGrid>
-          <StatCard>
-            <StatLabel>Clientes ativos</StatLabel>
-            <StatValue>{resumo.ativos}</StatValue>
-          </StatCard>
+						<HeaderPanel>
+							<HeaderPanelLabel>Clientes ativos</HeaderPanelLabel>
+							<HeaderPanelValue>{resumo.ativos}</HeaderPanelValue>
+						</HeaderPanel>
+					</HeaderGrid>
+				</Header>
 
-          <StatCard>
-            <StatLabel>Clientes suspensos</StatLabel>
-            <StatValue>{resumo.suspensos}</StatValue>
-          </StatCard>
+				<StatGrid>
+					<StatCard>
+						<StatLabel>Clientes ativos</StatLabel>
+						<StatValue>{resumo.ativos}</StatValue>
+					</StatCard>
 
-          <StatCard>
-            <StatLabel>Usuários cadastrados</StatLabel>
-            <StatValue>{resumo.totalUsuarios}</StatValue>
-          </StatCard>
+					<StatCard>
+						<StatLabel>Clientes suspensos</StatLabel>
+						<StatValue>{resumo.suspensos}</StatValue>
+					</StatCard>
 
-          <StatCard>
-            <StatLabel>Tarefas criadas</StatLabel>
-            <StatValue>{resumo.totalTarefas}</StatValue>
-          </StatCard>
-        </StatGrid>
+					<StatCard>
+						<StatLabel>Usuários cadastrados</StatLabel>
+						<StatValue>{resumo.totalUsuarios}</StatValue>
+					</StatCard>
 
-        <Grid>
-          <Sidebar>
-            <Card>
-              <FormHeader>
-                <FormTitle>Novo cliente</FormTitle>
-                <FormSubtitle>
-                  Crie uma nova imobiliária e vincule imediatamente um plano
-                  ativo.
-                </FormSubtitle>
-              </FormHeader>
+					<StatCard>
+						<StatLabel>Tarefas criadas</StatLabel>
+						<StatValue>{resumo.totalTarefas}</StatValue>
+					</StatCard>
+				</StatGrid>
 
-              <Form onSubmit={handleCriarCliente}>
-                <Input
-                  label="Nome do cliente"
-                  value={nome}
-                  onChange={event => setNome(event.target.value)}
-                  placeholder="Ex: TWA Investimentos"
-                  required
-                />
+				<Grid>
+					<Sidebar>
+						<Card>
+							<FormHeader>
+								<FormTitle>Novo cliente</FormTitle>
+								<FormSubtitle>
+									Crie uma nova imobiliária e vincule imediatamente um plano
+									ativo.
+								</FormSubtitle>
+							</FormHeader>
 
-                <Select
-                  label="Plano"
-                  value={planoId}
-                  onChange={event => setPlanoId(event.target.value)}
-                  required
-                >
-                  {planos.map(plano => (
-                    <option key={plano.id} value={plano.id}>
-                      {plano.nome} — {plano.limiteMensalConsultas} consultas —{" "}
-                      {formatCurrencyFromCents(plano.precoCentavos)}
-                    </option>
-                  ))}
-                </Select>
+							<Form onSubmit={handleCriarCliente}>
+								<Input
+									label="Nome do cliente"
+									value={nome}
+									onChange={(event) => setNome(event.target.value)}
+									placeholder="Ex: TWA Investimentos"
+									required
+								/>
 
-                <Button type="submit" fullWidth disabled={isCreating}>
-                  {isCreating ? "Criando..." : "Criar cliente"}
-                </Button>
-              </Form>
-            </Card>
-          </Sidebar>
+								<Select
+									label="Plano"
+									value={planoId}
+									onChange={(event) => setPlanoId(event.target.value)}
+									required
+								>
+									{planos.map((plano) => (
+										<option key={plano.id} value={plano.id}>
+											{plano.nome} — {plano.limiteMensalConsultas} consultas —{" "}
+											{formatCurrencyFromCents(plano.precoCentavos)}
+										</option>
+									))}
+								</Select>
 
-          <div>
-            <ListHeader>
-              <div>
-                <ListTitle>Clientes cadastrados</ListTitle>
-                <ListSubtitle>
-                  Controle operacional por cliente. Para cobrança, vencimento e
-                  pagamento, use o menu Financeiro.
-                </ListSubtitle>
-              </div>
-            </ListHeader>
+								<Select
+									label="Modo de processamento"
+									value={modoProcessamento}
+									onChange={(event) =>
+										setModoProcessamento(
+											event.target.value as ClienteModoProcessamento
+										)
+									}
+									required
+								>
+									<option value="QUEUE">QUEUE — Nuvem / VPS</option>
+									<option value="AGENT">AGENT — Máquina do cliente</option>
+								</Select>
 
-            {erro && <ErrorBox>{erro}</ErrorBox>}
+								<Button type="submit" fullWidth disabled={isCreating}>
+									{isCreating ? "Criando..." : "Criar cliente"}
+								</Button>
+							</Form>
+						</Card>
+					</Sidebar>
 
-            {isLoading && (
-              <EmptyState>
-                <EmptyStateTitle>Carregando clientes...</EmptyStateTitle>
-                Estamos buscando os clientes cadastrados.
-              </EmptyState>
-            )}
+					<div>
+						<ListHeader>
+							<div>
+								<ListTitle>Clientes cadastrados</ListTitle>
+								<ListSubtitle>
+									Controle operacional por cliente. Para cobrança, vencimento e
+									pagamento, use o menu Financeiro.
+								</ListSubtitle>
+							</div>
+						</ListHeader>
 
-            {!isLoading && clientes.length === 0 && (
-              <EmptyState>
-                <EmptyStateTitle>Nenhum cliente cadastrado.</EmptyStateTitle>
-                Crie o primeiro cliente para iniciar a operação.
-              </EmptyState>
-            )}
+						{erro && <ErrorBox>{erro}</ErrorBox>}
 
-            {!isLoading && clientes.length > 0 && (
-              <List>
-                {clientes.map(cliente => (
-                  <ClientItem key={cliente.id}>
-                    <ClientTop>
-                      <div>
-                        <ClientName>{cliente.nome}</ClientName>
-                        <ClientMeta>
-                          {cliente.slug} · Plano:{" "}
-                          {cliente.plano?.nome ?? "Sem plano"}
-                        </ClientMeta>
-                      </div>
+						{isLoading && (
+							<EmptyState>
+								<EmptyStateTitle>Carregando clientes...</EmptyStateTitle>
+								Estamos buscando os clientes cadastrados.
+							</EmptyState>
+						)}
 
-                      <StatusBadge status={cliente.status} />
-                    </ClientTop>
+						{!isLoading && clientes.length === 0 && (
+							<EmptyState>
+								<EmptyStateTitle>Nenhum cliente cadastrado.</EmptyStateTitle>
+								Crie o primeiro cliente para iniciar a operação.
+							</EmptyState>
+						)}
 
-                    <InfoGrid>
-                      <InfoBox>
-                        <InfoLabel>Plano</InfoLabel>
-                        <InfoValue>{cliente.plano?.nome ?? "-"}</InfoValue>
-                      </InfoBox>
+						{!isLoading && clientes.length > 0 && (
+							<List>
+								{clientes.map((cliente) => (
+									<ClientItem key={cliente.id}>
+										<ClientTop>
+											<div>
+												<ClientName>{cliente.nome}</ClientName>
+												<ClientMeta>
+													{cliente.slug} · Plano:{" "}
+													{cliente.plano?.nome ?? "Sem plano"} · Processamento:{" "}
+													{cliente.modoProcessamento}
+												</ClientMeta>
+											</div>
 
-                      <InfoBox>
-                        <InfoLabel>Mensalidade</InfoLabel>
-                        <InfoValue>
-                          {formatCurrencyFromCents(
-                            cliente.plano?.precoCentavos
-                          )}
-                        </InfoValue>
-                      </InfoBox>
+											<StatusBadge status={cliente.status} />
+										</ClientTop>
 
-                      <InfoBox>
-                        <InfoLabel>Usuários</InfoLabel>
-                        <InfoValue>{cliente.totalUsuarios}</InfoValue>
-                      </InfoBox>
+										<InfoGrid>
+											<InfoBox>
+												<InfoLabel>Plano</InfoLabel>
+												<InfoValue>{cliente.plano?.nome ?? "-"}</InfoValue>
+											</InfoBox>
 
-                      <InfoBox>
-                        <InfoLabel>Tarefas</InfoLabel>
-                        <InfoValue>{cliente.totalTarefas}</InfoValue>
-                      </InfoBox>
+											<InfoBox>
+												<InfoLabel>Mensalidade</InfoLabel>
+												<InfoValue>
+													{formatCurrencyFromCents(
+														cliente.plano?.precoCentavos
+													)}
+												</InfoValue>
+											</InfoBox>
 
-                      <InfoBox>
-                        <InfoLabel>Criado em</InfoLabel>
-                        <InfoValue>{formatDate(cliente.createdAt)}</InfoValue>
-                      </InfoBox>
-                    </InfoGrid>
+											<InfoBox>
+												<InfoLabel>Usuários</InfoLabel>
+												<InfoValue>{cliente.totalUsuarios}</InfoValue>
+											</InfoBox>
 
-                    <Actions>
-                      <DetailsLink href={`/clientes/${cliente.id}/editar`}>
-                        Configurações
-                      </DetailsLink>
+											<InfoBox>
+												<InfoLabel>Tarefas</InfoLabel>
+												<InfoValue>{cliente.totalTarefas}</InfoValue>
+											</InfoBox>
 
-                      <DetailsLink href={`/clientes/${cliente.id}/usuarios`}>
-                        Usuários
-                      </DetailsLink>
+											<InfoBox>
+												<InfoLabel>Criado em</InfoLabel>
+												<InfoValue>{formatDate(cliente.createdAt)}</InfoValue>
+											</InfoBox>
+										</InfoGrid>
 
-                      <DetailsLink href={`/clientes/${cliente.id}/tarefas`}>
-                        Tarefas
-                      </DetailsLink>
+										<Actions>
+											<DetailsLink href={`/clientes/${cliente.id}/editar`}>
+												Configurações
+											</DetailsLink>
 
-                      <DetailsLink href="/financeiro">
-                        Financeiro
-                      </DetailsLink>
-                    </Actions>
-                  </ClientItem>
-                ))}
-              </List>
-            )}
-          </div>
-        </Grid>
-      </PageContainer>
-    </>
-  );
+											<DetailsLink href={`/clientes/${cliente.id}/usuarios`}>
+												Usuários
+											</DetailsLink>
+
+											<DetailsLink href={`/clientes/${cliente.id}/tarefas`}>
+												Tarefas
+											</DetailsLink>
+
+											<DetailsLink href="/financeiro">Financeiro</DetailsLink>
+										</Actions>
+									</ClientItem>
+								))}
+							</List>
+						)}
+					</div>
+				</Grid>
+			</PageContainer>
+		</>
+	);
 }

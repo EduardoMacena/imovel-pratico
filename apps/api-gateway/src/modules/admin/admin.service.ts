@@ -16,11 +16,14 @@ import type {
 	CriarClienteInput,
 	CriarPlanoInput,
 	CriarUsuarioInput,
+	CriarWorkerAgentInput,
 } from "./admin.schemas.js";
 import { buildCsv } from "../../utils/csv.js";
 import { buildExcelBuffer } from "../../utils/excel.js";
 import { formatDateOnlyFromDate, parseDateOnlyToUtcNoon } from "../../utils/date-only.js";
 import { buildPdfResultadosProprietarios, montarLinhasResultadoExportacao } from "../../utils/exportacao-resultados.js";
+import { randomBytes } from "node:crypto";
+import { hashWorkerToken } from "../workers/worker-agent.auth.js";
 
 function gerarSlugBase(value: string) {
 	return value
@@ -84,6 +87,7 @@ export async function listarClientes() {
 		nome: cliente.nome,
 		slug: cliente.slug,
 		status: cliente.status,
+		modoProcessamento: cliente.modoProcessamento,
 		workerUrl: cliente.workerUrl,
 		intervaloSegundos: cliente.intervaloSegundos,
 		limiteDiario: cliente.limiteDiario,
@@ -114,6 +118,7 @@ export async function criarCliente(data: CriarClienteInput) {
 		data: {
 			nome: data.nome,
 			slug,
+			modoProcessamento: data.modoProcessamento ?? "AGENT",
 			workerUrl: data.workerUrl ?? null,
 			planoId: data.planoId,
 		},
@@ -158,6 +163,7 @@ export async function atualizarCliente(
 			nome: data.nome,
 			slug,
 			status: data.status,
+			modoProcessamento: data.modoProcessamento,
 			workerUrl: data.workerUrl,
 			planoId: data.planoId,
 		},
@@ -385,6 +391,7 @@ export async function buscarClientePorId(id: string) {
 		nome: cliente.nome,
 		slug: cliente.slug,
 		status: cliente.status,
+		modoProcessamento: cliente.modoProcessamento,
 		workerUrl: cliente.workerUrl,
 		intervaloSegundos: cliente.intervaloSegundos,
 		limiteDiario: cliente.limiteDiario,
@@ -1170,3 +1177,184 @@ export async function exportarResultadosTarefaAdminPdf(id: string) {
     buffer,
   };
 }
+
+function gerarWorkerToken() {
+	return `ipw_${randomBytes(32).toString("base64url")}`;
+  }
+  
+  function calcularStatusOperacionalAgent(params: {
+	status: string;
+	ultimoSinalEm: Date | null;
+  }) {
+	if (params.status === "REVOGADO") {
+	  return "REVOGADO";
+	}
+  
+	if (params.status === "INATIVO") {
+	  return "INATIVO";
+	}
+  
+	if (!params.ultimoSinalEm) {
+	  return "OFFLINE";
+	}
+  
+	const diffMs = Date.now() - params.ultimoSinalEm.getTime();
+	const diffSeconds = Math.floor(diffMs / 1000);
+  
+	if (diffSeconds <= 60) {
+	  return "ONLINE";
+	}
+  
+	if (diffSeconds <= 180) {
+	  return "INSTAVEL";
+	}
+  
+	return "OFFLINE";
+  }
+  
+  export async function listarWorkerAgentsCliente(clienteId: string) {
+	const cliente = await prisma.cliente.findUnique({
+	  where: {
+		id: clienteId,
+	  },
+	  select: {
+		id: true,
+		nome: true,
+		slug: true,
+		modoProcessamento: true,
+	  },
+	});
+  
+	if (!cliente) {
+	  throw new Error("Cliente não encontrado");
+	}
+  
+	const agents = await prisma.workerAgent.findMany({
+	  where: {
+		clienteId,
+	  },
+	  orderBy: [
+		{
+		  tipo: "asc",
+		},
+		{
+		  createdAt: "desc",
+		},
+	  ],
+	});
+  
+	return {
+	  cliente,
+	  agents: agents.map(agent => ({
+		id: agent.id,
+		tipo: agent.tipo,
+		identificador: agent.identificador,
+		status: agent.status,
+		statusOperacional: calcularStatusOperacionalAgent({
+		  status: agent.status,
+		  ultimoSinalEm: agent.ultimoSinalEm,
+		}),
+		ultimoSinalEm: agent.ultimoSinalEm,
+		metadata: agent.metadata,
+		createdAt: agent.createdAt,
+		updatedAt: agent.updatedAt,
+	  })),
+	};
+  }
+  
+  export async function criarWorkerAgentCliente(
+	clienteId: string,
+	data: CriarWorkerAgentInput
+  ) {
+	const cliente = await prisma.cliente.findUnique({
+	  where: {
+		id: clienteId,
+	  },
+	  select: {
+		id: true,
+		nome: true,
+	  },
+	});
+  
+	if (!cliente) {
+	  throw new Error("Cliente não encontrado");
+	}
+  
+	const token = gerarWorkerToken();
+	const tokenHash = hashWorkerToken(token);
+  
+	const agent = await prisma.workerAgent.upsert({
+	  where: {
+		worker_agent_cliente_tipo_identificador_unique: {
+		  clienteId,
+		  tipo: data.tipo,
+		  identificador: data.identificador,
+		},
+	  },
+	  create: {
+		clienteId,
+		tipo: data.tipo,
+		identificador: data.identificador,
+		tokenHash,
+		status: "ATIVO",
+	  },
+	  update: {
+		tokenHash,
+		status: "ATIVO",
+		ultimoSinalEm: null,
+		metadata: undefined,
+	  },
+	});
+  
+	return {
+	  agent: {
+		id: agent.id,
+		clienteId: agent.clienteId,
+		tipo: agent.tipo,
+		identificador: agent.identificador,
+		status: agent.status,
+		ultimoSinalEm: agent.ultimoSinalEm,
+		createdAt: agent.createdAt,
+		updatedAt: agent.updatedAt,
+	  },
+	  token,
+	  aviso:
+		"Copie este token agora. Ele não será exibido novamente por segurança.",
+	};
+  }
+  
+  export async function revogarWorkerAgent(id: string) {
+	const agent = await prisma.workerAgent.findUnique({
+	  where: {
+		id,
+	  },
+	});
+  
+	if (!agent) {
+	  throw new Error("Agent não encontrado");
+	}
+  
+	const atualizado = await prisma.workerAgent.update({
+	  where: {
+		id,
+	  },
+	  data: {
+		status: "REVOGADO",
+	  },
+	});
+  
+	await prisma.workerHeartbeat.updateMany({
+	  where: {
+		clienteId: agent.clienteId,
+		servico: agent.tipo === "CND" ? "WORKER_CND" : "WORKER_REGISTRO",
+		identificador: agent.identificador,
+	  },
+	  data: {
+		status: "OFFLINE",
+	  },
+	});
+  
+	return {
+	  agent: atualizado,
+	};
+  }

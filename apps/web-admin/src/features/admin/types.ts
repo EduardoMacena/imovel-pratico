@@ -1,3 +1,12 @@
+export type ClienteModoProcessamento = "QUEUE" | "AGENT";
+
+export type WorkerAgentTipo = "REGISTRO" | "CND";
+
+export type WorkerAgentStatus = "ATIVO" | "INATIVO" | "REVOGADO";
+
+export type WorkerAgentStatusOperacional =
+	"ONLINE" | "INSTAVEL" | "OFFLINE" | "INATIVO" | "REVOGADO";
+
 export type ClienteStatus = "ATIVO" | "INATIVO" | "SUSPENSO";
 
 export type UsuarioRole = "SUPER_ADMIN" | "ADMIN" | "GERENTE" | "OPERADOR";
@@ -9,6 +18,7 @@ export type ClienteResumo = {
 	nome: string;
 	slug: string;
 	status: ClienteStatus;
+	modoProcessamento: ClienteModoProcessamento;
 	workerUrl: string | null;
 	intervaloSegundos: number;
 	limiteDiario: number;
@@ -29,6 +39,7 @@ export type ListarClientesResponse = {
 export type CriarClienteRequest = {
 	nome: string;
 	slug?: string;
+	modoProcessamento: ClienteModoProcessamento;
 	workerUrl?: string | null;
 	intervaloSegundos: number;
 	limiteDiario: number;
@@ -110,6 +121,7 @@ export type AtualizarClienteRequest = {
 	nome?: string;
 	slug?: string;
 	status?: ClienteStatus;
+	modoProcessamento?: ClienteModoProcessamento;
 	workerUrl?: string | null;
 	intervaloSegundos?: number;
 	limiteDiario?: number;
@@ -385,193 +397,228 @@ export type BuscarConsumoClienteResponse = {
 };
 
 export type FaturaStatus =
-  | "ABERTA"
-  | "FECHADA"
-  | "PAGA"
-  | "VENCIDA"
-  | "CANCELADA";
+	"ABERTA" | "FECHADA" | "PAGA" | "VENCIDA" | "CANCELADA";
 
 export type FaturaItemTipo =
-  | "MENSALIDADE"
-  | "CONSULTA_EXCEDENTE"
-  | "AJUSTE"
-  | "DESCONTO";
+	"MENSALIDADE" | "CONSULTA_EXCEDENTE" | "AJUSTE" | "DESCONTO";
 
 export type FaturaItemResumo = {
-  id: string;
-  tipo: FaturaItemTipo;
-  descricao: string;
-  quantidade: number;
-  valorUnitarioCentavos: number;
-  valorTotalCentavos: number;
-  createdAt: string;
+	id: string;
+	tipo: FaturaItemTipo;
+	descricao: string;
+	quantidade: number;
+	valorUnitarioCentavos: number;
+	valorTotalCentavos: number;
+	createdAt: string;
 };
 
 export type FaturaResumo = {
-  id: string;
-  clienteId: string;
-  cliente: {
-    id: string;
-    nome: string;
-    slug: string;
-    status: ClienteStatus;
-  };
-  status: FaturaStatus;
-  referenciaMes: number;
-  referenciaAno: number;
-  referenciaLabel: string;
-  planoId: string | null;
-  planoNome: string | null;
-  consultasInclusas: number;
-  consultasUsadas: number;
-  consultasExcedentes: number;
-  valorMensalidadeCentavos: number;
-  valorConsultaAdicionalCentavos: number;
-  valorExcedenteCentavos: number;
-  valorTotalCentavos: number;
-  vencimentoEm: string | null;
-  pagaEm: string | null;
-  observacao: string | null;
-  itens: FaturaItemResumo[];
-  createdAt: string;
-  updatedAt: string;
+	id: string;
+	clienteId: string;
+	cliente: {
+		id: string;
+		nome: string;
+		slug: string;
+		status: ClienteStatus;
+	};
+	status: FaturaStatus;
+	referenciaMes: number;
+	referenciaAno: number;
+	referenciaLabel: string;
+	planoId: string | null;
+	planoNome: string | null;
+	consultasInclusas: number;
+	consultasUsadas: number;
+	consultasExcedentes: number;
+	valorMensalidadeCentavos: number;
+	valorConsultaAdicionalCentavos: number;
+	valorExcedenteCentavos: number;
+	valorTotalCentavos: number;
+	vencimentoEm: string | null;
+	pagaEm: string | null;
+	observacao: string | null;
+	itens: FaturaItemResumo[];
+	createdAt: string;
+	updatedAt: string;
 };
 
 export type ListarFaturasResponse = {
-  faturas: FaturaResumo[];
+	faturas: FaturaResumo[];
 };
 
 export type GerarFaturaRequest = {
-  clienteId: string;
-  referenciaMes: number;
-  referenciaAno: number;
-  vencimentoEm?: string | null;
-  observacao?: string | null;
+	clienteId: string;
+	referenciaMes: number;
+	referenciaAno: number;
+	vencimentoEm?: string | null;
+	observacao?: string | null;
 };
 
 export type FaturaResponse = {
-  fatura: FaturaResumo;
+	fatura: FaturaResumo;
 };
 
 export type MonitoramentoNivel = "INFO" | "WARN" | "ERROR";
 
 export type MonitoramentoServico =
-  | "API_GATEWAY"
-  | "WORKER_REGISTRO"
-  | "WORKER_CND"
-  | "QUEUE"
-  | "REALTIME";
+	"API_GATEWAY" | "WORKER_REGISTRO" | "WORKER_CND" | "QUEUE" | "REALTIME";
 
 export type MonitoramentoStatusGeral = "OPERACIONAL" | "ATENCAO";
 
 export type WorkerStatusOperacional = "ONLINE" | "OFFLINE" | "ERROR";
 
 export type MonitoramentoEvento = {
-  id: string;
-  clienteId: string | null;
-  tarefaId: string | null;
-  buscaPreviaId: string | null;
-  nivel: MonitoramentoNivel;
-  servico: MonitoramentoServico;
-  tipo: string;
-  mensagem: string;
-  detalhes: string | null;
-  metadata: unknown;
-  cliente: {
-    id: string;
-    nome: string;
-    slug: string;
-  } | null;
-  tarefa: {
-    id: string;
-    status: string;
-    endereco: {
-      logradouro: string;
-      numero: string;
-    };
-  } | null;
-  buscaPrevia: {
-    id: string;
-    status: string;
-    endereco: {
-      logradouro: string;
-      numero: string;
-    };
-  } | null;
-  createdAt: string;
+	id: string;
+	clienteId: string | null;
+	tarefaId: string | null;
+	buscaPreviaId: string | null;
+	nivel: MonitoramentoNivel;
+	servico: MonitoramentoServico;
+	tipo: string;
+	mensagem: string;
+	detalhes: string | null;
+	metadata: unknown;
+	cliente: {
+		id: string;
+		nome: string;
+		slug: string;
+	} | null;
+	tarefa: {
+		id: string;
+		status: string;
+		endereco: {
+			logradouro: string;
+			numero: string;
+		};
+	} | null;
+	buscaPrevia: {
+		id: string;
+		status: string;
+		endereco: {
+			logradouro: string;
+			numero: string;
+		};
+	} | null;
+	createdAt: string;
 };
 
 export type WorkerHeartbeatResumo = {
-  id: string;
-  cliente: {
-    id: string;
-    nome: string;
-    slug: string;
-  };
-  servico: MonitoramentoServico;
-  identificador: string;
-  fila: string | null;
-  status: WorkerStatusOperacional;
-  statusRegistrado: WorkerStatusOperacional;
-  ultimoSinalEm: string;
-  metadata: unknown;
+	id: string;
+	cliente: {
+		id: string;
+		nome: string;
+		slug: string;
+	};
+	servico: MonitoramentoServico;
+	identificador: string;
+	fila: string | null;
+	status: WorkerStatusOperacional;
+	statusRegistrado: WorkerStatusOperacional;
+	ultimoSinalEm: string;
+	metadata: unknown;
 };
 
 export type MonitoramentoResumoResponse = {
-  resumo: {
-    atualizadoEm: string;
-    statusGeral: MonitoramentoStatusGeral;
-    tarefas: {
-      pendentes: number;
-      processando: number;
-      comErroHoje: number;
-    };
-    eventos: {
-      errosUltimas24h: number;
-    };
-    workers: {
-      total: number;
-      online: number;
-      offline: number;
-      itens: WorkerHeartbeatResumo[];
-    };
-    ultimosErros: MonitoramentoEvento[];
-  };
+	resumo: {
+		atualizadoEm: string;
+		statusGeral: MonitoramentoStatusGeral;
+		tarefas: {
+			pendentes: number;
+			processando: number;
+			comErroHoje: number;
+		};
+		eventos: {
+			errosUltimas24h: number;
+		};
+		workers: {
+			total: number;
+			online: number;
+			offline: number;
+			itens: WorkerHeartbeatResumo[];
+		};
+		ultimosErros: MonitoramentoEvento[];
+	};
 };
 
 export type ListarEventosMonitoramentoRequest = {
-  clienteId?: string;
-  nivel?: string;
-  servico?: string;
-  tipo?: string;
-  take?: number;
+	clienteId?: string;
+	nivel?: string;
+	servico?: string;
+	tipo?: string;
+	take?: number;
 };
 
 export type ListarEventosMonitoramentoResponse = {
-  eventos: MonitoramentoEvento[];
+	eventos: MonitoramentoEvento[];
 };
 
 export type ListarFilasMonitoramentoResponse = {
-  atualizadoEm: string;
-  itens: {
-    cliente: {
-      id: string;
-      nome: string;
-      slug: string;
-      status: ClienteStatus;
-    };
-    filas: {
-      nome: string;
-      tipo: MonitoramentoServico;
-      descricao: string;
-      counts: {
-        waiting: number;
-        active: number;
-        delayed: number;
-        failed: number;
-        completed: number;
-        paused: number;
-      };
-    }[];
-  }[];
+	atualizadoEm: string;
+	itens: {
+		cliente: {
+			id: string;
+			nome: string;
+			slug: string;
+			status: ClienteStatus;
+		};
+		filas: {
+			nome: string;
+			tipo: MonitoramentoServico;
+			descricao: string;
+			counts: {
+				waiting: number;
+				active: number;
+				delayed: number;
+				failed: number;
+				completed: number;
+				paused: number;
+			};
+		}[];
+	}[];
 };
+
+export type WorkerAgentResumo = {
+	id: string;
+	tipo: WorkerAgentTipo;
+	identificador: string;
+	status: WorkerAgentStatus;
+	statusOperacional: WorkerAgentStatusOperacional;
+	ultimoSinalEm: string | null;
+	metadata: Record<string, unknown> | null;
+	createdAt: string;
+	updatedAt: string;
+  };
+  
+  export type ListarWorkerAgentsClienteResponse = {
+	cliente: {
+	  id: string;
+	  nome: string;
+	  slug: string;
+	  modoProcessamento: ClienteModoProcessamento;
+	};
+	agents: WorkerAgentResumo[];
+  };
+  
+  export type CriarWorkerAgentRequest = {
+	tipo: WorkerAgentTipo;
+	identificador: string;
+  };
+  
+  export type CriarWorkerAgentResponse = {
+	agent: {
+	  id: string;
+	  clienteId: string;
+	  tipo: WorkerAgentTipo;
+	  identificador: string;
+	  status: WorkerAgentStatus;
+	  ultimoSinalEm: string | null;
+	  createdAt: string;
+	  updatedAt: string;
+	};
+	token: string;
+	aviso: string;
+  };
+  
+  export type RevogarWorkerAgentResponse = {
+	agent: WorkerAgentResumo;
+  };

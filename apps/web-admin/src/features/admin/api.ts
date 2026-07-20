@@ -24,13 +24,17 @@ import type {
 	ListarPlanosResponse,
 	BuscarConsumoClienteResponse,
 	ListarConsumoClientesResponse,
-  FaturaResponse,
-  GerarFaturaRequest,
-  ListarFaturasResponse,
-  ListarEventosMonitoramentoRequest,
-  ListarEventosMonitoramentoResponse,
-  ListarFilasMonitoramentoResponse,
-  MonitoramentoResumoResponse,
+	FaturaResponse,
+	GerarFaturaRequest,
+	ListarFaturasResponse,
+	ListarEventosMonitoramentoRequest,
+	ListarEventosMonitoramentoResponse,
+	ListarFilasMonitoramentoResponse,
+	MonitoramentoResumoResponse,
+	CriarWorkerAgentRequest,
+	CriarWorkerAgentResponse,
+	ListarWorkerAgentsClienteResponse,
+	RevogarWorkerAgentResponse,
 } from "./types";
 
 export function listarClientes() {
@@ -135,10 +139,10 @@ export function exportarResultadosTarefaAdminExcel(tarefaId: string) {
 }
 
 export function exportarResultadosTarefaAdminPdf(tarefaId: string) {
-  return apiDownload(
-    `/admin/tarefas/${tarefaId}/exportar-pdf`,
-    `proprietarios-admin-tarefa-${tarefaId}.pdf`
-  );
+	return apiDownload(
+		`/admin/tarefas/${tarefaId}/exportar-pdf`,
+		`proprietarios-admin-tarefa-${tarefaId}.pdf`
+	);
 }
 
 export function listarPlanos() {
@@ -174,118 +178,146 @@ export function buscarConsumoCliente(clienteId: string) {
 }
 
 export function listarFaturas(params?: {
-  clienteId?: string;
-  status?: string;
-  referenciaMes?: number;
-  referenciaAno?: number;
+	clienteId?: string;
+	status?: string;
+	referenciaMes?: number;
+	referenciaAno?: number;
 }) {
-  const searchParams = new URLSearchParams();
+	const searchParams = new URLSearchParams();
 
-  if (params?.clienteId) {
-    searchParams.set("clienteId", params.clienteId);
-  }
+	if (params?.clienteId) {
+		searchParams.set("clienteId", params.clienteId);
+	}
 
-  if (params?.status) {
-    searchParams.set("status", params.status);
-  }
+	if (params?.status) {
+		searchParams.set("status", params.status);
+	}
 
-  if (params?.referenciaMes) {
-    searchParams.set("referenciaMes", String(params.referenciaMes));
-  }
+	if (params?.referenciaMes) {
+		searchParams.set("referenciaMes", String(params.referenciaMes));
+	}
 
-  if (params?.referenciaAno) {
-    searchParams.set("referenciaAno", String(params.referenciaAno));
-  }
+	if (params?.referenciaAno) {
+		searchParams.set("referenciaAno", String(params.referenciaAno));
+	}
 
-  const query = searchParams.toString();
+	const query = searchParams.toString();
 
-  return apiRequest<ListarFaturasResponse>(
-    `/admin/faturas${query ? `?${query}` : ""}`
-  );
+	return apiRequest<ListarFaturasResponse>(
+		`/admin/faturas${query ? `?${query}` : ""}`
+	);
 }
 
 export function gerarFatura(data: GerarFaturaRequest) {
-  return apiRequest<FaturaResponse>("/admin/faturas/gerar", {
-    method: "POST",
-    body: JSON.stringify(data),
-  });
+	return apiRequest<FaturaResponse>("/admin/faturas/gerar", {
+		method: "POST",
+		body: JSON.stringify(data),
+	});
 }
 
 export function marcarFaturaPaga(faturaId: string) {
-  return apiRequest<FaturaResponse>(`/admin/faturas/${faturaId}/marcar-paga`, {
-    method: "POST",
-  });
+	return apiRequest<FaturaResponse>(`/admin/faturas/${faturaId}/marcar-paga`, {
+		method: "POST",
+	});
 }
 
 export function cancelarFatura(faturaId: string) {
-  return apiRequest<FaturaResponse>(`/admin/faturas/${faturaId}/cancelar`, {
-    method: "POST",
-  });
+	return apiRequest<FaturaResponse>(`/admin/faturas/${faturaId}/cancelar`, {
+		method: "POST",
+	});
 }
 
 export function exportarResultadosTarefaAdminCsv(tarefaId: string) {
-  return apiDownload(
-    `/admin/tarefas/${tarefaId}/exportar`,
-    `proprietarios-admin-tarefa-${tarefaId}.csv`
-  );
+	return apiDownload(
+		`/admin/tarefas/${tarefaId}/exportar`,
+		`proprietarios-admin-tarefa-${tarefaId}.csv`
+	);
 }
 
 export function buscarResumoMonitoramento(params?: { clienteId?: string }) {
-  const searchParams = new URLSearchParams();
+	const searchParams = new URLSearchParams();
 
-  if (params?.clienteId) {
-    searchParams.set("clienteId", params.clienteId);
-  }
+	if (params?.clienteId) {
+		searchParams.set("clienteId", params.clienteId);
+	}
 
-  const query = searchParams.toString();
+	const query = searchParams.toString();
 
-  return apiRequest<MonitoramentoResumoResponse>(
-    `/admin/monitoramento/resumo${query ? `?${query}` : ""}`
-  );
+	return apiRequest<MonitoramentoResumoResponse>(
+		`/admin/monitoramento/resumo${query ? `?${query}` : ""}`
+	);
 }
 
 export function listarEventosMonitoramento(
-  params?: ListarEventosMonitoramentoRequest
+	params?: ListarEventosMonitoramentoRequest
 ) {
-  const searchParams = new URLSearchParams();
+	const searchParams = new URLSearchParams();
 
-  if (params?.clienteId) {
-    searchParams.set("clienteId", params.clienteId);
-  }
+	if (params?.clienteId) {
+		searchParams.set("clienteId", params.clienteId);
+	}
 
-  if (params?.nivel) {
-    searchParams.set("nivel", params.nivel);
-  }
+	if (params?.nivel) {
+		searchParams.set("nivel", params.nivel);
+	}
 
-  if (params?.servico) {
-    searchParams.set("servico", params.servico);
-  }
+	if (params?.servico) {
+		searchParams.set("servico", params.servico);
+	}
 
-  if (params?.tipo) {
-    searchParams.set("tipo", params.tipo);
-  }
+	if (params?.tipo) {
+		searchParams.set("tipo", params.tipo);
+	}
 
-  if (params?.take) {
-    searchParams.set("take", String(params.take));
-  }
+	if (params?.take) {
+		searchParams.set("take", String(params.take));
+	}
 
-  const query = searchParams.toString();
+	const query = searchParams.toString();
 
-  return apiRequest<ListarEventosMonitoramentoResponse>(
-    `/admin/monitoramento/eventos${query ? `?${query}` : ""}`
-  );
+	return apiRequest<ListarEventosMonitoramentoResponse>(
+		`/admin/monitoramento/eventos${query ? `?${query}` : ""}`
+	);
 }
 
 export function listarFilasMonitoramento(params?: { clienteId?: string }) {
-  const searchParams = new URLSearchParams();
+	const searchParams = new URLSearchParams();
 
-  if (params?.clienteId) {
-    searchParams.set("clienteId", params.clienteId);
-  }
+	if (params?.clienteId) {
+		searchParams.set("clienteId", params.clienteId);
+	}
 
-  const query = searchParams.toString();
+	const query = searchParams.toString();
 
-  return apiRequest<ListarFilasMonitoramentoResponse>(
-    `/admin/monitoramento/filas${query ? `?${query}` : ""}`
-  );
+	return apiRequest<ListarFilasMonitoramentoResponse>(
+		`/admin/monitoramento/filas${query ? `?${query}` : ""}`
+	);
+}
+
+export function listarWorkerAgentsCliente(clienteId: string) {
+	return apiRequest<ListarWorkerAgentsClienteResponse>(
+		`/admin/clientes/${clienteId}/agents`
+	);
+}
+
+export function criarWorkerAgentCliente(
+	clienteId: string,
+	data: CriarWorkerAgentRequest
+) {
+	return apiRequest<CriarWorkerAgentResponse>(
+		`/admin/clientes/${clienteId}/agents`,
+		{
+			method: "POST",
+			body: JSON.stringify(data),
+		}
+	);
+}
+
+export function revogarWorkerAgent(agentId: string) {
+	return apiRequest<RevogarWorkerAgentResponse>(
+		`/admin/agents/${agentId}/revogar`,
+		{
+			method: "POST",
+		}
+	);
 }

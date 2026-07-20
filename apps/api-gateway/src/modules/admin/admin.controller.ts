@@ -10,6 +10,8 @@ import {
 	criarUsuarioSchema,
 	criarPlanoSchema,
 	usuarioIdParamsSchema,
+	criarWorkerAgentSchema,
+	workerAgentIdParamsSchema,
 } from "./admin.schemas.js";
 import {
 	atualizarCliente,
@@ -33,7 +35,68 @@ import {
 	listarPlanos,
 	buscarConsumoClienteAdmin,
 	listarConsumoClientesAdmin,
+	criarWorkerAgentCliente,
+	listarWorkerAgentsCliente,
+	revogarWorkerAgent,
 } from "./admin.service.js";
+
+export async function listarWorkerAgentsClienteController(
+	request: FastifyRequest,
+	reply: FastifyReply
+) {
+	const { id } = clienteIdParamsSchema.parse(request.params);
+
+	try {
+		const result = await listarWorkerAgentsCliente(id);
+
+		return reply.status(200).send(result);
+	} catch (error) {
+		return reply.status(404).send({
+			error: "NotFound",
+			message:
+				error instanceof Error
+					? error.message
+					: "Erro ao listar agents do cliente",
+		});
+	}
+}
+
+export async function criarWorkerAgentClienteController(
+	request: FastifyRequest,
+	reply: FastifyReply
+) {
+	const { id } = clienteIdParamsSchema.parse(request.params);
+	const body = criarWorkerAgentSchema.parse(request.body);
+
+	try {
+		const result = await criarWorkerAgentCliente(id, body);
+
+		return reply.status(201).send(result);
+	} catch (error) {
+		return reply.status(400).send({
+			error: "BadRequest",
+			message: error instanceof Error ? error.message : "Erro ao criar agent",
+		});
+	}
+}
+
+export async function revogarWorkerAgentController(
+	request: FastifyRequest,
+	reply: FastifyReply
+) {
+	const { id } = workerAgentIdParamsSchema.parse(request.params);
+
+	try {
+		const result = await revogarWorkerAgent(id);
+
+		return reply.status(200).send(result);
+	} catch (error) {
+		return reply.status(400).send({
+			error: "BadRequest",
+			message: error instanceof Error ? error.message : "Erro ao revogar agent",
+		});
+	}
+}
 
 export async function listarClientesController(
 	request: FastifyRequest,
@@ -389,32 +452,32 @@ export async function atualizarPlanoController(
 }
 
 export async function listarConsumoClientesController(
-  request: FastifyRequest,
-  reply: FastifyReply
+	request: FastifyRequest,
+	reply: FastifyReply
 ) {
-  const consumos = await listarConsumoClientesAdmin();
+	const consumos = await listarConsumoClientesAdmin();
 
-  return reply.status(200).send({
-    consumos,
-  });
+	return reply.status(200).send({
+		consumos,
+	});
 }
 
 export async function buscarConsumoClienteController(
-  request: FastifyRequest,
-  reply: FastifyReply
+	request: FastifyRequest,
+	reply: FastifyReply
 ) {
-  const { id } = clienteIdParamsSchema.parse(request.params);
+	const { id } = clienteIdParamsSchema.parse(request.params);
 
-  const consumo = await buscarConsumoClienteAdmin(id);
+	const consumo = await buscarConsumoClienteAdmin(id);
 
-  if (!consumo) {
-    return reply.status(404).send({
-      error: "NotFound",
-      message: "Cliente não encontrado",
-    });
-  }
+	if (!consumo) {
+		return reply.status(404).send({
+			error: "NotFound",
+			message: "Cliente não encontrado",
+		});
+	}
 
-  return reply.status(200).send({
-    consumo,
-  });
+	return reply.status(200).send({
+		consumo,
+	});
 }
