@@ -2,7 +2,6 @@
 
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import {
   AudienceCard,
   AudienceGrid,
@@ -294,14 +293,11 @@ function Reveal({ children }: RevealProps) {
 }
 
 export default function HomePage() {
-  const shouldReduceMotion = useReducedMotion();
-  const { scrollYProgress } = useScroll();
-  const scaleX = useTransform(scrollYProgress, [0, 1], [0, 1]);
 
   return (
     <PageShell>
       <ProgressBar>
-        <ProgressFill style={{ scaleX }} />
+        <ProgressFill />
       </ProgressBar>
 
       <FloatingNav>
@@ -329,37 +325,21 @@ export default function HomePage() {
       <HeroSection>
         <HeroGrid>
           <HeroContent>
-            <Overline
-              initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
-              animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-              transition={{ duration: 0.7 }}
-            >
+            <Overline>
               Plataforma premium para captação imobiliária
             </Overline>
 
-            <HeroTitle
-              initial={shouldReduceMotion ? false : { opacity: 0, y: 28 }}
-              animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-              transition={{ duration: 0.85, delay: 0.08 }}
-            >
+            <HeroTitle>
               Captação imobiliária com <GradientText>escala, dados e velocidade.</GradientText>
             </HeroTitle>
 
-            <HeroDescription
-              initial={shouldReduceMotion ? false : { opacity: 0, y: 26 }}
-              animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-              transition={{ duration: 0.85, delay: 0.18 }}
-            >
+            <HeroDescription>
               O Imóvel Prático transforma uma rotina manual de pesquisa,
               organização e localização de proprietários em um processo
               profissional para imobiliárias que querem crescer com método.
             </HeroDescription>
 
-            <HeroActions
-              initial={shouldReduceMotion ? false : { opacity: 0, y: 22 }}
-              animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-              transition={{ duration: 0.85, delay: 0.28 }}
-            >
+            <HeroActions>
               <PrimaryButton href={whatsappUrl} target="_blank" rel="noreferrer">
                 Solicitar demonstração
               </PrimaryButton>
@@ -369,11 +349,7 @@ export default function HomePage() {
               </SecondaryButton>
             </HeroActions>
 
-            <HeroStats
-              initial={shouldReduceMotion ? false : { opacity: 0, y: 22 }}
-              animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-              transition={{ duration: 0.85, delay: 0.38 }}
-            >
+            <HeroStats>
               {metrics.map(metric => (
                 <StatPill key={metric.value}>
                   <StatValue>{metric.value}</StatValue>
@@ -383,11 +359,7 @@ export default function HomePage() {
             </HeroStats>
           </HeroContent>
 
-          <HeroVisual
-            initial={shouldReduceMotion ? false : { opacity: 0, scale: 0.96, y: 30 }}
-            animate={shouldReduceMotion ? undefined : { opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.22 }}
-          >
+          <HeroVisual>
             <VisualGlow />
 
             <FloatingCard $position="right">

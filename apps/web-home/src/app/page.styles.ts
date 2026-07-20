@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import styled, { keyframes } from "styled-components";
 
 const float = keyframes`
@@ -52,7 +51,7 @@ export const ProgressBar = styled.div`
   background: transparent;
 `;
 
-export const ProgressFill = styled(motion.div)`
+export const ProgressFill = styled.div`
   width: 100%;
   height: 100%;
   transform-origin: 0%;
@@ -214,7 +213,7 @@ export const HeroContent = styled.div`
   max-width: 740px;
 `;
 
-export const Overline = styled(motion.div)`
+export const Overline = styled.div`
   width: fit-content;
   display: inline-flex;
   align-items: center;
@@ -241,7 +240,7 @@ export const Overline = styled(motion.div)`
   }
 `;
 
-export const HeroTitle = styled(motion.h1)`
+export const HeroTitle = styled.h1`
   max-width: 780px;
   margin: 0;
   color: ${({ theme }) => theme.colors.primary};
@@ -261,7 +260,7 @@ export const GradientText = styled.span`
   color: transparent;
 `;
 
-export const HeroDescription = styled(motion.p)`
+export const HeroDescription = styled.p`
   max-width: 640px;
   margin: 28px 0 0;
   color: ${({ theme }) => theme.colors.textMuted};
@@ -269,7 +268,7 @@ export const HeroDescription = styled(motion.p)`
   line-height: 1.72;
 `;
 
-export const HeroActions = styled(motion.div)`
+export const HeroActions = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: ${({ theme }) => theme.spacing.sm};
@@ -324,7 +323,7 @@ export const SecondaryButton = styled.a`
   }
 `;
 
-export const HeroStats = styled(motion.div)`
+export const HeroStats = styled.div`
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: ${({ theme }) => theme.spacing.sm};
@@ -359,7 +358,7 @@ export const StatLabel = styled.span`
   line-height: 1.45;
 `;
 
-export const HeroVisual = styled(motion.div)`
+export const HeroVisual = styled.div`
   position: relative;
   min-height: 620px;
 
@@ -383,7 +382,7 @@ export const VisualGlow = styled.div`
   }
 `;
 
-export const DashboardShell = styled(motion.div)`
+export const DashboardShell = styled.div`
   position: relative;
   z-index: 2;
   overflow: hidden;
@@ -623,7 +622,7 @@ export const TaskItem = styled.div`
   }
 `;
 
-export const FloatingCard = styled(motion.div)<{ $position: "left" | "right" }>`
+export const FloatingCard = styled.div<{ $position: "left" | "right" }>`
   position: absolute;
   z-index: 3;
   ${({ $position }) =>
@@ -776,7 +775,7 @@ export const PainGrid = styled.div`
   }
 `;
 
-export const DarkPanel = styled(motion.div)`
+export const DarkPanel = styled.div`
   position: relative;
   overflow: hidden;
   min-height: 520px;
@@ -825,7 +824,7 @@ export const PainCards = styled.div`
   }
 `;
 
-export const PainCard = styled(motion.article)`
+export const PainCard = styled.article`
   padding: ${({ theme }) => theme.spacing.lg};
   border-radius: ${({ theme }) => theme.radii.xl};
   background: rgba(255, 255, 255, 0.72);
@@ -880,7 +879,7 @@ export const ProcessGrid = styled.div`
   }
 `;
 
-export const ProcessCard = styled(motion.article)`
+export const ProcessCard = styled.article`
   position: relative;
   overflow: hidden;
   min-height: 300px;
@@ -944,7 +943,7 @@ export const FeatureGrid = styled.div`
   }
 `;
 
-export const FeatureCard = styled(motion.article)`
+export const FeatureCard = styled.article`
   min-height: 260px;
   padding: ${({ theme }) => theme.spacing.lg};
   border-radius: ${({ theme }) => theme.radii.xl};
@@ -1028,7 +1027,7 @@ export const RoiCards = styled.div`
   gap: ${({ theme }) => theme.spacing.md};
 `;
 
-export const RoiCard = styled(motion.article)`
+export const RoiCard = styled.article`
   padding: ${({ theme }) => theme.spacing.lg};
   border-radius: ${({ theme }) => theme.radii.xl};
   background: rgba(255, 255, 255, 0.075);
@@ -1059,7 +1058,7 @@ export const AudienceGrid = styled.div`
   }
 `;
 
-export const AudienceCard = styled(motion.article)`
+export const AudienceCard = styled.article`
   display: grid;
   grid-template-columns: auto 1fr;
   gap: ${({ theme }) => theme.spacing.md};
@@ -1098,7 +1097,7 @@ export const FaqGrid = styled.div`
   gap: ${({ theme }) => theme.spacing.sm};
 `;
 
-export const FaqItem = styled(motion.details)`
+export const FaqItem = styled.details`
   padding: 0;
   border-radius: ${({ theme }) => theme.radii.lg};
   background: rgba(255, 255, 255, 0.72);
@@ -1275,7 +1274,7 @@ export const PlanInfo = styled.div`
   }
 `;
 
-export const PlanCard = styled(motion.article)<{ $featured?: boolean }>`
+export const PlanCard = styled.article<{ $featured?: boolean }>`
   position: relative;
   overflow: hidden;
   display: grid;
