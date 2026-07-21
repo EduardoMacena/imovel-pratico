@@ -201,7 +201,7 @@ export default function InstaladorClientePage() {
       });
 
       setLinkGerado(result);
-      setSucesso("Link mágico de instalação gerado com sucesso.");
+      setSucesso("Link de instalação gerado com sucesso.");
 
       await carregarDados();
     } catch (error) {
@@ -276,7 +276,7 @@ export default function InstaladorClientePage() {
             <HeaderContent>
               <HeaderEyebrow>Instalação do Agent</HeaderEyebrow>
 
-              <Title>Link mágico para instalar o Agent no Windows.</Title>
+              <Title>Link para instalar o Agent no Windows.</Title>
 
               <Subtitle>
                 Gere um código temporário e de uso único para ativar os serviços
@@ -309,7 +309,7 @@ export default function InstaladorClientePage() {
               <PanelCard>
                 <PanelHeader>
                   <div>
-                    <PanelTitle>Gerar link mágico</PanelTitle>
+                    <PanelTitle>Gerar link</PanelTitle>
                     <PanelSubtitle>
                       O link expira, só pode ser usado uma vez e será consumido
                       pelo instalador Windows.
@@ -413,7 +413,7 @@ export default function InstaladorClientePage() {
                 {links.length === 0 ? (
                   <EmptyState>
                     <EmptyTitle>Nenhum link gerado</EmptyTitle>
-                    Gere o primeiro link mágico para instalar o Agent.
+                    Gere o primeiro link para instalar o Agent.
                   </EmptyState>
                 ) : (
                   <List>
@@ -477,7 +477,7 @@ export default function InstaladorClientePage() {
                 {agents.length === 0 ? (
                   <EmptyState>
                     <EmptyTitle>Nenhum agent cadastrado</EmptyTitle>
-                    Após usar o link mágico, os agents aparecerão aqui.
+                    Após usar o link, os agents aparecerão aqui.
                   </EmptyState>
                 ) : (
                   <List>
