@@ -648,3 +648,51 @@ export type CriarWorkerAgentResponse = {
 export type RevogarWorkerAgentResponse = {
 	agent: WorkerAgentResumo;
 };
+
+export type WorkerAgentInstallLinkStatus =
+  | "PENDENTE"
+  | "USADO"
+  | "EXPIRADO"
+  | "CANCELADO";
+
+export type WorkerAgentInstallLinkResumo = {
+  id: string;
+  clienteId: string;
+  status: WorkerAgentInstallLinkStatus;
+  identificadorBase: string;
+  incluirRegistro: boolean;
+  incluirCnd: boolean;
+  usadoEm: string | null;
+  expiraEm: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ListarWorkerAgentInstallLinksResponse = {
+  cliente: {
+    id: string;
+    nome: string;
+    slug: string;
+    status: ClienteStatus;
+    modoProcessamento: ClienteModoProcessamento;
+  };
+  links: WorkerAgentInstallLinkResumo[];
+};
+
+export type CriarWorkerAgentInstallLinkRequest = {
+  identificadorBase: string;
+  incluirRegistro: boolean;
+  incluirCnd: boolean;
+  expiraEmHoras: number;
+};
+
+export type CriarWorkerAgentInstallLinkResponse = {
+  link: WorkerAgentInstallLinkResumo;
+  code: string;
+  installUrl: string;
+  aviso: string;
+};
+
+export type CancelarWorkerAgentInstallLinkResponse = {
+  link: WorkerAgentInstallLinkResumo;
+};

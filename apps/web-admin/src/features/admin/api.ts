@@ -35,6 +35,10 @@ import type {
 	CriarWorkerAgentResponse,
 	ListarWorkerAgentsClienteResponse,
 	RevogarWorkerAgentResponse,
+	CancelarWorkerAgentInstallLinkResponse,
+	CriarWorkerAgentInstallLinkRequest,
+	CriarWorkerAgentInstallLinkResponse,
+	ListarWorkerAgentInstallLinksResponse,
 } from "./types";
 
 export function listarClientes() {
@@ -321,3 +325,31 @@ export function revogarWorkerAgent(agentId: string) {
 		}
 	);
 }
+
+export function listarWorkerAgentInstallLinks(clienteId: string) {
+	return apiRequest<ListarWorkerAgentInstallLinksResponse>(
+	  `/admin/clientes/${clienteId}/agents/install-links`
+	);
+  }
+  
+  export function criarWorkerAgentInstallLink(
+	clienteId: string,
+	data: CriarWorkerAgentInstallLinkRequest
+  ) {
+	return apiRequest<CriarWorkerAgentInstallLinkResponse>(
+	  `/admin/clientes/${clienteId}/agents/install-links`,
+	  {
+		method: "POST",
+		body: JSON.stringify(data),
+	  }
+	);
+  }
+  
+  export function cancelarWorkerAgentInstallLink(linkId: string) {
+	return apiRequest<CancelarWorkerAgentInstallLinkResponse>(
+	  `/admin/agents/install-links/${linkId}/cancelar`,
+	  {
+		method: "POST",
+	  }
+	);
+  }

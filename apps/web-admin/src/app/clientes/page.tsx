@@ -376,6 +376,10 @@ export default function ClientesPage() {
 												Tarefas
 											</DetailsLink>
 
+											<DetailsLink href={`/clientes/${cliente.id}/instalador`}>
+												Instalador
+											</DetailsLink>
+
 											<DetailsLink href="/financeiro">Financeiro</DetailsLink>
 										</Actions>
 									</ClientItem>
