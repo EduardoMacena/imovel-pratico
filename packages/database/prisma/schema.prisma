@@ -11,6 +11,13 @@ datasource db {
   provider = "postgresql"
 }
 
+enum WorkerAgentInstallLinkStatus {
+  PENDENTE
+  USADO
+  EXPIRADO
+  CANCELADO
+}
+
 enum ClienteModoProcessamento {
   QUEUE
   AGENT
@@ -157,6 +164,7 @@ model Cliente {
 
   workerUrl         String?
   intervaloSegundos Int @default(60)
+  workerAgentInstallLinks WorkerAgentInstallLink[]
 
   limiteDiario            Int @default(300)
   limiteMensalConsultas   Int @default(300)
@@ -521,4 +529,33 @@ model WorkerAgent {
   @@index([status])
   @@index([ultimoSinalEm])
   @@map("worker_agents")
+}
+
+
+model WorkerAgentInstallLink {
+  id String @id @default(uuid())
+
+  clienteId String
+  cliente   Cliente @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+
+  codigoHash String @unique
+
+  status WorkerAgentInstallLinkStatus @default(PENDENTE)
+
+  identificadorBase String
+  incluirRegistro   Boolean @default(true)
+  incluirCnd        Boolean @default(true)
+
+  usadoEm  DateTime?
+  expiraEm DateTime
+
+  metadata Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([clienteId])
+  @@index([status])
+  @@index([expiraEm])
+  @@map("worker_agent_install_links")
 }

@@ -40,6 +40,11 @@ import {
 	listarEventosMonitoramentoController,
 	listarFilasMonitoramentoController,
 } from "./admin-monitoramento.controller.js";
+import {
+	cancelarWorkerAgentInstallLinkController,
+	criarWorkerAgentInstallLinkController,
+	listarWorkerAgentInstallLinksController,
+} from "../workers/worker-agent-install.controller.js";
 
 export async function adminRoutes(app: FastifyInstance) {
 	app.addHook("preHandler", authMiddleware);
@@ -107,6 +112,21 @@ export async function adminRoutes(app: FastifyInstance) {
 	app.post("/admin/clientes/:id/agents", criarWorkerAgentClienteController);
 
 	app.post("/admin/agents/:id/revogar", revogarWorkerAgentController);
+
+	app.get(
+		"/admin/clientes/:id/agents/install-links",
+		listarWorkerAgentInstallLinksController
+	);
+
+	app.post(
+		"/admin/clientes/:id/agents/install-links",
+		criarWorkerAgentInstallLinkController
+	);
+
+	app.post(
+		"/admin/agents/install-links/:id/cancelar",
+		cancelarWorkerAgentInstallLinkController
+	);
 
 	app.get("/admin/usuarios/:id", buscarUsuarioController);
 	app.patch("/admin/usuarios/:id", atualizarUsuarioController);

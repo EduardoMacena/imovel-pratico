@@ -63,7 +63,8 @@ export const ModelName = {
   ConsultaLog: 'ConsultaLog',
   OperacaoEvento: 'OperacaoEvento',
   WorkerHeartbeat: 'WorkerHeartbeat',
-  WorkerAgent: 'WorkerAgent'
+  WorkerAgent: 'WorkerAgent',
+  WorkerAgentInstallLink: 'WorkerAgentInstallLink'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -345,6 +346,24 @@ export const WorkerAgentScalarFieldEnum = {
 } as const
 
 export type WorkerAgentScalarFieldEnum = (typeof WorkerAgentScalarFieldEnum)[keyof typeof WorkerAgentScalarFieldEnum]
+
+
+export const WorkerAgentInstallLinkScalarFieldEnum = {
+  id: 'id',
+  clienteId: 'clienteId',
+  codigoHash: 'codigoHash',
+  status: 'status',
+  identificadorBase: 'identificadorBase',
+  incluirRegistro: 'incluirRegistro',
+  incluirCnd: 'incluirCnd',
+  usadoEm: 'usadoEm',
+  expiraEm: 'expiraEm',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WorkerAgentInstallLinkScalarFieldEnum = (typeof WorkerAgentInstallLinkScalarFieldEnum)[keyof typeof WorkerAgentInstallLinkScalarFieldEnum]
 
 
 export const SortOrder = {

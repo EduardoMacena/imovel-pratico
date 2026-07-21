@@ -9,6 +9,16 @@
 * 🟢 You can import this file directly.
 */
 
+export const WorkerAgentInstallLinkStatus = {
+  PENDENTE: 'PENDENTE',
+  USADO: 'USADO',
+  EXPIRADO: 'EXPIRADO',
+  CANCELADO: 'CANCELADO'
+} as const
+
+export type WorkerAgentInstallLinkStatus = (typeof WorkerAgentInstallLinkStatus)[keyof typeof WorkerAgentInstallLinkStatus]
+
+
 export const ClienteModoProcessamento = {
   QUEUE: 'QUEUE',
   AGENT: 'AGENT'

@@ -82,3 +82,8 @@ export type WorkerHeartbeat = Prisma.WorkerHeartbeatModel
  * 
  */
 export type WorkerAgent = Prisma.WorkerAgentModel
+/**
+ * Model WorkerAgentInstallLink
+ * 
+ */
+export type WorkerAgentInstallLink = Prisma.WorkerAgentInstallLinkModel

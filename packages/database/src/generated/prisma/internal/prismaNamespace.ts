@@ -396,7 +396,8 @@ export const ModelName = {
   ConsultaLog: 'ConsultaLog',
   OperacaoEvento: 'OperacaoEvento',
   WorkerHeartbeat: 'WorkerHeartbeat',
-  WorkerAgent: 'WorkerAgent'
+  WorkerAgent: 'WorkerAgent',
+  WorkerAgentInstallLink: 'WorkerAgentInstallLink'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -412,7 +413,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "plano" | "cliente" | "usuario" | "tarefa" | "buscaPrevia" | "fatura" | "faturaItem" | "tarefaResultado" | "imovelCache" | "consultaLog" | "operacaoEvento" | "workerHeartbeat" | "workerAgent"
+    modelProps: "plano" | "cliente" | "usuario" | "tarefa" | "buscaPrevia" | "fatura" | "faturaItem" | "tarefaResultado" | "imovelCache" | "consultaLog" | "operacaoEvento" | "workerHeartbeat" | "workerAgent" | "workerAgentInstallLink"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1378,6 +1379,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    WorkerAgentInstallLink: {
+      payload: Prisma.$WorkerAgentInstallLinkPayload<ExtArgs>
+      fields: Prisma.WorkerAgentInstallLinkFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WorkerAgentInstallLinkFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerAgentInstallLinkPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WorkerAgentInstallLinkFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerAgentInstallLinkPayload>
+        }
+        findFirst: {
+          args: Prisma.WorkerAgentInstallLinkFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerAgentInstallLinkPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WorkerAgentInstallLinkFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerAgentInstallLinkPayload>
+        }
+        findMany: {
+          args: Prisma.WorkerAgentInstallLinkFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerAgentInstallLinkPayload>[]
+        }
+        create: {
+          args: Prisma.WorkerAgentInstallLinkCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerAgentInstallLinkPayload>
+        }
+        createMany: {
+          args: Prisma.WorkerAgentInstallLinkCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WorkerAgentInstallLinkCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerAgentInstallLinkPayload>[]
+        }
+        delete: {
+          args: Prisma.WorkerAgentInstallLinkDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerAgentInstallLinkPayload>
+        }
+        update: {
+          args: Prisma.WorkerAgentInstallLinkUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerAgentInstallLinkPayload>
+        }
+        deleteMany: {
+          args: Prisma.WorkerAgentInstallLinkDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WorkerAgentInstallLinkUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WorkerAgentInstallLinkUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerAgentInstallLinkPayload>[]
+        }
+        upsert: {
+          args: Prisma.WorkerAgentInstallLinkUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkerAgentInstallLinkPayload>
+        }
+        aggregate: {
+          args: Prisma.WorkerAgentInstallLinkAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWorkerAgentInstallLink>
+        }
+        groupBy: {
+          args: Prisma.WorkerAgentInstallLinkGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WorkerAgentInstallLinkGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WorkerAgentInstallLinkCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WorkerAgentInstallLinkCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1680,6 +1755,24 @@ export const WorkerAgentScalarFieldEnum = {
 } as const
 
 export type WorkerAgentScalarFieldEnum = (typeof WorkerAgentScalarFieldEnum)[keyof typeof WorkerAgentScalarFieldEnum]
+
+
+export const WorkerAgentInstallLinkScalarFieldEnum = {
+  id: 'id',
+  clienteId: 'clienteId',
+  codigoHash: 'codigoHash',
+  status: 'status',
+  identificadorBase: 'identificadorBase',
+  incluirRegistro: 'incluirRegistro',
+  incluirCnd: 'incluirCnd',
+  usadoEm: 'usadoEm',
+  expiraEm: 'expiraEm',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WorkerAgentInstallLinkScalarFieldEnum = (typeof WorkerAgentInstallLinkScalarFieldEnum)[keyof typeof WorkerAgentInstallLinkScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -2024,6 +2117,20 @@ export type ListEnumWorkerAgentStatusFieldRefInput<$PrismaModel> = FieldRefInput
 
 
 /**
+ * Reference to a field of type 'WorkerAgentInstallLinkStatus'
+ */
+export type EnumWorkerAgentInstallLinkStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkerAgentInstallLinkStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'WorkerAgentInstallLinkStatus[]'
+ */
+export type ListEnumWorkerAgentInstallLinkStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkerAgentInstallLinkStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -2159,6 +2266,7 @@ export type GlobalOmitConfig = {
   operacaoEvento?: Prisma.OperacaoEventoOmit
   workerHeartbeat?: Prisma.WorkerHeartbeatOmit
   workerAgent?: Prisma.WorkerAgentOmit
+  workerAgentInstallLink?: Prisma.WorkerAgentInstallLinkOmit
 }
 
 /* Types for Logging */

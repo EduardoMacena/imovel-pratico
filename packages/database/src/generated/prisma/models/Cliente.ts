@@ -297,6 +297,7 @@ export type ClienteWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Cliente"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Cliente"> | Date | string
   plano?: Prisma.XOR<Prisma.PlanoNullableScalarRelationFilter, Prisma.PlanoWhereInput> | null
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkListRelationFilter
   usuarios?: Prisma.UsuarioListRelationFilter
   tarefas?: Prisma.TarefaListRelationFilter
   consultasLogs?: Prisma.ConsultaLogListRelationFilter
@@ -323,6 +324,7 @@ export type ClienteOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   plano?: Prisma.PlanoOrderByWithRelationInput
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkOrderByRelationAggregateInput
   usuarios?: Prisma.UsuarioOrderByRelationAggregateInput
   tarefas?: Prisma.TarefaOrderByRelationAggregateInput
   consultasLogs?: Prisma.ConsultaLogOrderByRelationAggregateInput
@@ -352,6 +354,7 @@ export type ClienteWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Cliente"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Cliente"> | Date | string
   plano?: Prisma.XOR<Prisma.PlanoNullableScalarRelationFilter, Prisma.PlanoWhereInput> | null
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkListRelationFilter
   usuarios?: Prisma.UsuarioListRelationFilter
   tarefas?: Prisma.TarefaListRelationFilter
   consultasLogs?: Prisma.ConsultaLogListRelationFilter
@@ -419,6 +422,7 @@ export type ClienteCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   plano?: Prisma.PlanoCreateNestedOneWithoutClientesInput
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkCreateNestedManyWithoutClienteInput
   usuarios?: Prisma.UsuarioCreateNestedManyWithoutClienteInput
   tarefas?: Prisma.TarefaCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogCreateNestedManyWithoutClienteInput
@@ -444,6 +448,7 @@ export type ClienteUncheckedCreateInput = {
   pagamentoVenceEm?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkUncheckedCreateNestedManyWithoutClienteInput
   usuarios?: Prisma.UsuarioUncheckedCreateNestedManyWithoutClienteInput
   tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogUncheckedCreateNestedManyWithoutClienteInput
@@ -469,6 +474,7 @@ export type ClienteUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   plano?: Prisma.PlanoUpdateOneWithoutClientesNestedInput
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkUpdateManyWithoutClienteNestedInput
   usuarios?: Prisma.UsuarioUpdateManyWithoutClienteNestedInput
   tarefas?: Prisma.TarefaUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUpdateManyWithoutClienteNestedInput
@@ -494,6 +500,7 @@ export type ClienteUncheckedUpdateInput = {
   pagamentoVenceEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkUncheckedUpdateManyWithoutClienteNestedInput
   usuarios?: Prisma.UsuarioUncheckedUpdateManyWithoutClienteNestedInput
   tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUncheckedUpdateManyWithoutClienteNestedInput
@@ -811,6 +818,20 @@ export type ClienteUpdateOneRequiredWithoutWorkerAgentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ClienteUpdateToOneWithWhereWithoutWorkerAgentsInput, Prisma.ClienteUpdateWithoutWorkerAgentsInput>, Prisma.ClienteUncheckedUpdateWithoutWorkerAgentsInput>
 }
 
+export type ClienteCreateNestedOneWithoutWorkerAgentInstallLinksInput = {
+  create?: Prisma.XOR<Prisma.ClienteCreateWithoutWorkerAgentInstallLinksInput, Prisma.ClienteUncheckedCreateWithoutWorkerAgentInstallLinksInput>
+  connectOrCreate?: Prisma.ClienteCreateOrConnectWithoutWorkerAgentInstallLinksInput
+  connect?: Prisma.ClienteWhereUniqueInput
+}
+
+export type ClienteUpdateOneRequiredWithoutWorkerAgentInstallLinksNestedInput = {
+  create?: Prisma.XOR<Prisma.ClienteCreateWithoutWorkerAgentInstallLinksInput, Prisma.ClienteUncheckedCreateWithoutWorkerAgentInstallLinksInput>
+  connectOrCreate?: Prisma.ClienteCreateOrConnectWithoutWorkerAgentInstallLinksInput
+  upsert?: Prisma.ClienteUpsertWithoutWorkerAgentInstallLinksInput
+  connect?: Prisma.ClienteWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ClienteUpdateToOneWithWhereWithoutWorkerAgentInstallLinksInput, Prisma.ClienteUpdateWithoutWorkerAgentInstallLinksInput>, Prisma.ClienteUncheckedUpdateWithoutWorkerAgentInstallLinksInput>
+}
+
 export type ClienteCreateWithoutPlanoInput = {
   id?: string
   nome: string
@@ -825,6 +846,7 @@ export type ClienteCreateWithoutPlanoInput = {
   pagamentoVenceEm?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkCreateNestedManyWithoutClienteInput
   usuarios?: Prisma.UsuarioCreateNestedManyWithoutClienteInput
   tarefas?: Prisma.TarefaCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogCreateNestedManyWithoutClienteInput
@@ -849,6 +871,7 @@ export type ClienteUncheckedCreateWithoutPlanoInput = {
   pagamentoVenceEm?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkUncheckedCreateNestedManyWithoutClienteInput
   usuarios?: Prisma.UsuarioUncheckedCreateNestedManyWithoutClienteInput
   tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogUncheckedCreateNestedManyWithoutClienteInput
@@ -920,6 +943,7 @@ export type ClienteCreateWithoutUsuariosInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   plano?: Prisma.PlanoCreateNestedOneWithoutClientesInput
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkCreateNestedManyWithoutClienteInput
   tarefas?: Prisma.TarefaCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogCreateNestedManyWithoutClienteInput
   operacaoEventos?: Prisma.OperacaoEventoCreateNestedManyWithoutClienteInput
@@ -944,6 +968,7 @@ export type ClienteUncheckedCreateWithoutUsuariosInput = {
   pagamentoVenceEm?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkUncheckedCreateNestedManyWithoutClienteInput
   tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogUncheckedCreateNestedManyWithoutClienteInput
   operacaoEventos?: Prisma.OperacaoEventoUncheckedCreateNestedManyWithoutClienteInput
@@ -984,6 +1009,7 @@ export type ClienteUpdateWithoutUsuariosInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   plano?: Prisma.PlanoUpdateOneWithoutClientesNestedInput
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkUpdateManyWithoutClienteNestedInput
   tarefas?: Prisma.TarefaUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUpdateManyWithoutClienteNestedInput
   operacaoEventos?: Prisma.OperacaoEventoUpdateManyWithoutClienteNestedInput
@@ -1008,6 +1034,7 @@ export type ClienteUncheckedUpdateWithoutUsuariosInput = {
   pagamentoVenceEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkUncheckedUpdateManyWithoutClienteNestedInput
   tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUncheckedUpdateManyWithoutClienteNestedInput
   operacaoEventos?: Prisma.OperacaoEventoUncheckedUpdateManyWithoutClienteNestedInput
@@ -1032,6 +1059,7 @@ export type ClienteCreateWithoutTarefasInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   plano?: Prisma.PlanoCreateNestedOneWithoutClientesInput
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkCreateNestedManyWithoutClienteInput
   usuarios?: Prisma.UsuarioCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogCreateNestedManyWithoutClienteInput
   operacaoEventos?: Prisma.OperacaoEventoCreateNestedManyWithoutClienteInput
@@ -1056,6 +1084,7 @@ export type ClienteUncheckedCreateWithoutTarefasInput = {
   pagamentoVenceEm?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkUncheckedCreateNestedManyWithoutClienteInput
   usuarios?: Prisma.UsuarioUncheckedCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogUncheckedCreateNestedManyWithoutClienteInput
   operacaoEventos?: Prisma.OperacaoEventoUncheckedCreateNestedManyWithoutClienteInput
@@ -1096,6 +1125,7 @@ export type ClienteUpdateWithoutTarefasInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   plano?: Prisma.PlanoUpdateOneWithoutClientesNestedInput
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkUpdateManyWithoutClienteNestedInput
   usuarios?: Prisma.UsuarioUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUpdateManyWithoutClienteNestedInput
   operacaoEventos?: Prisma.OperacaoEventoUpdateManyWithoutClienteNestedInput
@@ -1120,6 +1150,7 @@ export type ClienteUncheckedUpdateWithoutTarefasInput = {
   pagamentoVenceEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkUncheckedUpdateManyWithoutClienteNestedInput
   usuarios?: Prisma.UsuarioUncheckedUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUncheckedUpdateManyWithoutClienteNestedInput
   operacaoEventos?: Prisma.OperacaoEventoUncheckedUpdateManyWithoutClienteNestedInput
@@ -1144,6 +1175,7 @@ export type ClienteCreateWithoutBuscasPreviasInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   plano?: Prisma.PlanoCreateNestedOneWithoutClientesInput
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkCreateNestedManyWithoutClienteInput
   usuarios?: Prisma.UsuarioCreateNestedManyWithoutClienteInput
   tarefas?: Prisma.TarefaCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogCreateNestedManyWithoutClienteInput
@@ -1168,6 +1200,7 @@ export type ClienteUncheckedCreateWithoutBuscasPreviasInput = {
   pagamentoVenceEm?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkUncheckedCreateNestedManyWithoutClienteInput
   usuarios?: Prisma.UsuarioUncheckedCreateNestedManyWithoutClienteInput
   tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogUncheckedCreateNestedManyWithoutClienteInput
@@ -1208,6 +1241,7 @@ export type ClienteUpdateWithoutBuscasPreviasInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   plano?: Prisma.PlanoUpdateOneWithoutClientesNestedInput
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkUpdateManyWithoutClienteNestedInput
   usuarios?: Prisma.UsuarioUpdateManyWithoutClienteNestedInput
   tarefas?: Prisma.TarefaUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUpdateManyWithoutClienteNestedInput
@@ -1232,6 +1266,7 @@ export type ClienteUncheckedUpdateWithoutBuscasPreviasInput = {
   pagamentoVenceEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkUncheckedUpdateManyWithoutClienteNestedInput
   usuarios?: Prisma.UsuarioUncheckedUpdateManyWithoutClienteNestedInput
   tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUncheckedUpdateManyWithoutClienteNestedInput
@@ -1256,6 +1291,7 @@ export type ClienteCreateWithoutFaturasInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   plano?: Prisma.PlanoCreateNestedOneWithoutClientesInput
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkCreateNestedManyWithoutClienteInput
   usuarios?: Prisma.UsuarioCreateNestedManyWithoutClienteInput
   tarefas?: Prisma.TarefaCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogCreateNestedManyWithoutClienteInput
@@ -1280,6 +1316,7 @@ export type ClienteUncheckedCreateWithoutFaturasInput = {
   pagamentoVenceEm?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkUncheckedCreateNestedManyWithoutClienteInput
   usuarios?: Prisma.UsuarioUncheckedCreateNestedManyWithoutClienteInput
   tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogUncheckedCreateNestedManyWithoutClienteInput
@@ -1320,6 +1357,7 @@ export type ClienteUpdateWithoutFaturasInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   plano?: Prisma.PlanoUpdateOneWithoutClientesNestedInput
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkUpdateManyWithoutClienteNestedInput
   usuarios?: Prisma.UsuarioUpdateManyWithoutClienteNestedInput
   tarefas?: Prisma.TarefaUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUpdateManyWithoutClienteNestedInput
@@ -1344,6 +1382,7 @@ export type ClienteUncheckedUpdateWithoutFaturasInput = {
   pagamentoVenceEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkUncheckedUpdateManyWithoutClienteNestedInput
   usuarios?: Prisma.UsuarioUncheckedUpdateManyWithoutClienteNestedInput
   tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUncheckedUpdateManyWithoutClienteNestedInput
@@ -1368,6 +1407,7 @@ export type ClienteCreateWithoutConsultasLogsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   plano?: Prisma.PlanoCreateNestedOneWithoutClientesInput
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkCreateNestedManyWithoutClienteInput
   usuarios?: Prisma.UsuarioCreateNestedManyWithoutClienteInput
   tarefas?: Prisma.TarefaCreateNestedManyWithoutClienteInput
   operacaoEventos?: Prisma.OperacaoEventoCreateNestedManyWithoutClienteInput
@@ -1392,6 +1432,7 @@ export type ClienteUncheckedCreateWithoutConsultasLogsInput = {
   pagamentoVenceEm?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkUncheckedCreateNestedManyWithoutClienteInput
   usuarios?: Prisma.UsuarioUncheckedCreateNestedManyWithoutClienteInput
   tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutClienteInput
   operacaoEventos?: Prisma.OperacaoEventoUncheckedCreateNestedManyWithoutClienteInput
@@ -1432,6 +1473,7 @@ export type ClienteUpdateWithoutConsultasLogsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   plano?: Prisma.PlanoUpdateOneWithoutClientesNestedInput
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkUpdateManyWithoutClienteNestedInput
   usuarios?: Prisma.UsuarioUpdateManyWithoutClienteNestedInput
   tarefas?: Prisma.TarefaUpdateManyWithoutClienteNestedInput
   operacaoEventos?: Prisma.OperacaoEventoUpdateManyWithoutClienteNestedInput
@@ -1456,6 +1498,7 @@ export type ClienteUncheckedUpdateWithoutConsultasLogsInput = {
   pagamentoVenceEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkUncheckedUpdateManyWithoutClienteNestedInput
   usuarios?: Prisma.UsuarioUncheckedUpdateManyWithoutClienteNestedInput
   tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutClienteNestedInput
   operacaoEventos?: Prisma.OperacaoEventoUncheckedUpdateManyWithoutClienteNestedInput
@@ -1480,6 +1523,7 @@ export type ClienteCreateWithoutOperacaoEventosInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   plano?: Prisma.PlanoCreateNestedOneWithoutClientesInput
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkCreateNestedManyWithoutClienteInput
   usuarios?: Prisma.UsuarioCreateNestedManyWithoutClienteInput
   tarefas?: Prisma.TarefaCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogCreateNestedManyWithoutClienteInput
@@ -1504,6 +1548,7 @@ export type ClienteUncheckedCreateWithoutOperacaoEventosInput = {
   pagamentoVenceEm?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkUncheckedCreateNestedManyWithoutClienteInput
   usuarios?: Prisma.UsuarioUncheckedCreateNestedManyWithoutClienteInput
   tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogUncheckedCreateNestedManyWithoutClienteInput
@@ -1544,6 +1589,7 @@ export type ClienteUpdateWithoutOperacaoEventosInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   plano?: Prisma.PlanoUpdateOneWithoutClientesNestedInput
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkUpdateManyWithoutClienteNestedInput
   usuarios?: Prisma.UsuarioUpdateManyWithoutClienteNestedInput
   tarefas?: Prisma.TarefaUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUpdateManyWithoutClienteNestedInput
@@ -1568,6 +1614,7 @@ export type ClienteUncheckedUpdateWithoutOperacaoEventosInput = {
   pagamentoVenceEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkUncheckedUpdateManyWithoutClienteNestedInput
   usuarios?: Prisma.UsuarioUncheckedUpdateManyWithoutClienteNestedInput
   tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUncheckedUpdateManyWithoutClienteNestedInput
@@ -1592,6 +1639,7 @@ export type ClienteCreateWithoutWorkerHeartbeatsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   plano?: Prisma.PlanoCreateNestedOneWithoutClientesInput
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkCreateNestedManyWithoutClienteInput
   usuarios?: Prisma.UsuarioCreateNestedManyWithoutClienteInput
   tarefas?: Prisma.TarefaCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogCreateNestedManyWithoutClienteInput
@@ -1616,6 +1664,7 @@ export type ClienteUncheckedCreateWithoutWorkerHeartbeatsInput = {
   pagamentoVenceEm?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkUncheckedCreateNestedManyWithoutClienteInput
   usuarios?: Prisma.UsuarioUncheckedCreateNestedManyWithoutClienteInput
   tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogUncheckedCreateNestedManyWithoutClienteInput
@@ -1656,6 +1705,7 @@ export type ClienteUpdateWithoutWorkerHeartbeatsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   plano?: Prisma.PlanoUpdateOneWithoutClientesNestedInput
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkUpdateManyWithoutClienteNestedInput
   usuarios?: Prisma.UsuarioUpdateManyWithoutClienteNestedInput
   tarefas?: Prisma.TarefaUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUpdateManyWithoutClienteNestedInput
@@ -1680,6 +1730,7 @@ export type ClienteUncheckedUpdateWithoutWorkerHeartbeatsInput = {
   pagamentoVenceEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkUncheckedUpdateManyWithoutClienteNestedInput
   usuarios?: Prisma.UsuarioUncheckedUpdateManyWithoutClienteNestedInput
   tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUncheckedUpdateManyWithoutClienteNestedInput
@@ -1704,6 +1755,7 @@ export type ClienteCreateWithoutWorkerAgentsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   plano?: Prisma.PlanoCreateNestedOneWithoutClientesInput
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkCreateNestedManyWithoutClienteInput
   usuarios?: Prisma.UsuarioCreateNestedManyWithoutClienteInput
   tarefas?: Prisma.TarefaCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogCreateNestedManyWithoutClienteInput
@@ -1728,6 +1780,7 @@ export type ClienteUncheckedCreateWithoutWorkerAgentsInput = {
   pagamentoVenceEm?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkUncheckedCreateNestedManyWithoutClienteInput
   usuarios?: Prisma.UsuarioUncheckedCreateNestedManyWithoutClienteInput
   tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogUncheckedCreateNestedManyWithoutClienteInput
@@ -1768,6 +1821,7 @@ export type ClienteUpdateWithoutWorkerAgentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   plano?: Prisma.PlanoUpdateOneWithoutClientesNestedInput
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkUpdateManyWithoutClienteNestedInput
   usuarios?: Prisma.UsuarioUpdateManyWithoutClienteNestedInput
   tarefas?: Prisma.TarefaUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUpdateManyWithoutClienteNestedInput
@@ -1792,11 +1846,128 @@ export type ClienteUncheckedUpdateWithoutWorkerAgentsInput = {
   pagamentoVenceEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkUncheckedUpdateManyWithoutClienteNestedInput
   usuarios?: Prisma.UsuarioUncheckedUpdateManyWithoutClienteNestedInput
   tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUncheckedUpdateManyWithoutClienteNestedInput
   operacaoEventos?: Prisma.OperacaoEventoUncheckedUpdateManyWithoutClienteNestedInput
   workerHeartbeats?: Prisma.WorkerHeartbeatUncheckedUpdateManyWithoutClienteNestedInput
+  buscasPrevias?: Prisma.BuscaPreviaUncheckedUpdateManyWithoutClienteNestedInput
+  faturas?: Prisma.FaturaUncheckedUpdateManyWithoutClienteNestedInput
+}
+
+export type ClienteCreateWithoutWorkerAgentInstallLinksInput = {
+  id?: string
+  nome: string
+  slug: string
+  status?: $Enums.ClienteStatus
+  modoProcessamento?: $Enums.ClienteModoProcessamento
+  workerUrl?: string | null
+  intervaloSegundos?: number
+  limiteDiario?: number
+  limiteMensalConsultas?: number
+  pagamentoStatus?: $Enums.PagamentoStatus
+  pagamentoVenceEm?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  plano?: Prisma.PlanoCreateNestedOneWithoutClientesInput
+  usuarios?: Prisma.UsuarioCreateNestedManyWithoutClienteInput
+  tarefas?: Prisma.TarefaCreateNestedManyWithoutClienteInput
+  consultasLogs?: Prisma.ConsultaLogCreateNestedManyWithoutClienteInput
+  operacaoEventos?: Prisma.OperacaoEventoCreateNestedManyWithoutClienteInput
+  workerHeartbeats?: Prisma.WorkerHeartbeatCreateNestedManyWithoutClienteInput
+  workerAgents?: Prisma.WorkerAgentCreateNestedManyWithoutClienteInput
+  buscasPrevias?: Prisma.BuscaPreviaCreateNestedManyWithoutClienteInput
+  faturas?: Prisma.FaturaCreateNestedManyWithoutClienteInput
+}
+
+export type ClienteUncheckedCreateWithoutWorkerAgentInstallLinksInput = {
+  id?: string
+  nome: string
+  slug: string
+  status?: $Enums.ClienteStatus
+  modoProcessamento?: $Enums.ClienteModoProcessamento
+  planoId?: string | null
+  workerUrl?: string | null
+  intervaloSegundos?: number
+  limiteDiario?: number
+  limiteMensalConsultas?: number
+  pagamentoStatus?: $Enums.PagamentoStatus
+  pagamentoVenceEm?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  usuarios?: Prisma.UsuarioUncheckedCreateNestedManyWithoutClienteInput
+  tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutClienteInput
+  consultasLogs?: Prisma.ConsultaLogUncheckedCreateNestedManyWithoutClienteInput
+  operacaoEventos?: Prisma.OperacaoEventoUncheckedCreateNestedManyWithoutClienteInput
+  workerHeartbeats?: Prisma.WorkerHeartbeatUncheckedCreateNestedManyWithoutClienteInput
+  workerAgents?: Prisma.WorkerAgentUncheckedCreateNestedManyWithoutClienteInput
+  buscasPrevias?: Prisma.BuscaPreviaUncheckedCreateNestedManyWithoutClienteInput
+  faturas?: Prisma.FaturaUncheckedCreateNestedManyWithoutClienteInput
+}
+
+export type ClienteCreateOrConnectWithoutWorkerAgentInstallLinksInput = {
+  where: Prisma.ClienteWhereUniqueInput
+  create: Prisma.XOR<Prisma.ClienteCreateWithoutWorkerAgentInstallLinksInput, Prisma.ClienteUncheckedCreateWithoutWorkerAgentInstallLinksInput>
+}
+
+export type ClienteUpsertWithoutWorkerAgentInstallLinksInput = {
+  update: Prisma.XOR<Prisma.ClienteUpdateWithoutWorkerAgentInstallLinksInput, Prisma.ClienteUncheckedUpdateWithoutWorkerAgentInstallLinksInput>
+  create: Prisma.XOR<Prisma.ClienteCreateWithoutWorkerAgentInstallLinksInput, Prisma.ClienteUncheckedCreateWithoutWorkerAgentInstallLinksInput>
+  where?: Prisma.ClienteWhereInput
+}
+
+export type ClienteUpdateToOneWithWhereWithoutWorkerAgentInstallLinksInput = {
+  where?: Prisma.ClienteWhereInput
+  data: Prisma.XOR<Prisma.ClienteUpdateWithoutWorkerAgentInstallLinksInput, Prisma.ClienteUncheckedUpdateWithoutWorkerAgentInstallLinksInput>
+}
+
+export type ClienteUpdateWithoutWorkerAgentInstallLinksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  nome?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumClienteStatusFieldUpdateOperationsInput | $Enums.ClienteStatus
+  modoProcessamento?: Prisma.EnumClienteModoProcessamentoFieldUpdateOperationsInput | $Enums.ClienteModoProcessamento
+  workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
+  limiteDiario?: Prisma.IntFieldUpdateOperationsInput | number
+  limiteMensalConsultas?: Prisma.IntFieldUpdateOperationsInput | number
+  pagamentoStatus?: Prisma.EnumPagamentoStatusFieldUpdateOperationsInput | $Enums.PagamentoStatus
+  pagamentoVenceEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  plano?: Prisma.PlanoUpdateOneWithoutClientesNestedInput
+  usuarios?: Prisma.UsuarioUpdateManyWithoutClienteNestedInput
+  tarefas?: Prisma.TarefaUpdateManyWithoutClienteNestedInput
+  consultasLogs?: Prisma.ConsultaLogUpdateManyWithoutClienteNestedInput
+  operacaoEventos?: Prisma.OperacaoEventoUpdateManyWithoutClienteNestedInput
+  workerHeartbeats?: Prisma.WorkerHeartbeatUpdateManyWithoutClienteNestedInput
+  workerAgents?: Prisma.WorkerAgentUpdateManyWithoutClienteNestedInput
+  buscasPrevias?: Prisma.BuscaPreviaUpdateManyWithoutClienteNestedInput
+  faturas?: Prisma.FaturaUpdateManyWithoutClienteNestedInput
+}
+
+export type ClienteUncheckedUpdateWithoutWorkerAgentInstallLinksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  nome?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumClienteStatusFieldUpdateOperationsInput | $Enums.ClienteStatus
+  modoProcessamento?: Prisma.EnumClienteModoProcessamentoFieldUpdateOperationsInput | $Enums.ClienteModoProcessamento
+  planoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
+  limiteDiario?: Prisma.IntFieldUpdateOperationsInput | number
+  limiteMensalConsultas?: Prisma.IntFieldUpdateOperationsInput | number
+  pagamentoStatus?: Prisma.EnumPagamentoStatusFieldUpdateOperationsInput | $Enums.PagamentoStatus
+  pagamentoVenceEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  usuarios?: Prisma.UsuarioUncheckedUpdateManyWithoutClienteNestedInput
+  tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutClienteNestedInput
+  consultasLogs?: Prisma.ConsultaLogUncheckedUpdateManyWithoutClienteNestedInput
+  operacaoEventos?: Prisma.OperacaoEventoUncheckedUpdateManyWithoutClienteNestedInput
+  workerHeartbeats?: Prisma.WorkerHeartbeatUncheckedUpdateManyWithoutClienteNestedInput
+  workerAgents?: Prisma.WorkerAgentUncheckedUpdateManyWithoutClienteNestedInput
   buscasPrevias?: Prisma.BuscaPreviaUncheckedUpdateManyWithoutClienteNestedInput
   faturas?: Prisma.FaturaUncheckedUpdateManyWithoutClienteNestedInput
 }
@@ -1831,6 +2002,7 @@ export type ClienteUpdateWithoutPlanoInput = {
   pagamentoVenceEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkUpdateManyWithoutClienteNestedInput
   usuarios?: Prisma.UsuarioUpdateManyWithoutClienteNestedInput
   tarefas?: Prisma.TarefaUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUpdateManyWithoutClienteNestedInput
@@ -1855,6 +2027,7 @@ export type ClienteUncheckedUpdateWithoutPlanoInput = {
   pagamentoVenceEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkUncheckedUpdateManyWithoutClienteNestedInput
   usuarios?: Prisma.UsuarioUncheckedUpdateManyWithoutClienteNestedInput
   tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUncheckedUpdateManyWithoutClienteNestedInput
@@ -1887,6 +2060,7 @@ export type ClienteUncheckedUpdateManyWithoutPlanoInput = {
  */
 
 export type ClienteCountOutputType = {
+  workerAgentInstallLinks: number
   usuarios: number
   tarefas: number
   consultasLogs: number
@@ -1898,6 +2072,7 @@ export type ClienteCountOutputType = {
 }
 
 export type ClienteCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  workerAgentInstallLinks?: boolean | ClienteCountOutputTypeCountWorkerAgentInstallLinksArgs
   usuarios?: boolean | ClienteCountOutputTypeCountUsuariosArgs
   tarefas?: boolean | ClienteCountOutputTypeCountTarefasArgs
   consultasLogs?: boolean | ClienteCountOutputTypeCountConsultasLogsArgs
@@ -1916,6 +2091,13 @@ export type ClienteCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Exte
    * Select specific fields to fetch from the ClienteCountOutputType
    */
   select?: Prisma.ClienteCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * ClienteCountOutputType without action
+ */
+export type ClienteCountOutputTypeCountWorkerAgentInstallLinksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WorkerAgentInstallLinkWhereInput
 }
 
 /**
@@ -1991,6 +2173,7 @@ export type ClienteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   createdAt?: boolean
   updatedAt?: boolean
   plano?: boolean | Prisma.Cliente$planoArgs<ExtArgs>
+  workerAgentInstallLinks?: boolean | Prisma.Cliente$workerAgentInstallLinksArgs<ExtArgs>
   usuarios?: boolean | Prisma.Cliente$usuariosArgs<ExtArgs>
   tarefas?: boolean | Prisma.Cliente$tarefasArgs<ExtArgs>
   consultasLogs?: boolean | Prisma.Cliente$consultasLogsArgs<ExtArgs>
@@ -2058,6 +2241,7 @@ export type ClienteSelectScalar = {
 export type ClienteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nome" | "slug" | "status" | "modoProcessamento" | "planoId" | "workerUrl" | "intervaloSegundos" | "limiteDiario" | "limiteMensalConsultas" | "pagamentoStatus" | "pagamentoVenceEm" | "createdAt" | "updatedAt", ExtArgs["result"]["cliente"]>
 export type ClienteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   plano?: boolean | Prisma.Cliente$planoArgs<ExtArgs>
+  workerAgentInstallLinks?: boolean | Prisma.Cliente$workerAgentInstallLinksArgs<ExtArgs>
   usuarios?: boolean | Prisma.Cliente$usuariosArgs<ExtArgs>
   tarefas?: boolean | Prisma.Cliente$tarefasArgs<ExtArgs>
   consultasLogs?: boolean | Prisma.Cliente$consultasLogsArgs<ExtArgs>
@@ -2079,6 +2263,7 @@ export type $ClientePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   name: "Cliente"
   objects: {
     plano: Prisma.$PlanoPayload<ExtArgs> | null
+    workerAgentInstallLinks: Prisma.$WorkerAgentInstallLinkPayload<ExtArgs>[]
     usuarios: Prisma.$UsuarioPayload<ExtArgs>[]
     tarefas: Prisma.$TarefaPayload<ExtArgs>[]
     consultasLogs: Prisma.$ConsultaLogPayload<ExtArgs>[]
@@ -2498,6 +2683,7 @@ readonly fields: ClienteFieldRefs;
 export interface Prisma__ClienteClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   plano<T extends Prisma.Cliente$planoArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cliente$planoArgs<ExtArgs>>): Prisma.Prisma__PlanoClient<runtime.Types.Result.GetResult<Prisma.$PlanoPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  workerAgentInstallLinks<T extends Prisma.Cliente$workerAgentInstallLinksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cliente$workerAgentInstallLinksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkerAgentInstallLinkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   usuarios<T extends Prisma.Cliente$usuariosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cliente$usuariosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UsuarioPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   tarefas<T extends Prisma.Cliente$tarefasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cliente$tarefasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TarefaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   consultasLogs<T extends Prisma.Cliente$consultasLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cliente$consultasLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ConsultaLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2966,6 +3152,30 @@ export type Cliente$planoArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    */
   include?: Prisma.PlanoInclude<ExtArgs> | null
   where?: Prisma.PlanoWhereInput
+}
+
+/**
+ * Cliente.workerAgentInstallLinks
+ */
+export type Cliente$workerAgentInstallLinksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WorkerAgentInstallLink
+   */
+  select?: Prisma.WorkerAgentInstallLinkSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WorkerAgentInstallLink
+   */
+  omit?: Prisma.WorkerAgentInstallLinkOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkerAgentInstallLinkInclude<ExtArgs> | null
+  where?: Prisma.WorkerAgentInstallLinkWhereInput
+  orderBy?: Prisma.WorkerAgentInstallLinkOrderByWithRelationInput | Prisma.WorkerAgentInstallLinkOrderByWithRelationInput[]
+  cursor?: Prisma.WorkerAgentInstallLinkWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WorkerAgentInstallLinkScalarFieldEnum | Prisma.WorkerAgentInstallLinkScalarFieldEnum[]
 }
 
 /**

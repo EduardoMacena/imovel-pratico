@@ -576,6 +576,23 @@ export type EnumWorkerAgentStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumWorkerAgentStatusFilter<$PrismaModel>
 }
 
+export type EnumWorkerAgentInstallLinkStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.WorkerAgentInstallLinkStatus | Prisma.EnumWorkerAgentInstallLinkStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.WorkerAgentInstallLinkStatus[] | Prisma.ListEnumWorkerAgentInstallLinkStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.WorkerAgentInstallLinkStatus[] | Prisma.ListEnumWorkerAgentInstallLinkStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumWorkerAgentInstallLinkStatusFilter<$PrismaModel> | $Enums.WorkerAgentInstallLinkStatus
+}
+
+export type EnumWorkerAgentInstallLinkStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.WorkerAgentInstallLinkStatus | Prisma.EnumWorkerAgentInstallLinkStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.WorkerAgentInstallLinkStatus[] | Prisma.ListEnumWorkerAgentInstallLinkStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.WorkerAgentInstallLinkStatus[] | Prisma.ListEnumWorkerAgentInstallLinkStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumWorkerAgentInstallLinkStatusWithAggregatesFilter<$PrismaModel> | $Enums.WorkerAgentInstallLinkStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumWorkerAgentInstallLinkStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumWorkerAgentInstallLinkStatusFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -1095,6 +1112,23 @@ export type NestedEnumWorkerAgentStatusWithAggregatesFilter<$PrismaModel = never
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumWorkerAgentStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumWorkerAgentStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumWorkerAgentInstallLinkStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.WorkerAgentInstallLinkStatus | Prisma.EnumWorkerAgentInstallLinkStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.WorkerAgentInstallLinkStatus[] | Prisma.ListEnumWorkerAgentInstallLinkStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.WorkerAgentInstallLinkStatus[] | Prisma.ListEnumWorkerAgentInstallLinkStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumWorkerAgentInstallLinkStatusFilter<$PrismaModel> | $Enums.WorkerAgentInstallLinkStatus
+}
+
+export type NestedEnumWorkerAgentInstallLinkStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.WorkerAgentInstallLinkStatus | Prisma.EnumWorkerAgentInstallLinkStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.WorkerAgentInstallLinkStatus[] | Prisma.ListEnumWorkerAgentInstallLinkStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.WorkerAgentInstallLinkStatus[] | Prisma.ListEnumWorkerAgentInstallLinkStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumWorkerAgentInstallLinkStatusWithAggregatesFilter<$PrismaModel> | $Enums.WorkerAgentInstallLinkStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumWorkerAgentInstallLinkStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumWorkerAgentInstallLinkStatusFilter<$PrismaModel>
 }
 
 
