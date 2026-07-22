@@ -28,8 +28,7 @@ function getBrowserContextOptions() {
 		},
 		extraHTTPHeaders: {
 			"Accept-Language":
-				process.env.PLAYWRIGHT_ACCEPT_LANGUAGE ??
-				"pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
+				process.env.PLAYWRIGHT_ACCEPT_LANGUAGE ?? "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
 		},
 	};
 }
@@ -42,11 +41,7 @@ function normalizarNomeArquivo(value: string) {
 	return value.replace(/[^a-zA-Z0-9_-]/g, "-").replace(/-+/g, "-");
 }
 
-async function salvarScreenshotCnd(
-	page: Page,
-	etapa: string,
-	indiceCadastral: string
-) {
+async function salvarScreenshotCnd(page: Page, etapa: string, indiceCadastral: string) {
 	if (!isCndDebugScreenshotsEnabled()) {
 		return;
 	}
@@ -74,18 +69,14 @@ function normalizarTexto(texto: string) {
 	return texto.replace(/\s+/g, " ").trim();
 }
 
-function extrairCampo(
-	texto: string,
-	labels: string[],
-	proximosLabels: string[]
-) {
+function extrairCampo(texto: string, labels: string[], proximosLabels: string[]) {
 	const textoNormalizado = normalizarTexto(texto);
 
 	for (const label of labels) {
 		const proximos = proximosLabels.join("|");
 
 		const regexComDoisPontos = new RegExp(
-			`${label}\\s*:\\s*(.+?)(?=\\s+(?:${proximos})\\s*:|$)`,
+			`${label}\\s*:\\s*(.+?)(?=\\s+(?:${proximos})(?:\\s|:)|$)`,
 			"i"
 		);
 
@@ -128,6 +119,20 @@ function extrairCpf(texto: string) {
 		["CPF", "CPF/CNPJ"],
 		["Nome", "Endereço", "Endereco", "Índice", "Indice"]
 	);
+}
+
+function limparIndiceCadastralCnd(value: string | null | undefined, fallback: string) {
+	const raw = value?.trim() || fallback;
+
+	const limpo = raw
+		.replace(
+			/\s+(?:Ressalvando|Nos termos|Per[ií]odo pesquisado|Periodo pesquisado|Certifica)\b.*$/i,
+			""
+		)
+		.replace(/\s+/g, " ")
+		.trim();
+
+	return limpo || fallback;
 }
 
 async function obterTextoDaPagina(page: Page) {
@@ -261,17 +266,15 @@ async function obterEstadoCaptcha(page: Page) {
 				'textarea[name="g-recaptcha-response"]'
 			);
 
-			const iframes = Array.from(document.querySelectorAll("iframe")).map(
-				(iframe) => ({
-					title: iframe.getAttribute("title"),
-					src: iframe.getAttribute("src"),
-				})
-			);
+			const iframes = Array.from(document.querySelectorAll("iframe")).map((iframe) => ({
+				title: iframe.getAttribute("title"),
+				src: iframe.getAttribute("src"),
+			}));
 
 			return {
 				grecaptchaDisponivel:
-					typeof (window as typeof window & { grecaptcha?: unknown })
-						.grecaptcha !== "undefined",
+					typeof (window as typeof window & { grecaptcha?: unknown }).grecaptcha !==
+					"undefined",
 				responseLength: response?.value?.length ?? 0,
 				idioma: navigator.language,
 				idiomas: navigator.languages,
@@ -285,130 +288,129 @@ async function obterEstadoCaptcha(page: Page) {
 }
 
 function getCndClickMode(): CndClickMode {
-  const mode = process.env.CND_CLICK_MODE?.trim().toLowerCase();
+	const mode = process.env.CND_CLICK_MODE?.trim().toLowerCase();
 
-  if (mode === "mouse") {
-    return "mouse";
-  }
+	if (mode === "mouse") {
+		return "mouse";
+	}
 
-  return "js";
+	return "js";
 }
 
 async function clicarBotaoPesquisarViaJavascript(page: Page) {
-  await page.evaluate(() => {
-    const botao = document.getElementById("meuForm:pesquisar");
+	await page.evaluate(() => {
+		const botao = document.getElementById("meuForm:pesquisar");
 
-    if (!botao) {
-      throw new Error("Botão pesquisar não encontrado");
-    }
+		if (!botao) {
+			throw new Error("Botão pesquisar não encontrado");
+		}
 
-    botao.dispatchEvent(new MouseEvent("mouseover", { bubbles: true }));
-    botao.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
-    botao.dispatchEvent(new MouseEvent("mouseup", { bubbles: true }));
-    botao.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+		botao.dispatchEvent(new MouseEvent("mouseover", { bubbles: true }));
+		botao.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
+		botao.dispatchEvent(new MouseEvent("mouseup", { bubbles: true }));
+		botao.dispatchEvent(new MouseEvent("click", { bubbles: true }));
 
-    if (botao instanceof HTMLElement) {
-      botao.click();
-    }
-  });
+		if (botao instanceof HTMLElement) {
+			botao.click();
+		}
+	});
 }
 
 async function executarCliquePorModo(page: Page, mode: CndClickMode) {
-  console.log(`[CND PBH] Executando clique no modo: ${mode}`);
+	console.log(`[CND PBH] Executando clique no modo: ${mode}`);
 
-  if (mode === "js") {
-    await clicarBotaoPesquisarViaJavascript(page);
-    return;
-  }
+	if (mode === "js") {
+		await clicarBotaoPesquisarViaJavascript(page);
+		return;
+	}
 
-  await clicarBotaoPesquisarComoUsuario(page);
+	await clicarBotaoPesquisarComoUsuario(page);
 }
 
 async function tentarAbrirGuiaCndComModo(
-  context: BrowserContext,
-  page: Page,
-  mode: CndClickMode,
-  timeoutMs: number
+	context: BrowserContext,
+	page: Page,
+	mode: CndClickMode,
+	timeoutMs: number
 ) {
-  const paginaGuiaPromise = aguardarPaginaGuiaCnd(context, page, timeoutMs);
+	const paginaGuiaPromise = aguardarPaginaGuiaCnd(context, page, timeoutMs);
 
-  console.log(
-    `[CND PBH] Estado captcha antes do clique (${mode}):`,
-    await obterEstadoCaptcha(page)
-  );
+	console.log(
+		`[CND PBH] Estado captcha antes do clique (${mode}):`,
+		await obterEstadoCaptcha(page)
+	);
 
-  await executarCliquePorModo(page, mode);
+	await executarCliquePorModo(page, mode);
 
-  console.log(
-    `[CND PBH] Estado captcha depois do clique (${mode}):`,
-    await obterEstadoCaptcha(page)
-  );
+	console.log(
+		`[CND PBH] Estado captcha depois do clique (${mode}):`,
+		await obterEstadoCaptcha(page)
+	);
 
-  const paginaResultado = await paginaGuiaPromise;
-  const mensagens = await obterMensagensDaPagina(page);
-  const textoPagina = await obterTextoDaPagina(page);
+	const paginaResultado = await paginaGuiaPromise;
+	const mensagens = await obterMensagensDaPagina(page);
+	const textoPagina = await obterTextoDaPagina(page);
 
-  return {
-    paginaResultado,
-    mensagens,
-    textoPagina,
-  };
+	return {
+		paginaResultado,
+		mensagens,
+		textoPagina,
+	};
 }
 
-async function clicarPesquisarEObterPaginaResultado(
-  context: BrowserContext,
-  page: Page
-) {
-  const modoPreferido = getCndClickMode();
+async function clicarPesquisarEObterPaginaResultado(context: BrowserContext, page: Page) {
+	const modoPreferido = getCndClickMode();
 
-  const modosTentativa: CndClickMode[] =
-    modoPreferido === "js" ? ["js", "mouse"] : ["mouse"];
+	const modosTentativa: CndClickMode[] =
+		modoPreferido === "js" ? ["js", "mouse"] : ["mouse"];
 
-  let ultimasMensagens: string[] = [];
-  let ultimoTextoPagina = "";
+	let ultimasMensagens: string[] = [];
+	let ultimoTextoPagina = "";
 
-  for (let index = 0; index < modosTentativa.length; index++) {
-    const mode = modosTentativa[index];
+	for (let index = 0; index < modosTentativa.length; index++) {
+		const mode = modosTentativa[index];
 
-    const { paginaResultado, mensagens, textoPagina } =
-      await tentarAbrirGuiaCndComModo(context, page, mode, 20000);
+		const { paginaResultado, mensagens, textoPagina } = await tentarAbrirGuiaCndComModo(
+			context,
+			page,
+			mode,
+			20000
+		);
 
-    if (paginaResultado) {
-      if (mode !== modosTentativa[0]) {
-        console.warn(
-          `[CND PBH] Guia aberta com fallback de clique (${mode}).`
-        );
-      }
+		if (paginaResultado) {
+			if (mode !== modosTentativa[0]) {
+				console.warn(`[CND PBH] Guia aberta com fallback de clique (${mode}).`);
+			}
 
-      return paginaResultado;
-    }
+			return paginaResultado;
+		}
 
-    ultimasMensagens = mensagens;
-    ultimoTextoPagina = textoPagina;
+		ultimasMensagens = mensagens;
+		ultimoTextoPagina = textoPagina;
 
-    const captchaInvalido =
-      mensagens.some(mensagem => /captcha inválido/i.test(mensagem)) ||
-      /captcha inválido/i.test(textoPagina);
+		const captchaInvalido =
+			mensagens.some((mensagem) => /captcha inválido/i.test(mensagem)) ||
+			/captcha inválido/i.test(textoPagina);
 
-    const aindaTemFallback = index < modosTentativa.length - 1;
+		const aindaTemFallback = index < modosTentativa.length - 1;
 
-    if (aindaTemFallback) {
-      console.warn(
-        `[CND PBH] Clique modo=${mode} não abriu a guia. ` +
-          `Captcha inválido: ${captchaInvalido}. Tentando fallback...`
-      );
+		if (aindaTemFallback) {
+			console.warn(
+				`[CND PBH] Clique modo=${mode} não abriu a guia. ` +
+					`Captcha inválido: ${captchaInvalido}. Tentando fallback...`
+			);
 
-      await page.waitForTimeout(2000);
-      continue;
-    }
-  }
+			await page.waitForTimeout(2000);
+			continue;
+		}
+	}
 
-  throw new Error(
-    `A CND PBH não abriu a guiaCND.xhtml após as tentativas de clique. ` +
-      `URL atual: ${page.url()}. Mensagens: ${JSON.stringify(
-        ultimasMensagens
-      )}. Texto da página: ${limitarTexto(ultimoTextoPagina)}`
-  );
+	throw new Error(
+		`A CND PBH não abriu a guiaCND.xhtml após as tentativas de clique. ` +
+			`URL atual: ${page.url()}. Mensagens: ${JSON.stringify(
+				ultimasMensagens
+			)}. Texto da página: ${limitarTexto(ultimoTextoPagina)}`
+	);
 }
 
 export async function buscarCpf({
@@ -487,20 +489,13 @@ export async function buscarCpf({
 		let paginaResultado: Page;
 
 		try {
-			paginaResultado = await clicarPesquisarEObterPaginaResultado(
-				context,
-				page
-			);
+			paginaResultado = await clicarPesquisarEObterPaginaResultado(context, page);
 		} catch (error) {
 			await salvarScreenshotCnd(page, "erro-apos-pesquisar", indiceCadastral);
 			throw error;
 		}
 
-		await salvarScreenshotCnd(
-			paginaResultado,
-			"pagina-resultado",
-			indiceCadastral
-		);
+		await salvarScreenshotCnd(paginaResultado, "pagina-resultado", indiceCadastral);
 
 		console.log("Página resultado CND PBH:", paginaResultado.url());
 
@@ -532,20 +527,18 @@ export async function buscarCpf({
 
 		const endereco = extrairCampo(
 			texto,
-			["Endereco", "Endereço"], [
-        "Periodo pesquisado",
-        "Período pesquisado",
-        "Indice cadastral",
-        "Índice cadastral",
-      ]
+			["Endereco", "Endereço"],
+			["Periodo pesquisado", "Período pesquisado", "Indice cadastral", "Índice cadastral"]
 		);
 
-		const indiceResultado =
+		const indiceResultadoRaw =
 			extrairCampo(
 				texto,
 				["Índice cadastral do IPTU", "Indice cadastral do IPTU"],
 				["Ressalvando", "Nos termos"]
 			) ?? indiceCadastral;
+
+		const indiceResultado = limparIndiceCadastralCnd(indiceResultadoRaw, indiceCadastral);
 
 		console.log("Dados extraídos CND PBH:", {
 			nome,

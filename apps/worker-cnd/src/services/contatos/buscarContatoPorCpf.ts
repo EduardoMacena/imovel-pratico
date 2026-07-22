@@ -14,6 +14,16 @@ type BuscarContatoPorCpfParams = {
   cpf: string | null | undefined;
 };
 
+function isFonteDataConfiguradaLocalmente() {
+	const enabled = process.env.FONTEDATA_ENABLED?.trim();
+
+	if (enabled && enabled !== "true") {
+		return false;
+	}
+
+	return Boolean(process.env.FONTEDATA_API_KEY?.trim());
+}
+
 export async function buscarContatoPorCpf({
   cpf,
 }: BuscarContatoPorCpfParams): Promise<ContatoEncontrado> {
@@ -22,6 +32,18 @@ export async function buscarContatoPorCpf({
       fonte: "NONE",
       nome: null,
       cpf: null,
+      telefone: null,
+      email: null,
+      endereco: null,
+      dadosContato: null,
+    };
+  }
+
+  if (!isFonteDataConfiguradaLocalmente()) {
+    return {
+      fonte: "NONE",
+      nome: null,
+      cpf,
       telefone: null,
       email: null,
       endereco: null,

@@ -5,8 +5,8 @@
   "main": "dist/main.js",
   "description": "Agent local do Imóvel Prático para instalação e execução no Windows.",
   "scripts": {
-    "build": "tsc -p tsconfig.json && node scripts/copy-assets.mjs",
-    "dev": "pnpm build && electron .",
+    "build": "pnpm --filter @imovel-pratico/agent-client build && tsc -p tsconfig.json && node scripts/copy-assets.mjs",
+    "dev": "pnpm --filter @imovel-pratico/agent-client build && pnpm build && electron .",
     "dist:win": "pnpm build && electron-builder --win nsis",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
