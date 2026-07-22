@@ -111,7 +111,7 @@ export async function salvarAtivacaoLocal(data: AtivacaoSalva) {
     "WORKER_AGENT_ERROR_DELAY_MS=15000",
     "WORKER_AGENT_VERSION=0.1.0",
     "PLAYWRIGHT_CHANNEL=chrome",
-    "PLAYWRIGHT_HEADLESS=false",
+    "PLAYWRIGHT_HEADLESS=true",
     "PLAYWRIGHT_SLOW_MO=800",
     "PLAYWRIGHT_LOCALE=pt-BR",
     "PLAYWRIGHT_TIMEZONE=America/Sao_Paulo",
