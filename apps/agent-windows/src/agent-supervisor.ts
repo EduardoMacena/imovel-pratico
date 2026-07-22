@@ -33,7 +33,7 @@ function montarEnvBase(config: AgentLocalConfig, token: string) {
       process.env.WORKER_AGENT_ERROR_DELAY_MS || "15000",
     WORKER_AGENT_VERSION: process.env.WORKER_AGENT_VERSION || "0.1.0",
     PLAYWRIGHT_CHANNEL: process.env.PLAYWRIGHT_CHANNEL || "chrome",
-    PLAYWRIGHT_HEADLESS: process.env.PLAYWRIGHT_HEADLESS || "false",
+    PLAYWRIGHT_HEADLESS: process.env.PLAYWRIGHT_HEADLESS || "true",
     PLAYWRIGHT_SLOW_MO: process.env.PLAYWRIGHT_SLOW_MO || "800",
     PLAYWRIGHT_LOCALE: process.env.PLAYWRIGHT_LOCALE || "pt-BR",
     PLAYWRIGHT_TIMEZONE:
