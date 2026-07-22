@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Imóvel Prático Agent</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+
+  <body>
+    <main class="page">
+      <section class="hero">
+        <div>
+          <div class="eyebrow">Imóvel Prático Agent</div>
+          <h1>Instale e ative o Agent local.</h1>
+          <p>
+            Cole o link mágico gerado no painel admin para configurar REGISTRO e CND
+            nesta máquina sem expor tokens permanentes.
+          </p>
+        </div>
+
+        <div class="status-card">
+          <span>Status local</span>
+          <strong id="statusText">Carregando...</strong>
+          <small id="configText">Verificando configuração</small>
+        </div>
+      </section>
+
+      <section class="grid">
+        <div class="card">
+          <h2>Ativação por link mágico</h2>
+          <p class="muted">
+            Use o link ou código gerado na tela Instalador do cliente.
+          </p>
+
+          <label>
+            API URL
+            <input
+              id="apiUrl"
+              value="https://api-staging.imovelpratico.com"
+              placeholder="https://api-staging.imovelpratico.com"
+            />
+          </label>
+
+          <label>
+            Link mágico ou código
+            <textarea
+              id="installInput"
+              rows="5"
+              placeholder="Cole aqui o link completo ou o código ipl_..."
+            ></textarea>
+          </label>
+
+          <div class="actions">
+            <button id="activateButton">Ativar instalação</button>
+            <button id="openConfigButton" class="secondary">Abrir pasta config</button>
+          </div>
+
+          <div id="activationResult" class="result hidden"></div>
+        </div>
+
+        <aside class="card">
+          <h2>Serviços</h2>
+          <p class="muted">
+            Depois de ativar, inicie os agents para eles aparecerem online no
+            Monitoramento.
+          </p>
+
+          <div class="service-list">
+            <article>
+              <span>REGISTRO Agent</span>
+              <strong id="registroStatus">-</strong>
+            </article>
+
+            <article>
+              <span>CND Agent</span>
+              <strong id="cndStatus">-</strong>
+            </article>
+          </div>
+
+          <div class="actions stacked">
+            <button id="startButton">Iniciar Agents</button>
+            <button id="stopButton" class="danger">Parar Agents</button>
+          </div>
+        </aside>
+      </section>
+
+      <section class="card logs-card">
+        <div class="logs-header">
+          <div>
+            <h2>Logs locais</h2>
+            <p class="muted">Saída dos processos REGISTRO e CND.</p>
+          </div>
+
+          <button id="clearLogsButton" class="secondary small">Limpar</button>
+        </div>
+
+        <pre id="logs"></pre>
+      </section>
+    </main>
+
+    <script src="./renderer.js"></script>
+  </body>
+</html>

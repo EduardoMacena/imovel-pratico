@@ -1,0 +1,48 @@
+{
+  "name": "@imovel-pratico/agent-windows",
+  "private": true,
+  "version": "0.1.0",
+  "main": "dist/main.js",
+  "description": "Agent local do Imóvel Prático para instalação e execução no Windows.",
+  "scripts": {
+    "build": "tsc -p tsconfig.json && node scripts/copy-assets.mjs",
+    "dev": "pnpm build && electron .",
+    "dist:win": "pnpm build && electron-builder --win nsis",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "electron": "latest",
+    "electron-builder": "latest",
+    "typescript": "5.9.3"
+  },
+  "build": {
+    "appId": "com.imovelpratico.agent",
+    "productName": "Imóvel Prático Agent",
+    "directories": {
+      "output": "dist-installer"
+    },
+    "files": [
+      "dist/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Imóvel Prático Agent"
+    }
+  }
+}
