@@ -1,5 +1,13 @@
 import path from "node:path";
-import { app, BrowserWindow, ipcMain, shell } from "electron";
+import {
+	app,
+	BrowserWindow,
+	ipcMain,
+	Menu,
+	nativeImage,
+	shell,
+	Tray,
+} from "electron";
 import {
 	carregarConfigLocal,
 	getConfigDir,
@@ -10,12 +18,19 @@ import { ativarInstalacaoAgent } from "./installer-api.js";
 import { AgentSupervisor } from "./agent-supervisor.js";
 
 let mainWindow: BrowserWindow | null = null;
+let tray: Tray | null = null;
 let isQuitting = false;
 
 const supervisor = new AgentSupervisor((message) => {
 	console.log(message);
 	mainWindow?.webContents.send("agents:log", message);
 });
+
+function existeServicoRodando() {
+	const status = supervisor.status();
+
+	return Boolean(status.registro.running || status.cnd.running);
+}
 
 function configurarAutoStart() {
 	if (process.platform !== "win32") {
@@ -62,6 +77,90 @@ function showMainWindow() {
 	mainWindow.focus();
 }
 
+function getTrayIcon() {
+	const iconPath = path.join(__dirname, "renderer", "tray.png");
+	const image = nativeImage.createFromPath(iconPath);
+
+	if (!image.isEmpty()) {
+		return image.resize({
+			width: 16,
+			height: 16,
+		});
+	}
+
+	return nativeImage.createEmpty();
+}
+
+function criarTray() {
+	if (tray) {
+		return;
+	}
+
+	tray = new Tray(getTrayIcon());
+	tray.setToolTip("Imóvel Prático Agent");
+
+	tray.setContextMenu(
+		Menu.buildFromTemplate([
+			{
+				label: "Abrir painel",
+				click: () => {
+					showMainWindow();
+				},
+			},
+			{
+				label: "Iniciar Agents",
+				click: async () => {
+					const config = await carregarConfigLocal();
+
+					if (!config) {
+						mainWindow?.webContents.send(
+							"agents:log",
+							"[supervisor] Configuração local não encontrada."
+						);
+						return;
+					}
+
+					supervisor.start(config);
+				},
+			},
+			{
+				label: "Parar Agents",
+				click: () => {
+					supervisor.stop();
+				},
+			},
+			{
+				type: "separator",
+			},
+			{
+				label: "Abrir pasta config",
+				click: async () => {
+					await shell.openPath(getConfigDir());
+				},
+			},
+			{
+				type: "separator",
+			},
+			{
+				label: "Sair completamente",
+				click: () => {
+					isQuitting = true;
+					supervisor.stop();
+					app.quit();
+				},
+			},
+		])
+	);
+
+	tray.on("click", () => {
+		showMainWindow();
+	});
+
+	tray.on("double-click", () => {
+		showMainWindow();
+	});
+}
+
 function createWindow() {
 	const shouldStartHidden = process.argv.includes("--hidden");
 
@@ -94,8 +193,21 @@ function createWindow() {
 			return;
 		}
 
-		event.preventDefault();
-		mainWindow?.hide();
+		if (existeServicoRodando()) {
+			event.preventDefault();
+			mainWindow?.hide();
+
+			mainWindow?.webContents.send(
+				"agents:log",
+				"[app] Janela ocultada. Agent continua rodando perto do relógio."
+			);
+
+			return;
+		}
+
+		isQuitting = true;
+		supervisor.stop();
+		app.quit();
 	});
 
 	mainWindow.on("closed", () => {
@@ -194,6 +306,7 @@ if (!gotSingleInstanceLock) {
 	app.whenReady().then(async () => {
 		configurarAutoStart();
 		createWindow();
+		criarTray();
 
 		await iniciarAgentsAutomaticamente();
 
@@ -208,6 +321,7 @@ if (!gotSingleInstanceLock) {
 	});
 
 	app.on("window-all-closed", () => {
+		// No Windows, o Agent pode continuar vivo na bandeja.
 		if (process.platform === "darwin") {
 			app.quit();
 		}
