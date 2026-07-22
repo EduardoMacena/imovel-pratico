@@ -25,13 +25,13 @@
         </div>
       </section>
 
-      <section class="grid">
+      <section id="activationSection" class="grid">
         <div class="card">
           <h2>Ativação por link mágico</h2>
           <p class="muted">
             Use o link ou código gerado na tela Instalador do cliente.
           </p>
-
+      
           <label>
             API URL
             <input
@@ -40,7 +40,7 @@
               placeholder="https://api-staging.imovelpratico.com"
             />
           </label>
-
+      
           <label>
             Link mágico ou código
             <textarea
@@ -49,37 +49,74 @@
               placeholder="Cole aqui o link completo ou o código ipl_..."
             ></textarea>
           </label>
-
+      
           <div class="actions">
             <button id="activateButton">Ativar instalação</button>
             <button id="openConfigButton" class="secondary">Abrir pasta config</button>
           </div>
-
+      
           <div id="activationResult" class="result hidden"></div>
         </div>
-
+      
         <aside class="card">
-          <h2>Serviços</h2>
+          <h2>Primeira instalação</h2>
           <p class="muted">
-            Depois de ativar, inicie os agents para eles aparecerem online no
-            Monitoramento.
+            Depois da ativação, essa tela será substituída pelo painel de controle do Agent.
           </p>
-
+      
+          <div class="service-list">
+            <article>
+              <span>1. Cole o link mágico</span>
+              <strong>Pendente</strong>
+            </article>
+      
+            <article>
+              <span>2. Ative a instalação</span>
+              <strong>Pendente</strong>
+            </article>
+      
+            <article>
+              <span>3. Inicie os serviços</span>
+              <strong>Depois</strong>
+            </article>
+          </div>
+        </aside>
+      </section>
+      
+      <section id="dashboardSection" class="grid hidden">
+        <div class="card">
+          <h2>Painel do Agent</h2>
+          <p class="muted">
+            Os serviços REGISTRO e CND rodam em segundo plano e aparecem no Monitoramento do admin.
+          </p>
+      
           <div class="service-list">
             <article>
               <span>REGISTRO Agent</span>
               <strong id="registroStatus">-</strong>
             </article>
-
+      
             <article>
               <span>CND Agent</span>
               <strong id="cndStatus">-</strong>
             </article>
           </div>
-
-          <div class="actions stacked">
+      
+          <div class="actions">
             <button id="startButton">Iniciar Agents</button>
-            <button id="stopButton" class="danger">Parar Agents</button>
+            <button id="stopButton" class="danger hidden">Parar Agents</button>
+            <button id="reconfigureButton" class="secondary">Reconfigurar instalação</button>
+          </div>
+        </div>
+      
+        <aside class="card">
+          <h2>Configuração local</h2>
+          <p id="configText" class="muted">Verificando configuração...</p>
+      
+          <div class="actions stacked">
+            <button id="openConfigButtonDashboard" class="secondary">
+              Abrir pasta config
+            </button>
           </div>
         </aside>
       </section>
