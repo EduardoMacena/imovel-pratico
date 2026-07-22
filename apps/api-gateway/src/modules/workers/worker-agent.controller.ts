@@ -16,6 +16,8 @@ import {
   registrarHeartbeatAgent,
   registrarProgressoJob,
 } from "./worker-agent.service.js";
+import { workerBuscarContatoPorCpfSchema } from "./worker-agent-contato.schemas.js";
+import { buscarContatoCpfAgent } from "./worker-agent-contato.service.js";
 
 export async function heartbeatWorkerController(
   request: FastifyRequest,
@@ -109,4 +111,19 @@ export async function errorWorkerJobController(
   });
 
   return reply.status(200).send(result);
+}
+
+export async function buscarContatoCpfWorkerController(
+	request: FastifyRequest,
+	reply: FastifyReply
+) {
+	const agent = await autenticarWorkerRequest(request);
+	const body = workerBuscarContatoPorCpfSchema.parse(request.body ?? {});
+
+	const result = await buscarContatoCpfAgent({
+		agent,
+		cpf: body.cpf,
+	});
+
+	return reply.status(200).send(result);
 }
