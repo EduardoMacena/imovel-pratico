@@ -1,24 +1,22 @@
-import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
+import { spawn, type ChildProcess } from "node:child_process";
 import path from "node:path";
+import { app } from "electron";
 import type { AgentLocalConfig } from "./config.js";
 
 type AgentTipo = "REGISTRO" | "CND";
 
 type ProcessoAgent = {
   tipo: AgentTipo;
-  processo: ChildProcessWithoutNullStreams;
+  processo: ChildProcess;
   startedAt: string;
 };
 
 type LogHandler = (message: string) => void;
 
-function getWorkspaceRoot() {
-  return path.resolve(__dirname, "../../..");
-}
-
-function getPnpmCommand() {
-  return process.platform === "win32" ? "pnpm.cmd" : "pnpm";
-}
+const WORKER_DIR_BY_TIPO: Record<AgentTipo, string> = {
+  REGISTRO: "worker-registro",
+  CND: "worker-cnd"
+};
 
 function montarEnvBase(config: AgentLocalConfig, token: string) {
   return {
@@ -44,7 +42,25 @@ function montarEnvBase(config: AgentLocalConfig, token: string) {
     CND_BEFORE_SEARCH_DELAY_MS:
       process.env.CND_BEFORE_SEARCH_DELAY_MS || "15000",
     CND_CLICK_MODE: process.env.CND_CLICK_MODE || "js",
+
+    /**
+     * Faz o Electron executar este processo filho como Node.js.
+     * Assim o cliente final não precisa instalar Node nem pnpm.
+     */
+    ELECTRON_RUN_AS_NODE: "1"
   };
+}
+
+function getWorkerEntry(tipo: AgentTipo) {
+  const workerDir = WORKER_DIR_BY_TIPO[tipo];
+
+  return path.join(
+    app.getAppPath(),
+    "dist",
+    "workers",
+    workerDir,
+    "agent.cjs"
+  );
 }
 
 export class AgentSupervisor {
@@ -59,22 +75,22 @@ export class AgentSupervisor {
     return {
       registro: {
         running: this.processos.has("REGISTRO"),
-        startedAt: this.processos.get("REGISTRO")?.startedAt ?? null,
+        startedAt: this.processos.get("REGISTRO")?.startedAt ?? null
       },
       cnd: {
         running: this.processos.has("CND"),
-        startedAt: this.processos.get("CND")?.startedAt ?? null,
-      },
+        startedAt: this.processos.get("CND")?.startedAt ?? null
+      }
     };
   }
 
   start(config: AgentLocalConfig) {
     if (config.registroToken) {
-      this.startOne("REGISTRO", "@imovel-pratico/worker-registro", config.registroToken, config);
+      this.startOne("REGISTRO", config.registroToken, config);
     }
 
     if (config.cndToken) {
-      this.startOne("CND", "@imovel-pratico/worker-cnd", config.cndToken, config);
+      this.startOne("CND", config.cndToken, config);
     }
 
     return this.status();
@@ -83,6 +99,7 @@ export class AgentSupervisor {
   stop() {
     for (const [tipo, item] of this.processos.entries()) {
       this.onLog(`[supervisor] Encerrando ${tipo}...`);
+
       item.processo.kill("SIGTERM");
       this.processos.delete(tipo);
     }
@@ -90,26 +107,24 @@ export class AgentSupervisor {
     return this.status();
   }
 
-  private startOne(
-    tipo: AgentTipo,
-    packageName: string,
-    token: string,
-    config: AgentLocalConfig
-  ) {
+  private startOne(tipo: AgentTipo, token: string, config: AgentLocalConfig) {
     if (this.processos.has(tipo)) {
       this.onLog(`[supervisor] ${tipo} já está em execução.`);
       return;
     }
 
-    const command = getPnpmCommand();
-    const args = ["--filter", packageName, "agent:dev"];
+    const entry = getWorkerEntry(tipo);
+    const command = process.execPath;
+    const args = [entry];
 
     this.onLog(`[supervisor] Iniciando ${tipo}: ${command} ${args.join(" ")}`);
 
     const processo = spawn(command, args, {
-      cwd: getWorkspaceRoot(),
+      cwd: app.getPath("userData"),
       env: montarEnvBase(config, token),
-      shell: process.platform === "win32",
+      shell: false,
+      windowsHide: true,
+      stdio: ["ignore", "pipe", "pipe"]
     });
 
     const startedAt = new Date().toISOString();
@@ -117,14 +132,14 @@ export class AgentSupervisor {
     this.processos.set(tipo, {
       tipo,
       processo,
-      startedAt,
+      startedAt
     });
 
-    processo.stdout.on("data", chunk => {
+    processo.stdout?.on("data", chunk => {
       this.onLog(`[${tipo}] ${chunk.toString().trimEnd()}`);
     });
 
-    processo.stderr.on("data", chunk => {
+    processo.stderr?.on("data", chunk => {
       this.onLog(`[${tipo}:erro] ${chunk.toString().trimEnd()}`);
     });
 

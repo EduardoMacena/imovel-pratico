@@ -5,15 +5,21 @@
   "main": "dist/main.js",
   "description": "Agent local do Imóvel Prático para instalação e execução no Windows.",
   "scripts": {
-    "build": "pnpm --filter @imovel-pratico/agent-client build && tsc -p tsconfig.json && node scripts/copy-assets.mjs",
-    "dev": "pnpm --filter @imovel-pratico/agent-client build && pnpm build && electron .",
+    "build:agent-client": "pnpm --filter @imovel-pratico/agent-client build",
+    "build:workers": "node scripts/build-workers.mjs",
+    "build": "pnpm build:agent-client && pnpm build:workers && tsc -p tsconfig.json && node scripts/copy-assets.mjs",
+    "dev": "pnpm build && electron .",
     "dist:win": "pnpm build && electron-builder --win nsis",
     "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "playwright": "^1.61.1"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",
     "electron": "latest",
     "electron-builder": "latest",
+    "esbuild": "^0.27.0",
     "typescript": "5.9.3"
   },
   "build": {

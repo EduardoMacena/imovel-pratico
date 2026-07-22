@@ -19,3 +19,7 @@ coverage
 /test-results
 .env.staging
 .env.*.local
+
+# Agent Windows build artifacts
+apps/agent-windows/dist/
+apps/agent-windows/dist-installer/
