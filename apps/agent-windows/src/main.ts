@@ -21,6 +21,14 @@ let mainWindow: BrowserWindow | null = null;
 let tray: Tray | null = null;
 let isQuitting = false;
 
+if (process.platform === "win32") {
+	app.setAppUserModelId("com.imovelpratico.agent");
+}
+
+function getWindowIcon() {
+	return path.join(__dirname, "renderer", "tray.png");
+}
+
 const supervisor = new AgentSupervisor((message) => {
 	console.log(message);
 	mainWindow?.webContents.send("agents:log", message);
@@ -171,6 +179,7 @@ function createWindow() {
 		minHeight: 650,
 		show: false,
 		title: "Imóvel Prático Agent",
+    icon: getWindowIcon(),
 		backgroundColor: "#f4f1ea",
 		webPreferences: {
 			preload: path.join(__dirname, "preload.js"),

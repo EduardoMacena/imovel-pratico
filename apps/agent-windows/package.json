@@ -27,13 +27,15 @@
     "productName": "Imóvel Prático Agent",
     "asar": false,
     "directories": {
-      "output": "dist-installer"
+      "output": "dist-installer",
+      "buildResources": "build"
     },
     "files": [
       "dist/**/*",
       "package.json"
     ],
     "win": {
+      "icon": "build/icon.ico",
       "target": [
         {
           "target": "nsis",
@@ -49,7 +51,9 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "Imóvel Prático Agent"
+      "shortcutName": "Imóvel Prático Agent",
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico"
     }
   }
 }
