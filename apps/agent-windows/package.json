@@ -25,6 +25,7 @@
   "build": {
     "appId": "com.imovelpratico.agent",
     "productName": "Imóvel Prático Agent",
+    "asar": false,
     "directories": {
       "output": "dist-installer"
     },

@@ -10,6 +10,7 @@ import { ativarInstalacaoAgent } from "./installer-api.js";
 import { AgentSupervisor } from "./agent-supervisor.js";
 
 let mainWindow: BrowserWindow | null = null;
+let isQuitting = false;
 
 const supervisor = new AgentSupervisor((message) => {
 	console.log(message);
@@ -25,6 +26,7 @@ function configurarAutoStart() {
 		openAtLogin: true,
 		openAsHidden: true,
 		path: process.execPath,
+		args: ["--hidden"],
 	});
 }
 
@@ -39,16 +41,36 @@ async function iniciarAgentsAutomaticamente() {
 
 	mainWindow?.webContents.send(
 		"agents:log",
-		"[supervisor] Agents iniciados automaticamente com o Windows"
+		"[supervisor] Agents iniciados automaticamente"
 	);
 }
 
+function showMainWindow() {
+	if (!mainWindow) {
+		createWindow();
+	}
+
+	if (!mainWindow) {
+		return;
+	}
+
+	if (mainWindow.isMinimized()) {
+		mainWindow.restore();
+	}
+
+	mainWindow.show();
+	mainWindow.focus();
+}
+
 function createWindow() {
+	const shouldStartHidden = process.argv.includes("--hidden");
+
 	mainWindow = new BrowserWindow({
 		width: 1040,
 		height: 760,
 		minWidth: 900,
 		minHeight: 650,
+		show: false,
 		title: "Imóvel Prático Agent",
 		backgroundColor: "#f4f1ea",
 		webPreferences: {
@@ -60,6 +82,21 @@ function createWindow() {
 
 	mainWindow.setMenu(null);
 	mainWindow.loadFile(path.join(__dirname, "renderer", "index.html"));
+
+	mainWindow.once("ready-to-show", () => {
+		if (!shouldStartHidden) {
+			showMainWindow();
+		}
+	});
+
+	mainWindow.on("close", (event) => {
+		if (isQuitting) {
+			return;
+		}
+
+		event.preventDefault();
+		mainWindow?.hide();
+	});
 
 	mainWindow.on("closed", () => {
 		mainWindow = null;
@@ -96,14 +133,23 @@ ipcMain.handle(
 			agents: result.agents,
 		});
 
+		const config = await carregarConfigLocal();
+		const status = config ? supervisor.start(config) : supervisor.status();
+
 		mainWindow?.webContents.send(
 			"agents:log",
 			`[instalador] Agent ativado para ${result.cliente.nome}`
 		);
 
+		mainWindow?.webContents.send(
+			"agents:log",
+			"[supervisor] Agents iniciados após ativação"
+		);
+
 		return {
 			...result,
 			saved,
+			status,
 		};
 	}
 );
@@ -112,7 +158,9 @@ ipcMain.handle("agents:start", async () => {
 	const config = await carregarConfigLocal();
 
 	if (!config) {
-		throw new Error("Configuração local não encontrada. Ative o link mágico primeiro.");
+		throw new Error(
+			"Configuração local não encontrada. Ative o link de instalação primeiro."
+		);
 	}
 
 	return supervisor.start(config);
@@ -134,25 +182,34 @@ ipcMain.handle("config:open-folder", async () => {
 	};
 });
 
-app.whenReady().then(async () => {
-	configurarAutoStart();
-	createWindow();
+const gotSingleInstanceLock = app.requestSingleInstanceLock();
 
-	await iniciarAgentsAutomaticamente();
+if (!gotSingleInstanceLock) {
+	app.quit();
+} else {
+	app.on("second-instance", () => {
+		showMainWindow();
+	});
 
-	app.on("activate", () => {
-		if (BrowserWindow.getAllWindows().length === 0) {
-			createWindow();
+	app.whenReady().then(async () => {
+		configurarAutoStart();
+		createWindow();
+
+		await iniciarAgentsAutomaticamente();
+
+		app.on("activate", () => {
+			showMainWindow();
+		});
+	});
+
+	app.on("before-quit", () => {
+		isQuitting = true;
+		supervisor.stop();
+	});
+
+	app.on("window-all-closed", () => {
+		if (process.platform === "darwin") {
+			app.quit();
 		}
 	});
-});
-
-app.on("before-quit", () => {
-	supervisor.stop();
-});
-
-app.on("window-all-closed", () => {
-	if (process.platform !== "darwin") {
-		app.quit();
-	}
-});
+}

@@ -11,7 +11,8 @@ const elements = {
 	result: document.getElementById("activationResult"),
 	logs: document.getElementById("logs"),
 	statusText: document.getElementById("statusText"),
-	configText: document.getElementById("configText"),
+	statusConfigText: document.getElementById("statusConfigText"),
+	dashboardConfigText: document.getElementById("dashboardConfigText"),
 	registroStatus: document.getElementById("registroStatus"),
 	cndStatus: document.getElementById("cndStatus"),
 	activationSection: document.getElementById("activationSection"),
@@ -69,9 +70,13 @@ async function refreshConfig() {
 	elements.apiUrl.value = data.apiUrl || "https://api-staging.imovelpratico.com";
 
 	elements.statusText.textContent = data.hasConfig ? "Configurado" : "Pendente";
-	elements.configText.textContent = data.hasConfig
+
+	const configMessage = data.hasConfig
 		? `Configuração salva em ${data.envPath}`
-		: "Ative o link mágico para salvar os tokens.";
+		: "Ative o link de instalação para salvar os tokens.";
+
+	elements.statusConfigText.textContent = configMessage;
+	elements.dashboardConfigText.textContent = configMessage;
 
 	elements.registroStatus.textContent = serviceLabel(data.status.registro.running);
 	elements.cndStatus.textContent = serviceLabel(data.status.cnd.running);
@@ -109,7 +114,7 @@ elements.startButton.addEventListener("click", async () => {
 
 	try {
 		const status = await api.startAgents();
-    
+
 		addLog("Agents iniciados.");
 		elements.registroStatus.textContent = serviceLabel(status.registro.running);
 		elements.cndStatus.textContent = serviceLabel(status.cnd.running);
@@ -123,27 +128,27 @@ elements.startButton.addEventListener("click", async () => {
 });
 
 elements.stopButton.addEventListener("click", async () => {
-  elements.stopButton.disabled = true;
+	elements.stopButton.disabled = true;
 
-  try {
-    const status = await api.stopAgents();
+	try {
+		const status = await api.stopAgents();
 
-    addLog("Agents parados.");
-    elements.registroStatus.textContent = serviceLabel(status.registro.running);
-    elements.cndStatus.textContent = serviceLabel(status.cnd.running);
-    renderServiceButtons(status);
-  } finally {
-    elements.stopButton.disabled = false;
-  }
+		addLog("Agents parados.");
+		elements.registroStatus.textContent = serviceLabel(status.registro.running);
+		elements.cndStatus.textContent = serviceLabel(status.cnd.running);
+		renderServiceButtons(status);
+	} finally {
+		elements.stopButton.disabled = false;
+	}
 });
 
 elements.reconfigureButton.addEventListener("click", () => {
-  elements.activationSection.classList.remove("hidden");
-  elements.dashboardSection.classList.add("hidden");
+	elements.activationSection.classList.remove("hidden");
+	elements.dashboardSection.classList.add("hidden");
 });
 
 elements.openConfigButtonDashboard.addEventListener("click", async () => {
-  await api.openConfigFolder();
+	await api.openConfigFolder();
 });
 
 elements.openConfigButton.addEventListener("click", async () => {
