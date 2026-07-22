@@ -150,26 +150,109 @@ function pickFromArray(raw: unknown, arrayKeys: string[], valueKeys: string[]) {
 	return null;
 }
 
-function normalizarFonteData(raw: unknown, cpfOriginal: string): ContatoCpfResponse {
-	const telefone =
-		pickString(raw, ["telefone", "celular", "whatsapp", "phone"]) ??
-		pickFromArray(
-			raw,
-			["telefones", "phones", "contatos"],
-			["telefone", "celular", "numero", "valor", "phone"]
-		);
+type FonteDataEmail = {
+	enderecoEmail?: string | null;
+};
 
-	const email =
-		pickString(raw, ["email", "e_mail", "mail"]) ??
-		pickFromArray(raw, ["emails", "contatos"], ["email", "valor", "mail"]);
+type FonteDataTelefone = {
+	whatsApp?: boolean | null;
+	operadora?: string | null;
+	tipoTelefone?: string | null;
+	telefoneComDDD?: string | null;
+	telemarketingBloqueado?: boolean | null;
+};
 
+type FonteDataEndereco = {
+	uf?: string | null;
+	cep?: string | null;
+	bairro?: string | null;
+	cidade?: string | null;
+	numero?: string | null;
+	logradouro?: string | null;
+	complemento?: string | null;
+};
+
+type FonteDataPessoaFisicaBasicaRaw = {
+	cpf?: string | null;
+	nome?: string | null;
+	sexo?: string | null;
+	idade?: number | null;
+	signo?: string | null;
+	emails?: FonteDataEmail[];
+	nomeMae?: string | null;
+	enderecos?: FonteDataEndereco[];
+	telefones?: FonteDataTelefone[];
+	rendaEstimada?: string | null;
+	dataNascimento?: string | null;
+	rendaFaixaSalarial?: string | null;
+};
+
+function normalizarTelefone(raw: FonteDataPessoaFisicaBasicaRaw) {
+	const telefones = raw.telefones ?? [];
+
+	const telefoneWhatsapp = telefones.find(
+		(telefone) => telefone.whatsApp && telefone.telefoneComDDD
+	);
+
+	if (telefoneWhatsapp?.telefoneComDDD) {
+		return onlyNumbers(telefoneWhatsapp.telefoneComDDD);
+	}
+
+	const telefoneMovel = telefones.find(
+		(telefone) =>
+			telefone.tipoTelefone?.toLowerCase().includes("móvel") && telefone.telefoneComDDD
+	);
+
+	if (telefoneMovel?.telefoneComDDD) {
+		return onlyNumbers(telefoneMovel.telefoneComDDD);
+	}
+
+	const primeiroTelefone = telefones.find((telefone) => telefone.telefoneComDDD);
+
+	return primeiroTelefone?.telefoneComDDD
+		? onlyNumbers(primeiroTelefone.telefoneComDDD)
+		: null;
+}
+
+function normalizarEmail(raw: FonteDataPessoaFisicaBasicaRaw) {
+	const emails = raw.emails ?? [];
+	const primeiroEmail = emails.find((email) => email.enderecoEmail);
+
+	return primeiroEmail?.enderecoEmail?.trim() ?? null;
+}
+
+function normalizarEndereco(raw: FonteDataPessoaFisicaBasicaRaw) {
+	const enderecos = raw.enderecos ?? [];
+	const primeiroEndereco = enderecos[0];
+
+	if (!primeiroEndereco) {
+		return null;
+	}
+
+	const partes = [
+		primeiroEndereco.logradouro,
+		primeiroEndereco.numero,
+		primeiroEndereco.complemento,
+		primeiroEndereco.bairro,
+		primeiroEndereco.cidade,
+		primeiroEndereco.uf,
+		primeiroEndereco.cep,
+	].filter(Boolean);
+
+	return partes.join(", ");
+}
+
+function normalizarFonteData(
+	raw: FonteDataPessoaFisicaBasicaRaw,
+	cpfOriginal: string
+): ContatoCpfResponse {
 	return {
 		fonte: "FONTEDATA",
-		nome: pickString(raw, ["nome", "nomeCompleto", "name"]),
-		cpf: pickString(raw, ["cpf", "documento"]) ?? cpfOriginal,
-		telefone,
-		email,
-		endereco: pickString(raw, ["endereco", "endereço", "address"]),
+		nome: raw.nome?.trim() ?? null,
+		cpf: raw.cpf ? onlyNumbers(raw.cpf) : cpfOriginal,
+		telefone: normalizarTelefone(raw),
+		email: normalizarEmail(raw),
+		endereco: normalizarEndereco(raw),
 		dadosContato: null,
 	};
 }
@@ -183,18 +266,19 @@ async function consultarFonteData(cpf: string) {
 
 	const cpfLimpo = onlyNumbers(cpf);
 
-	const response = await fetch(
-		`${config.baseUrl}/consulta/cadastro-pf-basica/${cpfLimpo}`,
-		{
-			method: "GET",
-			headers: {
-				"X-API-Key": config.apiKey,
-				Accept: "application/json",
-			},
-		}
-	);
+	const url = new URL(`${config.baseUrl}/consulta/cadastro-pf-basica`);
 
-	const raw = await response.json().catch(() => ({}));
+	url.searchParams.set("cpf", cpfLimpo);
+
+	const response = await fetch(url.toString(), {
+		method: "GET",
+		headers: {
+			"X-API-Key": config.apiKey,
+			Accept: "application/json",
+		},
+	});
+
+	const raw = (await response.json().catch(() => ({}))) as FonteDataPessoaFisicaBasicaRaw;
 
 	if (!response.ok) {
 		throw new Error(`Erro FonteData: ${response.status}`);
