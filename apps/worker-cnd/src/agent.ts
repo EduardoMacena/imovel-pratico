@@ -122,7 +122,7 @@ async function processarRegistroCnd(params: {
 				telefone: contato.telefone,
 				email: contato.email,
 				fonteContato: contato.fonte,
-				dadosContato: null,
+				dadosContato:  contato.dadosContato,
 				fromCache: false,
 			},
 		});

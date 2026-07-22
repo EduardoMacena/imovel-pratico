@@ -1,6 +1,43 @@
 import { Prisma, prisma } from "@imovel-pratico/database";
 import type { WorkerAgentAutenticado } from "./worker-agent.auth.js";
 
+type FonteDataEmail = {
+	enderecoEmail?: string | null;
+};
+
+type FonteDataTelefone = {
+	whatsApp?: boolean | null;
+	operadora?: string | null;
+	tipoTelefone?: string | null;
+	telefoneComDDD?: string | null;
+	telemarketingBloqueado?: boolean | null;
+};
+
+type FonteDataEndereco = {
+	uf?: string | null;
+	cep?: string | null;
+	bairro?: string | null;
+	cidade?: string | null;
+	numero?: string | null;
+	logradouro?: string | null;
+	complemento?: string | null;
+};
+
+type FonteDataPessoaFisicaBasicaRaw = {
+	cpf?: string | null;
+	nome?: string | null;
+	sexo?: string | null;
+	idade?: number | null;
+	signo?: string | null;
+	emails?: FonteDataEmail[];
+	nomeMae?: string | null;
+	enderecos?: FonteDataEndereco[];
+	telefones?: FonteDataTelefone[];
+	rendaEstimada?: string | null;
+	dataNascimento?: string | null;
+	rendaFaixaSalarial?: string | null;
+};
+
 type ContatoCpfResponse = {
 	fonte: "FONTEDATA" | "INFOQUALY" | "NONE";
 	nome: string | null;
@@ -10,6 +47,57 @@ type ContatoCpfResponse = {
 	endereco: string | null;
 	dadosContato: Record<string, unknown> | null;
 };
+
+function mascararCpfValor(value: string) {
+	const digits = value.replace(/\D/g, "");
+
+	if (digits.length !== 11) {
+		return value;
+	}
+
+	return `${digits.slice(0, 3)}.***.***-**`;
+}
+
+function sanitizarCpfEmTexto(value: string) {
+	return value.replace(/\b\d{3}\.?\d{3}\.?\d{3}-?\d{2}\b/g, match =>
+		mascararCpfValor(match)
+	);
+}
+
+function sanitizarDadosContato(value: unknown): unknown {
+	if (Array.isArray(value)) {
+		return value.map(sanitizarDadosContato);
+	}
+
+	if (typeof value === "string") {
+		return sanitizarCpfEmTexto(value);
+	}
+
+	if (!value || typeof value !== "object") {
+		return value;
+	}
+
+	const record = value as Record<string, unknown>;
+	const sanitized: Record<string, unknown> = {};
+
+	for (const [key, item] of Object.entries(record)) {
+		const keyLower = key.toLowerCase();
+
+		if (keyLower === "cpf" || keyLower.includes("cpf")) {
+			if (typeof item === "string") {
+				sanitized[key] = mascararCpfValor(item);
+			} else {
+				sanitized[key] = null;
+			}
+
+			continue;
+		}
+
+		sanitized[key] = sanitizarDadosContato(item);
+	}
+
+	return sanitized;
+}
 
 function toPrismaJson(value: unknown): Prisma.InputJsonValue | undefined {
 	if (value === undefined || value === null) {
@@ -150,43 +238,6 @@ function pickFromArray(raw: unknown, arrayKeys: string[], valueKeys: string[]) {
 	return null;
 }
 
-type FonteDataEmail = {
-	enderecoEmail?: string | null;
-};
-
-type FonteDataTelefone = {
-	whatsApp?: boolean | null;
-	operadora?: string | null;
-	tipoTelefone?: string | null;
-	telefoneComDDD?: string | null;
-	telemarketingBloqueado?: boolean | null;
-};
-
-type FonteDataEndereco = {
-	uf?: string | null;
-	cep?: string | null;
-	bairro?: string | null;
-	cidade?: string | null;
-	numero?: string | null;
-	logradouro?: string | null;
-	complemento?: string | null;
-};
-
-type FonteDataPessoaFisicaBasicaRaw = {
-	cpf?: string | null;
-	nome?: string | null;
-	sexo?: string | null;
-	idade?: number | null;
-	signo?: string | null;
-	emails?: FonteDataEmail[];
-	nomeMae?: string | null;
-	enderecos?: FonteDataEndereco[];
-	telefones?: FonteDataTelefone[];
-	rendaEstimada?: string | null;
-	dataNascimento?: string | null;
-	rendaFaixaSalarial?: string | null;
-};
-
 function normalizarTelefone(raw: FonteDataPessoaFisicaBasicaRaw) {
 	const telefones = raw.telefones ?? [];
 
@@ -253,7 +304,7 @@ function normalizarFonteData(
 		telefone: normalizarTelefone(raw),
 		email: normalizarEmail(raw),
 		endereco: normalizarEndereco(raw),
-		dadosContato: null,
+		dadosContato: sanitizarDadosContato(raw) as Record<string, unknown>,
 	};
 }
 

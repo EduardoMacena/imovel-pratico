@@ -488,7 +488,7 @@ export async function registrarProgressoJob(params: {
 			telefone: item.telefone ?? null,
 			email: item.email ?? null,
 			fonteContato: item.fonteContato ?? null,
-			dadosContato: Prisma.JsonNull,
+			dadosContato: toPrismaJson(item.dadosContato) ?? Prisma.JsonNull,
 			erro: item.error ?? null,
 		};
 
