@@ -2,11 +2,32 @@ import { Prisma, prisma } from "@imovel-pratico/database";
 import type { WorkerAgentAutenticado } from "./worker-agent.auth.js";
 
 const LEASE_MINUTOS = Number(process.env.WORKER_AGENT_LEASE_MINUTES ?? 10);
+const CACHE_VALIDADE_DIAS = Number(process.env.IMOVEL_CACHE_VALIDITY_DAYS ?? 90);
 
 function adicionarMinutos(date: Date, minutos: number) {
 	const next = new Date(date);
 	next.setMinutes(next.getMinutes() + minutos);
 	return next;
+}
+
+function adicionarDias(date: Date, dias: number) {
+	const next = new Date(date);
+	next.setDate(next.getDate() + dias);
+	return next;
+}
+
+function sanitizarDadosContato(value: Record<string, unknown> | null | undefined) {
+	if (!value) {
+		return null;
+	}
+
+	const clone = JSON.parse(JSON.stringify(value)) as Record<string, unknown>;
+
+	if (typeof clone.cpf === "string") {
+		clone.cpf = mascararCpfPrimeirosTres(clone.cpf);
+	}
+
+	return clone;
 }
 
 function toPrismaJson(value: unknown): Prisma.InputJsonValue | undefined {
@@ -252,6 +273,147 @@ async function claimRegistro(agent: WorkerAgentAutenticado) {
 	};
 }
 
+async function buscarCacheValidoPorIndice(params: {
+	indiceCadastral: string;
+	forceRefresh?: boolean;
+}) {
+	if (params.forceRefresh) {
+		return null;
+	}
+
+	return prisma.imovelCache.findFirst({
+		where: {
+			indiceCadastral: params.indiceCadastral,
+			status: "VALID",
+			expiraEm: {
+				gt: new Date(),
+			},
+		},
+	});
+}
+
+async function salvarResultadoDaTarefaPorCache(params: {
+	tarefaId: string;
+	cache: {
+		logradouro: string;
+		numero: string;
+		complemento: string | null;
+		indiceCadastral: string;
+		nome: string | null;
+		cpf: string | null;
+		endereco: string | null;
+		telefone: string | null;
+		email: string | null;
+		fonteContato: string | null;
+		dadosContato: Prisma.JsonValue | null;
+	};
+}) {
+	const dataResultado = {
+		status: "SUCCESS" as const,
+		logradouro: params.cache.logradouro,
+		numero: params.cache.numero,
+		complemento: params.cache.complemento,
+		indiceCadastral: params.cache.indiceCadastral,
+		nome: params.cache.nome,
+		cpf: params.cache.cpf,
+		endereco: params.cache.endereco,
+		telefone: params.cache.telefone,
+		email: params.cache.email,
+		fonteContato: params.cache.fonteContato ?? "CACHE",
+		dadosContato: toPrismaJson(params.cache.dadosContato) ?? Prisma.JsonNull,
+		erro: null,
+	};
+
+	const existente = await prisma.tarefaResultado.findFirst({
+		where: {
+			tarefaId: params.tarefaId,
+			indiceCadastral: params.cache.indiceCadastral,
+		},
+	});
+
+	if (existente) {
+		await prisma.tarefaResultado.update({
+			where: {
+				id: existente.id,
+			},
+			data: dataResultado,
+		});
+
+		return;
+	}
+
+	await prisma.tarefaResultado.create({
+		data: {
+			tarefaId: params.tarefaId,
+			...dataResultado,
+		},
+	});
+}
+
+async function salvarCacheDoResultado(params: {
+	item: {
+		status: "success" | "error";
+		logradouro: string;
+		numero: string;
+		imovel?: string | null;
+		indiceCadastral: string;
+		proprietario?: {
+			nome?: string | null;
+			cpf?: string | null;
+			endereco?: string | null;
+		} | null;
+		telefone?: string | null;
+		email?: string | null;
+		fonteContato?: string | null;
+		dadosContato?: Record<string, unknown> | null;
+		fromCache?: boolean;
+	};
+}) {
+	if (params.item.status !== "success" || params.item.fromCache) {
+		return;
+	}
+
+	const now = new Date();
+	const dadosContato = sanitizarDadosContato(params.item.dadosContato);
+
+	await prisma.imovelCache.upsert({
+		where: {
+			indiceCadastral: params.item.indiceCadastral,
+		},
+		create: {
+			logradouro: params.item.logradouro,
+			numero: params.item.numero,
+			complemento: params.item.imovel ?? null,
+			indiceCadastral: params.item.indiceCadastral,
+			nome: params.item.proprietario?.nome ?? null,
+			cpf: mascararCpfPrimeirosTres(params.item.proprietario?.cpf),
+			endereco: params.item.proprietario?.endereco ?? null,
+			telefone: params.item.telefone ?? null,
+			email: params.item.email ?? null,
+			fonteContato: params.item.fonteContato ?? null,
+			dadosContato: toPrismaJson(dadosContato) ?? Prisma.JsonNull,
+			status: "VALID",
+			ultimaConsultaEm: now,
+			expiraEm: adicionarDias(now, CACHE_VALIDADE_DIAS),
+		},
+		update: {
+			logradouro: params.item.logradouro,
+			numero: params.item.numero,
+			complemento: params.item.imovel ?? null,
+			nome: params.item.proprietario?.nome ?? null,
+			cpf: mascararCpfPrimeirosTres(params.item.proprietario?.cpf),
+			endereco: params.item.proprietario?.endereco ?? null,
+			telefone: params.item.telefone ?? null,
+			email: params.item.email ?? null,
+			fonteContato: params.item.fonteContato ?? null,
+			dadosContato: toPrismaJson(dadosContato) ?? Prisma.JsonNull,
+			status: "VALID",
+			ultimaConsultaEm: now,
+			expiraEm: adicionarDias(now, CACHE_VALIDADE_DIAS),
+		},
+	});
+}
+
 async function claimCnd(agent: WorkerAgentAutenticado) {
 	if (await clienteTemCndAtivo(agent.clienteId)) {
 		return null;
@@ -328,6 +490,80 @@ async function claimCnd(agent: WorkerAgentAutenticado) {
 		},
 	});
 
+	const registros = normalizarRegistrosPrevia(atualizada.buscaPrevia?.registros);
+	const registrosPendentes = [];
+
+	for (const registro of registros) {
+		const cache = await buscarCacheValidoPorIndice({
+			indiceCadastral: registro.indiceCadastral,
+			forceRefresh: atualizada.forceRefresh,
+		});
+
+		if (!cache) {
+			registrosPendentes.push(registro);
+			continue;
+		}
+
+		await salvarResultadoDaTarefaPorCache({
+			tarefaId: atualizada.id,
+			cache,
+		});
+
+		await prisma.consultaLog.create({
+			data: {
+				clienteId: atualizada.clienteId,
+				fonte: "CACHE",
+				acao: "BUSCAR_PROPRIETARIO_AGENT",
+				sucesso: true,
+			},
+		});
+	}
+
+	const totalCache = registros.length - registrosPendentes.length;
+
+	if (registros.length > 0 && registrosPendentes.length === 0) {
+		await prisma.tarefa.update({
+			where: {
+				id: atualizada.id,
+			},
+			data: {
+				status: "COMPLETED",
+				total: registros.length,
+				current: registros.length,
+				completedAt: new Date(),
+				agentLeaseExpiraEm: null,
+				erro: null,
+			},
+		});
+
+		await prisma.operacaoEvento.create({
+			data: {
+				clienteId: atualizada.clienteId,
+				tarefaId: atualizada.id,
+				buscaPreviaId: atualizada.buscaPreviaId,
+				servico: "API_GATEWAY",
+				tipo: "AGENT_CND_CONCLUIDO_CACHE",
+				mensagem: "Tarefa concluída usando cache válido",
+				metadata: toPrismaJson({
+					agentId: agent.id,
+					totalCache,
+				}),
+			},
+		});
+
+		return null;
+	}
+
+	await prisma.tarefa.update({
+		where: {
+			id: atualizada.id,
+		},
+		data: {
+			total: registros.length,
+			current: totalCache,
+		},
+	});
+
 	await prisma.operacaoEvento.create({
 		data: {
 			clienteId: agent.clienteId,
@@ -355,7 +591,7 @@ async function claimCnd(agent: WorkerAgentAutenticado) {
 		mesAnoFinal: atualizada.mesAnoFinal,
 		intervaloSegundos: atualizada.intervaloSegundos,
 		forceRefresh: atualizada.forceRefresh,
-		registros: normalizarRegistrosPrevia(atualizada.buscaPrevia?.registros),
+		registros: registrosPendentes,
 		leaseExpiraEm,
 	};
 }
@@ -369,9 +605,7 @@ export async function claimProximoJob(agent: WorkerAgentAutenticado) {
 	});
 
 	const job =
-		agent.tipo === "REGISTRO"
-			? await claimRegistro(agent)
-			: await claimCnd(agent);
+		agent.tipo === "REGISTRO" ? await claimRegistro(agent) : await claimCnd(agent);
 
 	if (!job) {
 		return {
@@ -424,9 +658,7 @@ export async function registrarProgressoJob(params: {
 			data: {
 				agentLeaseExpiraEm: leaseExpiraEm,
 				status:
-					params.status === "CONSULTANDO_REGISTRO"
-						? "CONSULTANDO_REGISTRO"
-						: undefined,
+					params.status === "CONSULTANDO_REGISTRO" ? "CONSULTANDO_REGISTRO" : undefined,
 			},
 		});
 
@@ -472,8 +704,7 @@ export async function registrarProgressoJob(params: {
 		});
 
 		const dataResultado = {
-			status:
-				item.status === "success" ? ("SUCCESS" as const) : ("ERROR" as const),
+			status: item.status === "success" ? ("SUCCESS" as const) : ("ERROR" as const),
 			logradouro: item.logradouro,
 			numero: item.numero,
 			complemento: item.imovel ?? null,
@@ -550,6 +781,10 @@ export async function registrarProgressoJob(params: {
 					erro: item.error ?? null,
 				}),
 			},
+		});
+
+		await salvarCacheDoResultado({
+			item,
 		});
 	}
 
