@@ -23,3 +23,16 @@ coverage
 # Agent Windows build artifacts
 apps/agent-windows/dist/
 apps/agent-windows/dist-installer/
+
+
+# Artefatos gerados e arquivos locais de diagnostico/refatoracao
+*.tsbuildinfo
+/.refactor-backups/
+/diagnostico-*.txt
+/contexto-refatoracao-*.txt
+/alteracoes-pendentes-*.txt
+/resultado-refatoracao-*.txt
+/gerar-diagnostico-*.sh
+/coletar-contexto-*.sh
+/verificar-alteracoes-*.sh
+/aplicar-refatoracao-*.sh

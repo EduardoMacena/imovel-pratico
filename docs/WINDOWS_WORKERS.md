@@ -35,7 +35,7 @@ C:\ProgramData\ImovelPratico\worker-registro\
 ## Requisitos
 
 - Windows 10/11 ou Windows Server
-- Node.js 20.19.5
+- Node.js 24.18.0
 - pnpm 10.0.0
 - Google Chrome instalado, recomendado para worker-cnd
 - WinSW x64
