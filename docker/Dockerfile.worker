@@ -1,0 +1,29 @@
+FROM node:24.18.0-bookworm-slim
+
+WORKDIR /app
+
+ARG APP_NAME
+
+ENV APP_NAME=${APP_NAME}
+ENV NODE_ENV=production
+ENV PLAYWRIGHT_HEADLESS=true
+ENV PLAYWRIGHT_SLOW_MO=0
+ENV PNPM_HOME=/pnpm
+ENV PATH=$PNPM_HOME:$PATH
+ENV PNPM_VERSION=10.0.0
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends ca-certificates openssl xvfb xauth \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN npm install -g pnpm@${PNPM_VERSION} prisma@7.8.0
+
+COPY . .
+
+RUN printf "node-linker=hoisted\nstrict-peer-dependencies=false\n" > .npmrc
+RUN pnpm install --frozen-lockfile --prod=false
+RUN pnpm --filter "${APP_NAME}" exec playwright install --with-deps chromium
+RUN prisma generate --schema=packages/database/prisma/schema.prisma
+RUN pnpm --filter "${APP_NAME}..." build
+
+CMD ["sh", "-c", "pnpm --filter ${APP_NAME} start"]

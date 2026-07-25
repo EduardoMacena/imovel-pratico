@@ -1,0 +1,28 @@
+{
+  "name": "@imovel-pratico/worker-cnd",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/worker.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/worker.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "echo \"lint worker-cnd\"",
+    "agent:dev": "tsx src/agent.ts",
+    "agent:start": "node dist/agent.js"
+  },
+  "dependencies": {
+    "@imovel-pratico/database": "workspace:*",
+    "@imovel-pratico/queue": "workspace:*",
+    "bullmq": "latest",
+    "dotenv": "latest",
+    "playwright": "^1.61.1",
+    "@imovel-pratico/agent-client": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "tsx": "latest",
+    "typescript": "latest"
+  }
+}

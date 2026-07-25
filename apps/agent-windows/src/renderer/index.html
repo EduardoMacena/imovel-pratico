@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Imóvel Prático Agent</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+
+  <body>
+    <main class="page">
+      <section class="hero">
+        <div>
+          <div class="eyebrow">Imóvel Prático Agent</div>
+          <h1>Ative o Agent local.</h1>
+          <p>
+            Cole o link de instalação gerado no painel administrativo para configurar REGISTRO e CND
+            nesta máquina sem expor tokens permanentes.
+          </p>
+        </div>
+
+        <div class="status-card">
+          <span>Status local</span>
+          <strong id="statusText">Carregando...</strong>
+          <small id="statusConfigText">Verificando configuração</small>
+        </div>
+      </section>
+
+      <section id="activationSection" class="grid">
+        <div class="card">
+          <h2>Ativação do Agent</h2>
+          <p class="muted">
+            Use o link de instalação ou código gerado no painel administrativo.
+          </p>
+      
+          <label>
+            API URL
+            <input
+              id="apiUrl"
+              value="https://api-staging.imovelpratico.com"
+              placeholder="https://api-staging.imovelpratico.com"
+            />
+          </label>
+      
+          <label>
+            Link de instalação ou código
+            <textarea
+              id="installInput"
+              rows="5"
+              placeholder="Cole aqui o link de instalação ou o código ipl_..."
+            ></textarea>
+          </label>
+      
+          <div class="actions">
+            <button id="activateButton">Ativar instalação</button>
+            <button id="openConfigButton" class="secondary">Abrir pasta config</button>
+          </div>
+      
+          <div id="activationResult" class="result hidden"></div>
+        </div>
+      
+        <aside class="card">
+          <h2>Primeira instalação</h2>
+          <p class="muted">
+            Depois da ativação, essa tela será substituída pelo painel de controle do Agent.
+          </p>
+      
+          <div class="service-list">
+            <article>
+              <span>1. Cole o link de instalação</span>
+              <strong>Pendente</strong>
+            </article>
+      
+            <article>
+              <span>2. Ative a instalação</span>
+              <strong>Pendente</strong>
+            </article>
+      
+            <article>
+              <span>3. Inicie os serviços</span>
+              <strong>Depois</strong>
+            </article>
+          </div>
+        </aside>
+      </section>
+      
+      <section id="dashboardSection" class="grid hidden">
+        <div class="card">
+          <h2>Painel do Agent</h2>
+          <p class="muted">
+            Os serviços REGISTRO e CND rodam em segundo plano e aparecem no Monitoramento do admin.
+          </p>
+      
+          <div class="service-list">
+            <article>
+              <span>REGISTRO Agent</span>
+              <strong id="registroStatus">-</strong>
+            </article>
+      
+            <article>
+              <span>CND Agent</span>
+              <strong id="cndStatus">-</strong>
+            </article>
+          </div>
+      
+          <div class="actions">
+            <button id="startButton">Iniciar Agents</button>
+            <button id="stopButton" class="danger hidden">Parar Agents</button>
+            <button id="reconfigureButton" class="secondary">Reconfigurar instalação</button>
+          </div>
+        </div>
+      
+        <aside class="card">
+          <h2>Configuração local</h2>
+          <p id="dashboardConfigText" class="muted">Verificando configuração...</p>
+      
+          <div class="actions stacked">
+            <button id="openConfigButtonDashboard" class="secondary">
+              Abrir pasta config
+            </button>
+          </div>
+        </aside>
+      </section>
+
+      <section class="card logs-card">
+        <div class="logs-header">
+          <div>
+            <h2>Logs locais</h2>
+            <p class="muted">Saída dos processos REGISTRO e CND.</p>
+          </div>
+
+          <button id="clearLogsButton" class="secondary small">Limpar</button>
+        </div>
+
+        <pre id="logs"></pre>
+      </section>
+    </main>
+
+    <script src="./renderer.js"></script>
+  </body>
+</html>

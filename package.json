@@ -1,0 +1,32 @@
+{
+  "name": "imovel-pratico",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Plataforma de inteligência para captação imobiliária.",
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "typecheck": "turbo typecheck"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "prettier": "latest",
+    "turbo": "latest",
+    "typescript": "5.9.3"
+  },
+  "packageManager": "pnpm@10.0.0",
+  "engines": {
+    "node": "24.18.0",
+    "pnpm": "10.0.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "electron",
+      "esbuild"
+    ]
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "name": "@imovel-pratico/queue",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "dev:clear": "tsx src/clear-dev-queue.ts",
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "echo \"lint queue\""
+  },
+  "dependencies": {
+    "bullmq": "latest",
+    "dotenv": "latest",
+    "ioredis": "latest"
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "tsx": "^4.23.0",
+    "typescript": "latest"
+  }
+}
