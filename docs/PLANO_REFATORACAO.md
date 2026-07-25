@@ -1,0 +1,97 @@
+# Plano de refatoração do Imóvel Prático
+
+## Princípios
+
+- Refatorar por fatias pequenas e verificáveis.
+- Preservar comportamento antes de mudar arquitetura.
+- Criar baseline e testes de caracterização antes de mudanças profundas.
+- Separar estabilidade técnica de novas funcionalidades.
+- Validar cada fase com typecheck, build e testes aplicáveis.
+
+## Fase 0 — Baseline
+
+Status: concluída em 25/07/2026.
+
+- Estrutura e arquivos versionados coletados.
+- Dez workspaces passaram no typecheck.
+- Confirmado Node `24.18.0` LTS como runtime oficial do projeto.
+- Identificada ausência de `AGENTS.md`.
+- Identificado uso de versões `latest` e TypeScript divergente.
+- Identificada documentação raiz desatualizada.
+
+## Fase 1 — Governança e documentação
+
+Status: em execução.
+
+- Criar `AGENTS.md` hierárquicos.
+- Consolidar arquitetura real.
+- Atualizar README.
+- Criar handoff e regras de continuidade.
+- Ignorar artefatos locais de diagnóstico.
+
+Esta fase não altera comportamento de produção.
+
+## Fase 2 — Estabilização da toolchain
+
+- Executar somente com Node `24.18.0`.
+- Substituir dependências `latest` por versões explícitas validadas.
+- Alinhar TypeScript entre todos os workspaces.
+- Alinhar Next.js, React, Playwright, BullMQ e ferramentas compartilhadas.
+- Revisar `pnpm.onlyBuiltDependencies` e `allowBuilds`.
+- Reinstalar de forma limpa e revisar o lockfile.
+- Validar builds individuais, monorepo e instalador Windows.
+
+## Fase 3 — Qualidade automatizada
+
+- Adicionar ESLint real em vez de scripts placeholder.
+- Padronizar Prettier e verificação sem escrita.
+- Criar testes unitários para cálculos, datas, autorização e contratos.
+- Criar testes de integração para API e banco descartável.
+- Criar testes de caracterização dos workers sem acessar fontes reais.
+- Criar pipeline CI com install congelado, typecheck, lint, testes e build.
+
+## Fase 4 — Refatoração da API
+
+- Dividir services grandes por domínio.
+- Padronizar erros de domínio e mapeamento HTTP.
+- Remover duplicação de cálculo de consumo e período.
+- Tipar serializadores e eliminar `any` gradual.
+- Revisar transações, isolamento por cliente e consultas N+1.
+- Consolidar contratos usados por web e agents.
+
+## Fase 5 — Confiabilidade dos workers
+
+- Formalizar máquina de estados de jobs e leases.
+- Reforçar idempotência, retry e cancelamento.
+- Centralizar redaction de PII e logs estruturados.
+- Criar adaptadores testáveis para fontes externas.
+- Padronizar execução Queue e Agent.
+- Revisar métricas, heartbeat, offline e instabilidade.
+
+## Fase 6 — Design system e frontends
+
+- Auditar componentes duplicados de web-client e web-admin.
+- Consolidar tokens de design antes de compartilhar componentes.
+- Criar package de UI apenas para componentes realmente comuns.
+- Padronizar estados de tela, formulários, feedback e acessibilidade.
+- Refatorar telas por fluxo, preservando hooks, guards e APIs.
+- Usar revelação progressiva para detalhes extensos.
+
+## Fase 7 — Novas funcionalidades
+
+Cada funcionalidade nova deve conter:
+
+- problema e usuário;
+- regra de negócio;
+- fluxo de interface;
+- contrato de API;
+- persistência;
+- processamento assíncrono, quando aplicável;
+- segurança e privacidade;
+- critérios de aceite;
+- telemetria;
+- plano de rollout e rollback.
+
+A implementação começa somente depois de identificar as dependências da fase
+correspondente. Não é necessário terminar toda a refatoração para entregar valor,
+mas cada fatia deve entrar sobre uma base estável.
