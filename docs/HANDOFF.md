@@ -39,6 +39,7 @@ Atualize este documento ao encerrar uma sessão relevante de desenvolvimento.
 - `tsx` alinhado em `4.23.1` em todos os workspaces que o utilizam.
 - TypeScript alinhado em `5.9.3` em todos os workspaces; Next/React permanecem para uma fatia separada.
 - BullMQ alinhado em `5.80.10` nos workers e no pacote de fila.
+- Aplicacoes web alinhadas em Next.js `16.2.11`, React `19.2.8` e React DOM `19.2.8`.
 - Scripts de lint ainda são placeholders.
 - Cobertura automatizada de testes ainda não foi confirmada.
 - O typecheck em checkout limpo exige build prévio das dependências internas que publicam tipos em `dist`.
