@@ -36,3 +36,15 @@ apps/agent-windows/dist-installer/
 /coletar-contexto-*.sh
 /verificar-alteracoes-*.sh
 /aplicar-refatoracao-*.sh
+
+# Governança Git assistida
+/contexto-governanca-*.txt
+/resultado-governanca-*.txt
+/coletar-contexto-governanca-*.sh
+/aplicar-governanca-*.sh
+
+# Validação local equivalente ao CI
+/diagnostico-typecheck-ci-limpo.txt
+/resultado-correcao-typecheck-*.txt
+/diagnosticar-typecheck-ci-limpo.sh
+/corrigir-pipeline-typecheck-*.sh

@@ -21,15 +21,29 @@ Status: concluída em 25/07/2026.
 
 ## Fase 1 — Governança e documentação
 
+Status: concluída em 25/07/2026.
+
+- `AGENTS.md` hierárquicos criados.
+- Arquitetura real consolidada.
+- README atualizado.
+- Handoff e regras de continuidade registrados.
+- Artefatos locais de diagnóstico ignorados.
+- Node `24.18.0` alinhado em ambiente, Docker e documentação.
+
+Esta fase não alterou comportamento de produção.
+
+## Fase 1.5 — Governança Git
+
 Status: em execução.
 
-- Criar `AGENTS.md` hierárquicos.
-- Consolidar arquitetura real.
-- Atualizar README.
-- Criar handoff e regras de continuidade.
-- Ignorar artefatos locais de diagnóstico.
-
-Esta fase não altera comportamento de produção.
+- Definir `master` como única branch permanente.
+- Padronizar nomes de branches e Conventional Commits.
+- Criar fluxo obrigatório de Pull Request.
+- Adicionar templates de PR e issues.
+- Adicionar `CODEOWNERS`.
+- Criar CI mínimo com instalação congelada, whitespace e typecheck.
+- Documentar proteção da `master`, merge, exclusão segura e recuperação.
+- Analisar a branch remota legada `origin/develop` antes de qualquer exclusão.
 
 ## Fase 2 — Estabilização da toolchain
 

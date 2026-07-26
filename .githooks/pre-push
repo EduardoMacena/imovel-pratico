@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+ZERO_SHA="0000000000000000000000000000000000000000"
+HAS_UPDATE=0
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+  if [[ "$local_sha" != "$ZERO_SHA" ]]; then
+    HAS_UPDATE=1
+  fi
+done
+
+# Exclusão isolada de branch/tag não precisa reconstruir o projeto.
+if [[ "$HAS_UPDATE" -eq 0 ]]; then
+  exit 0
+fi
+
+ROOT="$(git rev-parse --show-toplevel)"
+cd "$ROOT"
+
+echo
+echo "Executando validação obrigatória antes do push..."
+pnpm validate:pr

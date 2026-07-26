@@ -1,0 +1,82 @@
+name: Validação de Pull Request
+
+on:
+  pull_request:
+    branches:
+      - master
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - edited
+      - ready_for_review
+
+concurrency:
+  group: pull-request-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  titulo:
+    name: Título do PR
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Validar Conventional Commit
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          node <<'NODE'
+          const title = process.env.PR_TITLE ?? "";
+          const pattern =
+            /^(feat|fix|refactor|chore|docs|test|perf|build|ci|revert)(\([a-z0-9-]+\))?!?: .+/;
+
+          if (!pattern.test(title)) {
+            console.error(
+              "Título inválido. Use: tipo(escopo): descrição em português",
+            );
+            process.exit(1);
+          }
+
+          console.log(`Título válido: ${title}`);
+          NODE
+
+  repositorio:
+    name: Repositório
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      TURBO_TELEMETRY_DISABLED: "1"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Configurar pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          run_install: false
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Instalar dependências
+        run: pnpm install --frozen-lockfile
+
+      - name: Verificar whitespace do PR
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: git diff --check "$BASE_SHA...HEAD"
+
+      - name: Executar typecheck sem cache
+        run: pnpm typecheck:ci

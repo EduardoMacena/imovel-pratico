@@ -56,6 +56,12 @@ pnpm typecheck
 git diff --check
 ```
 
+Antes de publicar uma branch:
+
+```bash
+pnpm validate:pr
+```
+
 Quando a tarefa alterar execução ou empacotamento:
 
 ```bash
@@ -93,13 +99,20 @@ Além disso, executar a validação específica do workspace alterado.
 
 ## Git
 
-Usar Conventional Commits em português:
-
-- `feat(escopo): ...`
-- `fix(escopo): ...`
-- `refactor(escopo): ...`
-- `chore(escopo): ...`
-- `docs(escopo): ...`
-- `test(escopo): ...`
-
-Não criar commit automaticamente sem solicitação explícita.
+- A branch principal é `master`.
+- Toda alteração entra por Pull Request.
+- Branches devem ser curtas, específicas e seguir `tipo/descricao`.
+- Usar Conventional Commits em português:
+  - `feat(escopo): ...`
+  - `fix(escopo): ...`
+  - `refactor(escopo): ...`
+  - `chore(escopo): ...`
+  - `docs(escopo): ...`
+  - `test(escopo): ...`
+  - `ci(escopo): ...`
+- Seguir `CONTRIBUTING.md` e `docs/GIT_WORKFLOW.md`.
+- Nunca excluir uma branch antes de confirmar que `master` contém seu commit.
+- Não criar commit, push, merge ou exclusão automaticamente sem solicitação
+  explícita.
+- Depois da validação e do commit, remover scripts, relatórios e backups
+  temporários que não serão mais usados.

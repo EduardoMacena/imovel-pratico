@@ -1,0 +1,38 @@
+name: Propor funcionalidade
+description: Registre uma necessidade de produto ou melhoria.
+title: "feat(escopo): "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problema
+    attributes:
+      label: Problema do usuário
+      description: Qual problema precisa ser resolvido e para quem?
+    validations:
+      required: true
+  - type: textarea
+    id: resultado
+    attributes:
+      label: Resultado esperado
+      description: Descreva o resultado, não apenas a solução imaginada.
+    validations:
+      required: true
+  - type: textarea
+    id: regra
+    attributes:
+      label: Regras de negócio conhecidas
+  - type: textarea
+    id: aceite
+    attributes:
+      label: Critérios de aceite
+      placeholder: |
+        - [ ]
+        - [ ]
+    validations:
+      required: true
+  - type: textarea
+    id: riscos
+    attributes:
+      label: Riscos e impactos
+      description: Segurança, privacidade, billing, filas, cache e multi-tenant.
