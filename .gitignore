@@ -42,3 +42,9 @@ apps/agent-windows/dist-installer/
 /resultado-governanca-*.txt
 /coletar-contexto-governanca-*.sh
 /aplicar-governanca-*.sh
+
+# Validação local equivalente ao CI
+/diagnostico-typecheck-ci-limpo.txt
+/resultado-correcao-typecheck-*.txt
+/diagnosticar-typecheck-ci-limpo.sh
+/corrigir-pipeline-typecheck-*.sh

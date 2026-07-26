@@ -49,6 +49,8 @@ jobs:
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    env:
+      TURBO_TELEMETRY_DISABLED: "1"
 
     steps:
       - name: Checkout
@@ -76,5 +78,5 @@ jobs:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: git diff --check "$BASE_SHA...HEAD"
 
-      - name: Executar typecheck
-        run: pnpm typecheck
+      - name: Executar typecheck sem cache
+        run: pnpm typecheck:ci

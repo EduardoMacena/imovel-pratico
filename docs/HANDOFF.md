@@ -38,6 +38,7 @@ Atualize este documento ao encerrar uma sessão relevante de desenvolvimento.
 - Vários `package.json` ainda usam `latest`.
 - Scripts de lint ainda são placeholders.
 - Cobertura automatizada de testes ainda não foi confirmada.
+- O typecheck em checkout limpo exige build prévio das dependências internas que publicam tipos em `dist`.
 - README anterior descrevia packages que não existem no estado atual.
 
 ## Próxima tarefa recomendada

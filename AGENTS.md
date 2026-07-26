@@ -56,6 +56,12 @@ pnpm typecheck
 git diff --check
 ```
 
+Antes de publicar uma branch:
+
+```bash
+pnpm validate:pr
+```
+
 Quando a tarefa alterar execução ou empacotamento:
 
 ```bash

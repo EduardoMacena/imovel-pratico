@@ -6,14 +6,23 @@
       "persistent": true
     },
     "build": {
-      "dependsOn": ["^build"],
-      "outputs": [".next/**", "dist/**"]
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        ".next/**",
+        "dist/**"
+      ]
     },
     "lint": {
-      "dependsOn": ["^lint"]
+      "dependsOn": [
+        "^lint"
+      ]
     },
     "typecheck": {
-      "dependsOn": ["^typecheck"]
+      "dependsOn": [
+        "^build"
+      ]
     }
   }
 }

@@ -44,10 +44,28 @@ git switch -c <tipo>/<descricao-curta>
 
 ### 4. Validar
 
+Validação rápida durante o desenvolvimento:
+
 ```bash
 pnpm typecheck
 git diff --check
 ```
+
+Validação obrigatória do commit antes do envio:
+
+```bash
+pnpm validate:pr
+```
+
+Ativação única do bloqueio automático:
+
+```bash
+pnpm setup:git-hooks
+```
+
+O hook `pre-push` cria um worktree temporário a partir do `HEAD`, instala com
+lockfile congelado, ignora o cache anterior do Turbo e executa o mesmo typecheck
+usado no GitHub. Um status diferente de zero impede o push.
 
 Executar `pnpm build` quando houver impacto em build, runtime ou empacotamento.
 

@@ -54,20 +54,40 @@ O título deve ser objetivo, no presente, sem ponto final.
 
 ## Validação local
 
-Obrigatório antes do Pull Request:
+Durante o desenvolvimento:
 
 ```bash
 pnpm typecheck
 git diff --check
 ```
 
-Quando a alteração afetar execução ou empacotamento:
+Antes de todo `push`, valide o commit em um worktree temporário, sem depender de
+`node_modules`, `dist` ou cache local:
+
+```bash
+pnpm validate:pr
+```
+
+Ative uma vez o hook versionado:
+
+```bash
+pnpm setup:git-hooks
+```
+
+Depois disso, `git push` executará a validação automaticamente e será bloqueado
+quando a instalação congelada, whitespace ou typecheck falhar.
+
+O fluxo limpo usa `pnpm install --frozen-lockfile` e `pnpm typecheck:ci`. O
+typecheck de CI ignora resultados anteriores do Turbo e compila primeiro as
+dependências internas necessárias.
+
+Quando a alteração afetar execução ou empacotamento, também execute:
 
 ```bash
 pnpm build
 ```
 
-Também execute a validação específica do workspace alterado.
+Além disso, execute a validação específica do workspace alterado.
 
 ## Pull Request
 

@@ -8,7 +8,10 @@
     "build": "turbo build",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
-    "typecheck": "turbo typecheck"
+    "typecheck": "turbo typecheck",
+    "typecheck:ci": "turbo run typecheck --force",
+    "validate:pr": "bash scripts/validate-pr.sh",
+    "setup:git-hooks": "git config core.hooksPath .githooks"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",
