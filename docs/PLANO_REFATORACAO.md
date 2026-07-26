@@ -59,6 +59,7 @@ Status: em execução.
 - Revisar `pnpm.onlyBuiltDependencies` e `allowBuilds`.
 - Reinstalar de forma limpa e revisar o lockfile.
 - Validar builds individuais, monorepo e instalador Windows.
+- `tsx` alinhado em `4.23.1` em todos os workspaces que o utilizam.
 
 ## Fase 3 — Qualidade automatizada
 
