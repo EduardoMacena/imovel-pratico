@@ -35,7 +35,7 @@ Atualize este documento ao encerrar uma sessão relevante de desenvolvimento.
 
 - O repositório ainda declarava Node 20.19.5, versão EOL, antes desta fase.
 - Alguns workspaces resolveram TypeScript 7.0.2 enquanto outros usam 5.9.3.
-- Vários `package.json` ainda usam `latest`.
+- As dependências diretas estão sendo fixadas nas versões já resolvidas; o alinhamento entre workspaces permanece para a próxima fatia.
 - Scripts de lint ainda são placeholders.
 - Cobertura automatizada de testes ainda não foi confirmada.
 - O typecheck em checkout limpo exige build prévio das dependências internas que publicam tipos em `dist`.

@@ -15,14 +15,14 @@
   "dependencies": {
     "@imovel-pratico/database": "workspace:*",
     "@imovel-pratico/queue": "workspace:*",
-    "bullmq": "latest",
-    "dotenv": "latest",
-    "playwright": "^1.61.1",
+    "bullmq": "5.80.10",
+    "dotenv": "17.4.2",
+    "playwright": "1.61.1",
     "@imovel-pratico/agent-client": "workspace:*"
   },
   "devDependencies": {
-    "@types/node": "latest",
-    "tsx": "latest",
-    "typescript": "latest"
+    "@types/node": "26.1.1",
+    "tsx": "4.23.1",
+    "typescript": "7.0.2"
   }
 }

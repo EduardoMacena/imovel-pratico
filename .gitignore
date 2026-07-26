@@ -48,3 +48,9 @@ apps/agent-windows/dist-installer/
 /resultado-correcao-typecheck-*.txt
 /diagnosticar-typecheck-ci-limpo.sh
 /corrigir-pipeline-typecheck-*.sh
+
+# Diagnósticos e patches da toolchain
+/diagnostico-toolchain-*.txt
+/resultado-toolchain-*.txt
+/diagnosticar-toolchain-*.sh
+/aplicar-pinning-toolchain-*.sh
