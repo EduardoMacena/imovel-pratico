@@ -35,7 +35,8 @@ Atualize este documento ao encerrar uma sessão relevante de desenvolvimento.
 
 - O repositório ainda declarava Node 20.19.5, versão EOL, antes desta fase.
 - Alguns workspaces resolveram TypeScript 7.0.2 enquanto outros usam 5.9.3.
-- As dependências diretas estão sendo fixadas nas versões já resolvidas; o alinhamento entre workspaces permanece para a próxima fatia.
+- Dependências diretas fixadas; TypeScript alinhado em `5.9.3` em todos os workspaces. Next/React, BullMQ e `tsx` permanecem para fatias separadas.
+- TypeScript alinhado em `5.9.3` em todos os workspaces; Next/React, BullMQ e `tsx` permanecem para fatias separadas.
 - Scripts de lint ainda são placeholders.
 - Cobertura automatizada de testes ainda não foi confirmada.
 - O typecheck em checkout limpo exige build prévio das dependências internas que publicam tipos em `dist`.
