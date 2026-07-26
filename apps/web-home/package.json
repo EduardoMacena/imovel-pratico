@@ -13,14 +13,14 @@
     "next": "16.2.10",
     "react": "19.2.7",
     "react-dom": "19.2.7",
-    "styled-components": "latest",
-    "framer-motion": "latest"
+    "styled-components": "6.4.4",
+    "framer-motion": "12.42.2"
   },
   "devDependencies": {
     "typescript": "5.9.3",
-    "@types/node": "latest",
-    "@types/react": "latest",
-    "@types/react-dom": "latest",
-    "@types/styled-components": "latest"
+    "@types/node": "26.1.1",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "@types/styled-components": "5.1.36"
   }
 }

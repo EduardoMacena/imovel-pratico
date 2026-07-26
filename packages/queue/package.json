@@ -12,13 +12,13 @@
     "lint": "echo \"lint queue\""
   },
   "dependencies": {
-    "bullmq": "latest",
-    "dotenv": "latest",
-    "ioredis": "latest"
+    "bullmq": "5.80.10",
+    "dotenv": "17.4.2",
+    "ioredis": "5.11.1"
   },
   "devDependencies": {
-    "@types/node": "latest",
-    "tsx": "^4.23.0",
-    "typescript": "latest"
+    "@types/node": "26.1.1",
+    "tsx": "4.23.0",
+    "typescript": "7.0.2"
   }
 }

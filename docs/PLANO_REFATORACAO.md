@@ -47,7 +47,11 @@ Status: em execução.
 
 ## Fase 2 — Estabilização da toolchain
 
+Status: em execução.
+
 - Executar somente com Node `24.18.0`.
+- Fixar primeiro todas as dependências diretas nas versões já resolvidas e
+  validadas, sem atualização automática.
 - Substituir dependências `latest` por versões explícitas validadas.
 - Alinhar TypeScript entre todos os workspaces.
 - Alinhar Next.js, React, Playwright, BullMQ e ferramentas compartilhadas.

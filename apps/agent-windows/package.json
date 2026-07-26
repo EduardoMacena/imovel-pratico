@@ -13,13 +13,13 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "playwright": "^1.61.1"
+    "playwright": "1.61.1"
   },
   "devDependencies": {
-    "@types/node": "^26.1.1",
-    "electron": "latest",
-    "electron-builder": "latest",
-    "esbuild": "^0.27.0",
+    "@types/node": "26.1.1",
+    "electron": "43.2.0",
+    "electron-builder": "26.15.3",
+    "esbuild": "0.27.7",
     "typescript": "5.9.3"
   },
   "build": {
