@@ -60,6 +60,7 @@ Status: em execução.
 - Reinstalar de forma limpa e revisar o lockfile.
 - Validar builds individuais, monorepo e instalador Windows.
 - `tsx` alinhado em `4.23.1` em todos os workspaces que o utilizam.
+- BullMQ alinhado em `5.80.10` nos workers e no pacote de fila.
 
 ## Fase 3 — Qualidade automatizada
 
