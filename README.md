@@ -89,6 +89,8 @@ Teste migrations em staging antes da produção.
 - `docs/DOCKER.md`: imagens e builds.
 - `docs/COMPOSE.md`: execução por Docker Compose.
 - `docs/WINDOWS_WORKERS.md`: modo legado/controlado de serviços Windows.
+- `CONTRIBUTING.md`: regras para branches, commits e Pull Requests.
+- `docs/GIT_WORKFLOW.md`: fluxo Git completo e proteção da `master`.
 
 ## Commits
 

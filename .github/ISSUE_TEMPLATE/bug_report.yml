@@ -1,0 +1,64 @@
+name: Relatar bug
+description: Registre um comportamento incorreto ou regressão.
+title: "fix(escopo): "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Não inclua tokens, senhas, CPF completo, dados de clientes ou outros segredos.
+  - type: textarea
+    id: problema
+    attributes:
+      label: Problema
+      description: Descreva o comportamento observado.
+    validations:
+      required: true
+  - type: textarea
+    id: esperado
+    attributes:
+      label: Comportamento esperado
+    validations:
+      required: true
+  - type: textarea
+    id: reproducao
+    attributes:
+      label: Passos para reproduzir
+      placeholder: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Área
+      options:
+        - web-home
+        - web-client
+        - web-admin
+        - api-gateway
+        - worker-registro
+        - worker-cnd
+        - agent-windows
+        - database
+        - queue
+        - agent-client
+        - infraestrutura
+        - outra
+    validations:
+      required: true
+  - type: textarea
+    id: ambiente
+    attributes:
+      label: Ambiente
+      description: Branch, sistema operacional, navegador e versão relevante.
+    validations:
+      required: true
+  - type: textarea
+    id: evidencias
+    attributes:
+      label: Evidências sanitizadas
+      description: Logs redigidos, screenshots ou vídeos sem dados sensíveis.

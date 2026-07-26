@@ -4,12 +4,14 @@ Atualize este documento ao encerrar uma sessão relevante de desenvolvimento.
 
 ## Estado atual
 
-- Branch de trabalho observada no baseline: `chore/infra-publicacao`.
+- Branch principal: `master`.
+- Branch da fase atual: `chore/organiza-workflow-git`.
 - Último baseline técnico: 25/07/2026.
 - Typecheck do monorepo: aprovado em 10 workspaces.
 - Node obrigatório: `24.18.0`.
 - pnpm obrigatório: `10.0.0`.
-- Fase atual: governança e documentação.
+- Fase 1 concluída: governança técnica e documentação.
+- Fase 1.5 em execução: governança Git e Pull Requests.
 
 ## Arquitetura em uso
 
@@ -40,15 +42,17 @@ Atualize este documento ao encerrar uma sessão relevante de desenvolvimento.
 
 ## Próxima tarefa recomendada
 
-Estabilizar a toolchain em uma branch própria:
+Concluir a governança Git:
 
-1. confirmar Node 24.18.0 em desenvolvimento, CI e Docker;
-2. registrar versões resolvidas;
-3. propor versões explícitas;
-4. aplicar em um patch isolado;
-5. instalar com lockfile revisado;
-6. rodar typecheck e build;
-7. testar o instalador Windows.
+1. revisar os arquivos de workflow e contribuição;
+2. validar o Pull Request;
+3. configurar proteção da `master` no GitHub;
+4. analisar a branch remota legada `origin/develop`;
+5. fazer merge;
+6. confirmar a integração antes de excluir branches;
+7. limpar scripts, relatórios e backups temporários.
+
+Depois, iniciar a estabilização das dependências em branch própria.
 
 ## Formato de continuidade
 
