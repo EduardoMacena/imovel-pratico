@@ -73,10 +73,8 @@ jobs:
 
       - name: Verificar whitespace do PR
         env:
-          BASE_REF: ${{ github.base_ref }}
-        run: |
-          git fetch origin "$BASE_REF"
-          git diff --check "origin/$BASE_REF...HEAD"
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: git diff --check "$BASE_SHA...HEAD"
 
       - name: Executar typecheck
         run: pnpm typecheck
