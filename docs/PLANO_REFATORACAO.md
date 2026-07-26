@@ -61,6 +61,7 @@ Status: em execução.
 - Validar builds individuais, monorepo e instalador Windows.
 - `tsx` alinhado em `4.23.1` em todos os workspaces que o utilizam.
 - BullMQ alinhado em `5.80.10` nos workers e no pacote de fila.
+- Aplicacoes web alinhadas em Next.js `16.2.11`, React `19.2.8` e React DOM `19.2.8`.
 
 ## Fase 3 — Qualidade automatizada
 
