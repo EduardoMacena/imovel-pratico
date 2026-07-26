@@ -53,6 +53,7 @@ Status: em execução.
 - Fixar primeiro todas as dependências diretas nas versões já resolvidas e
   validadas, sem atualização automática.
 - Substituir dependências `latest` por versões explícitas validadas.
+- TypeScript alinhado em `5.9.3` em todos os workspaces.
 - Alinhar TypeScript entre todos os workspaces.
 - Alinhar Next.js, React, Playwright, BullMQ e ferramentas compartilhadas.
 - Revisar `pnpm.onlyBuiltDependencies` e `allowBuilds`.
