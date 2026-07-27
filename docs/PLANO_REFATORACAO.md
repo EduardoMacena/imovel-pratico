@@ -34,43 +34,78 @@ Esta fase não alterou comportamento de produção.
 
 ## Fase 1.5 — Governança Git
 
-Status: em execução.
+Status: concluída em 26/07/2026.
 
-- Definir `master` como única branch permanente.
-- Padronizar nomes de branches e Conventional Commits.
-- Criar fluxo obrigatório de Pull Request.
-- Adicionar templates de PR e issues.
-- Adicionar `CODEOWNERS`.
-- Criar CI mínimo com instalação congelada, whitespace e typecheck.
-- Documentar proteção da `master`, merge, exclusão segura e recuperação.
-- Analisar a branch remota legada `origin/develop` antes de qualquer exclusão.
+- `master` definida como única branch permanente.
+- Nomes de branches e Conventional Commits padronizados.
+- Fluxo obrigatório de Pull Request documentado.
+- Templates de PR e issues adicionados.
+- `CODEOWNERS` adicionado.
+- CI mínimo criado com instalação congelada, whitespace e typecheck.
+- Proteção da `master`, merge, exclusão segura e recuperação documentados.
+- Branch remota legada analisada antes de qualquer exclusão.
+- Pull Requests pequenos e independentes adotados como fluxo padrão.
 
 ## Fase 2 — Estabilização da toolchain
 
-Status: em execução.
+Status: concluída em 27/07/2026.
 
-- Executar somente com Node `24.18.0`.
-- Fixar primeiro todas as dependências diretas nas versões já resolvidas e
-  validadas, sem atualização automática.
-- Substituir dependências `latest` por versões explícitas validadas.
+- Node `24.18.0` e pnpm `10.0.0` definidos como toolchain obrigatória.
+- Dependências diretas fixadas nas versões já resolvidas e validadas.
+- Declarações `latest` substituídas por versões explícitas.
 - TypeScript alinhado em `5.9.3` em todos os workspaces.
-- Alinhar TypeScript entre todos os workspaces.
-- Alinhar Next.js, React, Playwright, BullMQ e ferramentas compartilhadas.
-- Revisar `pnpm.onlyBuiltDependencies` e `allowBuilds`.
-- Reinstalar de forma limpa e revisar o lockfile.
-- Validar builds individuais, monorepo e instalador Windows.
-- `tsx` alinhado em `4.23.1` em todos os workspaces que o utilizam.
+- `tsx` alinhado em `4.23.1` nos workspaces que o utilizam.
 - BullMQ alinhado em `5.80.10` nos workers e no pacote de fila.
-- Aplicacoes web alinhadas em Next.js `16.2.11`, React `19.2.8` e React DOM `19.2.8`.
+- Aplicações web alinhadas em Next.js `16.2.11`, React `19.2.8` e
+  React DOM `19.2.8`.
+- Dependências transitivas seguras corrigidas:
+  `fast-uri`, `find-my-way`, `postcss`, `sharp` e `valibot`.
+- Árvore do ExcelJS mitigada com `uuid 11.1.1`,
+  `brace-expansion 1.1.16` e `brace-expansion 2.1.2`.
+- Instalação limpa e lockfile congelado validados.
+- Exportação XLSX real validada com dados, cabeçalho em negrito,
+  painel congelado e autofiltro.
+- Prisma, Sharp, Fastify e BullMQ passaram em testes funcionais.
+- Typecheck aprovado em 13 tarefas e build aprovado em 10 tarefas.
+
+Risco aceito da fase:
+
+- Permanecem dois alertas altos do `GHSA-mh99-v99m-4gvg` na árvore do
+  ExcelJS.
+- A correção integral exigiria `brace-expansion 5.0.8`, salto incompatível
+  rejeitado após simulação.
+- O risco deve ser reavaliado quando o ExcelJS ou suas dependências
+  transitivas publicarem uma atualização compatível.
+
+## Início do desenvolvimento funcional
+
+A base estável permite iniciar novas funcionalidades.
+
+Cada entrega deve ser uma fatia vertical pequena, contendo:
+
+- problema e usuário afetado;
+- regra de negócio;
+- fluxo de interface;
+- contrato de API;
+- persistência e processamento assíncrono, quando aplicáveis;
+- segurança, privacidade e isolamento por cliente;
+- critérios de aceite;
+- testes mínimos do comportamento alterado;
+- typecheck, build e plano de rollback.
+
+A qualidade automatizada deve avançar junto às funcionalidades. Não é
+necessário concluir todas as fases de refatoração antes de entregar valor.
 
 ## Fase 3 — Qualidade automatizada
+
+Status: próxima fase incremental.
 
 - Adicionar ESLint real em vez de scripts placeholder.
 - Padronizar Prettier e verificação sem escrita.
 - Criar testes unitários para cálculos, datas, autorização e contratos.
 - Criar testes de integração para API e banco descartável.
 - Criar testes de caracterização dos workers sem acessar fontes reais.
-- Criar pipeline CI com install congelado, typecheck, lint, testes e build.
+- Evoluir o pipeline CI com lint, testes e build.
 
 ## Fase 4 — Refatoração da API
 

@@ -5,13 +5,16 @@ Atualize este documento ao encerrar uma sessão relevante de desenvolvimento.
 ## Estado atual
 
 - Branch principal: `master`.
-- Branch da fase atual: `chore/organiza-workflow-git`.
-- Último baseline técnico: 25/07/2026.
-- Typecheck do monorepo: aprovado em 10 workspaces.
+- Branch da fase atual: `docs/atualiza-estabilizacao`.
+- Último baseline técnico: 27/07/2026.
+- Typecheck do monorepo: 13 tarefas aprovadas em 10 workspaces.
+- Build do monorepo: 10 tarefas aprovadas em 10 workspaces.
 - Node obrigatório: `24.18.0`.
 - pnpm obrigatório: `10.0.0`.
+- Fase 0 concluída: baseline técnico.
 - Fase 1 concluída: governança técnica e documentação.
-- Fase 1.5 em execução: governança Git e Pull Requests.
+- Fase 1.5 concluída: governança Git e Pull Requests.
+- Fase 2 concluída: estabilização da toolchain e das dependências.
 
 ## Arquitetura em uso
 
@@ -31,33 +34,49 @@ Atualize este documento ao encerrar uma sessão relevante de desenvolvimento.
 - Worker Registro e CND respeitam intervalos e leases.
 - Alterações visuais não mudam regra de domínio.
 
-## Riscos conhecidos
+## Estabilização concluída
 
-- O repositório ainda declarava Node 20.19.5, versão EOL, antes desta fase.
-- Alguns workspaces resolveram TypeScript 7.0.2 enquanto outros usam 5.9.3.
-- Dependências diretas fixadas; TypeScript alinhado em `5.9.3` em todos os workspaces. Next/React permanecem para uma fatia separada.
-- `tsx` alinhado em `4.23.1` em todos os workspaces que o utilizam.
-- TypeScript alinhado em `5.9.3` em todos os workspaces; Next/React permanecem para uma fatia separada.
+- Node `24.18.0` e pnpm `10.0.0` fixados no projeto.
+- Dependências diretas fixadas em versões explícitas.
+- TypeScript alinhado em `5.9.3` em todos os workspaces.
+- `tsx` alinhado em `4.23.1` nos workspaces que o utilizam.
 - BullMQ alinhado em `5.80.10` nos workers e no pacote de fila.
-- Aplicacoes web alinhadas em Next.js `16.2.11`, React `19.2.8` e React DOM `19.2.8`.
+- Aplicações web alinhadas em Next.js `16.2.11`, React `19.2.8` e
+  React DOM `19.2.8`.
+- Dependências transitivas seguras corrigidas:
+  `fast-uri`, `find-my-way`, `postcss`, `sharp` e `valibot`.
+- Árvore do ExcelJS mitigada com `uuid 11.1.1`,
+  `brace-expansion 1.1.16` e `brace-expansion 2.1.2`.
+- Instalação com lockfile congelado, exportação XLSX, Prisma, Sharp,
+  Fastify, BullMQ, typecheck e build foram validados.
+
+## Riscos e pendências conhecidos
+
+- O `pnpm audit --prod` ainda reporta dois alertas altos do
+  `GHSA-mh99-v99m-4gvg`, originados por `brace-expansion` na árvore do
+  ExcelJS.
+- A correção integral desse advisory exigiria forçar
+  `brace-expansion 5.0.8` em dependências antigas. Essa mudança foi
+  rejeitada após incompatibilidade comprovada em simulação.
 - Scripts de lint ainda são placeholders.
-- Cobertura automatizada de testes ainda não foi confirmada.
-- O typecheck em checkout limpo exige build prévio das dependências internas que publicam tipos em `dist`.
-- README anterior descrevia packages que não existem no estado atual.
+- A cobertura automatizada de testes ainda não foi consolidada.
+- O typecheck em checkout limpo exige build prévio das dependências internas
+  que publicam tipos em `dist`.
+- Builds Next.js no Windows podem emitir avisos de caminho longo ao processar
+  diretórios `.next/standalone`, sem falhar o build.
 
 ## Próxima tarefa recomendada
 
-Concluir a governança Git:
+1. concluir este PR de atualização documental;
+2. retornar à `master` e sincronizar com `origin/master`;
+3. definir a primeira entrega funcional vertical com critérios de aceite;
+4. criar uma branch `feat/*` exclusiva para essa entrega;
+5. implementar a funcionalidade preservando as invariantes de domínio;
+6. incluir validações e testes mínimos do fluxo alterado;
+7. executar typecheck, build e testes aplicáveis antes do PR.
 
-1. revisar os arquivos de workflow e contribuição;
-2. validar o Pull Request;
-3. configurar proteção da `master` no GitHub;
-4. analisar a branch remota legada `origin/develop`;
-5. fazer merge;
-6. confirmar a integração antes de excluir branches;
-7. limpar scripts, relatórios e backups temporários.
-
-Depois, iniciar a estabilização das dependências em branch própria.
+A Fase 3 de qualidade automatizada deve avançar incrementalmente junto às
+entregas funcionais, sem criar outra etapa longa de preparação.
 
 ## Formato de continuidade
 
