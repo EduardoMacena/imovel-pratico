@@ -397,6 +397,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 
 export const ModelName = {
+  Municipio: 'Municipio',
+  ClienteMunicipio: 'ClienteMunicipio',
   Plano: 'Plano',
   Cliente: 'Cliente',
   Usuario: 'Usuario',
@@ -426,10 +428,158 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "plano" | "cliente" | "usuario" | "tarefa" | "buscaPrevia" | "fatura" | "faturaItem" | "tarefaResultado" | "imovelCache" | "consultaLog" | "operacaoEvento" | "workerHeartbeat" | "workerAgent" | "workerAgentInstallLink"
+    modelProps: "municipio" | "clienteMunicipio" | "plano" | "cliente" | "usuario" | "tarefa" | "buscaPrevia" | "fatura" | "faturaItem" | "tarefaResultado" | "imovelCache" | "consultaLog" | "operacaoEvento" | "workerHeartbeat" | "workerAgent" | "workerAgentInstallLink"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
+    Municipio: {
+      payload: Prisma.$MunicipioPayload<ExtArgs>
+      fields: Prisma.MunicipioFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MunicipioFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MunicipioPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MunicipioFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MunicipioPayload>
+        }
+        findFirst: {
+          args: Prisma.MunicipioFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MunicipioPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MunicipioFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MunicipioPayload>
+        }
+        findMany: {
+          args: Prisma.MunicipioFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MunicipioPayload>[]
+        }
+        create: {
+          args: Prisma.MunicipioCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MunicipioPayload>
+        }
+        createMany: {
+          args: Prisma.MunicipioCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MunicipioCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MunicipioPayload>[]
+        }
+        delete: {
+          args: Prisma.MunicipioDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MunicipioPayload>
+        }
+        update: {
+          args: Prisma.MunicipioUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MunicipioPayload>
+        }
+        deleteMany: {
+          args: Prisma.MunicipioDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MunicipioUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MunicipioUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MunicipioPayload>[]
+        }
+        upsert: {
+          args: Prisma.MunicipioUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MunicipioPayload>
+        }
+        aggregate: {
+          args: Prisma.MunicipioAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMunicipio>
+        }
+        groupBy: {
+          args: Prisma.MunicipioGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MunicipioGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MunicipioCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MunicipioCountAggregateOutputType> | number
+        }
+      }
+    }
+    ClienteMunicipio: {
+      payload: Prisma.$ClienteMunicipioPayload<ExtArgs>
+      fields: Prisma.ClienteMunicipioFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ClienteMunicipioFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClienteMunicipioPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ClienteMunicipioFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClienteMunicipioPayload>
+        }
+        findFirst: {
+          args: Prisma.ClienteMunicipioFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClienteMunicipioPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ClienteMunicipioFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClienteMunicipioPayload>
+        }
+        findMany: {
+          args: Prisma.ClienteMunicipioFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClienteMunicipioPayload>[]
+        }
+        create: {
+          args: Prisma.ClienteMunicipioCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClienteMunicipioPayload>
+        }
+        createMany: {
+          args: Prisma.ClienteMunicipioCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ClienteMunicipioCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClienteMunicipioPayload>[]
+        }
+        delete: {
+          args: Prisma.ClienteMunicipioDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClienteMunicipioPayload>
+        }
+        update: {
+          args: Prisma.ClienteMunicipioUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClienteMunicipioPayload>
+        }
+        deleteMany: {
+          args: Prisma.ClienteMunicipioDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ClienteMunicipioUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ClienteMunicipioUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClienteMunicipioPayload>[]
+        }
+        upsert: {
+          args: Prisma.ClienteMunicipioUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClienteMunicipioPayload>
+        }
+        aggregate: {
+          args: Prisma.ClienteMunicipioAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateClienteMunicipio>
+        }
+        groupBy: {
+          args: Prisma.ClienteMunicipioGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ClienteMunicipioGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ClienteMunicipioCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ClienteMunicipioCountAggregateOutputType> | number
+        }
+      }
+    }
     Plano: {
       payload: Prisma.$PlanoPayload<ExtArgs>
       fields: Prisma.PlanoFieldRefs
@@ -1505,6 +1655,33 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
+export const MunicipioScalarFieldEnum = {
+  id: 'id',
+  codigoIbge: 'codigoIbge',
+  nome: 'nome',
+  uf: 'uf',
+  status: 'status',
+  configuracao: 'configuracao',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MunicipioScalarFieldEnum = (typeof MunicipioScalarFieldEnum)[keyof typeof MunicipioScalarFieldEnum]
+
+
+export const ClienteMunicipioScalarFieldEnum = {
+  id: 'id',
+  clienteId: 'clienteId',
+  municipioId: 'municipioId',
+  ativo: 'ativo',
+  principal: 'principal',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ClienteMunicipioScalarFieldEnum = (typeof ClienteMunicipioScalarFieldEnum)[keyof typeof ClienteMunicipioScalarFieldEnum]
+
+
 export const PlanoScalarFieldEnum = {
   id: 'id',
   nome: 'nome',
@@ -1568,6 +1745,7 @@ export const TarefaScalarFieldEnum = {
   clienteId: 'clienteId',
   buscaPreviaId: 'buscaPreviaId',
   status: 'status',
+  municipioId: 'municipioId',
   logradouro: 'logradouro',
   numero: 'numero',
   mesAnoInicio: 'mesAnoInicio',
@@ -1599,6 +1777,7 @@ export type TarefaScalarFieldEnum = (typeof TarefaScalarFieldEnum)[keyof typeof 
 export const BuscaPreviaScalarFieldEnum = {
   id: 'id',
   clienteId: 'clienteId',
+  municipioId: 'municipioId',
   status: 'status',
   logradouro: 'logradouro',
   numero: 'numero',
@@ -1686,6 +1865,7 @@ export type TarefaResultadoScalarFieldEnum = (typeof TarefaResultadoScalarFieldE
 
 export const ImovelCacheScalarFieldEnum = {
   id: 'id',
+  municipioId: 'municipioId',
   logradouro: 'logradouro',
   numero: 'numero',
   complemento: 'complemento',
@@ -1796,19 +1976,19 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
-export const JsonNullValueInput = {
-  JsonNull: JsonNull
-} as const
-
-export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
-
-
 export const NullableJsonNullValueInput = {
   DbNull: DbNull,
   JsonNull: JsonNull
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {
@@ -1819,14 +1999,6 @@ export const QueryMode = {
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
 
 
-export const NullsOrder = {
-  first: 'first',
-  last: 'last'
-} as const
-
-export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
-
-
 export const JsonNullValueFilter = {
   DbNull: DbNull,
   JsonNull: JsonNull,
@@ -1834,6 +2006,14 @@ export const JsonNullValueFilter = {
 } as const
 
 export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
 
@@ -1857,30 +2037,30 @@ export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMod
 
 
 /**
- * Reference to a field of type 'Int'
+ * Reference to a field of type 'MunicipioStatus'
  */
-export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+export type EnumMunicipioStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MunicipioStatus'>
     
 
 
 /**
- * Reference to a field of type 'Int[]'
+ * Reference to a field of type 'MunicipioStatus[]'
  */
-export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+export type ListEnumMunicipioStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MunicipioStatus[]'>
     
 
 
 /**
- * Reference to a field of type 'PlanoStatus'
+ * Reference to a field of type 'Json'
  */
-export type EnumPlanoStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PlanoStatus'>
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
     
 
 
 /**
- * Reference to a field of type 'PlanoStatus[]'
+ * Reference to a field of type 'QueryMode'
  */
-export type ListEnumPlanoStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PlanoStatus[]'>
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 
@@ -1896,6 +2076,41 @@ export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
  */
 export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
     
+
+
+/**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+
+
+
+/**
+ * Reference to a field of type 'Int'
+ */
+export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+
+
+
+/**
+ * Reference to a field of type 'Int[]'
+ */
+export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+
+
+
+/**
+ * Reference to a field of type 'PlanoStatus'
+ */
+export type EnumPlanoStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PlanoStatus'>
+
+
+
+/**
+ * Reference to a field of type 'PlanoStatus[]'
+ */
+export type ListEnumPlanoStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PlanoStatus[]'>
+
 
 
 /**
@@ -1955,13 +2170,6 @@ export type ListEnumUsuarioRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$
 
 
 /**
- * Reference to a field of type 'Boolean'
- */
-export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
-    
-
-
-/**
  * Reference to a field of type 'TarefaStatus'
  */
 export type EnumTarefaStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TarefaStatus'>
@@ -1986,20 +2194,6 @@ export type EnumBuscaPreviaStatusFieldRefInput<$PrismaModel> = FieldRefInputType
  * Reference to a field of type 'BuscaPreviaStatus[]'
  */
 export type ListEnumBuscaPreviaStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BuscaPreviaStatus[]'>
-    
-
-
-/**
- * Reference to a field of type 'Json'
- */
-export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
-    
-
-
-/**
- * Reference to a field of type 'QueryMode'
- */
-export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 
@@ -2307,6 +2501,8 @@ export interface PrismaClientOptionsWithAdapter extends PrismaClientBaseOptions 
  */
 export type PrismaClientOptions = PrismaClientOptionsWithAccelerateUrl | PrismaClientOptionsWithAdapter
 export type GlobalOmitConfig = {
+  municipio?: Prisma.MunicipioOmit
+  clienteMunicipio?: Prisma.ClienteMunicipioOmit
   plano?: Prisma.PlanoOmit
   cliente?: Prisma.ClienteOmit
   usuario?: Prisma.UsuarioOmit

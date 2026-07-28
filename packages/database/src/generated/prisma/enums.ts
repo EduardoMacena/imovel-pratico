@@ -9,6 +9,18 @@
 * 🟢 You can import this file directly.
 */
 
+export const MunicipioStatus = {
+  EM_IMPLANTACAO: 'EM_IMPLANTACAO',
+  EM_HOMOLOGACAO: 'EM_HOMOLOGACAO',
+  ATIVO: 'ATIVO',
+  INSTAVEL: 'INSTAVEL',
+  PAUSADO: 'PAUSADO',
+  DESCONTINUADO: 'DESCONTINUADO'
+} as const
+
+export type MunicipioStatus = (typeof MunicipioStatus)[keyof typeof MunicipioStatus]
+
+
 export const WorkerAgentInstallLinkStatus = {
   PENDENTE: 'PENDENTE',
   USADO: 'USADO',

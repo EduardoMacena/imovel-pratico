@@ -539,10 +539,6 @@ export type PlanoNullableScalarRelationFilter = {
   isNot?: Prisma.PlanoWhereInput | null
 }
 
-export type StringFieldUpdateOperationsInput = {
-  set?: string
-}
-
 export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null
 }
@@ -565,10 +561,6 @@ export type NullableIntFieldUpdateOperationsInput = {
 
 export type EnumPlanoStatusFieldUpdateOperationsInput = {
   set?: $Enums.PlanoStatus
-}
-
-export type DateTimeFieldUpdateOperationsInput = {
-  set?: Date | string
 }
 
 export type PlanoCreateNestedOneWithoutClientesInput = {

@@ -26,6 +26,7 @@ export type AggregateImovelCache = {
 
 export type ImovelCacheMinAggregateOutputType = {
   id: string | null
+  municipioId: string | null
   logradouro: string | null
   numero: string | null
   complemento: string | null
@@ -45,6 +46,7 @@ export type ImovelCacheMinAggregateOutputType = {
 
 export type ImovelCacheMaxAggregateOutputType = {
   id: string | null
+  municipioId: string | null
   logradouro: string | null
   numero: string | null
   complemento: string | null
@@ -64,6 +66,7 @@ export type ImovelCacheMaxAggregateOutputType = {
 
 export type ImovelCacheCountAggregateOutputType = {
   id: number
+  municipioId: number
   logradouro: number
   numero: number
   complemento: number
@@ -86,6 +89,7 @@ export type ImovelCacheCountAggregateOutputType = {
 
 export type ImovelCacheMinAggregateInputType = {
   id?: true
+  municipioId?: true
   logradouro?: true
   numero?: true
   complemento?: true
@@ -105,6 +109,7 @@ export type ImovelCacheMinAggregateInputType = {
 
 export type ImovelCacheMaxAggregateInputType = {
   id?: true
+  municipioId?: true
   logradouro?: true
   numero?: true
   complemento?: true
@@ -124,6 +129,7 @@ export type ImovelCacheMaxAggregateInputType = {
 
 export type ImovelCacheCountAggregateInputType = {
   id?: true
+  municipioId?: true
   logradouro?: true
   numero?: true
   complemento?: true
@@ -217,6 +223,7 @@ export type ImovelCacheGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inte
 
 export type ImovelCacheGroupByOutputType = {
   id: string
+  municipioId: string
   logradouro: string
   numero: string
   complemento: string | null
@@ -258,6 +265,7 @@ export type ImovelCacheWhereInput = {
   OR?: Prisma.ImovelCacheWhereInput[]
   NOT?: Prisma.ImovelCacheWhereInput | Prisma.ImovelCacheWhereInput[]
   id?: Prisma.StringFilter<"ImovelCache"> | string
+  municipioId?: Prisma.StringFilter<"ImovelCache"> | string
   logradouro?: Prisma.StringFilter<"ImovelCache"> | string
   numero?: Prisma.StringFilter<"ImovelCache"> | string
   complemento?: Prisma.StringNullableFilter<"ImovelCache"> | string | null
@@ -274,10 +282,12 @@ export type ImovelCacheWhereInput = {
   expiraEm?: Prisma.DateTimeFilter<"ImovelCache"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"ImovelCache"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ImovelCache"> | Date | string
+  municipio?: Prisma.XOR<Prisma.MunicipioScalarRelationFilter, Prisma.MunicipioWhereInput>
 }
 
 export type ImovelCacheOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  municipioId?: Prisma.SortOrder
   logradouro?: Prisma.SortOrder
   numero?: Prisma.SortOrder
   complemento?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -294,14 +304,17 @@ export type ImovelCacheOrderByWithRelationInput = {
   expiraEm?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  municipio?: Prisma.MunicipioOrderByWithRelationInput
 }
 
 export type ImovelCacheWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   indiceCadastral?: string
+  municipioId_indiceCadastral?: Prisma.ImovelCacheMunicipioIdIndiceCadastralCompoundUniqueInput
   AND?: Prisma.ImovelCacheWhereInput | Prisma.ImovelCacheWhereInput[]
   OR?: Prisma.ImovelCacheWhereInput[]
   NOT?: Prisma.ImovelCacheWhereInput | Prisma.ImovelCacheWhereInput[]
+  municipioId?: Prisma.StringFilter<"ImovelCache"> | string
   logradouro?: Prisma.StringFilter<"ImovelCache"> | string
   numero?: Prisma.StringFilter<"ImovelCache"> | string
   complemento?: Prisma.StringNullableFilter<"ImovelCache"> | string | null
@@ -317,10 +330,12 @@ export type ImovelCacheWhereUniqueInput = Prisma.AtLeast<{
   expiraEm?: Prisma.DateTimeFilter<"ImovelCache"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"ImovelCache"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ImovelCache"> | Date | string
-}, "id" | "indiceCadastral">
+  municipio?: Prisma.XOR<Prisma.MunicipioScalarRelationFilter, Prisma.MunicipioWhereInput>
+}, "id" | "indiceCadastral" | "municipioId_indiceCadastral">
 
 export type ImovelCacheOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  municipioId?: Prisma.SortOrder
   logradouro?: Prisma.SortOrder
   numero?: Prisma.SortOrder
   complemento?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -347,6 +362,7 @@ export type ImovelCacheScalarWhereWithAggregatesInput = {
   OR?: Prisma.ImovelCacheScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ImovelCacheScalarWhereWithAggregatesInput | Prisma.ImovelCacheScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"ImovelCache"> | string
+  municipioId?: Prisma.StringWithAggregatesFilter<"ImovelCache"> | string
   logradouro?: Prisma.StringWithAggregatesFilter<"ImovelCache"> | string
   numero?: Prisma.StringWithAggregatesFilter<"ImovelCache"> | string
   complemento?: Prisma.StringNullableWithAggregatesFilter<"ImovelCache"> | string | null
@@ -383,10 +399,12 @@ export type ImovelCacheCreateInput = {
   expiraEm: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  municipio?: Prisma.MunicipioCreateNestedOneWithoutImoveisCacheInput
 }
 
 export type ImovelCacheUncheckedCreateInput = {
   id?: string
+  municipioId?: string
   logradouro: string
   numero: string
   complemento?: string | null
@@ -423,10 +441,12 @@ export type ImovelCacheUpdateInput = {
   expiraEm?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  municipio?: Prisma.MunicipioUpdateOneRequiredWithoutImoveisCacheNestedInput
 }
 
 export type ImovelCacheUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  municipioId?: Prisma.StringFieldUpdateOperationsInput | string
   logradouro?: Prisma.StringFieldUpdateOperationsInput | string
   numero?: Prisma.StringFieldUpdateOperationsInput | string
   complemento?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -447,6 +467,7 @@ export type ImovelCacheUncheckedUpdateInput = {
 
 export type ImovelCacheCreateManyInput = {
   id?: string
+  municipioId?: string
   logradouro: string
   numero: string
   complemento?: string | null
@@ -487,6 +508,7 @@ export type ImovelCacheUpdateManyMutationInput = {
 
 export type ImovelCacheUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  municipioId?: Prisma.StringFieldUpdateOperationsInput | string
   logradouro?: Prisma.StringFieldUpdateOperationsInput | string
   numero?: Prisma.StringFieldUpdateOperationsInput | string
   complemento?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -505,8 +527,24 @@ export type ImovelCacheUncheckedUpdateManyInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+export type ImovelCacheListRelationFilter = {
+  every?: Prisma.ImovelCacheWhereInput
+  some?: Prisma.ImovelCacheWhereInput
+  none?: Prisma.ImovelCacheWhereInput
+}
+
+export type ImovelCacheOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
+export type ImovelCacheMunicipioIdIndiceCadastralCompoundUniqueInput = {
+  municipioId: string
+  indiceCadastral: string
+}
+
 export type ImovelCacheCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  municipioId?: Prisma.SortOrder
   logradouro?: Prisma.SortOrder
   numero?: Prisma.SortOrder
   complemento?: Prisma.SortOrder
@@ -527,6 +565,7 @@ export type ImovelCacheCountOrderByAggregateInput = {
 
 export type ImovelCacheMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  municipioId?: Prisma.SortOrder
   logradouro?: Prisma.SortOrder
   numero?: Prisma.SortOrder
   complemento?: Prisma.SortOrder
@@ -546,6 +585,7 @@ export type ImovelCacheMaxOrderByAggregateInput = {
 
 export type ImovelCacheMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  municipioId?: Prisma.SortOrder
   logradouro?: Prisma.SortOrder
   numero?: Prisma.SortOrder
   complemento?: Prisma.SortOrder
@@ -563,14 +603,227 @@ export type ImovelCacheMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
+export type ImovelCacheCreateNestedManyWithoutMunicipioInput = {
+  create?: Prisma.XOR<Prisma.ImovelCacheCreateWithoutMunicipioInput, Prisma.ImovelCacheUncheckedCreateWithoutMunicipioInput> | Prisma.ImovelCacheCreateWithoutMunicipioInput[] | Prisma.ImovelCacheUncheckedCreateWithoutMunicipioInput[]
+  connectOrCreate?: Prisma.ImovelCacheCreateOrConnectWithoutMunicipioInput | Prisma.ImovelCacheCreateOrConnectWithoutMunicipioInput[]
+  createMany?: Prisma.ImovelCacheCreateManyMunicipioInputEnvelope
+  connect?: Prisma.ImovelCacheWhereUniqueInput | Prisma.ImovelCacheWhereUniqueInput[]
+}
+
+export type ImovelCacheUncheckedCreateNestedManyWithoutMunicipioInput = {
+  create?: Prisma.XOR<Prisma.ImovelCacheCreateWithoutMunicipioInput, Prisma.ImovelCacheUncheckedCreateWithoutMunicipioInput> | Prisma.ImovelCacheCreateWithoutMunicipioInput[] | Prisma.ImovelCacheUncheckedCreateWithoutMunicipioInput[]
+  connectOrCreate?: Prisma.ImovelCacheCreateOrConnectWithoutMunicipioInput | Prisma.ImovelCacheCreateOrConnectWithoutMunicipioInput[]
+  createMany?: Prisma.ImovelCacheCreateManyMunicipioInputEnvelope
+  connect?: Prisma.ImovelCacheWhereUniqueInput | Prisma.ImovelCacheWhereUniqueInput[]
+}
+
+export type ImovelCacheUpdateManyWithoutMunicipioNestedInput = {
+  create?: Prisma.XOR<Prisma.ImovelCacheCreateWithoutMunicipioInput, Prisma.ImovelCacheUncheckedCreateWithoutMunicipioInput> | Prisma.ImovelCacheCreateWithoutMunicipioInput[] | Prisma.ImovelCacheUncheckedCreateWithoutMunicipioInput[]
+  connectOrCreate?: Prisma.ImovelCacheCreateOrConnectWithoutMunicipioInput | Prisma.ImovelCacheCreateOrConnectWithoutMunicipioInput[]
+  upsert?: Prisma.ImovelCacheUpsertWithWhereUniqueWithoutMunicipioInput | Prisma.ImovelCacheUpsertWithWhereUniqueWithoutMunicipioInput[]
+  createMany?: Prisma.ImovelCacheCreateManyMunicipioInputEnvelope
+  set?: Prisma.ImovelCacheWhereUniqueInput | Prisma.ImovelCacheWhereUniqueInput[]
+  disconnect?: Prisma.ImovelCacheWhereUniqueInput | Prisma.ImovelCacheWhereUniqueInput[]
+  delete?: Prisma.ImovelCacheWhereUniqueInput | Prisma.ImovelCacheWhereUniqueInput[]
+  connect?: Prisma.ImovelCacheWhereUniqueInput | Prisma.ImovelCacheWhereUniqueInput[]
+  update?: Prisma.ImovelCacheUpdateWithWhereUniqueWithoutMunicipioInput | Prisma.ImovelCacheUpdateWithWhereUniqueWithoutMunicipioInput[]
+  updateMany?: Prisma.ImovelCacheUpdateManyWithWhereWithoutMunicipioInput | Prisma.ImovelCacheUpdateManyWithWhereWithoutMunicipioInput[]
+  deleteMany?: Prisma.ImovelCacheScalarWhereInput | Prisma.ImovelCacheScalarWhereInput[]
+}
+
+export type ImovelCacheUncheckedUpdateManyWithoutMunicipioNestedInput = {
+  create?: Prisma.XOR<Prisma.ImovelCacheCreateWithoutMunicipioInput, Prisma.ImovelCacheUncheckedCreateWithoutMunicipioInput> | Prisma.ImovelCacheCreateWithoutMunicipioInput[] | Prisma.ImovelCacheUncheckedCreateWithoutMunicipioInput[]
+  connectOrCreate?: Prisma.ImovelCacheCreateOrConnectWithoutMunicipioInput | Prisma.ImovelCacheCreateOrConnectWithoutMunicipioInput[]
+  upsert?: Prisma.ImovelCacheUpsertWithWhereUniqueWithoutMunicipioInput | Prisma.ImovelCacheUpsertWithWhereUniqueWithoutMunicipioInput[]
+  createMany?: Prisma.ImovelCacheCreateManyMunicipioInputEnvelope
+  set?: Prisma.ImovelCacheWhereUniqueInput | Prisma.ImovelCacheWhereUniqueInput[]
+  disconnect?: Prisma.ImovelCacheWhereUniqueInput | Prisma.ImovelCacheWhereUniqueInput[]
+  delete?: Prisma.ImovelCacheWhereUniqueInput | Prisma.ImovelCacheWhereUniqueInput[]
+  connect?: Prisma.ImovelCacheWhereUniqueInput | Prisma.ImovelCacheWhereUniqueInput[]
+  update?: Prisma.ImovelCacheUpdateWithWhereUniqueWithoutMunicipioInput | Prisma.ImovelCacheUpdateWithWhereUniqueWithoutMunicipioInput[]
+  updateMany?: Prisma.ImovelCacheUpdateManyWithWhereWithoutMunicipioInput | Prisma.ImovelCacheUpdateManyWithWhereWithoutMunicipioInput[]
+  deleteMany?: Prisma.ImovelCacheScalarWhereInput | Prisma.ImovelCacheScalarWhereInput[]
+}
+
 export type EnumCacheStatusFieldUpdateOperationsInput = {
   set?: $Enums.CacheStatus
+}
+
+export type ImovelCacheCreateWithoutMunicipioInput = {
+  id?: string
+  logradouro: string
+  numero: string
+  complemento?: string | null
+  indiceCadastral: string
+  nome?: string | null
+  cpf?: string | null
+  endereco?: string | null
+  telefone?: string | null
+  email?: string | null
+  fonteContato?: string | null
+  dadosContato?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: $Enums.CacheStatus
+  ultimaConsultaEm: Date | string
+  expiraEm: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type ImovelCacheUncheckedCreateWithoutMunicipioInput = {
+  id?: string
+  logradouro: string
+  numero: string
+  complemento?: string | null
+  indiceCadastral: string
+  nome?: string | null
+  cpf?: string | null
+  endereco?: string | null
+  telefone?: string | null
+  email?: string | null
+  fonteContato?: string | null
+  dadosContato?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: $Enums.CacheStatus
+  ultimaConsultaEm: Date | string
+  expiraEm: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type ImovelCacheCreateOrConnectWithoutMunicipioInput = {
+  where: Prisma.ImovelCacheWhereUniqueInput
+  create: Prisma.XOR<Prisma.ImovelCacheCreateWithoutMunicipioInput, Prisma.ImovelCacheUncheckedCreateWithoutMunicipioInput>
+}
+
+export type ImovelCacheCreateManyMunicipioInputEnvelope = {
+  data: Prisma.ImovelCacheCreateManyMunicipioInput | Prisma.ImovelCacheCreateManyMunicipioInput[]
+  skipDuplicates?: boolean
+}
+
+export type ImovelCacheUpsertWithWhereUniqueWithoutMunicipioInput = {
+  where: Prisma.ImovelCacheWhereUniqueInput
+  update: Prisma.XOR<Prisma.ImovelCacheUpdateWithoutMunicipioInput, Prisma.ImovelCacheUncheckedUpdateWithoutMunicipioInput>
+  create: Prisma.XOR<Prisma.ImovelCacheCreateWithoutMunicipioInput, Prisma.ImovelCacheUncheckedCreateWithoutMunicipioInput>
+}
+
+export type ImovelCacheUpdateWithWhereUniqueWithoutMunicipioInput = {
+  where: Prisma.ImovelCacheWhereUniqueInput
+  data: Prisma.XOR<Prisma.ImovelCacheUpdateWithoutMunicipioInput, Prisma.ImovelCacheUncheckedUpdateWithoutMunicipioInput>
+}
+
+export type ImovelCacheUpdateManyWithWhereWithoutMunicipioInput = {
+  where: Prisma.ImovelCacheScalarWhereInput
+  data: Prisma.XOR<Prisma.ImovelCacheUpdateManyMutationInput, Prisma.ImovelCacheUncheckedUpdateManyWithoutMunicipioInput>
+}
+
+export type ImovelCacheScalarWhereInput = {
+  AND?: Prisma.ImovelCacheScalarWhereInput | Prisma.ImovelCacheScalarWhereInput[]
+  OR?: Prisma.ImovelCacheScalarWhereInput[]
+  NOT?: Prisma.ImovelCacheScalarWhereInput | Prisma.ImovelCacheScalarWhereInput[]
+  id?: Prisma.StringFilter<"ImovelCache"> | string
+  municipioId?: Prisma.StringFilter<"ImovelCache"> | string
+  logradouro?: Prisma.StringFilter<"ImovelCache"> | string
+  numero?: Prisma.StringFilter<"ImovelCache"> | string
+  complemento?: Prisma.StringNullableFilter<"ImovelCache"> | string | null
+  indiceCadastral?: Prisma.StringFilter<"ImovelCache"> | string
+  nome?: Prisma.StringNullableFilter<"ImovelCache"> | string | null
+  cpf?: Prisma.StringNullableFilter<"ImovelCache"> | string | null
+  endereco?: Prisma.StringNullableFilter<"ImovelCache"> | string | null
+  telefone?: Prisma.StringNullableFilter<"ImovelCache"> | string | null
+  email?: Prisma.StringNullableFilter<"ImovelCache"> | string | null
+  fonteContato?: Prisma.StringNullableFilter<"ImovelCache"> | string | null
+  dadosContato?: Prisma.JsonNullableFilter<"ImovelCache">
+  status?: Prisma.EnumCacheStatusFilter<"ImovelCache"> | $Enums.CacheStatus
+  ultimaConsultaEm?: Prisma.DateTimeFilter<"ImovelCache"> | Date | string
+  expiraEm?: Prisma.DateTimeFilter<"ImovelCache"> | Date | string
+  createdAt?: Prisma.DateTimeFilter<"ImovelCache"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"ImovelCache"> | Date | string
+}
+
+export type ImovelCacheCreateManyMunicipioInput = {
+  id?: string
+  logradouro: string
+  numero: string
+  complemento?: string | null
+  indiceCadastral: string
+  nome?: string | null
+  cpf?: string | null
+  endereco?: string | null
+  telefone?: string | null
+  email?: string | null
+  fonteContato?: string | null
+  dadosContato?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: $Enums.CacheStatus
+  ultimaConsultaEm: Date | string
+  expiraEm: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type ImovelCacheUpdateWithoutMunicipioInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  numero?: Prisma.StringFieldUpdateOperationsInput | string
+  complemento?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  indiceCadastral?: Prisma.StringFieldUpdateOperationsInput | string
+  nome?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endereco?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telefone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fonteContato?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dadosContato?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.EnumCacheStatusFieldUpdateOperationsInput | $Enums.CacheStatus
+  ultimaConsultaEm?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  expiraEm?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ImovelCacheUncheckedUpdateWithoutMunicipioInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  numero?: Prisma.StringFieldUpdateOperationsInput | string
+  complemento?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  indiceCadastral?: Prisma.StringFieldUpdateOperationsInput | string
+  nome?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endereco?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telefone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fonteContato?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dadosContato?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.EnumCacheStatusFieldUpdateOperationsInput | $Enums.CacheStatus
+  ultimaConsultaEm?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  expiraEm?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ImovelCacheUncheckedUpdateManyWithoutMunicipioInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  numero?: Prisma.StringFieldUpdateOperationsInput | string
+  complemento?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  indiceCadastral?: Prisma.StringFieldUpdateOperationsInput | string
+  nome?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endereco?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telefone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fonteContato?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dadosContato?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.EnumCacheStatusFieldUpdateOperationsInput | $Enums.CacheStatus
+  ultimaConsultaEm?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  expiraEm?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
 
 export type ImovelCacheSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  municipioId?: boolean
   logradouro?: boolean
   numero?: boolean
   complemento?: boolean
@@ -587,10 +840,12 @@ export type ImovelCacheSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   expiraEm?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  municipio?: boolean | Prisma.MunicipioDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["imovelCache"]>
 
 export type ImovelCacheSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  municipioId?: boolean
   logradouro?: boolean
   numero?: boolean
   complemento?: boolean
@@ -607,10 +862,12 @@ export type ImovelCacheSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   expiraEm?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  municipio?: boolean | Prisma.MunicipioDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["imovelCache"]>
 
 export type ImovelCacheSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  municipioId?: boolean
   logradouro?: boolean
   numero?: boolean
   complemento?: boolean
@@ -627,10 +884,12 @@ export type ImovelCacheSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   expiraEm?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  municipio?: boolean | Prisma.MunicipioDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["imovelCache"]>
 
 export type ImovelCacheSelectScalar = {
   id?: boolean
+  municipioId?: boolean
   logradouro?: boolean
   numero?: boolean
   complemento?: boolean
@@ -649,13 +908,25 @@ export type ImovelCacheSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ImovelCacheOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "logradouro" | "numero" | "complemento" | "indiceCadastral" | "nome" | "cpf" | "endereco" | "telefone" | "email" | "fonteContato" | "dadosContato" | "status" | "ultimaConsultaEm" | "expiraEm" | "createdAt" | "updatedAt", ExtArgs["result"]["imovelCache"]>
+export type ImovelCacheOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "municipioId" | "logradouro" | "numero" | "complemento" | "indiceCadastral" | "nome" | "cpf" | "endereco" | "telefone" | "email" | "fonteContato" | "dadosContato" | "status" | "ultimaConsultaEm" | "expiraEm" | "createdAt" | "updatedAt", ExtArgs["result"]["imovelCache"]>
+export type ImovelCacheInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  municipio?: boolean | Prisma.MunicipioDefaultArgs<ExtArgs>
+}
+export type ImovelCacheIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  municipio?: boolean | Prisma.MunicipioDefaultArgs<ExtArgs>
+}
+export type ImovelCacheIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  municipio?: boolean | Prisma.MunicipioDefaultArgs<ExtArgs>
+}
 
 export type $ImovelCachePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "ImovelCache"
-  objects: {}
+  objects: {
+    municipio: Prisma.$MunicipioPayload<ExtArgs>
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    municipioId: string
     logradouro: string
     numero: string
     complemento: string | null
@@ -1066,6 +1337,7 @@ readonly fields: ImovelCacheFieldRefs;
  */
 export interface Prisma__ImovelCacheClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  municipio<T extends Prisma.MunicipioDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MunicipioDefaultArgs<ExtArgs>>): Prisma.Prisma__MunicipioClient<runtime.Types.Result.GetResult<Prisma.$MunicipioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1096,6 +1368,7 @@ export interface Prisma__ImovelCacheClient<T, Null = never, ExtArgs extends runt
  */
 export interface ImovelCacheFieldRefs {
   readonly id: Prisma.FieldRef<"ImovelCache", 'String'>
+  readonly municipioId: Prisma.FieldRef<"ImovelCache", 'String'>
   readonly logradouro: Prisma.FieldRef<"ImovelCache", 'String'>
   readonly numero: Prisma.FieldRef<"ImovelCache", 'String'>
   readonly complemento: Prisma.FieldRef<"ImovelCache", 'String'>
@@ -1129,6 +1402,10 @@ export type ImovelCacheFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.I
    */
   omit?: Prisma.ImovelCacheOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ImovelCacheInclude<ExtArgs> | null
+  /**
    * Filter, which ImovelCache to fetch.
    */
   where: Prisma.ImovelCacheWhereUniqueInput
@@ -1147,6 +1424,10 @@ export type ImovelCacheFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Exten
    */
   omit?: Prisma.ImovelCacheOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ImovelCacheInclude<ExtArgs> | null
+  /**
    * Filter, which ImovelCache to fetch.
    */
   where: Prisma.ImovelCacheWhereUniqueInput
@@ -1164,6 +1445,10 @@ export type ImovelCacheFindFirstArgs<ExtArgs extends runtime.Types.Extensions.In
    * Omit specific fields from the ImovelCache
    */
   omit?: Prisma.ImovelCacheOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ImovelCacheInclude<ExtArgs> | null
   /**
    * Filter, which ImovelCache to fetch.
    */
@@ -1213,6 +1498,10 @@ export type ImovelCacheFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extens
    */
   omit?: Prisma.ImovelCacheOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ImovelCacheInclude<ExtArgs> | null
+  /**
    * Filter, which ImovelCache to fetch.
    */
   where?: Prisma.ImovelCacheWhereInput
@@ -1260,6 +1549,10 @@ export type ImovelCacheFindManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Omit specific fields from the ImovelCache
    */
   omit?: Prisma.ImovelCacheOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ImovelCacheInclude<ExtArgs> | null
   /**
    * Filter, which ImovelCaches to fetch.
    */
@@ -1309,6 +1602,10 @@ export type ImovelCacheCreateArgs<ExtArgs extends runtime.Types.Extensions.Inter
    */
   omit?: Prisma.ImovelCacheOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ImovelCacheInclude<ExtArgs> | null
+  /**
    * The data needed to create a ImovelCache.
    */
   data: Prisma.XOR<Prisma.ImovelCacheCreateInput, Prisma.ImovelCacheUncheckedCreateInput>
@@ -1342,6 +1639,10 @@ export type ImovelCacheCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Ext
    */
   data: Prisma.ImovelCacheCreateManyInput | Prisma.ImovelCacheCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ImovelCacheIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1356,6 +1657,10 @@ export type ImovelCacheUpdateArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Omit specific fields from the ImovelCache
    */
   omit?: Prisma.ImovelCacheOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ImovelCacheInclude<ExtArgs> | null
   /**
    * The data needed to update a ImovelCache.
    */
@@ -1408,6 +1713,10 @@ export type ImovelCacheUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Ext
    * Limit how many ImovelCaches to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ImovelCacheIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1422,6 +1731,10 @@ export type ImovelCacheUpsertArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Omit specific fields from the ImovelCache
    */
   omit?: Prisma.ImovelCacheOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ImovelCacheInclude<ExtArgs> | null
   /**
    * The filter to search for the ImovelCache to update in case it exists.
    */
@@ -1448,6 +1761,10 @@ export type ImovelCacheDeleteArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Omit specific fields from the ImovelCache
    */
   omit?: Prisma.ImovelCacheOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ImovelCacheInclude<ExtArgs> | null
   /**
    * Filter which ImovelCache to delete.
    */
@@ -1480,4 +1797,8 @@ export type ImovelCacheDefaultArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Omit specific fields from the ImovelCache
    */
   omit?: Prisma.ImovelCacheOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ImovelCacheInclude<ExtArgs> | null
 }
