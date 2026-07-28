@@ -146,6 +146,7 @@ export async function processarBuscaProprietariosJob(
 				mesAnoFinal: job.data.mesAnoFinal,
 				intervaloSegundos: job.data.intervaloSegundos,
 				forceRefresh: job.data.forceRefresh,
+				municipioId: job.data.municipioId,
 			},
 		});
 
@@ -173,6 +174,7 @@ export async function processarBuscaProprietariosJob(
 		}
 
 		const resultado = await buscarProprietariosPorEndereco({
+			municipioId: job.data.municipioId,
 			logradouro: logradouroBusca,
 			numero: numeroBusca,
 			imoveis: registrosPrevia,

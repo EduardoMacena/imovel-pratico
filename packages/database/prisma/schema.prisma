@@ -465,7 +465,7 @@ model ImovelCache {
   logradouro      String
   numero          String
   complemento     String?
-  indiceCadastral String  @unique
+  indiceCadastral String
 
   nome     String?
   cpf      String?

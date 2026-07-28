@@ -1,5 +1,6 @@
 import { Prisma, prisma } from "@imovel-pratico/database";
 import { adicionarBuscaProprietariosNaFila } from "@imovel-pratico/queue";
+import { buscarMunicipioPrincipalAtivoDoCliente } from "../municipios/cliente-municipio.service.js";
 import type {
 	BuscarProprietariosInput,
 	PreverBuscaInput,
@@ -69,6 +70,7 @@ function normalizarRegistrosPrevia(value: unknown) {
 
 function montarPreviaResponse(previa: {
 	id: string;
+	municipioId: string;
 	logradouro: string;
 	numero: string;
 	quantidadeRegistros: number;
@@ -77,6 +79,7 @@ function montarPreviaResponse(previa: {
 }) {
 	return {
 		id: previa.id,
+		municipioId: previa.municipioId,
 		logradouro: previa.logradouro,
 		numero: previa.numero,
 		quantidadeRegistros: previa.quantidadeRegistros,
@@ -90,6 +93,7 @@ export async function preverBuscaProprietarios(
 	data: PreverBuscaInput
 ) {
 	const { cliente, plano, uso } = await validarClientePodeCriarBusca(clienteId);
+	const municipio = await buscarMunicipioPrincipalAtivoDoCliente(clienteId);
 
 	const workerUrl = cliente.workerUrl?.trim();
 
@@ -115,6 +119,7 @@ export async function preverBuscaProprietarios(
 	const previa = await prisma.buscaPrevia.create({
 		data: {
 			clienteId: cliente.id,
+			municipioId: municipio.id,
 			status: "PENDENTE",
 			logradouro: resultadoWorker.logradouro,
 			numero: resultadoWorker.numero,
@@ -202,6 +207,7 @@ export async function criarTarefaBuscaProprietarios(
 	const tarefa = await prisma.tarefa.create({
 		data: {
 			clienteId: cliente.id,
+			municipioId: previa.municipioId,
 			buscaPreviaId: previa.id,
 			status: "PENDING",
 			logradouro: previa.logradouro,
@@ -235,6 +241,7 @@ export async function criarTarefaBuscaProprietarios(
 			? await adicionarBuscaProprietariosNaFila({
 					tarefaId: tarefa.id,
 					clienteId: cliente.id,
+					municipioId: tarefa.municipioId,
 					buscaPreviaId: previa.id,
 					logradouro: tarefa.logradouro,
 					numero: tarefa.numero,
@@ -272,6 +279,7 @@ export async function criarTarefaBuscaProprietarios(
 		tarefa: {
 			id: tarefa.id,
 			status: tarefa.status,
+			municipioId: tarefa.municipioId,
 			logradouro: tarefa.logradouro,
 			numero: tarefa.numero,
 			mesAnoInicio: tarefa.mesAnoInicio,

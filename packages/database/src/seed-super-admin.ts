@@ -1,6 +1,9 @@
 import "dotenv/config";
 import bcrypt from "bcryptjs";
-import { prisma } from "./index.js";
+import {
+  MUNICIPIO_BELO_HORIZONTE_ID,
+  prisma,
+} from "./index.js";
 
 function getRequiredEnv(name: string) {
   const value = process.env[name];
@@ -49,6 +52,25 @@ async function main() {
       intervaloSegundos: 30,
       limiteDiario: 1000,
       limiteMensalConsultas: 10000,
+    },
+  });
+
+  await prisma.clienteMunicipio.upsert({
+    where: {
+      clienteId_municipioId: {
+        clienteId: cliente.id,
+        municipioId: MUNICIPIO_BELO_HORIZONTE_ID,
+      },
+    },
+    update: {
+      ativo: true,
+      principal: true,
+    },
+    create: {
+      clienteId: cliente.id,
+      municipioId: MUNICIPIO_BELO_HORIZONTE_ID,
+      ativo: true,
+      principal: true,
     },
   });
 

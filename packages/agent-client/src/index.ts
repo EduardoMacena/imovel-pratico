@@ -2,6 +2,7 @@ export type RegistroAgentJob = {
 	tipo: "REGISTRO";
 	id: string;
 	clienteId: string;
+	municipioId: string;
 	logradouro: string;
 	numero: string;
 	leaseExpiraEm: string;
@@ -12,6 +13,7 @@ export type CndAgentJob = {
 	id: string;
 	tarefaId: string;
 	clienteId: string;
+	municipioId: string;
 	buscaPreviaId: string | null;
 	logradouro: string;
 	numero: string;
