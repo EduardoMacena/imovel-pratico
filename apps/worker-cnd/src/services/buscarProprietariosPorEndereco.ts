@@ -28,6 +28,7 @@ export type ResultadoBuscaProprietario = {
 };
 
 type BuscarProprietariosParams = {
+	municipioId: string;
 	logradouro: string;
 	numero: string;
 	imoveis?: ImovelEncontrado[];
@@ -91,6 +92,7 @@ async function validarLimiteMensalAntesDeSalvarResultado(clienteId: string) {
 }
 
 async function buscarProprietarioDoImovel(params: {
+	municipioId: string;
 	imovel: ImovelEncontrado;
 	logradouro: string;
 	numero: string;
@@ -100,6 +102,7 @@ async function buscarProprietarioDoImovel(params: {
 	clienteId: string;
 }): Promise<ResultadoBuscaProprietario> {
 	const {
+		municipioId,
 		imovel,
 		logradouro,
 		numero,
@@ -111,6 +114,7 @@ async function buscarProprietarioDoImovel(params: {
 
 	try {
 		const cache = await buscarImovelCacheValido({
+			municipioId,
 			indiceCadastral: imovel.indiceCadastral,
 			forceRefresh,
 		});
@@ -143,6 +147,7 @@ async function buscarProprietarioDoImovel(params: {
 
 				if (telefone || email) {
 					await salvarImovelCache({
+						municipioId,
 						logradouro: cacheValido.logradouro,
 						numero: cacheValido.numero,
 						complemento: cacheValido.complemento,
@@ -191,6 +196,7 @@ async function buscarProprietarioDoImovel(params: {
 		});
 
 		await salvarImovelCache({
+			municipioId,
 			logradouro,
 			numero,
 			complemento: imovel.imovel || null,
@@ -251,6 +257,7 @@ async function buscarProprietarioDoImovel(params: {
 }
 
 export async function buscarProprietariosPorEndereco({
+	municipioId,
 	logradouro,
 	numero,
 	mesAnoInicio,
@@ -276,6 +283,7 @@ export async function buscarProprietariosPorEndereco({
 		const imovel = imoveis[index];
 
 		const item = await buscarProprietarioDoImovel({
+			municipioId,
 			imovel,
 			logradouro,
 			numero,

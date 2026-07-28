@@ -1,6 +1,9 @@
 import "dotenv/config";
 import bcrypt from "bcryptjs";
-import { prisma } from "./index.js";
+import {
+  MUNICIPIO_BELO_HORIZONTE_ID,
+  prisma,
+} from "./index.js";
 
 async function main() {
   const senhaHash = await bcrypt.hash("123456", 10);
@@ -21,6 +24,25 @@ async function main() {
       status: "ATIVO",
       intervaloSegundos: 30,
       limiteDiario: 1000,
+    },
+  });
+
+  await prisma.clienteMunicipio.upsert({
+    where: {
+      clienteId_municipioId: {
+        clienteId: clientePlataforma.id,
+        municipioId: MUNICIPIO_BELO_HORIZONTE_ID,
+      },
+    },
+    update: {
+      ativo: true,
+      principal: true,
+    },
+    create: {
+      clienteId: clientePlataforma.id,
+      municipioId: MUNICIPIO_BELO_HORIZONTE_ID,
+      ativo: true,
+      principal: true,
     },
   });
 
@@ -61,6 +83,25 @@ async function main() {
       status: "ATIVO",
       intervaloSegundos: 30,
       limiteDiario: 300,
+    },
+  });
+
+  await prisma.clienteMunicipio.upsert({
+    where: {
+      clienteId_municipioId: {
+        clienteId: clienteTwa.id,
+        municipioId: MUNICIPIO_BELO_HORIZONTE_ID,
+      },
+    },
+    update: {
+      ativo: true,
+      principal: true,
+    },
+    create: {
+      clienteId: clienteTwa.id,
+      municipioId: MUNICIPIO_BELO_HORIZONTE_ID,
+      ativo: true,
+      principal: true,
     },
   });
 

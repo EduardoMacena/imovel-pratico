@@ -31,3 +31,4 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 export * from "./generated/prisma/client.js";
+export * from "./municipios.js";

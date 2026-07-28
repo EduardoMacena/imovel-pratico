@@ -267,6 +267,7 @@ async function claimRegistro(agent: WorkerAgentAutenticado) {
 		tipo: "REGISTRO" as const,
 		id: atualizada.id,
 		clienteId: atualizada.clienteId,
+		municipioId: atualizada.municipioId,
 		logradouro: atualizada.logradouro,
 		numero: atualizada.numero,
 		leaseExpiraEm,
@@ -274,6 +275,7 @@ async function claimRegistro(agent: WorkerAgentAutenticado) {
 }
 
 async function buscarCacheValidoPorIndice(params: {
+	municipioId: string;
 	indiceCadastral: string;
 	forceRefresh?: boolean;
 }) {
@@ -283,6 +285,7 @@ async function buscarCacheValidoPorIndice(params: {
 
 	return prisma.imovelCache.findFirst({
 		where: {
+			municipioId: params.municipioId,
 			indiceCadastral: params.indiceCadastral,
 			status: "VALID",
 			expiraEm: {
@@ -351,6 +354,7 @@ async function salvarResultadoDaTarefaPorCache(params: {
 }
 
 async function salvarCacheDoResultado(params: {
+	municipioId: string;
 	item: {
 		status: "success" | "error";
 		logradouro: string;
@@ -378,9 +382,13 @@ async function salvarCacheDoResultado(params: {
 
 	await prisma.imovelCache.upsert({
 		where: {
-			indiceCadastral: params.item.indiceCadastral,
+			municipioId_indiceCadastral: {
+				municipioId: params.municipioId,
+				indiceCadastral: params.item.indiceCadastral,
+			},
 		},
 		create: {
+			municipioId: params.municipioId,
 			logradouro: params.item.logradouro,
 			numero: params.item.numero,
 			complemento: params.item.imovel ?? null,
@@ -495,6 +503,7 @@ async function claimCnd(agent: WorkerAgentAutenticado) {
 
 	for (const registro of registros) {
 		const cache = await buscarCacheValidoPorIndice({
+			municipioId: atualizada.municipioId,
 			indiceCadastral: registro.indiceCadastral,
 			forceRefresh: atualizada.forceRefresh,
 		});
@@ -584,6 +593,7 @@ async function claimCnd(agent: WorkerAgentAutenticado) {
 		id: atualizada.id,
 		tarefaId: atualizada.id,
 		clienteId: atualizada.clienteId,
+		municipioId: atualizada.municipioId,
 		buscaPreviaId: atualizada.buscaPreviaId,
 		logradouro: atualizada.buscaPrevia?.logradouro ?? atualizada.logradouro,
 		numero: atualizada.buscaPrevia?.numero ?? atualizada.numero,
@@ -784,6 +794,7 @@ export async function registrarProgressoJob(params: {
 		});
 
 		await salvarCacheDoResultado({
+			municipioId: tarefa.municipioId,
 			item,
 		});
 	}

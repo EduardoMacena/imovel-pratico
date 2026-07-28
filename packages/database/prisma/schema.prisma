@@ -1,14 +1,23 @@
 generator client {
-  provider            = "prisma-client"
-  output              = "../src/generated/prisma"
-  moduleFormat        = "esm"
-  runtime             = "nodejs"
+  provider               = "prisma-client"
+  output                 = "../src/generated/prisma"
+  moduleFormat           = "esm"
+  runtime                = "nodejs"
   generatedFileExtension = "ts"
   importFileExtension    = "js"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+enum MunicipioStatus {
+  EM_IMPLANTACAO
+  EM_HOMOLOGACAO
+  ATIVO
+  INSTAVEL
+  PAUSADO
+  DESCONTINUADO
 }
 
 enum WorkerAgentInstallLinkStatus {
@@ -128,6 +137,49 @@ enum WorkerAgentStatus {
   REVOGADO
 }
 
+model Municipio {
+  id         String          @id @default(uuid())
+  codigoIbge String          @unique
+  nome       String
+  uf         String
+  status     MunicipioStatus @default(EM_IMPLANTACAO)
+
+  configuracao Json?
+
+  clientes      ClienteMunicipio[]
+  tarefas       Tarefa[]
+  buscasPrevias BuscaPrevia[]
+  imoveisCache  ImovelCache[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([uf, nome])
+  @@index([status])
+  @@map("municipios")
+}
+
+model ClienteMunicipio {
+  id String @id @default(uuid())
+
+  clienteId   String
+  municipioId String
+
+  ativo     Boolean @default(true)
+  principal Boolean @default(false)
+
+  cliente   Cliente   @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  municipio Municipio @relation(fields: [municipioId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([clienteId, municipioId])
+  @@index([municipioId])
+  @@index([clienteId, ativo])
+  @@map("cliente_municipios")
+}
+
 model Plano {
   id   String @id @default(uuid())
   nome String
@@ -138,7 +190,7 @@ model Plano {
   limiteMensalConsultas          Int
   intervaloSegundos              Int
   precoCentavos                  Int
-  valorConsultaAdicionalCentavos Int @default(0)
+  valorConsultaAdicionalCentavos Int  @default(0)
   limiteCorretores               Int?
 
   status PlanoStatus @default(ATIVO)
@@ -160,50 +212,51 @@ model Cliente {
   modoProcessamento ClienteModoProcessamento @default(QUEUE)
 
   planoId String?
-  plano   Plano? @relation(fields: [planoId], references: [id])
+  plano   Plano?  @relation(fields: [planoId], references: [id])
 
-  workerUrl         String?
-  intervaloSegundos Int @default(60)
+  workerUrl               String?
+  intervaloSegundos       Int                      @default(60)
   workerAgentInstallLinks WorkerAgentInstallLink[]
 
-  limiteDiario            Int @default(300)
-  limiteMensalConsultas   Int @default(300)
-  pagamentoStatus         PagamentoStatus @default(PENDENTE)
-  pagamentoVenceEm        DateTime?
+  limiteDiario          Int             @default(300)
+  limiteMensalConsultas Int             @default(300)
+  pagamentoStatus       PagamentoStatus @default(PENDENTE)
+  pagamentoVenceEm      DateTime?
 
-  usuarios      Usuario[]
-  tarefas       Tarefa[]
-  consultasLogs ConsultaLog[]
-  operacaoEventos OperacaoEvento[]
+  usuarios         Usuario[]
+  tarefas          Tarefa[]
+  consultasLogs    ConsultaLog[]
+  operacaoEventos  OperacaoEvento[]
   workerHeartbeats WorkerHeartbeat[]
-  workerAgents WorkerAgent[]
+  workerAgents     WorkerAgent[]
+  municipios       ClienteMunicipio[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  buscasPrevias BuscaPrevia[]
+  faturas       Fatura[]
 
   @@index([planoId])
   @@map("clientes")
-  buscasPrevias BuscaPrevia[]
-  faturas Fatura[]
 }
 
 model Usuario {
-  id        String      @id @default(uuid())
+  id        String @id @default(uuid())
   clienteId String
 
   nome  String
-  email String @unique
+  email String      @unique
   senha String
   role  UsuarioRole @default(OPERADOR)
 
   ativo Boolean @default(true)
 
-  precisaTrocarSenha Boolean @default(false)
-  senhaAlteradaEm     DateTime?
+  precisaTrocarSenha Boolean   @default(false)
+  senhaAlteradaEm    DateTime?
 
   resetSenhaTokenHash String?   @unique
-  resetSenhaExpiraEm   DateTime?
-  resetSenhaUsadoEm    DateTime?
+  resetSenhaExpiraEm  DateTime?
+  resetSenhaUsadoEm   DateTime?
 
   cliente Cliente @relation(fields: [clienteId], references: [id])
 
@@ -215,10 +268,13 @@ model Usuario {
 }
 
 model Tarefa {
-  id        String       @id @default(uuid())
-  clienteId String
+  id            String       @id @default(uuid())
+  clienteId     String
   buscaPreviaId String?
-  status    TarefaStatus @default(PENDING)
+  status        TarefaStatus @default(PENDING)
+
+  municipioId String    @default("31062000-0000-4000-8000-000000000001")
+  municipio   Municipio @relation(fields: [municipioId], references: [id], onDelete: Restrict)
 
   logradouro String
   numero     String
@@ -228,27 +284,27 @@ model Tarefa {
   intervaloSegundos Int     @default(30)
   forceRefresh      Boolean @default(false)
 
-  excedenteAutorizado              Boolean   @default(false)
-  excedenteAutorizadoEm            DateTime?
-  consultasEstimadas               Int?
-  consultasDisponiveisNoMomento    Int?
-  consultasExcedentesEstimadas     Int?
-  valorConsultaAdicionalCentavos   Int?
-  valorExcedenteEstimadoCentavos   Int?
+  excedenteAutorizado            Boolean   @default(false)
+  excedenteAutorizadoEm          DateTime?
+  consultasEstimadas             Int?
+  consultasDisponiveisNoMomento  Int?
+  consultasExcedentesEstimadas   Int?
+  valorConsultaAdicionalCentavos Int?
+  valorExcedenteEstimadoCentavos Int?
 
   total   Int @default(0)
   current Int @default(0)
 
   erro String?
 
-  cliente    Cliente           @relation(fields: [clienteId], references: [id])
-  buscaPrevia BuscaPrevia? @relation(fields: [buscaPreviaId], references: [id], onDelete: SetNull)
-  resultados TarefaResultado[]
-  eventos    OperacaoEvento[]
+  cliente     Cliente           @relation(fields: [clienteId], references: [id])
+  buscaPrevia BuscaPrevia?      @relation(fields: [buscaPreviaId], references: [id], onDelete: SetNull)
+  resultados  TarefaResultado[]
+  eventos     OperacaoEvento[]
 
   agentWorkerId      String?
   agentLeaseExpiraEm DateTime?
-  agentTentativas    Int @default(0)
+  agentTentativas    Int       @default(0)
 
   createdAt   DateTime  @default(now())
   startedAt   DateTime?
@@ -256,6 +312,7 @@ model Tarefa {
   updatedAt   DateTime  @updatedAt
 
   @@index([clienteId])
+  @@index([municipioId])
   @@index([status])
   @@index([agentWorkerId])
   @@index([agentLeaseExpiraEm])
@@ -268,13 +325,16 @@ model BuscaPrevia {
   clienteId String
   cliente   Cliente @relation(fields: [clienteId], references: [id], onDelete: Cascade)
 
+  municipioId String    @default("31062000-0000-4000-8000-000000000001")
+  municipio   Municipio @relation(fields: [municipioId], references: [id], onDelete: Restrict)
+
   status BuscaPreviaStatus @default(PROCESSANDO)
 
   logradouro String
   numero     String
 
-  quantidadeRegistros Int @default(0)
-  registros            Json @default("[]")
+  quantidadeRegistros Int  @default(0)
+  registros           Json @default("[]")
 
   consultasDisponiveisNoMomento  Int
   consultasExcedentesEstimadas   Int
@@ -292,12 +352,13 @@ model BuscaPrevia {
 
   agentWorkerId      String?
   agentLeaseExpiraEm DateTime?
-  agentTentativas    Int @default(0)
+  agentTentativas    Int       @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([clienteId])
+  @@index([municipioId])
   @@index([status])
   @@index([expiraEm])
   @@index([agentWorkerId])
@@ -351,10 +412,10 @@ model FaturaItem {
   faturaId String
   fatura   Fatura @relation(fields: [faturaId], references: [id], onDelete: Cascade)
 
-  tipo FaturaItemTipo
+  tipo      FaturaItemTipo
   descricao String
 
-  quantidade Int @default(1)
+  quantidade            Int @default(1)
   valorUnitarioCentavos Int
   valorTotalCentavos    Int
 
@@ -398,10 +459,13 @@ model TarefaResultado {
 model ImovelCache {
   id String @id @default(uuid())
 
+  municipioId String    @default("31062000-0000-4000-8000-000000000001")
+  municipio   Municipio @relation(fields: [municipioId], references: [id], onDelete: Restrict)
+
   logradouro      String
   numero          String
   complemento     String?
-  indiceCadastral String @unique
+  indiceCadastral String
 
   nome     String?
   cpf      String?
@@ -420,6 +484,8 @@ model ImovelCache {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([municipioId, indiceCadastral])
+  @@index([municipioId])
   @@index([indiceCadastral])
   @@index([expiraEm])
   @@map("imoveis_cache")
@@ -450,11 +516,11 @@ model ConsultaLog {
 model OperacaoEvento {
   id String @id @default(uuid())
 
-  clienteId    String?
-  tarefaId     String?
+  clienteId     String?
+  tarefaId      String?
   buscaPreviaId String?
 
-  nivel   OperacaoEventoNivel @default(INFO)
+  nivel   OperacaoEventoNivel   @default(INFO)
   servico OperacaoEventoServico
 
   tipo     String
@@ -463,8 +529,8 @@ model OperacaoEvento {
   detalhes String?
   metadata Json?
 
-  cliente    Cliente?    @relation(fields: [clienteId], references: [id], onDelete: SetNull)
-  tarefa     Tarefa?     @relation(fields: [tarefaId], references: [id], onDelete: SetNull)
+  cliente     Cliente?     @relation(fields: [clienteId], references: [id], onDelete: SetNull)
+  tarefa      Tarefa?      @relation(fields: [tarefaId], references: [id], onDelete: SetNull)
   buscaPrevia BuscaPrevia? @relation(fields: [buscaPreviaId], references: [id], onDelete: SetNull)
 
   createdAt DateTime @default(now())
@@ -513,7 +579,7 @@ model WorkerAgent {
 
   tipo          WorkerAgentTipo
   identificador String
-  tokenHash     String @unique
+  tokenHash     String          @unique
 
   status WorkerAgentStatus @default(ATIVO)
 
@@ -530,7 +596,6 @@ model WorkerAgent {
   @@index([ultimoSinalEm])
   @@map("worker_agents")
 }
-
 
 model WorkerAgentInstallLink {
   id String @id @default(uuid())

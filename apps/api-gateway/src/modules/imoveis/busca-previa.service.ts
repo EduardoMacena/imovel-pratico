@@ -8,6 +8,7 @@ import {
 	adicionarBuscaRegistrosNaFila,
 } from "@imovel-pratico/queue";
 import { validarClientePodeCriarBusca } from "../assinatura/assinatura.service.js";
+import { buscarMunicipioPrincipalAtivoDoCliente } from "../municipios/cliente-municipio.service.js";
 import type {
 	BuscarProprietariosInput,
 	PreverBuscaInput,
@@ -112,6 +113,7 @@ function montarPreviaResponse(
 	previa: {
 		id: string;
 		status: string;
+		municipioId: string;
 		logradouro: string;
 		numero: string;
 		quantidadeRegistros: number;
@@ -145,6 +147,7 @@ function montarPreviaResponse(
 		previa: {
 			id: previa.id,
 			status: previa.status,
+			municipioId: previa.municipioId,
 			logradouro: previa.logradouro,
 			numero: previa.numero,
 			quantidadeRegistros: previa.quantidadeRegistros,
@@ -235,6 +238,7 @@ export async function criarPreviaBusca(
 	data: PreverBuscaInput
 ) {
 	const { cliente } = await validarClientePodeCriarBusca(clienteId);
+	const municipio = await buscarMunicipioPrincipalAtivoDoCliente(clienteId);
 
 	const logradouro = normalizarEndereco(data.logradouro);
 	const numero = data.numero.trim();
@@ -242,6 +246,7 @@ export async function criarPreviaBusca(
 	const existente = await prisma.buscaPrevia.findFirst({
 		where: {
 			clienteId,
+			municipioId: municipio.id,
 			logradouro,
 			numero,
 			status: {
@@ -263,6 +268,7 @@ export async function criarPreviaBusca(
 	const previa = await prisma.buscaPrevia.create({
 		data: {
 			clienteId,
+			municipioId: municipio.id,
 			status: "PROCESSANDO",
 			logradouro,
 			numero,
@@ -280,6 +286,7 @@ export async function criarPreviaBusca(
 		await adicionarBuscaRegistrosNaFila({
 			buscaPreviaId: previa.id,
 			clienteId,
+			municipioId: previa.municipioId,
 			logradouro,
 			numero,
 		});
@@ -457,6 +464,7 @@ export async function confirmarPreviaECriarTarefa(
 		const tarefa = await prisma.tarefa.create({
 			data: {
 				clienteId: cliente.id,
+				municipioId: previa.municipioId,
 				buscaPreviaId: previa.id,
 				status: "PENDING",
 				logradouro: previa.logradouro,
@@ -498,6 +506,7 @@ export async function confirmarPreviaECriarTarefa(
 				? await adicionarBuscaProprietariosNaFila({
 						tarefaId: tarefa.id,
 						clienteId: cliente.id,
+						municipioId: tarefa.municipioId,
 						buscaPreviaId: previa.id,
 						logradouro: tarefa.logradouro,
 						numero: tarefa.numero,
@@ -523,6 +532,7 @@ export async function confirmarPreviaECriarTarefa(
 			tarefa: {
 				id: tarefa.id,
 				status: tarefa.status,
+				municipioId: tarefa.municipioId,
 				buscaPreviaId: previa.id,
 			},
 		};

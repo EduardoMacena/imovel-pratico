@@ -561,10 +561,6 @@ export type EnumUsuarioRoleFieldUpdateOperationsInput = {
   set?: $Enums.UsuarioRole
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
-}
-
 export type UsuarioCreateWithoutClienteInput = {
   id?: string
   nome: string

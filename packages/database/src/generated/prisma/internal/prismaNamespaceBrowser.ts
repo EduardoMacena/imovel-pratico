@@ -51,6 +51,8 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
+  Municipio: 'Municipio',
+  ClienteMunicipio: 'ClienteMunicipio',
   Plano: 'Plano',
   Cliente: 'Cliente',
   Usuario: 'Usuario',
@@ -81,6 +83,33 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 } as const)
 
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
+
+
+export const MunicipioScalarFieldEnum = {
+  id: 'id',
+  codigoIbge: 'codigoIbge',
+  nome: 'nome',
+  uf: 'uf',
+  status: 'status',
+  configuracao: 'configuracao',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MunicipioScalarFieldEnum = (typeof MunicipioScalarFieldEnum)[keyof typeof MunicipioScalarFieldEnum]
+
+
+export const ClienteMunicipioScalarFieldEnum = {
+  id: 'id',
+  clienteId: 'clienteId',
+  municipioId: 'municipioId',
+  ativo: 'ativo',
+  principal: 'principal',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ClienteMunicipioScalarFieldEnum = (typeof ClienteMunicipioScalarFieldEnum)[keyof typeof ClienteMunicipioScalarFieldEnum]
 
 
 export const PlanoScalarFieldEnum = {
@@ -146,6 +175,7 @@ export const TarefaScalarFieldEnum = {
   clienteId: 'clienteId',
   buscaPreviaId: 'buscaPreviaId',
   status: 'status',
+  municipioId: 'municipioId',
   logradouro: 'logradouro',
   numero: 'numero',
   mesAnoInicio: 'mesAnoInicio',
@@ -177,6 +207,7 @@ export type TarefaScalarFieldEnum = (typeof TarefaScalarFieldEnum)[keyof typeof 
 export const BuscaPreviaScalarFieldEnum = {
   id: 'id',
   clienteId: 'clienteId',
+  municipioId: 'municipioId',
   status: 'status',
   logradouro: 'logradouro',
   numero: 'numero',
@@ -264,6 +295,7 @@ export type TarefaResultadoScalarFieldEnum = (typeof TarefaResultadoScalarFieldE
 
 export const ImovelCacheScalarFieldEnum = {
   id: 'id',
+  municipioId: 'municipioId',
   logradouro: 'logradouro',
   numero: 'numero',
   complemento: 'complemento',
@@ -374,19 +406,19 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
-export const JsonNullValueInput = {
-  JsonNull: JsonNull
-} as const
-
-export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
-
-
 export const NullableJsonNullValueInput = {
   DbNull: DbNull,
   JsonNull: JsonNull
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {
@@ -397,14 +429,6 @@ export const QueryMode = {
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
 
 
-export const NullsOrder = {
-  first: 'first',
-  last: 'last'
-} as const
-
-export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
-
-
 export const JsonNullValueFilter = {
   DbNull: DbNull,
   JsonNull: JsonNull,
@@ -412,4 +436,12 @@ export const JsonNullValueFilter = {
 } as const
 
 export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 

@@ -1,11 +1,13 @@
 import { Prisma, prisma } from "@imovel-pratico/database";
 
 type BuscarCacheInput = {
+	municipioId: string;
 	indiceCadastral: string;
 	forceRefresh?: boolean;
 };
 
 type SalvarCacheInput = {
+	municipioId: string;
 	logradouro: string;
 	numero: string;
 	complemento?: string | null;
@@ -38,6 +40,7 @@ function toPrismaJson(
 }
 
 export async function buscarImovelCacheValido({
+	municipioId,
 	indiceCadastral,
 	forceRefresh,
 }: BuscarCacheInput) {
@@ -47,6 +50,7 @@ export async function buscarImovelCacheValido({
 
 	const cache = await prisma.imovelCache.findFirst({
 		where: {
+			municipioId,
 			indiceCadastral,
 			status: "VALID",
 			expiraEm: {
@@ -63,6 +67,7 @@ export async function buscarImovelCacheValido({
 }
 
 export async function salvarImovelCache({
+	municipioId,
 	logradouro,
 	numero,
 	complemento,
@@ -79,7 +84,10 @@ export async function salvarImovelCache({
 
 	return prisma.imovelCache.upsert({
 		where: {
-			indiceCadastral,
+			municipioId_indiceCadastral: {
+				municipioId,
+				indiceCadastral,
+			},
 		},
 		update: {
       logradouro,
@@ -97,6 +105,7 @@ export async function salvarImovelCache({
       expiraEm: adicionarDias(agora, 90),
     },
     create: {
+      municipioId,
       logradouro,
       numero,
       complemento,

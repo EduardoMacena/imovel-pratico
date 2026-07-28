@@ -1,6 +1,7 @@
 export type BuscarProprietariosJobData = {
   tarefaId: string;
   clienteId: string;
+  municipioId: string;
   buscaPreviaId?: string | null;
   logradouro?: string;
   numero?: string;
@@ -13,6 +14,7 @@ export type BuscarProprietariosJobData = {
 export type BuscarRegistrosJobData = {
   buscaPreviaId: string;
   clienteId: string;
+  municipioId: string;
   logradouro: string;
   numero: string;
 };

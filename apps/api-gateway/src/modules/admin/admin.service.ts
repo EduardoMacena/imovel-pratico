@@ -4,7 +4,10 @@ import {
   enviarEmailBoasVindasUsuario,
   enviarEmailSenhaTemporariaAtualizada,
 } from "../../services/email.service.js";
-import { prisma } from "@imovel-pratico/database";
+import {
+	MUNICIPIO_BELO_HORIZONTE_ID,
+	prisma,
+} from "@imovel-pratico/database";
 import {
 	adicionarBuscaProprietariosNaFila,
 	removerBuscaProprietariosDaFila,
@@ -114,14 +117,23 @@ export async function listarClientes() {
 export async function criarCliente(data: CriarClienteInput) {
 	const slug = await gerarSlugUnico(data.nome, data.slug);
 
-	const cliente = await prisma.cliente.create({
-		data: {
-			nome: data.nome,
-			slug,
-			modoProcessamento: data.modoProcessamento ?? "AGENT",
-			workerUrl: data.workerUrl ?? null,
-			planoId: data.planoId,
-		},
+	const cliente = await prisma.$transaction(async (tx) => {
+		return tx.cliente.create({
+			data: {
+				nome: data.nome,
+				slug,
+				modoProcessamento: data.modoProcessamento ?? "AGENT",
+				workerUrl: data.workerUrl ?? null,
+				planoId: data.planoId,
+				municipios: {
+					create: {
+						municipioId: MUNICIPIO_BELO_HORIZONTE_ID,
+						ativo: true,
+						principal: true,
+					},
+				},
+			},
+		});
 	});
 
 	return cliente;
@@ -777,6 +789,7 @@ export async function reprocessarTarefaAdmin(id: string) {
 	await adicionarBuscaProprietariosNaFila({
 		tarefaId: tarefaAtualizada.id,
 		clienteId: tarefaAtualizada.clienteId,
+		municipioId: tarefaAtualizada.municipioId,
 		logradouro: tarefaAtualizada.logradouro,
 		numero: tarefaAtualizada.numero,
 		mesAnoInicio: tarefaAtualizada.mesAnoInicio,
