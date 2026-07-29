@@ -11,8 +11,10 @@ import { validarClientePodeCriarBusca } from "../assinatura/assinatura.service.j
 import { buscarMunicipioPrincipalAtivoDoCliente } from "../municipios/cliente-municipio.service.js";
 import type {
 	BuscarProprietariosInput,
+	PreverBuscaCodigosInput,
 	PreverBuscaInput,
 } from "./imovel.schemas.js";
+import { analisarCodigosCadastrais } from "./codigos-cadastrais.js";
 
 const STATUS_PREVIAS_REAPROVEITAVEIS: BuscaPreviaStatus[] = [
 	"PROCESSANDO",
@@ -29,6 +31,9 @@ const STATUS_PREVIAS_PENDENTES: BuscaPreviaStatus[] = [
 	"PRONTA",
 	"AGUARDANDO_AUTORIZACAO_EXCEDENTE",
 ];
+
+const ROTULO_CODIGOS_LOGRADOURO = "CÓDIGOS CADASTRAIS";
+const ROTULO_CODIGOS_NUMERO = "ENTRADA DIRETA";
 
 function adicionarMinutos(date: Date, minutos: number) {
 	const nextDate = new Date(date);
@@ -114,6 +119,7 @@ function montarPreviaResponse(
 		id: string;
 		status: string;
 		municipioId: string;
+		tipoBusca: "ENDERECO" | "CODIGOS_CADASTRAIS";
 		logradouro: string;
 		numero: string;
 		quantidadeRegistros: number;
@@ -148,6 +154,7 @@ function montarPreviaResponse(
 			id: previa.id,
 			status: previa.status,
 			municipioId: previa.municipioId,
+			tipoBusca: previa.tipoBusca,
 			logradouro: previa.logradouro,
 			numero: previa.numero,
 			quantidadeRegistros: previa.quantidadeRegistros,
@@ -247,6 +254,7 @@ export async function criarPreviaBusca(
 		where: {
 			clienteId,
 			municipioId: municipio.id,
+			tipoBusca: "ENDERECO",
 			logradouro,
 			numero,
 			status: {
@@ -269,6 +277,7 @@ export async function criarPreviaBusca(
 		data: {
 			clienteId,
 			municipioId: municipio.id,
+			tipoBusca: "ENDERECO",
 			status: "PROCESSANDO",
 			logradouro,
 			numero,
@@ -293,6 +302,85 @@ export async function criarPreviaBusca(
 	}
 
 	return montarPreviaResponse(previa);
+}
+
+export async function criarPreviaBuscaPorCodigos(
+	clienteId: string,
+	data: PreverBuscaCodigosInput
+) {
+	const { plano, uso } = await validarClientePodeCriarBusca(clienteId);
+	const municipio = await buscarMunicipioPrincipalAtivoDoCliente(clienteId);
+	const validacaoCodigos = analisarCodigosCadastrais(data.codigos);
+
+	if (validacaoCodigos.totalValidos <= 0) {
+		throw new Error("Nenhum código cadastral válido foi informado");
+	}
+
+	const excedente = calcularResumoExcedente({
+		consultasEstimadas: validacaoCodigos.totalValidos,
+		consultasRestantes: uso.consultasRestantes,
+		valorConsultaAdicionalCentavos:
+			plano.valorConsultaAdicionalCentavos ?? 0,
+	});
+
+	const status =
+		excedente.consultasExcedentesEstimadas > 0
+			? "AGUARDANDO_AUTORIZACAO_EXCEDENTE"
+			: "PRONTA";
+
+	const registros = validacaoCodigos.codigosValidos.map(
+		(indiceCadastral) => ({
+			indiceCadastral,
+			complemento: null,
+		})
+	);
+
+	const previa = await prisma.buscaPrevia.create({
+		data: {
+			clienteId,
+			municipioId: municipio.id,
+			tipoBusca: "CODIGOS_CADASTRAIS",
+			status,
+			logradouro: ROTULO_CODIGOS_LOGRADOURO,
+			numero: ROTULO_CODIGOS_NUMERO,
+			quantidadeRegistros: registros.length,
+			registros: toPrismaJson(registros),
+			consultasDisponiveisNoMomento:
+				excedente.consultasDisponiveisNoMomento,
+			consultasExcedentesEstimadas:
+				excedente.consultasExcedentesEstimadas,
+			valorConsultaAdicionalCentavos:
+				excedente.valorConsultaAdicionalCentavos,
+			valorExcedenteEstimadoCentavos:
+				excedente.valorExcedenteEstimadoCentavos,
+			expiraEm: adicionarMinutos(new Date(), 60),
+		},
+	});
+
+	await prisma.operacaoEvento.create({
+		data: {
+			clienteId,
+			buscaPreviaId: previa.id,
+			servico: "API_GATEWAY",
+			tipo: "BUSCA_PREVIA_CODIGOS_CRIADA",
+			mensagem: "Prévia criada diretamente por códigos cadastrais",
+			metadata: toPrismaJson({
+				municipioId: municipio.id,
+				totalRecebidos: validacaoCodigos.totalRecebidos,
+				totalValidos: validacaoCodigos.totalValidos,
+				totalDuplicados: validacaoCodigos.totalDuplicados,
+				totalInvalidos: validacaoCodigos.totalInvalidos,
+			}),
+		},
+	});
+
+	return {
+		...montarPreviaResponse(previa, {
+			uso,
+			excedente,
+		}),
+		validacaoCodigos,
+	};
 }
 
 export async function buscarPreviaBusca(clienteId: string, previaId: string) {
@@ -465,6 +553,7 @@ export async function confirmarPreviaECriarTarefa(
 			data: {
 				clienteId: cliente.id,
 				municipioId: previa.municipioId,
+				tipoBusca: previa.tipoBusca,
 				buscaPreviaId: previa.id,
 				status: "PENDING",
 				logradouro: previa.logradouro,
@@ -507,6 +596,7 @@ export async function confirmarPreviaECriarTarefa(
 						tarefaId: tarefa.id,
 						clienteId: cliente.id,
 						municipioId: tarefa.municipioId,
+						tipoBusca: tarefa.tipoBusca,
 						buscaPreviaId: previa.id,
 						logradouro: tarefa.logradouro,
 						numero: tarefa.numero,
@@ -533,6 +623,7 @@ export async function confirmarPreviaECriarTarefa(
 				id: tarefa.id,
 				status: tarefa.status,
 				municipioId: tarefa.municipioId,
+				tipoBusca: tarefa.tipoBusca,
 				buscaPreviaId: previa.id,
 			},
 		};

@@ -14,6 +14,7 @@ export type CndAgentJob = {
 	tarefaId: string;
 	clienteId: string;
 	municipioId: string;
+	tipoBusca: "ENDERECO" | "CODIGOS_CADASTRAIS";
 	buscaPreviaId: string | null;
 	logradouro: string;
 	numero: string;

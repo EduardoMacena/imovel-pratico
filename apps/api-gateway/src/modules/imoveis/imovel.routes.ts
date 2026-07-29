@@ -31,6 +31,11 @@ export async function imovelRoutes(app: FastifyInstance) {
     getHandler(previa, "criarPreviaBuscaController")
   );
 
+  app.post(
+    "/imoveis/prever-busca/codigos",
+    getHandler(previa, "criarPreviaBuscaPorCodigosController")
+  );
+
   app.get(
     "/imoveis/prever-busca/pendentes",
     getHandler(previa, "listarPreviasPendentesController")

@@ -147,6 +147,7 @@ export async function processarBuscaProprietariosJob(
 				intervaloSegundos: job.data.intervaloSegundos,
 				forceRefresh: job.data.forceRefresh,
 				municipioId: job.data.municipioId,
+				tipoBusca: job.data.tipoBusca,
 			},
 		});
 
