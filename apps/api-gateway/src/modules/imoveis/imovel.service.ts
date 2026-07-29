@@ -71,6 +71,7 @@ function normalizarRegistrosPrevia(value: unknown) {
 function montarPreviaResponse(previa: {
 	id: string;
 	municipioId: string;
+	tipoBusca: "ENDERECO" | "CODIGOS_CADASTRAIS";
 	logradouro: string;
 	numero: string;
 	quantidadeRegistros: number;
@@ -80,6 +81,7 @@ function montarPreviaResponse(previa: {
 	return {
 		id: previa.id,
 		municipioId: previa.municipioId,
+		tipoBusca: previa.tipoBusca,
 		logradouro: previa.logradouro,
 		numero: previa.numero,
 		quantidadeRegistros: previa.quantidadeRegistros,
@@ -120,6 +122,7 @@ export async function preverBuscaProprietarios(
 		data: {
 			clienteId: cliente.id,
 			municipioId: municipio.id,
+			tipoBusca: "ENDERECO",
 			status: "PENDENTE",
 			logradouro: resultadoWorker.logradouro,
 			numero: resultadoWorker.numero,
@@ -208,6 +211,7 @@ export async function criarTarefaBuscaProprietarios(
 		data: {
 			clienteId: cliente.id,
 			municipioId: previa.municipioId,
+			tipoBusca: previa.tipoBusca,
 			buscaPreviaId: previa.id,
 			status: "PENDING",
 			logradouro: previa.logradouro,
@@ -242,6 +246,7 @@ export async function criarTarefaBuscaProprietarios(
 					tarefaId: tarefa.id,
 					clienteId: cliente.id,
 					municipioId: tarefa.municipioId,
+					tipoBusca: tarefa.tipoBusca,
 					buscaPreviaId: previa.id,
 					logradouro: tarefa.logradouro,
 					numero: tarefa.numero,
@@ -280,6 +285,7 @@ export async function criarTarefaBuscaProprietarios(
 			id: tarefa.id,
 			status: tarefa.status,
 			municipioId: tarefa.municipioId,
+			tipoBusca: tarefa.tipoBusca,
 			logradouro: tarefa.logradouro,
 			numero: tarefa.numero,
 			mesAnoInicio: tarefa.mesAnoInicio,

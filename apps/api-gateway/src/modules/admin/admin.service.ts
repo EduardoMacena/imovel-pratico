@@ -790,6 +790,7 @@ export async function reprocessarTarefaAdmin(id: string) {
 		tarefaId: tarefaAtualizada.id,
 		clienteId: tarefaAtualizada.clienteId,
 		municipioId: tarefaAtualizada.municipioId,
+		tipoBusca: tarefaAtualizada.tipoBusca,
 		logradouro: tarefaAtualizada.logradouro,
 		numero: tarefaAtualizada.numero,
 		mesAnoInicio: tarefaAtualizada.mesAnoInicio,

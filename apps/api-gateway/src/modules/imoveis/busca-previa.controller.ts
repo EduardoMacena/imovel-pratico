@@ -1,6 +1,7 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import {
   buscarProprietariosSchema,
+  preverBuscaCodigosSchema,
   preverBuscaSchema,
   previaIdParamsSchema,
 } from "./imovel.schemas.js";
@@ -9,6 +10,7 @@ import {
   cancelarPreviaBusca,
   confirmarPreviaECriarTarefa,
   criarPreviaBusca,
+  criarPreviaBuscaPorCodigos,
   listarPreviasPendentes,
 } from "./busca-previa.service.js";
 
@@ -21,6 +23,30 @@ export async function criarPreviaBuscaController(
   const result = await criarPreviaBusca(request.auth.clienteId, body);
 
   return reply.status(202).send(result);
+}
+
+export async function criarPreviaBuscaPorCodigosController(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  const body = preverBuscaCodigosSchema.parse(request.body);
+
+  try {
+    const result = await criarPreviaBuscaPorCodigos(
+      request.auth.clienteId,
+      body
+    );
+
+    return reply.status(202).send(result);
+  } catch (error) {
+    return reply.status(400).send({
+      error: "BadRequest",
+      message:
+        error instanceof Error
+          ? error.message
+          : "Erro ao criar prévia por códigos cadastrais",
+    });
+  }
 }
 
 export async function buscarPreviaBuscaController(

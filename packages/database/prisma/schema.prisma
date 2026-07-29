@@ -20,6 +20,11 @@ enum MunicipioStatus {
   DESCONTINUADO
 }
 
+enum TipoBusca {
+  ENDERECO
+  CODIGOS_CADASTRAIS
+}
+
 enum WorkerAgentInstallLinkStatus {
   PENDENTE
   USADO
@@ -272,6 +277,7 @@ model Tarefa {
   clienteId     String
   buscaPreviaId String?
   status        TarefaStatus @default(PENDING)
+  tipoBusca     TipoBusca    @default(ENDERECO)
 
   municipioId String    @default("31062000-0000-4000-8000-000000000001")
   municipio   Municipio @relation(fields: [municipioId], references: [id], onDelete: Restrict)
@@ -313,6 +319,7 @@ model Tarefa {
 
   @@index([clienteId])
   @@index([municipioId])
+  @@index([tipoBusca])
   @@index([status])
   @@index([agentWorkerId])
   @@index([agentLeaseExpiraEm])
@@ -328,7 +335,8 @@ model BuscaPrevia {
   municipioId String    @default("31062000-0000-4000-8000-000000000001")
   municipio   Municipio @relation(fields: [municipioId], references: [id], onDelete: Restrict)
 
-  status BuscaPreviaStatus @default(PROCESSANDO)
+  status    BuscaPreviaStatus @default(PROCESSANDO)
+  tipoBusca TipoBusca         @default(ENDERECO)
 
   logradouro String
   numero     String
@@ -359,6 +367,7 @@ model BuscaPrevia {
 
   @@index([clienteId])
   @@index([municipioId])
+  @@index([tipoBusca])
   @@index([status])
   @@index([expiraEm])
   @@index([agentWorkerId])

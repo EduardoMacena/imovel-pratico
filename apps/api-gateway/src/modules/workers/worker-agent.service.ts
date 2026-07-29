@@ -188,6 +188,7 @@ async function claimRegistro(agent: WorkerAgentAutenticado) {
 	const previa = await prisma.buscaPrevia.findFirst({
 		where: {
 			clienteId: agent.clienteId,
+			tipoBusca: "ENDERECO",
 			expiraEm: {
 				gt: now,
 			},
@@ -594,6 +595,7 @@ async function claimCnd(agent: WorkerAgentAutenticado) {
 		tarefaId: atualizada.id,
 		clienteId: atualizada.clienteId,
 		municipioId: atualizada.municipioId,
+		tipoBusca: atualizada.tipoBusca,
 		buscaPreviaId: atualizada.buscaPreviaId,
 		logradouro: atualizada.buscaPrevia?.logradouro ?? atualizada.logradouro,
 		numero: atualizada.buscaPrevia?.numero ?? atualizada.numero,
