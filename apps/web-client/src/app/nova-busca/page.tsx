@@ -19,17 +19,35 @@ import {
 	criarTarefaBusca,
 	listarPreviasPendentes,
 	preverBusca,
+	preverBuscaPorCodigos,
 } from "../../features/busca/api";
+import {
+	MAX_CODIGOS_POR_PREVIA,
+	analisarCodigosParaInterface,
+} from "../../features/busca/codigos-cadastrais";
 import type {
 	BuscaPreviaStatus,
 	MinhaAssinaturaResponse,
 	PreverBuscaResponse,
 	ProgressoTarefaResponse,
+	ResumoCodigosCadastrais,
+	TipoBusca,
 } from "../../features/busca/types";
 import { useRealtimeEvents } from "../../features/realtime/useRealtimeEvents";
 import { formatCurrencyFromCents, formatNumberBR } from "../../lib/formatters";
 import {
 	Actions,
+	CodeFeedback,
+	CodeFeedbackList,
+	CodeFeedbackTitle,
+	CodeSummaryGrid,
+	CodeSummaryItem,
+	CodeSummaryLabel,
+	CodeSummaryValue,
+	CodigosField,
+	CodigosHint,
+	CodigosLabel,
+	CodigosTextarea,
 	EmptyState,
 	ErrorBox,
 	FormGrid,
@@ -90,6 +108,10 @@ import {
 	ResultsList,
 	ResultsSection,
 	ResultsTitle,
+	SearchModeButton,
+	SearchModeDescription,
+	SearchModeSelector,
+	SearchModeTitle,
 	Sidebar,
 	SidebarCard,
 	SidebarDescription,
@@ -155,6 +177,46 @@ function getPreviaStatusVariant(status: BuscaPreviaStatus) {
 	return "info" as const;
 }
 
+function getTipoBuscaLabel(tipoBusca: TipoBusca) {
+	return tipoBusca === "CODIGOS_CADASTRAIS"
+		? "Códigos cadastrais"
+		: "Endereço";
+}
+
+function formatQuantidadePrevia(
+	quantidade: number,
+	tipoBusca: TipoBusca
+) {
+	if (tipoBusca === "CODIGOS_CADASTRAIS") {
+		return quantidade === 1
+			? "1 código cadastral"
+			: `${formatNumberBR(quantidade)} códigos cadastrais`;
+	}
+
+	return quantidade === 1
+		? "1 registro"
+		: `${formatNumberBR(quantidade)} registros`;
+}
+
+function getPendenciaTitle(previa: PreverBuscaResponse["previa"]) {
+	if (previa.tipoBusca === "CODIGOS_CADASTRAIS") {
+		return formatQuantidadePrevia(
+			previa.quantidadeRegistros,
+			previa.tipoBusca
+		);
+	}
+
+	return `${previa.logradouro}, nº ${previa.numero}`;
+}
+
+function getMotivoCodigoInvalido(
+	motivo: ResumoCodigosCadastrais["codigosInvalidos"][number]["motivo"]
+) {
+	return motivo === "TAMANHO_INVALIDO"
+		? "tamanho inválido"
+		: "caracteres não permitidos";
+}
+
 type CriarTarefaBuscaResponseComIds = Awaited<ReturnType<typeof criarTarefaBusca>> & {
 	jobId?: string | null;
 	tarefaId?: string | null;
@@ -171,11 +233,18 @@ function NovaBuscaContent() {
 	const { isCheckingAuth } = useRequireAuth();
 	const searchParams = useSearchParams();
 
+	const [tipoBusca, setTipoBusca] = useState<TipoBusca>(() =>
+		searchParams.get("tipoBusca") === "codigos"
+			? "CODIGOS_CADASTRAIS"
+			: "ENDERECO"
+	);
+
 	const [logradouro, setLogradouro] = useState(
 		() => searchParams.get("logradouro") ?? ""
 	);
 
 	const [numero, setNumero] = useState(() => searchParams.get("numero") ?? "");
+	const [codigos, setCodigos] = useState(() => searchParams.get("codigos") ?? "");
 
 	const [assinatura, setAssinatura] = useState<MinhaAssinaturaResponse | null>(null);
 
@@ -192,6 +261,17 @@ function NovaBuscaContent() {
 	const [isLoadingPendencias, setIsLoadingPendencias] = useState(false);
 	const [erro, setErro] = useState<string | null>(null);
 
+	const analiseCodigos = useMemo(
+		() => analisarCodigosParaInterface(codigos),
+		[codigos]
+	);
+
+	const codigosAcimaDoLimite =
+		analiseCodigos.totalRecebidos > MAX_CODIGOS_POR_PREVIA;
+
+	const codigosProntosParaEnvio =
+		analiseCodigos.totalValidos > 0 && !codigosAcimaDoLimite;
+
 	const isFinalizado = useMemo(() => {
 		return (
 			progresso?.status === "COMPLETED" ||
@@ -205,6 +285,9 @@ function NovaBuscaContent() {
 		assinatura.cliente.pagamentoStatus !== "PAGO" ||
 		assinatura.cliente.status !== "ATIVO" ||
 		assinatura.plano.status !== "ATIVO";
+
+	const previaPorCodigos =
+		previaBusca?.previa.tipoBusca === "CODIGOS_CADASTRAIS";
 
 	const previaProcessando =
 		previaBusca && STATUS_PROCESSANDO_PREVIA.includes(previaBusca.previa.status);
@@ -257,7 +340,9 @@ function NovaBuscaContent() {
 			previaSelecionada.previa.quantidadeRegistros <= 0
 		) {
 			setErro(
-				"Não é possível iniciar o processamento porque o 1RIBH não encontrou imóveis para este endereço."
+				previaSelecionada.previa.tipoBusca === "CODIGOS_CADASTRAIS"
+					? "Não é possível iniciar o processamento porque a prévia não possui códigos cadastrais válidos."
+					: "Não é possível iniciar o processamento porque o 1RIBH não encontrou imóveis para este endereço."
 			);
 			return;
 		}
@@ -302,6 +387,18 @@ function NovaBuscaContent() {
 	async function iniciarFluxoBusca(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
 
+		if (tipoBusca === "CODIGOS_CADASTRAIS" && codigosAcimaDoLimite) {
+			setErro(
+				`Informe no máximo ${MAX_CODIGOS_POR_PREVIA} códigos cadastrais por prévia.`
+			);
+			return;
+		}
+
+		if (tipoBusca === "CODIGOS_CADASTRAIS" && !codigosProntosParaEnvio) {
+			setErro("Informe ao menos um código cadastral válido.");
+			return;
+		}
+
 		setErro(null);
 		setProgresso(null);
 		setJobId(null);
@@ -310,10 +407,15 @@ function NovaBuscaContent() {
 		setIsLoading(true);
 
 		try {
-			const previa = await preverBusca({
-				logradouro,
-				numero,
-			});
+			const previa =
+				tipoBusca === "CODIGOS_CADASTRAIS"
+					? await preverBuscaPorCodigos({
+							codigos,
+						})
+					: await preverBusca({
+							logradouro,
+							numero,
+						});
 
 			setPreviaBusca(previa);
 
@@ -547,15 +649,45 @@ function NovaBuscaContent() {
 						<ModalTitle>Esta busca pode gerar cobrança adicional</ModalTitle>
 
 						<ModalText>
-							O 1RIBH encontrou {avisoExcedente.previa.quantidadeRegistros} registro(s)
-							para este endereço. Seu plano ainda possui{" "}
-							{avisoExcedente.excedente.consultasDisponiveisNoMomento} consulta(s)
-							inclusas disponíveis neste momento.
+							{avisoExcedente.previa.tipoBusca === "CODIGOS_CADASTRAIS" ? (
+								<>
+									Você informou{" "}
+									{formatQuantidadePrevia(
+										avisoExcedente.previa.quantidadeRegistros,
+										avisoExcedente.previa.tipoBusca
+									)}{" "}
+									{avisoExcedente.previa.quantidadeRegistros === 1
+										? "válido"
+										: "válidos"}
+									. Seu plano ainda possui{" "}
+									{formatNumberBR(
+										avisoExcedente.excedente.consultasDisponiveisNoMomento
+									)}{" "}
+									consulta(s) inclusas disponíveis neste momento.
+								</>
+							) : (
+								<>
+									O 1RIBH encontrou{" "}
+									{formatQuantidadePrevia(
+										avisoExcedente.previa.quantidadeRegistros,
+										avisoExcedente.previa.tipoBusca
+									)}{" "}
+									para este endereço. Seu plano ainda possui{" "}
+									{formatNumberBR(
+										avisoExcedente.excedente.consultasDisponiveisNoMomento
+									)}{" "}
+									consulta(s) inclusas disponíveis neste momento.
+								</>
+							)}
 						</ModalText>
 
 						<ModalGrid>
 							<ModalInfo>
-								<strong>Registros encontrados</strong>
+								<strong>
+									{avisoExcedente.previa.tipoBusca === "CODIGOS_CADASTRAIS"
+										? "Códigos válidos"
+										: "Registros encontrados"}
+								</strong>
 								<span>{formatNumberBR(avisoExcedente.previa.quantidadeRegistros)}</span>
 							</ModalInfo>
 
@@ -616,11 +748,12 @@ function NovaBuscaContent() {
 							<HeroContent>
 								<HeroEyebrow>Nova busca inteligente</HeroEyebrow>
 
-								<HeroTitle>Consulte a prévia antes de iniciar o processamento.</HeroTitle>
+								<HeroTitle>Escolha a rota certa para cada captação.</HeroTitle>
 
 								<HeroSubtitle>
-									A prévia entra em uma fila segura do 1RIBH. Mesmo se você sair da tela,
-									ela continua processando e poderá ser revisada depois.
+									Localize imóveis por endereço com descoberta automática no 1RIBH ou
+									informe códigos cadastrais diretamente. Em ambos os casos, você revisa
+									a prévia e o eventual excedente antes do processamento.
 								</HeroSubtitle>
 
 								<HeaderActions>
@@ -663,10 +796,15 @@ function NovaBuscaContent() {
 								<OperationCardHeader>
 									<div>
 										<OperationEyebrow>Prévia operacional</OperationEyebrow>
-										<OperationTitle>Dados do imóvel</OperationTitle>
+										<OperationTitle>
+											{tipoBusca === "CODIGOS_CADASTRAIS"
+												? "Consultar códigos cadastrais"
+												: "Localizar por endereço"}
+										</OperationTitle>
 										<OperationDescription>
-											Primeiro o sistema cria a prévia e consulta o 1RIBH em fila. Depois
-											você revisa os registros antes de iniciar a tarefa de CPF e contato.
+											{tipoBusca === "CODIGOS_CADASTRAIS"
+												? "Cole os códigos já conhecidos. A prévia é criada imediatamente, sem consultar o Worker Registro ou o 1RIBH."
+												: "O sistema consulta o 1RIBH em fila e salva os imóveis encontrados para você revisar antes da tarefa de CPF e contato."}
 										</OperationDescription>
 									</div>
 
@@ -688,32 +826,221 @@ function NovaBuscaContent() {
 									)}
 
 									<OperationForm onSubmit={iniciarFluxoBusca}>
-										<FormGrid>
-											<Input
-												label="Logradouro"
-												value={logradouro}
-												onChange={(event) => setLogradouro(event.target.value)}
-												placeholder="Ex: Rua Desembargador Jorge Fontana"
-												required
-											/>
+										<SearchModeSelector
+											role="radiogroup"
+											aria-label="Escolha o tipo da busca"
+										>
+											<SearchModeButton
+												type="button"
+												role="radio"
+												aria-checked={tipoBusca === "ENDERECO"}
+												$active={tipoBusca === "ENDERECO"}
+												onClick={() => {
+													setTipoBusca("ENDERECO");
+													setErro(null);
+												}}
+											>
+												<SearchModeTitle>Busca por endereço</SearchModeTitle>
+												<SearchModeDescription>
+													Descobre os códigos automaticamente no 1RIBH.
+												</SearchModeDescription>
+											</SearchModeButton>
 
-											<Input
-												label="Número"
-												value={numero}
-												onChange={(event) => setNumero(event.target.value)}
-												placeholder="Ex: 200"
-												required
-											/>
-										</FormGrid>
+											<SearchModeButton
+												type="button"
+												role="radio"
+												aria-checked={tipoBusca === "CODIGOS_CADASTRAIS"}
+												$active={tipoBusca === "CODIGOS_CADASTRAIS"}
+												onClick={() => {
+													setTipoBusca("CODIGOS_CADASTRAIS");
+													setErro(null);
+												}}
+											>
+												<SearchModeTitle>Códigos cadastrais</SearchModeTitle>
+												<SearchModeDescription>
+													Usa os códigos informados sem consultar o 1RIBH.
+												</SearchModeDescription>
+											</SearchModeButton>
+										</SearchModeSelector>
+
+										{tipoBusca === "ENDERECO" ? (
+											<FormGrid>
+												<Input
+													label="Logradouro"
+													value={logradouro}
+													onChange={(event) => setLogradouro(event.target.value)}
+													placeholder="Ex: Rua Desembargador Jorge Fontana"
+													required
+												/>
+
+												<Input
+													label="Número"
+													value={numero}
+													onChange={(event) => setNumero(event.target.value)}
+													placeholder="Ex: 200"
+													required
+												/>
+											</FormGrid>
+										) : (
+											<>
+												<CodigosField htmlFor="codigos-cadastrais">
+													<CodigosLabel>Códigos cadastrais</CodigosLabel>
+													<CodigosTextarea
+														id="codigos-cadastrais"
+														value={codigos}
+														onChange={(event) => setCodigos(event.target.value)}
+														placeholder={
+															"Ex:\n001.002.003-4\n009.008.007-6\n123456789"
+														}
+														maxLength={100000}
+														aria-describedby="codigos-cadastrais-ajuda"
+														aria-invalid={
+															codigosAcimaDoLimite ||
+															(analiseCodigos.totalRecebidos > 0 &&
+																analiseCodigos.totalValidos === 0)
+														}
+														required
+													/>
+													<CodigosHint id="codigos-cadastrais-ajuda">
+														Use uma linha por código ou separe por vírgula ou ponto e
+														vírgula. Espaços internos são removidos e letras são
+														convertidas para maiúsculas. Limite de{" "}
+														{formatNumberBR(MAX_CODIGOS_POR_PREVIA)} códigos por prévia.
+													</CodigosHint>
+												</CodigosField>
+
+												<CodeSummaryGrid aria-live="polite">
+													<CodeSummaryItem>
+														<CodeSummaryLabel>Recebidos</CodeSummaryLabel>
+														<CodeSummaryValue>
+															{formatNumberBR(analiseCodigos.totalRecebidos)}
+														</CodeSummaryValue>
+													</CodeSummaryItem>
+
+													<CodeSummaryItem
+														$variant={
+															analiseCodigos.totalValidos > 0
+																? "success"
+																: "neutral"
+														}
+													>
+														<CodeSummaryLabel>Válidos únicos</CodeSummaryLabel>
+														<CodeSummaryValue>
+															{formatNumberBR(analiseCodigos.totalValidos)}
+														</CodeSummaryValue>
+													</CodeSummaryItem>
+
+													<CodeSummaryItem
+														$variant={
+															analiseCodigos.totalDuplicados > 0
+																? "warning"
+																: "neutral"
+														}
+													>
+														<CodeSummaryLabel>Duplicados</CodeSummaryLabel>
+														<CodeSummaryValue>
+															{formatNumberBR(analiseCodigos.totalDuplicados)}
+														</CodeSummaryValue>
+													</CodeSummaryItem>
+
+													<CodeSummaryItem
+														$variant={
+															analiseCodigos.totalInvalidos > 0 ||
+															codigosAcimaDoLimite
+																? "danger"
+																: "neutral"
+														}
+													>
+														<CodeSummaryLabel>Inválidos</CodeSummaryLabel>
+														<CodeSummaryValue>
+															{formatNumberBR(analiseCodigos.totalInvalidos)}
+														</CodeSummaryValue>
+													</CodeSummaryItem>
+												</CodeSummaryGrid>
+
+												{codigosAcimaDoLimite && (
+													<ErrorBox>
+														A entrada possui{" "}
+														{formatNumberBR(analiseCodigos.totalRecebidos)} códigos.
+														Reduza para no máximo{" "}
+														{formatNumberBR(MAX_CODIGOS_POR_PREVIA)} antes de criar a
+														prévia.
+													</ErrorBox>
+												)}
+
+												{!codigosAcimaDoLimite &&
+													(analiseCodigos.totalDuplicados > 0 ||
+														analiseCodigos.totalInvalidos > 0) && (
+														<CodeFeedback>
+															<CodeFeedbackTitle>
+																Revisão da entrada
+															</CodeFeedbackTitle>
+
+															{analiseCodigos.codigosDuplicados.length > 0 && (
+																<>
+																	<strong>Duplicados ignorados</strong>
+																	<CodeFeedbackList>
+																		{analiseCodigos.codigosDuplicados
+																			.slice(0, 5)
+																			.map((codigo, index) => (
+																				<li key={`${codigo}-${index}`}>{codigo}</li>
+																			))}
+																	</CodeFeedbackList>
+																</>
+															)}
+
+															{analiseCodigos.codigosInvalidos.length > 0 && (
+																<>
+																	<strong>Inválidos ignorados</strong>
+																	<CodeFeedbackList>
+																		{analiseCodigos.codigosInvalidos
+																			.slice(0, 5)
+																			.map((item, index) => (
+																				<li
+																					key={`${item.valorOriginal}-${index}`}
+																				>
+																					{item.valorOriginal || "(vazio)"} —{" "}
+																					{getMotivoCodigoInvalido(item.motivo)}
+																				</li>
+																			))}
+																	</CodeFeedbackList>
+																</>
+															)}
+
+															{analiseCodigos.totalDuplicados +
+																analiseCodigos.totalInvalidos >
+																10 && (
+																<span>
+																	Mostrando apenas os primeiros itens para manter a
+																	leitura objetiva.
+																</span>
+															)}
+														</CodeFeedback>
+													)}
+											</>
+										)}
 
 										<Actions>
-											<Button type="submit" disabled={isLoading || buscaBloqueada}>
-												{isLoading ? "Criando prévia..." : "Consultar prévia"}
+											<Button
+												type="submit"
+												disabled={
+													isLoading ||
+													buscaBloqueada ||
+													(tipoBusca === "CODIGOS_CADASTRAIS" &&
+														!codigosProntosParaEnvio)
+												}
+											>
+												{isLoading
+													? "Criando prévia..."
+													: tipoBusca === "CODIGOS_CADASTRAIS"
+														? "Revisar códigos"
+														: "Consultar prévia"}
 											</Button>
 
 											<InlineHint>
-												A prévia é processada em segundo plano. O sistema respeita o
-												intervalo mínimo do 1RIBH e evita consultas repetidas.
+												{tipoBusca === "CODIGOS_CADASTRAIS"
+													? "A API revalida a lista, remove duplicados e calcula o excedente antes de liberar o processamento."
+													: "A prévia é processada em segundo plano, respeita o intervalo mínimo do 1RIBH e evita consultas repetidas."}
 											</InlineHint>
 										</Actions>
 									</OperationForm>
@@ -725,13 +1052,17 @@ function NovaBuscaContent() {
 													<PreviewTitle>
 														{previaProcessando
 															? "Prévia em processamento"
-															: "Prévia da busca"}
+															: previaPorCodigos
+																? "Prévia dos códigos cadastrais"
+																: "Prévia da busca por endereço"}
 													</PreviewTitle>
 
 													<PreviewSubtitle>
 														{previaProcessando
 															? "Sua consulta está na fila do 1RIBH. Você pode sair desta tela e voltar depois."
-															: "Esta é a lista retornada pelo 1RIBH. O worker-cnd usará estes registros salvos, sem consultar o 1RIBH novamente."}
+															: previaPorCodigos
+																? "A API normalizou os códigos e salvou a lista que será processada pelo Worker CND."
+																: "Esta é a lista retornada pelo 1RIBH. O Worker CND usará estes registros salvos sem consultar o 1RIBH novamente."}
 													</PreviewSubtitle>
 
 													<PreviewStatus>
@@ -744,21 +1075,43 @@ function NovaBuscaContent() {
 												</div>
 
 												<PreviewBadge>
-													{formatNumberBR(previaBusca.previa.quantidadeRegistros)}{" "}
-													registro(s)
+													{formatQuantidadePrevia(
+														previaBusca.previa.quantidadeRegistros,
+														previaBusca.previa.tipoBusca
+													)}
 												</PreviewBadge>
 											</PreviewHeader>
 
 											<PreviewGrid>
-												<PreviewInfo>
-													<strong>Logradouro</strong>
-													<span>{previaBusca.previa.logradouro}</span>
-												</PreviewInfo>
+												{previaPorCodigos ? (
+													<>
+														<PreviewInfo>
+															<strong>Tipo de busca</strong>
+															<span>Entrada direta</span>
+														</PreviewInfo>
 
-												<PreviewInfo>
-													<strong>Número</strong>
-													<span>{previaBusca.previa.numero}</span>
-												</PreviewInfo>
+														<PreviewInfo>
+															<strong>Códigos válidos</strong>
+															<span>
+																{formatNumberBR(
+																	previaBusca.previa.quantidadeRegistros
+																)}
+															</span>
+														</PreviewInfo>
+													</>
+												) : (
+													<>
+														<PreviewInfo>
+															<strong>Logradouro</strong>
+															<span>{previaBusca.previa.logradouro}</span>
+														</PreviewInfo>
+
+														<PreviewInfo>
+															<strong>Número</strong>
+															<span>{previaBusca.previa.numero}</span>
+														</PreviewInfo>
+													</>
+												)}
 
 												<PreviewInfo>
 													<strong>Excedente estimado</strong>
@@ -769,6 +1122,58 @@ function NovaBuscaContent() {
 													</span>
 												</PreviewInfo>
 											</PreviewGrid>
+											{previaPorCodigos && previaBusca.validacaoCodigos && (
+												<CodeSummaryGrid aria-label="Validação confirmada pela API">
+													<CodeSummaryItem>
+														<CodeSummaryLabel>Recebidos pela API</CodeSummaryLabel>
+														<CodeSummaryValue>
+															{formatNumberBR(
+																previaBusca.validacaoCodigos.totalRecebidos
+															)}
+														</CodeSummaryValue>
+													</CodeSummaryItem>
+
+													<CodeSummaryItem $variant="success">
+														<CodeSummaryLabel>Válidos únicos</CodeSummaryLabel>
+														<CodeSummaryValue>
+															{formatNumberBR(
+																previaBusca.validacaoCodigos.totalValidos
+															)}
+														</CodeSummaryValue>
+													</CodeSummaryItem>
+
+													<CodeSummaryItem
+														$variant={
+															previaBusca.validacaoCodigos.totalDuplicados > 0
+																? "warning"
+																: "neutral"
+														}
+													>
+														<CodeSummaryLabel>Duplicados removidos</CodeSummaryLabel>
+														<CodeSummaryValue>
+															{formatNumberBR(
+																previaBusca.validacaoCodigos.totalDuplicados
+															)}
+														</CodeSummaryValue>
+													</CodeSummaryItem>
+
+													<CodeSummaryItem
+														$variant={
+															previaBusca.validacaoCodigos.totalInvalidos > 0
+																? "danger"
+																: "neutral"
+														}
+													>
+														<CodeSummaryLabel>Inválidos removidos</CodeSummaryLabel>
+														<CodeSummaryValue>
+															{formatNumberBR(
+																previaBusca.validacaoCodigos.totalInvalidos
+															)}
+														</CodeSummaryValue>
+													</CodeSummaryItem>
+												</CodeSummaryGrid>
+											)}
+
 
 											{previaBusca.previa.erro && (
 												<ErrorBox>{previaBusca.previa.erro}</ErrorBox>
@@ -777,13 +1182,15 @@ function NovaBuscaContent() {
 											{previaSemRegistros && (
 												<NoResultsBox>
 													<NoResultsTitle>
-														Nenhum imóvel encontrado para este endereço.
+														{previaPorCodigos
+															? "Nenhum código cadastral válido na prévia."
+															: "Nenhum imóvel encontrado para este endereço."}
 													</NoResultsTitle>
 
 													<p>
-														O 1RIBH não retornou índice cadastral para o logradouro e
-														número informados. Confira se o endereço está correto, ajuste
-														os dados e tente uma nova busca.
+														{previaPorCodigos
+															? "Revise a lista informada e crie uma nova prévia com ao menos um código válido."
+															: "O 1RIBH não retornou índice cadastral para o logradouro e número informados. Confira o endereço e tente novamente."}
 													</p>
 												</NoResultsBox>
 											)}
@@ -800,7 +1207,11 @@ function NovaBuscaContent() {
 													{previaBusca.previa.registros.map((registro, index) => (
 														<PreviewListItem key={`${registro.indiceCadastral}-${index}`}>
 															<strong>{registro.indiceCadastral}</strong>
-															<span>{registro.complemento ?? "Sem complemento"}</span>
+															<span>
+																{previaPorCodigos
+																	? "Entrada direta"
+																	: registro.complemento ?? "Sem complemento"}
+															</span>
 														</PreviewListItem>
 													))}
 												</PreviewList>
@@ -920,21 +1331,24 @@ function NovaBuscaContent() {
 
 											return (
 												<PendingPreviewItem key={item.previa.id}>
-													<strong>
-														{item.previa.logradouro}, nº {item.previa.numero}
-													</strong>
+													<strong>{getPendenciaTitle(item.previa)}</strong>
 
 													<span>
 														{itemSemRegistros ? (
 															<>
-																Sem imóveis encontrados · confira o endereço e faça uma
-																nova busca.
+																{item.previa.tipoBusca === "CODIGOS_CADASTRAIS"
+																	? "Sem códigos válidos · revise a entrada e crie uma nova busca."
+																	: "Sem imóveis encontrados · confira o endereço e faça uma nova busca."}
 															</>
 														) : (
 															<>
+																{getTipoBuscaLabel(item.previa.tipoBusca)} ·{" "}
 																{getPreviaStatusLabel(item.previa.status)} ·{" "}
-																{formatNumberBR(item.previa.quantidadeRegistros)}{" "}
-																registro(s) · Excedente estimado:{" "}
+																{formatQuantidadePrevia(
+																	item.previa.quantidadeRegistros,
+																	item.previa.tipoBusca
+																)}{" "}
+																· Excedente estimado:{" "}
 																{formatCurrencyFromCents(
 																	item.excedente.valorExcedenteEstimadoCentavos
 																)}
@@ -972,21 +1386,26 @@ function NovaBuscaContent() {
 								<SidebarTitle>Fluxo protegido</SidebarTitle>
 
 								<SidebarDescription>
-									A prévia evita cobrança surpresa e também evita consultar o 1RIBH duas
-									vezes para o mesmo endereço.
+									A prévia protege o fluxo financeiro e garante que a mesma lista revisada
+									seja usada no processamento.
 								</SidebarDescription>
 
 								<SidebarList>
 									<SidebarListItem>
-										Primeiro o sistema cria uma prévia em fila.
+										Por endereço, o sistema descobre os códigos no 1RIBH em fila.
 									</SidebarListItem>
 
 									<SidebarListItem>
-										Depois calcula se haverá consulta excedente.
+										Na entrada direta, os códigos são normalizados sem consultar o 1RIBH.
 									</SidebarListItem>
 
 									<SidebarListItem>
-										Ao confirmar, o worker-cnd usa a prévia já salva.
+										Antes da confirmação, a API calcula as consultas e o possível
+										excedente.
+									</SidebarListItem>
+
+									<SidebarListItem>
+										Ao confirmar, o Worker CND usa exatamente a prévia salva.
 									</SidebarListItem>
 								</SidebarList>
 							</SidebarCard>

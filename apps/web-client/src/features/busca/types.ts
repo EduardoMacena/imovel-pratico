@@ -1,3 +1,21 @@
+export type TipoBusca = "ENDERECO" | "CODIGOS_CADASTRAIS";
+
+export type CodigoCadastralInvalido = {
+  valorOriginal: string;
+  valorNormalizado: string;
+  motivo: "TAMANHO_INVALIDO" | "CARACTERES_INVALIDOS";
+};
+
+export type ResumoCodigosCadastrais = {
+  totalRecebidos: number;
+  totalValidos: number;
+  totalDuplicados: number;
+  totalInvalidos: number;
+  codigosValidos: string[];
+  codigosDuplicados: string[];
+  codigosInvalidos: CodigoCadastralInvalido[];
+};
+
 export type BuscaPreviaStatus =
   | "PENDENTE"
   | "PROCESSANDO"
@@ -19,6 +37,8 @@ export type BuscaPreviaRegistro = {
 export type BuscaPreviaResumo = {
   id: string;
   status: BuscaPreviaStatus;
+  municipioId: string;
+  tipoBusca: TipoBusca;
   logradouro: string;
   numero: string;
   quantidadeRegistros: number;
@@ -43,6 +63,10 @@ export type PreverBuscaRequest = {
   numero: string;
 };
 
+export type PreverBuscaCodigosRequest = {
+  codigos: string;
+};
+
 export type UsoResumo = {
   consultasUsadas: number;
   limiteMensal: number;
@@ -59,6 +83,7 @@ export type PreverBuscaResponse = {
   precisaConfirmarExcedente: boolean;
   excedente: ExcedenteResumo;
   uso?: UsoResumo;
+  validacaoCodigos?: ResumoCodigosCadastrais;
   message?: string;
 };
 
@@ -79,6 +104,8 @@ export type CriarTarefaResponse = PreverBuscaResponse & {
   tarefa?: {
     id: string;
     status: string;
+    municipioId: string;
+    tipoBusca: TipoBusca;
     buscaPreviaId: string;
   };
 };
