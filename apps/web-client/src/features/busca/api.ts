@@ -5,6 +5,7 @@ import type {
   ListarPreviasPendentesResponse,
   ListarTarefasResponse,
   MinhaAssinaturaResponse,
+  PreverBuscaCodigosRequest,
   PreverBuscaRequest,
   PreverBuscaResponse,
   ProgressoTarefaResponse,
@@ -12,6 +13,13 @@ import type {
 
 export function preverBusca(data: PreverBuscaRequest) {
   return apiRequest<PreverBuscaResponse>("/imoveis/prever-busca", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export function preverBuscaPorCodigos(data: PreverBuscaCodigosRequest) {
+  return apiRequest<PreverBuscaResponse>("/imoveis/prever-busca/codigos", {
     method: "POST",
     body: JSON.stringify(data),
   });

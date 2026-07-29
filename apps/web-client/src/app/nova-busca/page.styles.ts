@@ -229,6 +229,226 @@ export const FormGrid = styled.div`
   }
 `;
 
+export const SearchModeSelector = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: ${({ theme }) => theme.spacing.sm};
+  padding: 6px;
+  border-radius: 24px;
+  background: ${({ theme }) => theme.colors.surfaceMuted};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+
+  @media (max-width: 680px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+export const SearchModeButton = styled.button<{ $active: boolean }>`
+  min-width: 0;
+  min-height: 92px;
+  display: grid;
+  align-content: center;
+  gap: 6px;
+  padding: ${({ theme }) => theme.spacing.md};
+  border-radius: 19px;
+  border: 1px solid
+    ${({ theme, $active }) =>
+      $active ? theme.colors.accent : "transparent"};
+  background: ${({ theme, $active }) =>
+    $active ? theme.colors.surface : "transparent"};
+  color: ${({ theme }) => theme.colors.primary};
+  text-align: left;
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+  box-shadow: ${({ $active }) =>
+    $active ? "0 14px 32px rgba(11, 31, 51, 0.09)" : "none"};
+  transition:
+    border-color 0.18s ease,
+    background 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.18s ease;
+
+  &:hover {
+    background: ${({ theme }) => theme.colors.surface};
+    transform: translateY(-1px);
+  }
+
+  &:focus-visible {
+    box-shadow:
+      0 0 0 4px ${({ theme }) => theme.colors.accentSoft},
+      0 14px 32px rgba(11, 31, 51, 0.09);
+  }
+`;
+
+export const SearchModeTitle = styled.strong`
+  color: ${({ theme }) => theme.colors.primary};
+  font-size: 16px;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+`;
+
+export const SearchModeDescription = styled.span`
+  color: ${({ theme }) => theme.colors.textMuted};
+  font-size: 13px;
+  line-height: 1.45;
+`;
+
+export const CodigosField = styled.label`
+  display: grid;
+  gap: ${({ theme }) => theme.spacing.sm};
+`;
+
+export const CodigosLabel = styled.span`
+  color: ${({ theme }) => theme.colors.textMuted};
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+`;
+
+export const CodigosTextarea = styled.textarea`
+  width: 100%;
+  min-height: 230px;
+  resize: vertical;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.radii.lg};
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.78)),
+    ${({ theme }) => theme.colors.backgroundSoft};
+  color: ${({ theme }) => theme.colors.text};
+  padding: ${({ theme }) => theme.spacing.md};
+  outline: none;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 14px;
+  line-height: 1.65;
+  box-shadow:
+    0 10px 24px rgba(15, 23, 42, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.80);
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease;
+
+  &::placeholder {
+    color: ${({ theme }) => theme.colors.textSoft};
+  }
+
+  &:focus {
+    background: ${({ theme }) => theme.colors.surface};
+    border-color: ${({ theme }) => theme.colors.accent};
+    box-shadow:
+      0 0 0 4px ${({ theme }) => theme.colors.accentSoft},
+      0 14px 28px rgba(15, 23, 42, 0.07);
+  }
+
+  &[aria-invalid="true"] {
+    border-color: ${({ theme }) => theme.colors.danger};
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+`;
+
+export const CodigosHint = styled.span`
+  color: ${({ theme }) => theme.colors.textMuted};
+  font-size: 13px;
+  line-height: 1.55;
+`;
+
+export const CodeSummaryGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: ${({ theme }) => theme.spacing.sm};
+
+  @media (max-width: 840px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (max-width: 440px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+export const CodeSummaryItem = styled.div<{
+  $variant?: "neutral" | "success" | "warning" | "danger";
+}>`
+  min-width: 0;
+  padding: ${({ theme }) => theme.spacing.md};
+  border-radius: 18px;
+  background: ${({ theme, $variant }) => {
+    if ($variant === "success") return theme.colors.successBg;
+    if ($variant === "warning") return theme.colors.warningBg;
+    if ($variant === "danger") return theme.colors.dangerBg;
+    return theme.colors.surfaceMuted;
+  }};
+  border: 1px solid
+    ${({ theme, $variant }) => {
+      if ($variant === "success") return theme.colors.successBorder;
+      if ($variant === "warning") return theme.colors.warningBorder;
+      if ($variant === "danger") return theme.colors.dangerBorder;
+      return theme.colors.border;
+    }};
+`;
+
+export const CodeSummaryLabel = styled.span`
+  display: block;
+  color: ${({ theme }) => theme.colors.textMuted};
+  font-size: 12px;
+  line-height: 1.3;
+  font-weight: 700;
+`;
+
+export const CodeSummaryValue = styled.strong`
+  display: block;
+  margin-top: 6px;
+  color: ${({ theme }) => theme.colors.primary};
+  font-size: 22px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+`;
+
+export const CodeFeedback = styled.div`
+  display: grid;
+  gap: ${({ theme }) => theme.spacing.sm};
+  padding: ${({ theme }) => theme.spacing.md};
+  border-radius: 18px;
+  background: ${({ theme }) => theme.colors.warningBg};
+  border: 1px solid ${({ theme }) => theme.colors.warningBorder};
+  color: ${({ theme }) => theme.colors.text};
+  font-size: 13px;
+  line-height: 1.55;
+
+  > strong {
+    color: ${({ theme }) => theme.colors.warning};
+  }
+
+  > span {
+    color: ${({ theme }) => theme.colors.textMuted};
+  }
+`;
+
+export const CodeFeedbackTitle = styled.h3`
+  margin: 0;
+  color: ${({ theme }) => theme.colors.primary};
+  font-size: 16px;
+  letter-spacing: -0.02em;
+`;
+
+export const CodeFeedbackList = styled.ul`
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding-left: 20px;
+  color: ${({ theme }) => theme.colors.textMuted};
+
+  li {
+    overflow-wrap: anywhere;
+  }
+`;
+
 export const Actions = styled.div`
   display: flex;
   flex-wrap: wrap;
