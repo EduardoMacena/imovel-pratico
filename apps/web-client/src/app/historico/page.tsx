@@ -7,6 +7,7 @@ import { useEffect, useMemo, useState } from "react";
 import { StatusBadge } from "../../components/StatusBadge";
 import { listarTarefas } from "../../features/busca/api";
 import type { TarefaResumo } from "../../features/busca/types";
+import { formatarReferenciaTarefa } from "../../features/busca/apresentacao-tarefa";
 import {
   Actions,
   Address,
@@ -75,15 +76,15 @@ export default function HistoricoPage() {
 
   const resumo = useMemo(() => {
     const finalizadas = tarefas.filter(
-      tarefa => tarefa.status === "COMPLETED"
+      (tarefa) => tarefa.status === "COMPLETED",
     ).length;
 
     const emProcessamento = tarefas.filter(
-      tarefa => tarefa.status === "PROCESSING" || tarefa.status === "PENDING"
+      (tarefa) => tarefa.status === "PROCESSING" || tarefa.status === "PENDING",
     ).length;
 
     const comErro = tarefas.filter(
-      tarefa => tarefa.status === "ERROR" || tarefa.status === "CANCELED"
+      (tarefa) => tarefa.status === "ERROR" || tarefa.status === "CANCELED",
     ).length;
 
     const resultados = tarefas.reduce((total, tarefa) => {
@@ -109,7 +110,7 @@ export default function HistoricoPage() {
       setErro(
         error instanceof Error
           ? error.message
-          : "Erro desconhecido ao carregar histórico"
+          : "Erro desconhecido ao carregar histórico",
       );
     } finally {
       setIsLoading(false);
@@ -173,7 +174,9 @@ export default function HistoricoPage() {
             <StatCard>
               <StatLabel>Finalizadas</StatLabel>
               <StatValue>{resumo.finalizadas}</StatValue>
-              <StatHint>Buscas concluídas com processamento finalizado.</StatHint>
+              <StatHint>
+                Buscas concluídas com processamento finalizado.
+              </StatHint>
             </StatCard>
 
             <StatCard>
@@ -200,7 +203,8 @@ export default function HistoricoPage() {
           {isLoading && (
             <EmptyState>
               <EmptyStateTitle>Carregando histórico...</EmptyStateTitle>
-              Estamos buscando as últimas tarefas executadas pela sua imobiliária.
+              Estamos buscando as últimas tarefas executadas pela sua
+              imobiliária.
             </EmptyState>
           )}
 
@@ -214,15 +218,13 @@ export default function HistoricoPage() {
 
           {!isLoading && tarefas.length > 0 && (
             <List>
-              {tarefas.map(tarefa => (
+              {tarefas.map((tarefa) => (
                 <Item key={tarefa.id}>
                   <ItemTop>
                     <div>
                       <ItemMeta>{getStatusLabel(tarefa.status)}</ItemMeta>
 
-                      <Address>
-                        {tarefa.endereco.logradouro}, {tarefa.endereco.numero}
-                      </Address>
+                      <Address>{formatarReferenciaTarefa(tarefa)}</Address>
                     </div>
 
                     <StatusBadge status={tarefa.status} />
