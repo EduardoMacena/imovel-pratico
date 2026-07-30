@@ -133,6 +133,7 @@ export type ResultadoBusca = {
 export type ProgressoTarefaResponse = {
   id: string;
   status: "PENDING" | "PROCESSING" | "COMPLETED" | "ERROR" | "CANCELED";
+  tipoBusca: TipoBusca;
   cliente?: {
     id: string;
     nome: string;
@@ -170,6 +171,7 @@ export type ProgressoTarefaResponse = {
 export type TarefaResumo = {
   id: string;
   status: "PENDING" | "PROCESSING" | "COMPLETED" | "ERROR" | "CANCELED";
+  tipoBusca: TipoBusca;
   cliente: {
     id: string;
     nome: string;

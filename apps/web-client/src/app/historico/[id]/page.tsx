@@ -15,6 +15,7 @@ import {
 	exportarResultadosTarefaPdf,
 } from "../../../features/busca/api";
 import type { ProgressoTarefaResponse } from "../../../features/busca/types";
+import { formatarReferenciaTarefa, getReferenciaTarefaLabel } from "../../../features/busca/apresentacao-tarefa";
 import {
 	BackLink,
 	EmptyState,
@@ -317,9 +318,11 @@ export default function DetalheHistoricoPage() {
 						<>
 							<IntelligenceGrid>
 								<IntelligenceCard>
-									<IntelligenceLabel>Endereço pesquisado</IntelligenceLabel>
+									<IntelligenceLabel>
+										{getReferenciaTarefaLabel(tarefa.tipoBusca)}
+									</IntelligenceLabel>
 									<IntelligenceValue>
-										{tarefa.endereco?.logradouro}, {tarefa.endereco?.numero}
+										{formatarReferenciaTarefa(tarefa)}
 									</IntelligenceValue>
 								</IntelligenceCard>
 

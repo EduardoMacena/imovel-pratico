@@ -361,6 +361,7 @@ export async function buscarProgressoTarefaPorId(
 	return {
 		id: tarefa.id,
 		status: tarefa.status,
+		tipoBusca: tarefa.tipoBusca,
 		cliente: tarefa.cliente,
 		endereco: {
 			logradouro: tarefa.logradouro,
@@ -442,6 +443,7 @@ export async function listarTarefasRecentes(clienteId: string) {
 		return {
 			id: tarefa.id,
 			status: tarefa.status,
+			tipoBusca: tarefa.tipoBusca,
 			cliente: tarefa.cliente,
 			endereco: {
 				logradouro: tarefa.logradouro,

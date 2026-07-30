@@ -11,6 +11,7 @@ import type {
   MinhaAssinaturaResponse,
   TarefaResumo,
 } from "../features/busca/types";
+import { formatarReferenciaTarefa } from "../features/busca/apresentacao-tarefa";
 import { getAuthUser } from "../lib/auth-storage";
 import {
   ActionCard,
@@ -388,7 +389,7 @@ export default function DashboardPage() {
                       <RecentItem key={tarefa.id}>
                         <RecentContent>
                           <RecentAddress>
-                            {tarefa.endereco.logradouro}, {tarefa.endereco.numero}
+                            {formatarReferenciaTarefa(tarefa)}
                           </RecentAddress>
 
                           <RecentDate>

@@ -7,6 +7,7 @@ import { useEffect, useMemo, useState } from "react";
 import { StatusBadge } from "../../components/StatusBadge";
 import { listarTarefas } from "../../features/busca/api";
 import type { TarefaResumo } from "../../features/busca/types";
+import { formatarReferenciaTarefa } from "../../features/busca/apresentacao-tarefa";
 import {
   Actions,
   Address,
@@ -221,7 +222,7 @@ export default function HistoricoPage() {
                       <ItemMeta>{getStatusLabel(tarefa.status)}</ItemMeta>
 
                       <Address>
-                        {tarefa.endereco.logradouro}, {tarefa.endereco.numero}
+                        {formatarReferenciaTarefa(tarefa)}
                       </Address>
                     </div>
 

@@ -33,6 +33,7 @@ import type {
 	ResumoCodigosCadastrais,
 	TipoBusca,
 } from "../../features/busca/types";
+import { getTipoBuscaLabel } from "../../features/busca/apresentacao-tarefa";
 import { useRealtimeEvents } from "../../features/realtime/useRealtimeEvents";
 import { formatCurrencyFromCents, formatNumberBR } from "../../lib/formatters";
 import {
@@ -177,11 +178,6 @@ function getPreviaStatusVariant(status: BuscaPreviaStatus) {
 	return "info" as const;
 }
 
-function getTipoBuscaLabel(tipoBusca: TipoBusca) {
-	return tipoBusca === "CODIGOS_CADASTRAIS"
-		? "Códigos cadastrais"
-		: "Endereço";
-}
 
 function formatQuantidadePrevia(
 	quantidade: number,
