@@ -22,8 +22,6 @@ export type RealtimeEvent =
       previaId: string;
       status: BuscaPreviaRealtimeStatus;
       quantidadeRegistros: number;
-      consultasExcedentesEstimadas: number;
-      valorExcedenteEstimadoCentavos: number;
       updatedAt: string;
     }
   | {
@@ -58,13 +56,13 @@ type RedisClient = {
   quit: () => Promise<unknown>;
   on: (
     event: "message" | "error",
-    handler: (...args: unknown[]) => void
+    handler: (...args: unknown[]) => void,
   ) => RedisClient;
 };
 
 type RedisConstructor = new (
   url: string,
-  options?: Record<string, unknown>
+  options?: Record<string, unknown>,
 ) => RedisClient;
 
 let publisher: RedisClient | null = null;
@@ -79,11 +77,9 @@ function getRedisConstructor() {
     Redis?: RedisConstructor;
   } & RedisConstructor;
 
-  return (
-    moduleValue.default ??
+  return (moduleValue.default ??
     moduleValue.Redis ??
-    moduleValue
-  ) as RedisConstructor;
+    moduleValue) as RedisConstructor;
 }
 
 function createRedisClient() {
@@ -106,17 +102,14 @@ function getPublisher() {
 
 export async function publishRealtimeEvent(event: RealtimeEvent) {
   try {
-    await getPublisher().publish(
-      REALTIME_REDIS_CHANNEL,
-      JSON.stringify(event)
-    );
+    await getPublisher().publish(REALTIME_REDIS_CHANNEL, JSON.stringify(event));
   } catch (error) {
     console.error("[realtime] Erro ao publicar evento:", error);
   }
 }
 
 export function createRealtimeSubscriber(
-  onEvent: (event: RealtimeEvent) => void
+  onEvent: (event: RealtimeEvent) => void,
 ) {
   const subscriber = createRedisClient();
 

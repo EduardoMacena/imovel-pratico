@@ -91,25 +91,52 @@ function normalizarRegistrosPrevia(value: unknown) {
 		.filter((registro) => registro.indiceCadastral.length > 0);
 }
 
-function calcularResumoExcedente(params: {
-	consultasEstimadas: number;
+function montarLimitePrevia(
+  previa: {
+    status: string;
+    quantidadeRegistros: number;
+    consultasDisponiveisNoMomento: number;
+  },
+  uso?: {
+    consultasUsadas: number;
+    limiteMensal: number;
 	consultasRestantes: number;
-	valorConsultaAdicionalCentavos: number;
-}) {
-	const consultasDisponiveisNoMomento = Math.max(
-		params.consultasRestantes,
-		0
+    fimMes?: Date | string;
+  },
+) {
+  const consultasSolicitadas = Math.max(previa.quantidadeRegistros, 0);
+  const consultasRestantes = Math.max(
+    uso?.consultasRestantes ?? previa.consultasDisponiveisNoMomento,
+    0,
+  );
+  const consultasUsadas = Math.max(
+    uso?.consultasUsadas ??
+      Math.max(
+        (uso?.limiteMensal ?? consultasRestantes) - consultasRestantes,
+        0,
+      ),
+    0,
+  );
+  const limiteMensalConsultas = Math.max(
+    uso?.limiteMensal ?? consultasUsadas + consultasRestantes,
+    0,
 	);
+  const podeConfirmar =
+    previa.status === "PRONTA" &&
+    consultasSolicitadas > 0 &&
+    consultasSolicitadas <= consultasRestantes;
 
 	return {
-		consultasEstimadas: params.consultasEstimadas,
-		consultasDisponiveisNoMomento,
-		consultasExcedentesEstimadas: 0,
-		valorConsultaAdicionalCentavos: 0,
-		valorExcedenteEstimadoCentavos: 0,
-		limiteInsuficiente:
-			params.consultasEstimadas >
-			consultasDisponiveisNoMomento,
+    limiteMensalConsultas,
+    consultasUsadas,
+    consultasRestantes,
+    consultasSolicitadas,
+    consultasRestantesAposReserva: Math.max(
+      consultasRestantes - consultasSolicitadas,
+      0,
+    ),
+    podeConfirmar,
+    renovacaoEm: uso?.fimMes ?? null,
 	};
 }
 
@@ -124,9 +151,6 @@ function montarPreviaResponse(
 		quantidadeRegistros: number;
 		registros: unknown;
 		consultasDisponiveisNoMomento: number;
-		consultasExcedentesEstimadas: number;
-		valorConsultaAdicionalCentavos: number;
-		valorExcedenteEstimadoCentavos: number;
 		erro: string | null;
 		expiraEm: Date;
 		confirmadaEm: Date | null;
@@ -134,19 +158,17 @@ function montarPreviaResponse(
 		updatedAt: Date;
 	},
 	extras?: {
-		uso?: unknown;
-		excedente?: ReturnType<typeof calcularResumoExcedente>;
-	}
+    uso?: {
+      consultasUsadas: number;
+      limiteMensal: number;
+      consultasRestantes: number;
+      totalEstimadoCentavos: number;
+      percentualUsado: number;
+      fimMes?: Date | string;
+    };
+  },
 ) {
 	const registros = normalizarRegistrosPrevia(previa.registros);
-
-	const excedente = extras?.excedente ?? {
-		consultasEstimadas: previa.quantidadeRegistros,
-		consultasDisponiveisNoMomento: previa.consultasDisponiveisNoMomento,
-		consultasExcedentesEstimadas: previa.consultasExcedentesEstimadas,
-		valorConsultaAdicionalCentavos: previa.valorConsultaAdicionalCentavos,
-		valorExcedenteEstimadoCentavos: previa.valorExcedenteEstimadoCentavos,
-	};
 
 	return {
 		previa: {
@@ -164,16 +186,12 @@ function montarPreviaResponse(
 			createdAt: previa.createdAt,
 			updatedAt: previa.updatedAt,
 		},
-		precisaConfirmarExcedente: excedente.consultasExcedentesEstimadas > 0,
-		excedente,
+    limite: montarLimitePrevia(previa, extras?.uso),
 		uso: extras?.uso,
 	};
 }
 
-async function recalcularPrevia(
-	clienteId: string,
-	previaId: string
-) {
+async function recalcularPrevia(clienteId: string, previaId: string) {
 	const previa = await prisma.buscaPrevia.findFirst({
 		where: {
 			id: previaId,
@@ -187,9 +205,7 @@ async function recalcularPrevia(
 
 	if (
 		previa.expiraEm < new Date() &&
-		!["CONFIRMADA", "CANCELADA", "EXPIRADA", "ERRO"].includes(
-			previa.status
-		)
+    !["CONFIRMADA", "CANCELADA", "EXPIRADA", "ERRO"].includes(previa.status)
 	) {
 		const expirada = await prisma.buscaPrevia.update({
 			where: {
@@ -204,13 +220,11 @@ async function recalcularPrevia(
 	}
 
 	const autorizacaoAntiga =
-		previa.status ===
-		"AGUARDANDO_AUTORIZACAO_EXCEDENTE";
+    previa.status === "AGUARDANDO_AUTORIZACAO_EXCEDENTE";
 
 	const autorizacaoTravada =
 		previa.status === "AUTORIZANDO" &&
-		previa.updatedAt.getTime() <
-			Date.now() - 5 * 60 * 1000;
+    previa.updatedAt.getTime() < Date.now() - 5 * 60 * 1000;
 
 	if (autorizacaoAntiga || autorizacaoTravada) {
 		const pronta = await prisma.buscaPrevia.update({
@@ -225,29 +239,16 @@ async function recalcularPrevia(
 			},
 		});
 
-		return montarPreviaResponse(pronta, {
-			excedente: calcularResumoExcedente({
-				consultasEstimadas:
-					pronta.quantidadeRegistros,
-				consultasRestantes:
-					pronta.consultasDisponiveisNoMomento,
-				valorConsultaAdicionalCentavos: 0,
-			}),
-		});
+    return recalcularPrevia(clienteId, pronta.id);
 	}
 
 	if (previa.status !== "PRONTA") {
 		return montarPreviaResponse(previa);
 	}
 
-	const { uso } =
-		await validarClientePodeCriarBusca(clienteId);
+  const { uso } = await validarClientePodeCriarBusca(clienteId);
 
-	const resumo = calcularResumoExcedente({
-		consultasEstimadas: previa.quantidadeRegistros,
-		consultasRestantes: uso.consultasRestantes,
-		valorConsultaAdicionalCentavos: 0,
-	});
+  const limite = montarLimitePrevia(previa, uso);
 
 	const atualizada = await prisma.buscaPrevia.update({
 		where: {
@@ -255,8 +256,7 @@ async function recalcularPrevia(
 		},
 		data: {
 			status: "PRONTA",
-			consultasDisponiveisNoMomento:
-				resumo.consultasDisponiveisNoMomento,
+      consultasDisponiveisNoMomento: limite.consultasRestantes,
 			consultasExcedentesEstimadas: 0,
 			valorConsultaAdicionalCentavos: 0,
 			valorExcedenteEstimadoCentavos: 0,
@@ -265,13 +265,12 @@ async function recalcularPrevia(
 
 	return montarPreviaResponse(atualizada, {
 		uso,
-		excedente: resumo,
 	});
 }
 
 export async function criarPreviaBusca(
 	clienteId: string,
-	data: PreverBuscaInput
+  data: PreverBuscaInput,
 ) {
 	const { cliente } = await validarClientePodeCriarBusca(clienteId);
 	const municipio = await buscarMunicipioPrincipalAtivoDoCliente(clienteId);
@@ -335,9 +334,9 @@ export async function criarPreviaBusca(
 
 export async function criarPreviaBuscaPorCodigos(
 	clienteId: string,
-	data: PreverBuscaCodigosInput
+  data: PreverBuscaCodigosInput,
 ) {
-	const { plano, uso } = await validarClientePodeCriarBusca(clienteId);
+  const { uso } = await validarClientePodeCriarBusca(clienteId);
 	const municipio = await buscarMunicipioPrincipalAtivoDoCliente(clienteId);
 	const validacaoCodigos = analisarCodigosCadastrais(data.codigos);
 
@@ -345,24 +344,12 @@ export async function criarPreviaBuscaPorCodigos(
 		throw new Error("Nenhum código cadastral válido foi informado");
 	}
 
-	const excedente = calcularResumoExcedente({
-		consultasEstimadas: validacaoCodigos.totalValidos,
-		consultasRestantes: uso.consultasRestantes,
-		valorConsultaAdicionalCentavos:
-			plano.valorConsultaAdicionalCentavos ?? 0,
-	});
+  const status = "PRONTA";
 
-	const status =
-		excedente.consultasExcedentesEstimadas > 0
-			? "AGUARDANDO_AUTORIZACAO_EXCEDENTE"
-			: "PRONTA";
-
-	const registros = validacaoCodigos.codigosValidos.map(
-		(indiceCadastral) => ({
+  const registros = validacaoCodigos.codigosValidos.map((indiceCadastral) => ({
 			indiceCadastral,
 			complemento: null,
-		})
-	);
+  }));
 
 	const previa = await prisma.buscaPrevia.create({
 		data: {
@@ -374,14 +361,10 @@ export async function criarPreviaBuscaPorCodigos(
 			numero: ROTULO_CODIGOS_NUMERO,
 			quantidadeRegistros: registros.length,
 			registros: toPrismaJson(registros),
-			consultasDisponiveisNoMomento:
-				excedente.consultasDisponiveisNoMomento,
-			consultasExcedentesEstimadas:
-				excedente.consultasExcedentesEstimadas,
-			valorConsultaAdicionalCentavos:
-				excedente.valorConsultaAdicionalCentavos,
-			valorExcedenteEstimadoCentavos:
-				excedente.valorExcedenteEstimadoCentavos,
+      consultasDisponiveisNoMomento: uso.consultasRestantes,
+      consultasExcedentesEstimadas: 0,
+      valorConsultaAdicionalCentavos: 0,
+      valorExcedenteEstimadoCentavos: 0,
 			expiraEm: adicionarMinutos(new Date(), 60),
 		},
 	});
@@ -406,7 +389,6 @@ export async function criarPreviaBuscaPorCodigos(
 	return {
 		...montarPreviaResponse(previa, {
 			uso,
-			excedente,
 		}),
 		validacaoCodigos,
 	};
@@ -434,7 +416,7 @@ export async function listarPreviasPendentes(clienteId: string) {
 	});
 
 	const recalculadas = await Promise.all(
-		previas.map((previa) => recalcularPrevia(clienteId, previa.id))
+    previas.map((previa) => recalcularPrevia(clienteId, previa.id)),
 	);
 
 	return recalculadas.filter(Boolean);
@@ -470,7 +452,7 @@ export async function cancelarPreviaBusca(clienteId: string, previaId: string) {
 
 export async function confirmarPreviaECriarTarefa(
 	clienteId: string,
-	data: BuscarProprietariosInput
+  data: BuscarProprietariosInput,
 ) {
 	let tarefaCriadaId: string | null = null;
 
@@ -479,10 +461,7 @@ export async function confirmarPreviaECriarTarefa(
 			id: data.previaId,
 			clienteId,
 			status: {
-				in: [
-					"PRONTA",
-					"AGUARDANDO_AUTORIZACAO_EXCEDENTE",
-				],
+        in: ["PRONTA", "AGUARDANDO_AUTORIZACAO_EXCEDENTE"],
 			},
 			expiraEm: {
 				gt: new Date(),
@@ -494,17 +473,12 @@ export async function confirmarPreviaECriarTarefa(
 	});
 
 	if (claim.count === 0) {
-		const atual = await recalcularPrevia(
-			clienteId,
-			data.previaId
-		);
+    const atual = await recalcularPrevia(clienteId, data.previaId);
 
 		if (atual) {
 			return {
 				...atual,
-				precisaConfirmarExcedente: false,
-				message:
-					"Esta prévia ainda não está pronta ou já foi processada.",
+        message: "Esta prévia ainda não está pronta ou já foi processada.",
 			};
 		}
 
@@ -512,10 +486,8 @@ export async function confirmarPreviaECriarTarefa(
 	}
 
 	try {
-		const resultado = await prisma.$transaction(
-			async tx => {
-				const clienteBloqueado =
-					await tx.$queryRaw<Array<{ id: string }>>`
+    const resultado = await prisma.$transaction(async (tx) => {
+      const clienteBloqueado = await tx.$queryRaw<Array<{ id: string }>>`
 						SELECT "id"
 						FROM "clientes"
 						WHERE "id" = ${clienteId}
@@ -523,9 +495,7 @@ export async function confirmarPreviaECriarTarefa(
 					`;
 
 				if (clienteBloqueado.length !== 1) {
-					throw new Error(
-						"Cliente não encontrado"
-					);
+        throw new Error("Cliente não encontrado");
 				}
 
 				const previa = await tx.buscaPrevia.findFirst({
@@ -537,37 +507,25 @@ export async function confirmarPreviaECriarTarefa(
 				});
 
 				if (!previa) {
-					throw new Error(
-						"Prévia não encontrada"
-					);
+        throw new Error("Prévia não encontrada");
 				}
 
-				const registros =
-					normalizarRegistrosPrevia(
-						previa.registros
-					);
+      const registros = normalizarRegistrosPrevia(previa.registros);
 
 				if (registros.length <= 0) {
-					throw new Error(
-						"Prévia sem registros para processar"
-					);
+        throw new Error("Prévia sem registros para processar");
 				}
 
-				const { cliente, plano, uso } =
-					await validarClientePodeCriarBusca(
+      const { cliente, plano, uso } = await validarClientePodeCriarBusca(
 						clienteId,
-						tx
+        tx,
 					);
 
-				const consultasSolicitadas =
-					registros.length;
+      const consultasSolicitadas = registros.length;
 
-				const limite =
-					validarSaldoPlanoFixo({
-						limiteMensalConsultas:
-							plano.limiteMensalConsultas,
-						consultasUsadas:
-							uso.consultasUsadas,
+      const limite = validarSaldoPlanoFixo({
+        limiteMensalConsultas: plano.limiteMensalConsultas,
+        consultasUsadas: uso.consultasUsadas,
 						consultasSolicitadas,
 						renovacaoEm: uso.fimMes,
 					});
@@ -575,46 +533,35 @@ export async function confirmarPreviaECriarTarefa(
 				const tarefa = await tx.tarefa.create({
 					data: {
 						clienteId: cliente.id,
-						municipioId:
-							previa.municipioId,
+          municipioId: previa.municipioId,
 						tipoBusca: previa.tipoBusca,
 						buscaPreviaId: previa.id,
 						status: "PENDING",
-						logradouro:
-							previa.logradouro,
+          logradouro: previa.logradouro,
 						numero: previa.numero,
-						mesAnoInicio:
-							getMesAnoInicioAtual(),
-						mesAnoFinal:
-							getMesAnoFinalAtual(),
-						intervaloSegundos:
-							plano.intervaloSegundos,
-						forceRefresh:
-							data.forceRefresh,
+          mesAnoInicio: getMesAnoInicioAtual(),
+          mesAnoFinal: getMesAnoFinalAtual(),
+          intervaloSegundos: plano.intervaloSegundos,
+          forceRefresh: data.forceRefresh,
 						excedenteAutorizado: false,
 						excedenteAutorizadoEm: null,
-						consultasEstimadas:
-							consultasSolicitadas,
-						consultasDisponiveisNoMomento:
-							limite.consultasRestantes,
+          consultasEstimadas: consultasSolicitadas,
+          consultasDisponiveisNoMomento: limite.consultasRestantes,
 						consultasExcedentesEstimadas: 0,
 						valorConsultaAdicionalCentavos: 0,
 						valorExcedenteEstimadoCentavos: 0,
 					},
 				});
 
-				const confirmada =
-					await tx.buscaPrevia.update({
+      const confirmada = await tx.buscaPrevia.update({
 						where: {
 							id: previa.id,
 						},
 						data: {
 							status: "CONFIRMADA",
 							confirmadaEm: new Date(),
-							quantidadeRegistros:
-								consultasSolicitadas,
-							consultasDisponiveisNoMomento:
-								limite.consultasRestantes,
+          quantidadeRegistros: consultasSolicitadas,
+          consultasDisponiveisNoMomento: limite.consultasRestantes,
 							consultasExcedentesEstimadas: 0,
 							valorConsultaAdicionalCentavos: 0,
 							valorExcedenteEstimadoCentavos: 0,
@@ -629,67 +576,31 @@ export async function confirmarPreviaECriarTarefa(
 					tarefa,
 					confirmada,
 				};
-			}
-		);
+    });
 
 		tarefaCriadaId = resultado.tarefa.id;
 
 		const job =
-			resultado.cliente.modoProcessamento ===
-			"QUEUE"
+      resultado.cliente.modoProcessamento === "QUEUE"
 				? await adicionarBuscaProprietariosNaFila({
-						tarefaId:
-							resultado.tarefa.id,
-						clienteId:
-							resultado.cliente.id,
-						municipioId:
-							resultado.tarefa
-								.municipioId,
-						tipoBusca:
-							resultado.tarefa
-								.tipoBusca,
-						buscaPreviaId:
-							resultado.confirmada.id,
-						logradouro:
-							resultado.tarefa
-								.logradouro,
-						numero:
-							resultado.tarefa.numero,
-						mesAnoInicio:
-							resultado.tarefa
-								.mesAnoInicio,
-						mesAnoFinal:
-							resultado.tarefa
-								.mesAnoFinal,
-						intervaloSegundos:
-							resultado.tarefa
-								.intervaloSegundos,
-						forceRefresh:
-							resultado.tarefa
-								.forceRefresh,
+            tarefaId: resultado.tarefa.id,
+            clienteId: resultado.cliente.id,
+            municipioId: resultado.tarefa.municipioId,
+            tipoBusca: resultado.tarefa.tipoBusca,
+            buscaPreviaId: resultado.confirmada.id,
+            logradouro: resultado.tarefa.logradouro,
+            numero: resultado.tarefa.numero,
+            mesAnoInicio: resultado.tarefa.mesAnoInicio,
+            mesAnoFinal: resultado.tarefa.mesAnoFinal,
+            intervaloSegundos: resultado.tarefa.intervaloSegundos,
+            forceRefresh: resultado.tarefa.forceRefresh,
 					})
 				: null;
 
-		const resumoLegado =
-			calcularResumoExcedente({
-				consultasEstimadas:
-					resultado.limite
-						.consultasSolicitadas,
-				consultasRestantes:
-					resultado.limite
-						.consultasRestantes,
-				valorConsultaAdicionalCentavos: 0,
-			});
-
 		return {
-			...montarPreviaResponse(
-				resultado.confirmada,
-				{
+      ...montarPreviaResponse(resultado.confirmada, {
 					uso: resultado.uso,
-					excedente: resumoLegado,
-				}
-			),
-			precisaConfirmarExcedente: false,
+      }),
 			jobId: job?.id ?? null,
 			status: resultado.tarefa.status,
 			limite: resultado.limite,
@@ -701,16 +612,13 @@ export async function confirmarPreviaECriarTarefa(
 				buscaPreviaId: resultado.confirmada.id,
 			},
 			message:
-				resultado.cliente
-					.modoProcessamento === "AGENT"
+        resultado.cliente.modoProcessamento === "AGENT"
 					? "Tarefa criada para processamento pelo Agent"
 					: "Tarefa criada e adicionada na fila com sucesso",
 		};
 	} catch (error) {
 		const mensagemErro =
-			error instanceof Error
-				? error.message
-				: "Erro ao confirmar a busca";
+      error instanceof Error ? error.message : "Erro ao confirmar a busca";
 
 		if (tarefaCriadaId) {
 			await prisma.tarefa.updateMany({

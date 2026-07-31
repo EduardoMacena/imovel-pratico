@@ -10,19 +10,33 @@ type AssinaturaDatabase = Pick<
 function getInicioMesAtual() {
   const now = new Date();
 
-  return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1, 0, 0, 0, 0));
+  return new Date(
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1, 0, 0, 0, 0),
+  );
 }
 
 function getFimMesAtual() {
   const now = new Date();
 
-  return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1, 0, 0, 0, 0));
+  return new Date(
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1, 0, 0, 0, 0),
+  );
 }
 
 function getHojeUtcNoon() {
   const now = new Date();
 
-  return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 12, 0, 0, 0));
+  return new Date(
+    Date.UTC(
+      now.getUTCFullYear(),
+      now.getUTCMonth(),
+      now.getUTCDate(),
+      12,
+      0,
+      0,
+      0,
+    ),
+  );
 }
 
 function pagamentoEstaVencido(pagamentoVenceEm: Date | null) {
@@ -35,62 +49,58 @@ function pagamentoEstaVencido(pagamentoVenceEm: Date | null) {
 
 export async function buscarUsoMensalCliente(
   clienteId: string,
-  db: AssinaturaDatabase = prisma
+  db: AssinaturaDatabase = prisma,
 ) {
   const inicioMes = getInicioMesAtual();
   const fimMes = getFimMesAtual();
 
-  const [tarefasReservadas, resultadosLegadosOuCancelados] =
-    await Promise.all([
-      db.tarefa.aggregate({
-        where: {
+  const [tarefasReservadas, resultadosLegadosOuCancelados] = await Promise.all([
+    db.tarefa.aggregate({
+      where: {
+        clienteId,
+        status: {
+          not: "CANCELED",
+        },
+        consultasEstimadas: {
+          not: null,
+        },
+        createdAt: {
+          gte: inicioMes,
+          lt: fimMes,
+        },
+      },
+      _sum: {
+        consultasEstimadas: true,
+      },
+    }),
+    db.tarefaResultado.count({
+      where: {
+        status: "SUCCESS",
+        tarefa: {
           clienteId,
-          status: {
-            not: "CANCELED",
-          },
-          consultasEstimadas: {
-            not: null,
-          },
-          createdAt: {
-            gte: inicioMes,
-            lt: fimMes,
-          },
+          OR: [
+            {
+              consultasEstimadas: null,
+            },
+            {
+              status: "CANCELED",
+            },
+          ],
         },
-        _sum: {
-          consultasEstimadas: true,
+        createdAt: {
+          gte: inicioMes,
+          lt: fimMes,
         },
-      }),
-      db.tarefaResultado.count({
-        where: {
-          status: "SUCCESS",
-          tarefa: {
-            clienteId,
-            OR: [
-              {
-                consultasEstimadas: null,
-              },
-              {
-                status: "CANCELED",
-              },
-            ],
-          },
-          createdAt: {
-            gte: inicioMes,
-            lt: fimMes,
-          },
-        },
-      }),
-    ]);
+      },
+    }),
+  ]);
 
-  const consultasReservadas =
-    tarefasReservadas._sum.consultasEstimadas ?? 0;
+  const consultasReservadas = tarefasReservadas._sum.consultasEstimadas ?? 0;
 
   return {
-    consultasUsadas:
-      consultasReservadas + resultadosLegadosOuCancelados,
+    consultasUsadas: consultasReservadas + resultadosLegadosOuCancelados,
     consultasReservadas,
-    consultasLegadasOuCanceladas:
-      resultadosLegadosOuCancelados,
+    consultasLegadasOuCanceladas: resultadosLegadosOuCancelados,
     inicioMes,
     fimMes,
   };
@@ -104,7 +114,6 @@ export function calcularResumoUso({
   consultasUsadas: number;
   limiteMensal: number;
   precoCentavos: number;
-  valorConsultaAdicionalCentavos?: number;
 }) {
   const disponibilidade = calcularDisponibilidadePlanoFixo({
     limiteMensalConsultas: limiteMensal,
@@ -117,16 +126,10 @@ export function calcularResumoUso({
     consultasUsadas,
     limiteMensal,
     consultasRestantes: disponibilidade.consultasRestantes,
-    consultasExcedentes: 0,
-    valorConsultaAdicionalCentavos: 0,
-    valorExcedenteCentavos: 0,
     totalEstimadoCentavos: precoCentavos,
     percentualUsado:
       limiteMensal > 0
-        ? Math.min(
-            Math.round((consultasUsadas / limiteMensal) * 100),
-            100
-          )
+        ? Math.min(Math.round((consultasUsadas / limiteMensal) * 100), 100)
         : 0,
   };
 }
@@ -142,7 +145,7 @@ export function calcularResumoExcedenteBusca({
 }) {
   const consultasExcedentesEstimadas = Math.max(
     consultasEstimadas - consultasRestantes,
-    0
+    0,
   );
 
   return {
@@ -157,7 +160,7 @@ export function calcularResumoExcedenteBusca({
 
 export async function validarClientePodeCriarBusca(
   clienteId: string,
-  db: AssinaturaDatabase = prisma
+  db: AssinaturaDatabase = prisma,
 ) {
   const cliente = await db.cliente.findUnique({
     where: {
@@ -206,8 +209,7 @@ export async function validarClientePodeCriarBusca(
     uso: {
       ...uso,
       consultasReservadas: usoMensal.consultasReservadas,
-      consultasLegadasOuCanceladas:
-        usoMensal.consultasLegadasOuCanceladas,
+      consultasLegadasOuCanceladas: usoMensal.consultasLegadasOuCanceladas,
       inicioMes: usoMensal.inicioMes,
       fimMes: usoMensal.fimMes,
     },
@@ -237,7 +239,6 @@ export async function buscarMinhaAssinatura(clienteId: string) {
           limiteMensalConsultas: true,
           intervaloSegundos: true,
           precoCentavos: true,
-          valorConsultaAdicionalCentavos: true,
           limiteCorretores: true,
           status: true,
         },
@@ -255,8 +256,6 @@ export async function buscarMinhaAssinatura(clienteId: string) {
     consultasUsadas: usoMensal.consultasUsadas,
     limiteMensal: cliente.plano.limiteMensalConsultas,
     precoCentavos: cliente.plano.precoCentavos,
-    valorConsultaAdicionalCentavos:
-      cliente.plano.valorConsultaAdicionalCentavos,
   });
 
   return {

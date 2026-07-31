@@ -35,8 +35,6 @@ async function publicarPreviaAtualizada(params: {
     previaId: previa.id,
     status: previa.status,
     quantidadeRegistros: previa.quantidadeRegistros,
-    consultasExcedentesEstimadas: previa.consultasExcedentesEstimadas,
-    valorExcedenteEstimadoCentavos: previa.valorExcedenteEstimadoCentavos,
     updatedAt: previa.updatedAt.toISOString(),
   });
 
@@ -77,7 +75,7 @@ async function atualizarStatusPrevia(params: {
 }
 
 export async function processarBuscaRegistrosJob(
-  job: Job<BuscarRegistrosJobData>
+  job: Job<BuscarRegistrosJobData>,
 ) {
   const previa = await prisma.buscaPrevia.findFirst({
     where: {
@@ -100,7 +98,7 @@ export async function processarBuscaRegistrosJob(
           jobId: job.id,
         },
       },
-      error
+      error,
     );
 
     throw error;
@@ -108,7 +106,7 @@ export async function processarBuscaRegistrosJob(
 
   if (["CANCELADA", "CONFIRMADA", "EXPIRADA"].includes(previa.status)) {
     console.log(
-      `[worker-registro] Prévia ${previa.id} ignorada por status ${previa.status}`
+      `[worker-registro] Prévia ${previa.id} ignorada por status ${previa.status}`,
     );
 
     await registrarOperacaoEvento({
@@ -214,7 +212,7 @@ export async function processarBuscaRegistrosJob(
     });
 
     console.log(
-      `[worker-registro] Prévia ${previa.id} concluída com ${registros.length} registro(s)`
+      `[worker-registro] Prévia ${previa.id} concluída com ${registros.length} registro(s)`,
     );
   } catch (error) {
     await atualizarStatusPrevia({
@@ -242,7 +240,7 @@ export async function processarBuscaRegistrosJob(
           jobId: job.id,
         },
       },
-      error
+      error,
     );
 
     throw error;

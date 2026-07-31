@@ -1,7 +1,11 @@
 "use client";
 
 import type { MinhaAssinaturaResponse } from "../../features/busca/types";
-import { formatCurrencyFromCents, formatDateOnlyBR, formatNumberBR } from "../../lib/formatters";
+import {
+  formatCurrencyFromCents,
+  formatDateOnlyBR,
+  formatNumberBR,
+} from "../../lib/formatters";
 import {
   Badge,
   Grid,
@@ -27,17 +31,15 @@ function formatDate(value?: string | null) {
     return "-";
   }
 
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return formatDateOnlyBR(value);
+  }
+
   return new Intl.DateTimeFormat("pt-BR", {
     dateStyle: "short",
     timeZone: "UTC",
-  }).format(new Date(`${value}T12:00:00.000Z`));
+  }).format(new Date(value));
 }
-
-function formatNumber(value: number) {
-  return new Intl.NumberFormat("pt-BR").format(value);
-}
-
-
 
 function calcularPercentualUsado(usadas: number, limite: number) {
   if (limite <= 0) {
@@ -48,22 +50,13 @@ function calcularPercentualUsado(usadas: number, limite: number) {
 }
 
 function getPagamentoLabel(status: string) {
-  if (status === "PAGO") {
-    return "Pago";
-  }
-
-  return status;
+  return status === "PAGO" ? "Pago" : status;
 }
 
 export function SubscriptionSummary({ assinatura }: SubscriptionSummaryProps) {
   const percentualUsado = calcularPercentualUsado(
     assinatura.uso.consultasUsadas,
-    assinatura.uso.limiteMensal
-  );
-
-  const consultasExcedentes = Math.max(
-    assinatura.uso.consultasUsadas - assinatura.uso.limiteMensal,
-    0
+    assinatura.uso.limiteMensal,
   );
 
   return (
@@ -91,7 +84,17 @@ export function SubscriptionSummary({ assinatura }: SubscriptionSummaryProps) {
       <Grid>
         <Item>
           <Label>Limite mensal</Label>
-          <Value>{formatNumber(assinatura.uso.limiteMensal)}</Value>
+          <Value>{formatNumberBR(assinatura.uso.limiteMensal)}</Value>
+        </Item>
+
+        <Item>
+          <Label>Usadas</Label>
+          <Value>{formatNumberBR(assinatura.uso.consultasUsadas)}</Value>
+        </Item>
+
+        <Item>
+          <Label>Restantes</Label>
+          <Value>{formatNumberBR(assinatura.uso.consultasRestantes)}</Value>
         </Item>
 
         <Item>
@@ -100,33 +103,10 @@ export function SubscriptionSummary({ assinatura }: SubscriptionSummaryProps) {
         </Item>
 
         <Item>
-          <Label>Usadas</Label>
-          <Value>{formatNumber(assinatura.uso.consultasUsadas)}</Value>
-        </Item>
-
-        <Item>
-          <Label>Inclusas restantes</Label>
-          <Value>{formatNumber(assinatura.uso.consultasRestantes)}</Value>
-        </Item>
-
-        <Item>
-          <Label>Excedentes no mês</Label>
-          <Value>{formatNumber(consultasExcedentes)}</Value>
-        </Item>
-
-        <Item>
-          <Label>Excedentes</Label>
-          <Value>{formatNumber(assinatura.uso.consultasExcedentes)}</Value>
-        </Item>
-
-        <Item>
-          <Label>Valor excedente</Label>
-          <Value>{formatCurrencyFromCents(assinatura.uso.valorExcedenteCentavos)}</Value>
-        </Item>
-
-        <Item>
-          <Label>Total estimado</Label>
-          <Value>{formatCurrencyFromCents(assinatura.uso.totalEstimadoCentavos)}</Value>
+          <Label>Mensalidade fixa</Label>
+          <Value>
+            {formatCurrencyFromCents(assinatura.plano.precoCentavos)}
+          </Value>
         </Item>
 
         <Item>
@@ -134,7 +114,12 @@ export function SubscriptionSummary({ assinatura }: SubscriptionSummaryProps) {
           <Value>{assinatura.plano.limiteCorretores ?? "-"}</Value>
         </Item>
 
-        <Item $wide>
+        <Item>
+          <Label>Renovação do período</Label>
+          <Value>{formatDate(assinatura.uso.fimMes)}</Value>
+        </Item>
+
+        <Item>
           <Label>Vencimento</Label>
           <Value>{formatDate(assinatura.cliente.pagamentoVenceEm)}</Value>
         </Item>

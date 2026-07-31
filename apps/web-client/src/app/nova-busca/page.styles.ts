@@ -5,7 +5,11 @@ import styled from "styled-components";
 export const PageShell = styled.main`
   min-height: calc(100vh - 76px);
   background:
-    radial-gradient(circle at 10% 0%, rgba(200, 164, 93, 0.14), transparent 28%),
+    radial-gradient(
+      circle at 10% 0%,
+      rgba(200, 164, 93, 0.14),
+      transparent 28%
+    ),
     radial-gradient(circle at 88% 10%, rgba(15, 76, 92, 0.14), transparent 30%),
     linear-gradient(180deg, #f5f1e8 0%, #f9f6ef 100%);
 `;
@@ -39,7 +43,11 @@ export const HeroCard = styled.header`
   position: relative;
   border-radius: 30px;
   background:
-    radial-gradient(circle at 16% 12%, rgba(200, 164, 93, 0.22), transparent 30%),
+    radial-gradient(
+      circle at 16% 12%,
+      rgba(200, 164, 93, 0.22),
+      transparent 30%
+    ),
     radial-gradient(circle at 88% 12%, rgba(15, 76, 92, 0.28), transparent 34%),
     linear-gradient(135deg, ${({ theme }) => theme.colors.primary}, #071927);
   box-shadow: ${({ theme }) => theme.shadows.card};
@@ -56,7 +64,7 @@ export const HeroEyebrow = styled.div`
   margin-bottom: ${({ theme }) => theme.spacing.md};
   padding: 8px 13px;
   border-radius: ${({ theme }) => theme.radii.pill};
-  background: rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.1);
   color: ${({ theme }) => theme.colors.accent};
   border: 1px solid rgba(255, 255, 255, 0.18);
   font-size: 12px;
@@ -96,7 +104,7 @@ export const HeaderLink = styled.a`
   padding: 0 ${({ theme }) => theme.spacing.lg};
   border-radius: ${({ theme }) => theme.radii.pill};
   color: ${({ theme }) => theme.colors.textInverted};
-  background: rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.18);
   font-size: 14px;
   font-weight: 950;
@@ -120,7 +128,7 @@ export const HeroPanelItem = styled.div`
   padding: ${({ theme }) => theme.spacing.md};
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.075);
-  border: 1px solid rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 `;
 
 export const HeroPanelLabel = styled.span`
@@ -175,7 +183,11 @@ export const OperationCardHeader = styled.div`
   padding: ${({ theme }) => theme.spacing.xl};
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   background:
-    radial-gradient(circle at top left, rgba(200, 164, 93, 0.12), transparent 32%),
+    radial-gradient(
+      circle at top left,
+      rgba(200, 164, 93, 0.12),
+      transparent 32%
+    ),
     ${({ theme }) => theme.colors.backgroundSoft};
 
   @media (max-width: 720px) {
@@ -252,8 +264,7 @@ export const SearchModeButton = styled.button<{ $active: boolean }>`
   padding: ${({ theme }) => theme.spacing.md};
   border-radius: 19px;
   border: 1px solid
-    ${({ theme, $active }) =>
-      $active ? theme.colors.accent : "transparent"};
+    ${({ theme, $active }) => ($active ? theme.colors.accent : "transparent")};
   background: ${({ theme, $active }) =>
     $active ? theme.colors.surface : "transparent"};
   color: ${({ theme }) => theme.colors.primary};
@@ -314,7 +325,11 @@ export const CodigosTextarea = styled.textarea`
   border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: ${({ theme }) => theme.radii.lg};
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.78)),
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.94),
+      rgba(255, 255, 255, 0.78)
+    ),
     ${({ theme }) => theme.colors.backgroundSoft};
   color: ${({ theme }) => theme.colors.text};
   padding: ${({ theme }) => theme.spacing.md};
@@ -324,7 +339,7 @@ export const CodigosTextarea = styled.textarea`
   line-height: 1.65;
   box-shadow:
     0 10px 24px rgba(15, 23, 42, 0.04),
-    inset 0 1px 0 rgba(255, 255, 255, 0.80);
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
   transition:
     border-color 0.18s ease,
     box-shadow 0.18s ease,
@@ -587,106 +602,16 @@ export const SidebarListItem = styled.li`
   }
 `;
 
-export const ModalOverlay = styled.div`
-  position: fixed;
-  inset: 0;
-  z-index: 80;
-  display: grid;
-  place-items: center;
-  padding: ${({ theme }) => theme.spacing.lg};
-  background: rgba(7, 25, 39, 0.62);
-  backdrop-filter: blur(8px);
-`;
-
-export const ModalCard = styled.div`
-  width: min(560px, 100%);
-  border-radius: 28px;
-  background: ${({ theme }) => theme.colors.surface};
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  box-shadow: ${({ theme }) => theme.shadows.cardHover};
-  padding: ${({ theme }) => theme.spacing.xl};
-`;
-
-export const ModalEyebrow = styled.div`
-  width: fit-content;
-  margin-bottom: ${({ theme }) => theme.spacing.md};
-  padding: 7px 11px;
-  border-radius: ${({ theme }) => theme.radii.pill};
-  background: ${({ theme }) => theme.colors.warningBg};
-  color: ${({ theme }) => theme.colors.warning};
-  border: 1px solid ${({ theme }) => theme.colors.warningBorder};
-  font-size: 11px;
-  font-weight: 900;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-`;
-
-export const ModalTitle = styled.h2`
-  margin: 0;
-  color: ${({ theme }) => theme.colors.primary};
-  font-size: 28px;
-  line-height: 1.05;
-  letter-spacing: -0.05em;
-`;
-
-export const ModalText = styled.p`
-  color: ${({ theme }) => theme.colors.textMuted};
-  line-height: 1.65;
-  margin: ${({ theme }) => theme.spacing.md} 0;
-`;
-
-export const ModalGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: ${({ theme }) => theme.spacing.sm};
-  margin: ${({ theme }) => theme.spacing.lg} 0;
-
-  @media (max-width: 520px) {
-    grid-template-columns: 1fr;
-  }
-`;
-
-export const ModalInfo = styled.div`
-  min-width: 0;
-  padding: ${({ theme }) => theme.spacing.md};
-  border-radius: 18px;
-  background: ${({ theme }) => theme.colors.surfaceMuted};
-  border: 1px solid ${({ theme }) => theme.colors.border};
-
-  strong {
-    display: block;
-    color: ${({ theme }) => theme.colors.textMuted};
-    font-size: 12px;
-    margin-bottom: 5px;
-  }
-
-  span {
-    display: block;
-    color: ${({ theme }) => theme.colors.primary};
-    font-size: 17px;
-    font-weight: 750;
-  }
-`;
-
-export const ModalActions = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: ${({ theme }) => theme.spacing.sm};
-
-  @media (max-width: 520px) {
-    button {
-      width: 100%;
-    }
-  }
-`;
-
 export const PreviewCard = styled.div`
   margin-top: ${({ theme }) => theme.spacing.lg};
   padding: ${({ theme }) => theme.spacing.lg};
   border-radius: 24px;
   background:
-    radial-gradient(circle at top right, rgba(200, 164, 93, 0.10), transparent 32%),
+    radial-gradient(
+      circle at top right,
+      rgba(200, 164, 93, 0.1),
+      transparent 32%
+    ),
     ${({ theme }) => theme.colors.surfaceMuted};
   border: 1px solid ${({ theme }) => theme.colors.border};
 `;
@@ -795,68 +720,6 @@ export const PreviewListItem = styled.div`
   }
 `;
 
-export const ModalCancelButton = styled.button`
-  min-height: 46px;
-  padding: 0 ${({ theme }) => theme.spacing.lg};
-  border-radius: ${({ theme }) => theme.radii.pill};
-  background: ${({ theme }) => theme.colors.dangerBg};
-  color: ${({ theme }) => theme.colors.danger};
-  border: 1px solid ${({ theme }) => theme.colors.dangerBorder};
-  font-size: 14px;
-  font-weight: 950;
-  cursor: pointer;
-  transition:
-    transform 0.18s ease,
-    background 0.18s ease,
-    box-shadow 0.18s ease;
-
-  &:hover {
-    transform: translateY(-1px);
-    background: ${({ theme }) => theme.colors.danger};
-    color: ${({ theme }) => theme.colors.textInverted};
-    box-shadow: 0 14px 28px rgba(180, 35, 24, 0.18);
-  }
-
-  &:disabled {
-    cursor: not-allowed;
-    opacity: 0.58;
-    transform: none;
-    box-shadow: none;
-  }
-`;
-
-export const ModalConfirmButton = styled.button`
-  min-height: 46px;
-  padding: 0 ${({ theme }) => theme.spacing.lg};
-  border-radius: ${({ theme }) => theme.radii.pill};
-  background: ${({ theme }) => theme.colors.secondary};
-  color: ${({ theme }) => theme.colors.textInverted};
-  border: 1px solid ${({ theme }) => theme.colors.secondary};
-  box-shadow: ${({ theme }) => theme.shadows.button};
-  font-size: 14px;
-  font-weight: 950;
-  cursor: pointer;
-  transition:
-    transform 0.18s ease,
-    background 0.18s ease,
-    box-shadow 0.18s ease;
-
-  &:hover {
-    transform: translateY(-1px);
-    background: ${({ theme }) => theme.colors.secondaryHover};
-    border-color: ${({ theme }) => theme.colors.secondaryHover};
-    box-shadow: 0 16px 32px rgba(31, 111, 91, 0.22);
-  }
-
-  &:disabled {
-    cursor: not-allowed;
-    opacity: 0.58;
-    transform: none;
-    box-shadow: none;
-  }
-`;
-
-
 export const PreviewStatus = styled.div`
   display: flex;
   align-items: center;
@@ -865,14 +728,16 @@ export const PreviewStatus = styled.div`
   margin-top: ${({ theme }) => theme.spacing.md};
 `;
 
-
-export const PreviewStatusBadge = styled.div<{ $variant?: "success" | "warning" | "danger" | "info" }>`
+export const PreviewStatusBadge = styled.div<{
+  $variant?: "success" | "warning" | "danger" | "info";
+}>`
   width: fit-content;
   padding: 7px 11px;
   border-radius: ${({ theme }) => theme.radii.pill};
   font-size: 12px;
   font-weight: 950;
-  border: 1px solid ${({ theme, $variant }) => {
+  border: 1px solid
+    ${({ theme, $variant }) => {
     if ($variant === "success") return theme.colors.successBorder;
     if ($variant === "warning") return theme.colors.warningBorder;
     if ($variant === "danger") return theme.colors.dangerBorder;
@@ -892,7 +757,6 @@ export const PreviewStatusBadge = styled.div<{ $variant?: "success" | "warning" 
   }};
 `;
 
-
 export const PreviewActions = styled.div`
   display: flex;
   justify-content: flex-end;
@@ -901,13 +765,11 @@ export const PreviewActions = styled.div`
   margin-top: ${({ theme }) => theme.spacing.md};
 `;
 
-
 export const PendingPreviewList = styled.div`
   display: grid;
   gap: ${({ theme }) => theme.spacing.sm};
   margin-top: ${({ theme }) => theme.spacing.md};
 `;
-
 
 export const PendingPreviewItem = styled.div`
   display: grid;
@@ -929,13 +791,11 @@ export const PendingPreviewItem = styled.div`
   }
 `;
 
-
 export const PendingPreviewActions = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.sm};
   flex-wrap: wrap;
 `;
-
 
 export const SmallActionButton = styled.button`
   min-height: 34px;
@@ -953,7 +813,6 @@ export const SmallActionButton = styled.button`
     cursor: not-allowed;
   }
 `;
-
 
 export const SmallDangerButton = styled.button`
   min-height: 34px;
@@ -977,7 +836,7 @@ export const NoResultsBox = styled.div`
   gap: ${({ theme }) => theme.spacing.sm};
   padding: ${({ theme }) => theme.spacing.lg};
   border-radius: 22px;
-  background: rgba(245, 158, 11, 0.10);
+  background: rgba(245, 158, 11, 0.1);
   border: 1px solid rgba(245, 158, 11, 0.22);
   color: ${({ theme }) => theme.colors.text};
   line-height: 1.6;
@@ -996,4 +855,3 @@ export const NoResultsTitle = styled.h3`
   line-height: 1.2;
   letter-spacing: -0.03em;
 `;
-

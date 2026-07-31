@@ -92,7 +92,7 @@ function montarPreviaResponse(previa: {
 
 export async function preverBuscaProprietarios(
 	clienteId: string,
-	data: PreverBuscaInput
+  data: PreverBuscaInput,
 ) {
 	const { cliente, plano, uso } = await validarClientePodeCriarBusca(clienteId);
 	const municipio = await buscarMunicipioPrincipalAtivoDoCliente(clienteId);
@@ -156,7 +156,7 @@ export async function preverBuscaProprietarios(
 
 export async function criarTarefaBuscaProprietarios(
 	clienteId: string,
-	data: BuscarProprietariosInput
+  data: BuscarProprietariosInput,
 ) {
 	const { cliente, plano, uso } = await validarClientePodeCriarBusca(clienteId);
 
@@ -188,24 +188,11 @@ export async function criarTarefaBuscaProprietarios(
 		throw new Error("Esta prévia expirou. Faça uma nova busca.");
 	}
 
-	if (previa.consultasExcedentesEstimadas > 0 && !data.confirmarExcedente) {
-		return {
-			precisaConfirmarExcedente: true,
-			message:
-				"Esta busca pode ultrapassar o limite de consultas inclusas do seu plano.",
-			previa: montarPreviaResponse(previa),
-			uso,
-			excedente: {
-				consultasEstimadas: previa.quantidadeRegistros,
-				consultasDisponiveisNoMomento: previa.consultasDisponiveisNoMomento,
-				consultasExcedentesEstimadas: previa.consultasExcedentesEstimadas,
-				valorConsultaAdicionalCentavos: previa.valorConsultaAdicionalCentavos,
-				valorExcedenteEstimadoCentavos: previa.valorExcedenteEstimadoCentavos,
-			},
-		};
+  if (previa.quantidadeRegistros > uso.consultasRestantes) {
+    throw new Error("Limite mensal de consultas do plano insuficiente");
 	}
 
-	const excedenteAutorizado = previa.consultasExcedentesEstimadas > 0;
+  const excedenteAutorizado = false;
 
 	const tarefa = await prisma.tarefa.create({
 		data: {
@@ -221,7 +208,7 @@ export async function criarTarefaBuscaProprietarios(
 			intervaloSegundos: plano.intervaloSegundos,
 			forceRefresh: data.forceRefresh,
 			excedenteAutorizado,
-			excedenteAutorizadoEm: excedenteAutorizado ? new Date() : null,
+      excedenteAutorizadoEm: null,
 			consultasEstimadas: previa.quantidadeRegistros,
 			consultasDisponiveisNoMomento: previa.consultasDisponiveisNoMomento,
 			consultasExcedentesEstimadas: previa.consultasExcedentesEstimadas,
@@ -258,7 +245,6 @@ export async function criarTarefaBuscaProprietarios(
 			: null;
 
 	return {
-		precisaConfirmarExcedente: false,
 		jobId: job?.id ?? null,
 		status: tarefa.status,
 		message:
@@ -328,7 +314,7 @@ export async function buscarTarefaPorId(clienteId: string, id: string) {
 
 export async function buscarProgressoTarefaPorId(
 	clienteId: string,
-	id: string
+  id: string,
 ) {
 	const tarefa = await prisma.tarefa.findFirst({
 		where: {
@@ -375,15 +361,6 @@ export async function buscarProgressoTarefaPorId(
 			total: tarefa.total,
 			current: tarefa.current,
 			percentage,
-		},
-		excedente: {
-			autorizado: tarefa.excedenteAutorizado,
-			autorizadoEm: tarefa.excedenteAutorizadoEm,
-			consultasEstimadas: tarefa.consultasEstimadas,
-			consultasDisponiveisNoMomento: tarefa.consultasDisponiveisNoMomento,
-			consultasExcedentesEstimadas: tarefa.consultasExcedentesEstimadas,
-			valorConsultaAdicionalCentavos: tarefa.valorConsultaAdicionalCentavos,
-			valorExcedenteEstimadoCentavos: tarefa.valorExcedenteEstimadoCentavos,
 		},
 		erro: tarefa.erro,
 		resultados: tarefa.resultados.map((resultado) => ({
@@ -469,7 +446,7 @@ export async function listarTarefasRecentes(clienteId: string) {
 
 export async function exportarResultadosTarefaCsv(
 	clienteId: string,
-	id: string
+  id: string,
 ) {
 	const tarefa = await prisma.tarefa.findFirst({
 		where: {
@@ -504,7 +481,7 @@ export async function exportarResultadosTarefaCsv(
 					{
 						mensagem: "Nenhum resultado encontrado para esta tarefa",
 					},
-				]
+        ],
 	);
 
 	return {
@@ -515,7 +492,7 @@ export async function exportarResultadosTarefaCsv(
 
 export async function exportarResultadosTarefaExcel(
 	clienteId: string,
-	id: string
+  id: string,
 ) {
 	const tarefa = await prisma.tarefa.findFirst({
 		where: {
@@ -560,7 +537,7 @@ export async function exportarResultadosTarefaExcel(
 
 export async function exportarResultadosTarefaPdf(
 	clienteId: string,
-	id: string
+  id: string,
 ) {
 	const tarefa = await prisma.tarefa.findFirst({
 		where: {

@@ -79,4 +79,7 @@ test("a confirmação usa transação e lock por cliente", () => {
   assert.match(source, /tarefaCriadaId/);
   assert.match(source, /status:\s*"ERROR"/);
   assert.doesNotMatch(source, /!data\.confirmarExcedente/);
+  assert.doesNotMatch(source, /precisaConfirmarExcedente/);
+  assert.match(source, /podeConfirmar/);
+  assert.match(source, /consultasRestantesAposReserva/);
 });

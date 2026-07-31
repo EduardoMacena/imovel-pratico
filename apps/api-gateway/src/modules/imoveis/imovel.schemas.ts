@@ -20,7 +20,7 @@ export const preverBuscaCodigosSchema = z.object({
         z
           .string()
           .min(1, "Código cadastral vazio")
-          .max(256, "Código cadastral muito grande")
+          .max(256, "Código cadastral muito grande"),
       )
       .min(1, "Informe ao menos um código cadastral")
       .max(1000, "Informe no máximo 1000 códigos cadastrais"),
@@ -29,15 +29,12 @@ export const preverBuscaCodigosSchema = z.object({
 
 export const buscarProprietariosSchema = z.object({
   previaId: z.string().uuid("Prévia inválida"),
-  confirmarExcedente: z.boolean().optional().default(false),
   forceRefresh: z.boolean().optional().default(false),
 });
 
 export type PreverBuscaInput = z.infer<typeof preverBuscaSchema>;
 
-export type PreverBuscaCodigosInput = z.infer<
-  typeof preverBuscaCodigosSchema
->;
+export type PreverBuscaCodigosInput = z.infer<typeof preverBuscaCodigosSchema>;
 
 export type BuscarProprietariosInput = z.infer<
   typeof buscarProprietariosSchema

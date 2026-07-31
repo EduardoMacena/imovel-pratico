@@ -10,12 +10,52 @@ type ApiRequestOptions = RequestInit & {
   auth?: boolean;
 };
 
+type ApiErrorPayload = {
+  code?: string;
+  message?: string;
+  [key: string]: unknown;
+};
+
+export class ApiError extends Error {
+  readonly status: number;
+  readonly code?: string;
+  readonly payload: ApiErrorPayload | null;
+
+  constructor({
+    status,
+    payload,
+    fallbackMessage,
+  }: {
+    status: number;
+    payload: ApiErrorPayload | null;
+    fallbackMessage: string;
+  }) {
+    super(payload?.message ?? fallbackMessage);
+
+    this.name = "ApiError";
+    this.status = status;
+    this.code = payload?.code;
+    this.payload = payload;
+  }
+}
+
+export function isApiError(error: unknown): error is ApiError {
+  return error instanceof ApiError;
+}
+
+function asApiErrorPayload(value: unknown): ApiErrorPayload | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return null;
+  }
+
+  return value as ApiErrorPayload;
+}
+
 export async function apiRequest<TResponse>(
   path: string,
-  options?: ApiRequestOptions
+  options?: ApiRequestOptions,
 ): Promise<TResponse> {
   const token = getAuthToken();
-
   const headers = new Headers(options?.headers);
 
   headers.set("Content-Type", "application/json");
@@ -30,19 +70,31 @@ export async function apiRequest<TResponse>(
   });
 
   const data = await response.json().catch(() => null);
+  const payload = asApiErrorPayload(data);
 
   if (response.status === 401) {
     removeAuthToken();
 
-    if (typeof window !== "undefined" && window.location.pathname !== "/login") {
+    if (
+      typeof window !== "undefined" &&
+      window.location.pathname !== "/login"
+    ) {
       window.location.href = "/login";
     }
 
-    throw new Error(data?.message ?? "Sessão expirada");
+    throw new ApiError({
+      status: response.status,
+      payload,
+      fallbackMessage: "Sessão expirada",
+    });
   }
 
   if (!response.ok) {
-    throw new Error(data?.message ?? "Erro na requisição");
+    throw new ApiError({
+      status: response.status,
+      payload,
+      fallbackMessage: "Erro na requisição",
+    });
   }
 
   return data as TResponse;
@@ -50,7 +102,6 @@ export async function apiRequest<TResponse>(
 
 export async function apiDownload(path: string, filename: string) {
   const token = getAuthToken();
-
   const headers = new Headers();
 
   if (token) {
@@ -65,22 +116,32 @@ export async function apiDownload(path: string, filename: string) {
   if (response.status === 401) {
     removeAuthToken();
 
-    if (typeof window !== "undefined" && window.location.pathname !== "/login") {
+    if (
+      typeof window !== "undefined" &&
+      window.location.pathname !== "/login"
+    ) {
       window.location.href = "/login";
     }
 
-    throw new Error("Sessão expirada");
+    throw new ApiError({
+      status: response.status,
+      payload: null,
+      fallbackMessage: "Sessão expirada",
+    });
   }
 
   if (!response.ok) {
     const data = await response.json().catch(() => null);
 
-    throw new Error(data?.message ?? "Erro ao baixar arquivo");
+    throw new ApiError({
+      status: response.status,
+      payload: asApiErrorPayload(data),
+      fallbackMessage: "Erro ao baixar arquivo",
+    });
   }
 
   const blob = await response.blob();
   const url = window.URL.createObjectURL(blob);
-
   const link = document.createElement("a");
 
   link.href = url;

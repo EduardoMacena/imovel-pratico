@@ -112,7 +112,7 @@ export default function DashboardPage() {
 
   const [nomeUsuario, setNomeUsuario] = useState("sua equipe");
   const [assinatura, setAssinatura] = useState<MinhaAssinaturaResponse | null>(
-    null
+    null,
   );
   const [tarefas, setTarefas] = useState<TarefaResumo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -129,15 +129,15 @@ export default function DashboardPage() {
 
   const resumo = useMemo(() => {
     const finalizadas = tarefas.filter(
-      tarefa => tarefa.status === "COMPLETED"
+      (tarefa) => tarefa.status === "COMPLETED",
     ).length;
 
     const emAndamento = tarefas.filter(
-      tarefa => tarefa.status === "PENDING" || tarefa.status === "PROCESSING"
+      (tarefa) => tarefa.status === "PENDING" || tarefa.status === "PROCESSING",
     ).length;
 
     const comErro = tarefas.filter(
-      tarefa => tarefa.status === "ERROR" || tarefa.status === "CANCELED"
+      (tarefa) => tarefa.status === "ERROR" || tarefa.status === "CANCELED",
     ).length;
 
     const resultados = tarefas.reduce((total, tarefa) => {
@@ -172,7 +172,7 @@ export default function DashboardPage() {
 
   const maiorValorGrafico = Math.max(
     1,
-    ...distribuicao.map(item => item.value)
+    ...distribuicao.map((item) => item.value),
   );
 
   const tarefasRecentes = tarefas.slice(0, 5);
@@ -183,15 +183,13 @@ export default function DashboardPage() {
     assinatura?.cliente.pagamentoStatus === "PAGO" &&
     assinatura?.plano.status === "ATIVO";
 
-  const estaEmExcedente =
-    operacaoAtiva &&
-    consultasRestantes <= 0 &&
-    consultasUsadas >= limiteMensal;
+  const limiteAtingido =
+    operacaoAtiva && consultasRestantes <= 0 && consultasUsadas >= limiteMensal;
 
   const statusOperacao = !operacaoAtiva
     ? "Bloqueado"
-    : estaEmExcedente
-      ? "Excedente ativo"
+    : limiteAtingido
+      ? "Limite atingido"
       : "Ativo";
 
   async function carregarDashboard() {
@@ -209,7 +207,7 @@ export default function DashboardPage() {
       setErro(
         error instanceof Error
           ? error.message
-          : "Erro desconhecido ao carregar dashboard"
+          : "Erro desconhecido ao carregar dashboard",
       );
     } finally {
       setIsLoading(false);
@@ -238,15 +236,18 @@ export default function DashboardPage() {
           <HeroGrid>
             <HeroCard>
               <HeroContent>
-                <HeroEyebrow>{operacaoAtiva ? "Operação ativa" : "Atenção operacional"}</HeroEyebrow>
+                <HeroEyebrow>
+                  {operacaoAtiva ? "Operação ativa" : "Atenção operacional"}
+                </HeroEyebrow>
 
                 <HeroTitle>
                   {getSaudacao()}, {nomeUsuario}.
                 </HeroTitle>
 
                 <HeroSubtitle>
-                  Acompanhe consumo, tarefas, resultados e status da sua operação
-                  de captação em uma visão executiva simples e objetiva.
+                  Acompanhe consumo, tarefas, resultados e status da sua
+                  operação de captação em uma visão executiva simples e
+                  objetiva.
                 </HeroSubtitle>
 
                 <HeaderActions>
@@ -312,7 +313,9 @@ export default function DashboardPage() {
             <MetricCard>
               <MetricLabel>Finalizadas</MetricLabel>
               <MetricValue>{formatNumber(resumo.finalizadas)}</MetricValue>
-              <MetricHint>Tarefas concluídas com processamento finalizado</MetricHint>
+              <MetricHint>
+                Tarefas concluídas com processamento finalizado
+              </MetricHint>
             </MetricCard>
 
             <MetricCard>
@@ -331,9 +334,7 @@ export default function DashboardPage() {
           {erro && <ErrorBox>{erro}</ErrorBox>}
 
           {isLoading && (
-            <EmptyState>
-              Carregando visão executiva da sua operação.
-            </EmptyState>
+            <EmptyState>Carregando visão executiva da sua operação.</EmptyState>
           )}
 
           {!isLoading && (
@@ -349,7 +350,7 @@ export default function DashboardPage() {
                 </PanelHeader>
 
                 <ChartList>
-                  {distribuicao.map(item => (
+                  {distribuicao.map((item) => (
                     <BarRow key={item.label}>
                       <BarInfo>
                         <BarLabel>{item.label}</BarLabel>
@@ -385,7 +386,7 @@ export default function DashboardPage() {
 
                 {tarefasRecentes.length > 0 && (
                   <RecentList>
-                    {tarefasRecentes.map(tarefa => (
+                    {tarefasRecentes.map((tarefa) => (
                       <RecentItem key={tarefa.id}>
                         <RecentContent>
                           <RecentAddress>
@@ -410,9 +411,7 @@ export default function DashboardPage() {
                   <PanelHeader>
                     <div>
                       <PanelTitle>Plano e acesso</PanelTitle>
-                      <PanelSubtitle>
-                        Condição atual da operação.
-                      </PanelSubtitle>
+                      <PanelSubtitle>Condição atual da operação.</PanelSubtitle>
                     </div>
                   </PanelHeader>
 
