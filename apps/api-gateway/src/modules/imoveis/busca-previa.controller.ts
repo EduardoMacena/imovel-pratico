@@ -1,4 +1,5 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
+import { LimitePlanoInsuficienteError } from "../assinatura/plano-fixo.js";
 import {
   buscarProprietariosSchema,
   preverBuscaCodigosSchema,
@@ -108,8 +109,17 @@ export async function confirmarPreviaBuscaController(
       body
     );
 
-    return reply.status(result.precisaConfirmarExcedente ? 409 : 202).send(result);
+    return reply.status(202).send(result);
   } catch (error) {
+    if (error instanceof LimitePlanoInsuficienteError) {
+      return reply.status(409).send({
+        error: "Conflict",
+        code: error.code,
+        message: error.message,
+        ...error.detalhes,
+      });
+    }
+
     return reply.status(400).send({
       error: "BadRequest",
       message:

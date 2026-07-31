@@ -1,5 +1,11 @@
 import { prisma } from "@imovel-pratico/database";
 import { formatDateOnlyFromDate } from "../../utils/date-only.js";
+import { calcularDisponibilidadePlanoFixo } from "./plano-fixo.js";
+
+type AssinaturaDatabase = Pick<
+  typeof prisma,
+  "cliente" | "tarefa" | "tarefaResultado"
+>;
 
 function getInicioMesAtual() {
   const now = new Date();
@@ -27,25 +33,64 @@ function pagamentoEstaVencido(pagamentoVenceEm: Date | null) {
   return pagamentoVenceEm < getHojeUtcNoon();
 }
 
-export async function buscarUsoMensalCliente(clienteId: string) {
+export async function buscarUsoMensalCliente(
+  clienteId: string,
+  db: AssinaturaDatabase = prisma
+) {
   const inicioMes = getInicioMesAtual();
   const fimMes = getFimMesAtual();
 
-  const consultasUsadas = await prisma.tarefaResultado.count({
-    where: {
-      status: "SUCCESS",
-      tarefa: {
-        clienteId,
-      },
-      createdAt: {
-        gte: inicioMes,
-        lt: fimMes,
-      },
-    },
-  });
+  const [tarefasReservadas, resultadosLegadosOuCancelados] =
+    await Promise.all([
+      db.tarefa.aggregate({
+        where: {
+          clienteId,
+          status: {
+            not: "CANCELED",
+          },
+          consultasEstimadas: {
+            not: null,
+          },
+          createdAt: {
+            gte: inicioMes,
+            lt: fimMes,
+          },
+        },
+        _sum: {
+          consultasEstimadas: true,
+        },
+      }),
+      db.tarefaResultado.count({
+        where: {
+          status: "SUCCESS",
+          tarefa: {
+            clienteId,
+            OR: [
+              {
+                consultasEstimadas: null,
+              },
+              {
+                status: "CANCELED",
+              },
+            ],
+          },
+          createdAt: {
+            gte: inicioMes,
+            lt: fimMes,
+          },
+        },
+      }),
+    ]);
+
+  const consultasReservadas =
+    tarefasReservadas._sum.consultasEstimadas ?? 0;
 
   return {
-    consultasUsadas,
+    consultasUsadas:
+      consultasReservadas + resultadosLegadosOuCancelados,
+    consultasReservadas,
+    consultasLegadasOuCanceladas:
+      resultadosLegadosOuCancelados,
     inicioMes,
     fimMes,
   };
@@ -55,29 +100,33 @@ export function calcularResumoUso({
   consultasUsadas,
   limiteMensal,
   precoCentavos,
-  valorConsultaAdicionalCentavos,
 }: {
   consultasUsadas: number;
   limiteMensal: number;
   precoCentavos: number;
-  valorConsultaAdicionalCentavos: number;
+  valorConsultaAdicionalCentavos?: number;
 }) {
-  const consultasRestantes = Math.max(limiteMensal - consultasUsadas, 0);
-  const consultasExcedentes = Math.max(consultasUsadas - limiteMensal, 0);
-  const valorExcedenteCentavos =
-    consultasExcedentes * valorConsultaAdicionalCentavos;
+  const disponibilidade = calcularDisponibilidadePlanoFixo({
+    limiteMensalConsultas: limiteMensal,
+    consultasUsadas,
+    consultasSolicitadas: 0,
+    renovacaoEm: getFimMesAtual(),
+  });
 
   return {
     consultasUsadas,
     limiteMensal,
-    consultasRestantes,
-    consultasExcedentes,
-    valorConsultaAdicionalCentavos,
-    valorExcedenteCentavos,
-    totalEstimadoCentavos: precoCentavos + valorExcedenteCentavos,
+    consultasRestantes: disponibilidade.consultasRestantes,
+    consultasExcedentes: 0,
+    valorConsultaAdicionalCentavos: 0,
+    valorExcedenteCentavos: 0,
+    totalEstimadoCentavos: precoCentavos,
     percentualUsado:
       limiteMensal > 0
-        ? Math.min(Math.round((consultasUsadas / limiteMensal) * 100), 100)
+        ? Math.min(
+            Math.round((consultasUsadas / limiteMensal) * 100),
+            100
+          )
         : 0,
   };
 }
@@ -106,8 +155,11 @@ export function calcularResumoExcedenteBusca({
   };
 }
 
-export async function validarClientePodeCriarBusca(clienteId: string) {
-  const cliente = await prisma.cliente.findUnique({
+export async function validarClientePodeCriarBusca(
+  clienteId: string,
+  db: AssinaturaDatabase = prisma
+) {
+  const cliente = await db.cliente.findUnique({
     where: {
       id: clienteId,
     },
@@ -140,14 +192,12 @@ export async function validarClientePodeCriarBusca(clienteId: string) {
     throw new Error("Pagamento do plano está vencido");
   }
 
-  const usoMensal = await buscarUsoMensalCliente(clienteId);
+  const usoMensal = await buscarUsoMensalCliente(clienteId, db);
 
   const uso = calcularResumoUso({
     consultasUsadas: usoMensal.consultasUsadas,
     limiteMensal: cliente.plano.limiteMensalConsultas,
     precoCentavos: cliente.plano.precoCentavos,
-    valorConsultaAdicionalCentavos:
-      cliente.plano.valorConsultaAdicionalCentavos,
   });
 
   return {
@@ -155,6 +205,9 @@ export async function validarClientePodeCriarBusca(clienteId: string) {
     plano: cliente.plano,
     uso: {
       ...uso,
+      consultasReservadas: usoMensal.consultasReservadas,
+      consultasLegadasOuCanceladas:
+        usoMensal.consultasLegadasOuCanceladas,
       inicioMes: usoMensal.inicioMes,
       fimMes: usoMensal.fimMes,
     },
