@@ -11,6 +11,12 @@ import { ResultCard } from "../../components/ResultCard";
 import { StatusBadge } from "../../components/StatusBadge";
 import { SubscriptionSummary } from "../../components/SubscriptionSummary";
 import { useRequireAuth } from "../../hooks/useRequireAuth";
+import { isApiError } from "../../lib/api";
+import {
+  CODIGO_LIMITE_PLANO_INSUFICIENTE,
+  formatarMensagemLimitePlano,
+  podeConfirmarPrevia,
+} from "../../features/busca/plano-fixo";
 import {
 	buscarMinhaAssinatura,
 	buscarPrevia,
@@ -35,7 +41,7 @@ import type {
 } from "../../features/busca/types";
 import { getTipoBuscaLabel } from "../../features/busca/apresentacao-tarefa";
 import { useRealtimeEvents } from "../../features/realtime/useRealtimeEvents";
-import { formatCurrencyFromCents, formatNumberBR } from "../../lib/formatters";
+import { formatNumberBR } from "../../lib/formatters";
 import {
 	Actions,
 	CodeFeedback,
@@ -69,16 +75,6 @@ import {
 	MainGrid,
 	NoResultsBox,
 	NoResultsTitle,
-	ModalActions,
-	ModalCancelButton,
-	ModalCard,
-	ModalConfirmButton,
-	ModalEyebrow,
-	ModalGrid,
-	ModalInfo,
-	ModalOverlay,
-	ModalText,
-	ModalTitle,
 	OperationCard,
 	OperationCardBody,
 	OperationCardHeader,
@@ -147,8 +143,8 @@ function getPreviaStatusLabel(status: BuscaPreviaStatus) {
 		AGUARDANDO_INTERVALO: "Aguardando intervalo do 1RIBH",
 		CONSULTANDO_REGISTRO: "Consultando 1RIBH",
 		PRONTA: "Prévia pronta",
-		AGUARDANDO_AUTORIZACAO_EXCEDENTE: "Aguardando autorização",
-		AUTORIZANDO: "Autorizando",
+    AGUARDANDO_AUTORIZACAO_EXCEDENTE: "Prévia pronta",
+    AUTORIZANDO: "Confirmando",
 		CONFIRMADA: "Confirmada",
 		CANCELADA: "Cancelada",
 		EXPIRADA: "Expirada",
@@ -178,11 +174,7 @@ function getPreviaStatusVariant(status: BuscaPreviaStatus) {
 	return "info" as const;
 }
 
-
-function formatQuantidadePrevia(
-	quantidade: number,
-	tipoBusca: TipoBusca
-) {
+function formatQuantidadePrevia(quantidade: number, tipoBusca: TipoBusca) {
 	if (tipoBusca === "CODIGOS_CADASTRAIS") {
 		return quantidade === 1
 			? "1 código cadastral"
@@ -196,24 +188,23 @@ function formatQuantidadePrevia(
 
 function getPendenciaTitle(previa: PreverBuscaResponse["previa"]) {
 	if (previa.tipoBusca === "CODIGOS_CADASTRAIS") {
-		return formatQuantidadePrevia(
-			previa.quantidadeRegistros,
-			previa.tipoBusca
-		);
+    return formatQuantidadePrevia(previa.quantidadeRegistros, previa.tipoBusca);
 	}
 
 	return `${previa.logradouro}, nº ${previa.numero}`;
 }
 
 function getMotivoCodigoInvalido(
-	motivo: ResumoCodigosCadastrais["codigosInvalidos"][number]["motivo"]
+  motivo: ResumoCodigosCadastrais["codigosInvalidos"][number]["motivo"],
 ) {
 	return motivo === "TAMANHO_INVALIDO"
 		? "tamanho inválido"
 		: "caracteres não permitidos";
 }
 
-type CriarTarefaBuscaResponseComIds = Awaited<ReturnType<typeof criarTarefaBusca>> & {
+type CriarTarefaBuscaResponseComIds = Awaited<
+  ReturnType<typeof criarTarefaBusca>
+> & {
 	jobId?: string | null;
 	tarefaId?: string | null;
 	tarefa?: {
@@ -232,24 +223,30 @@ function NovaBuscaContent() {
 	const [tipoBusca, setTipoBusca] = useState<TipoBusca>(() =>
 		searchParams.get("tipoBusca") === "codigos"
 			? "CODIGOS_CADASTRAIS"
-			: "ENDERECO"
+      : "ENDERECO",
 	);
 
 	const [logradouro, setLogradouro] = useState(
-		() => searchParams.get("logradouro") ?? ""
+    () => searchParams.get("logradouro") ?? "",
 	);
 
 	const [numero, setNumero] = useState(() => searchParams.get("numero") ?? "");
-	const [codigos, setCodigos] = useState(() => searchParams.get("codigos") ?? "");
+  const [codigos, setCodigos] = useState(
+    () => searchParams.get("codigos") ?? "",
+  );
 
-	const [assinatura, setAssinatura] = useState<MinhaAssinaturaResponse | null>(null);
+  const [assinatura, setAssinatura] = useState<MinhaAssinaturaResponse | null>(
+    null,
+  );
 
 	const [jobId, setJobId] = useState<string | null>(null);
-	const [progresso, setProgresso] = useState<ProgressoTarefaResponse | null>(null);
+  const [progresso, setProgresso] = useState<ProgressoTarefaResponse | null>(
+    null,
+  );
 
-	const [previaBusca, setPreviaBusca] = useState<PreverBuscaResponse | null>(null);
-
-	const [avisoExcedente, setAvisoExcedente] = useState<PreverBuscaResponse | null>(null);
+  const [previaBusca, setPreviaBusca] = useState<PreverBuscaResponse | null>(
+    null,
+  );
 
 	const [pendencias, setPendencias] = useState<PreverBuscaResponse[]>([]);
 
@@ -259,7 +256,7 @@ function NovaBuscaContent() {
 
 	const analiseCodigos = useMemo(
 		() => analisarCodigosParaInterface(codigos),
-		[codigos]
+    [codigos],
 	);
 
 	const codigosAcimaDoLimite =
@@ -286,20 +283,22 @@ function NovaBuscaContent() {
 		previaBusca?.previa.tipoBusca === "CODIGOS_CADASTRAIS";
 
 	const previaProcessando =
-		previaBusca && STATUS_PROCESSANDO_PREVIA.includes(previaBusca.previa.status);
+    previaBusca &&
+    STATUS_PROCESSANDO_PREVIA.includes(previaBusca.previa.status);
 
 	const previaSemRegistros =
 		previaBusca?.previa.status === "PRONTA" &&
 		previaBusca.previa.quantidadeRegistros <= 0;
 
-	const previaProntaSemExcedente =
+  const previaPodeConfirmar =
 		previaBusca?.previa.status === "PRONTA" &&
 		previaBusca.previa.quantidadeRegistros > 0 &&
-		!previaBusca.precisaConfirmarExcedente;
+    podeConfirmarPrevia(previaBusca.limite);
 
-	const previaAguardandoExcedente =
-		previaBusca?.previa.status === "AGUARDANDO_AUTORIZACAO_EXCEDENTE" &&
-		previaBusca.previa.quantidadeRegistros > 0;
+  const previaLimiteInsuficiente =
+    previaBusca?.previa.status === "PRONTA" &&
+    previaBusca.previa.quantidadeRegistros > 0 &&
+    !previaBusca.limite.podeConfirmar;
 
 	async function carregarAssinatura() {
 		try {
@@ -307,7 +306,9 @@ function NovaBuscaContent() {
 
 			setAssinatura(data);
 		} catch (error) {
-			setErro(error instanceof Error ? error.message : "Erro ao carregar assinatura");
+      setErro(
+        error instanceof Error ? error.message : "Erro ao carregar assinatura",
+      );
 		}
 	}
 
@@ -325,7 +326,7 @@ function NovaBuscaContent() {
 		}
 	}
 
-	async function criarTarefaComPrevia(previaId: string, confirmarExcedente: boolean) {
+  async function criarTarefaComPrevia(previaId: string) {
 		const previaSelecionada =
 			previaBusca?.previa.id === previaId
 				? previaBusca
@@ -338,7 +339,7 @@ function NovaBuscaContent() {
 			setErro(
 				previaSelecionada.previa.tipoBusca === "CODIGOS_CADASTRAIS"
 					? "Não é possível iniciar o processamento porque a prévia não possui códigos cadastrais válidos."
-					: "Não é possível iniciar o processamento porque o 1RIBH não encontrou imóveis para este endereço."
+          : "Não é possível iniciar o processamento porque o 1RIBH não encontrou imóveis para este endereço.",
 			);
 			return;
 		}
@@ -349,16 +350,7 @@ function NovaBuscaContent() {
 		try {
 			const data = await criarTarefaBusca({
 				previaId,
-				confirmarExcedente,
 			});
-
-			if (data.precisaConfirmarExcedente) {
-				setAvisoExcedente(data);
-				setPreviaBusca(data);
-				return;
-			}
-
-			setAvisoExcedente(null);
 
 			const tarefaId = extrairTarefaIdCriada(data);
 
@@ -372,8 +364,24 @@ function NovaBuscaContent() {
 			await carregarAssinatura();
 			await carregarPendencias();
 		} catch (error) {
+      if (
+        isApiError(error) &&
+        error.status === 409 &&
+        error.code === CODIGO_LIMITE_PLANO_INSUFICIENTE
+      ) {
+        setErro(error.message);
+
+        const atualizada = await buscarPrevia(previaId);
+        setPreviaBusca(atualizada);
+        await carregarAssinatura();
+        await carregarPendencias();
+        return;
+      }
+
 			setErro(
-				error instanceof Error ? error.message : "Erro desconhecido ao criar tarefa"
+        error instanceof Error
+          ? error.message
+          : "Erro desconhecido ao iniciar tarefa",
 			);
 		} finally {
 			setIsLoading(false);
@@ -385,7 +393,7 @@ function NovaBuscaContent() {
 
 		if (tipoBusca === "CODIGOS_CADASTRAIS" && codigosAcimaDoLimite) {
 			setErro(
-				`Informe no máximo ${MAX_CODIGOS_POR_PREVIA} códigos cadastrais por prévia.`
+        `Informe no máximo ${MAX_CODIGOS_POR_PREVIA} códigos cadastrais por prévia.`,
 			);
 			return;
 		}
@@ -399,7 +407,6 @@ function NovaBuscaContent() {
 		setProgresso(null);
 		setJobId(null);
 		setPreviaBusca(null);
-		setAvisoExcedente(null);
 		setIsLoading(true);
 
 		try {
@@ -416,13 +423,14 @@ function NovaBuscaContent() {
 			setPreviaBusca(previa);
 
 			if (previa.previa.status === "AGUARDANDO_AUTORIZACAO_EXCEDENTE") {
-				setAvisoExcedente(previa);
 			}
 
 			await carregarPendencias();
 		} catch (error) {
 			setErro(
-				error instanceof Error ? error.message : "Erro desconhecido ao criar prévia"
+        error instanceof Error
+          ? error.message
+          : "Erro desconhecido ao criar prévia",
 			);
 		} finally {
 			setIsLoading(false);
@@ -437,15 +445,11 @@ function NovaBuscaContent() {
 			const atualizada = await buscarPrevia(previaId);
 
 			setPreviaBusca(atualizada);
-
-			if (atualizada.previa.status === "AGUARDANDO_AUTORIZACAO_EXCEDENTE") {
-				setAvisoExcedente(atualizada);
-			} else {
-				setAvisoExcedente(null);
-			}
 		} catch (error) {
 			setErro(
-				error instanceof Error ? error.message : "Erro desconhecido ao revisar prévia"
+        error instanceof Error
+          ? error.message
+          : "Erro desconhecido ao revisar prévia",
 			);
 		} finally {
 			setIsLoading(false);
@@ -463,14 +467,12 @@ function NovaBuscaContent() {
 				setPreviaBusca(null);
 			}
 
-			if (avisoExcedente?.previa.id === previaId) {
-				setAvisoExcedente(null);
-			}
-
 			await carregarPendencias();
 		} catch (error) {
 			setErro(
-				error instanceof Error ? error.message : "Erro desconhecido ao cancelar prévia"
+        error instanceof Error
+          ? error.message
+          : "Erro desconhecido ao cancelar prévia",
 			);
 		} finally {
 			setIsLoading(false);
@@ -490,8 +492,9 @@ function NovaBuscaContent() {
 					void buscarPrevia(event.previaId).then((atualizada) => {
 						setPreviaBusca(atualizada);
 
-						if (atualizada.previa.status === "AGUARDANDO_AUTORIZACAO_EXCEDENTE") {
-							setAvisoExcedente(atualizada);
+            if (
+              atualizada.previa.status === "AGUARDANDO_AUTORIZACAO_EXCEDENTE"
+            ) {
 						}
 					});
 				}
@@ -501,7 +504,10 @@ function NovaBuscaContent() {
 				void carregarPendencias();
 			}
 
-			if (event.type === "tarefa.progress" || event.type === "tarefa.completed") {
+      if (
+        event.type === "tarefa.progress" ||
+        event.type === "tarefa.completed"
+      ) {
 				if (jobId === event.tarefaId || progresso?.id === event.tarefaId) {
 					void buscarProgressoTarefa(event.tarefaId).then(setProgresso);
 				}
@@ -512,7 +518,7 @@ function NovaBuscaContent() {
 				}
 			}
 		},
-		[isCheckingAuth, previaBusca?.previa.id, jobId, progresso?.id]
+    [isCheckingAuth, previaBusca?.previa.id, jobId, progresso?.id],
 	);
 
 	useEffect(() => {
@@ -567,7 +573,6 @@ function NovaBuscaContent() {
 				setPreviaBusca(atualizada);
 
 				if (atualizada.previa.status === "AGUARDANDO_AUTORIZACAO_EXCEDENTE") {
-					setAvisoExcedente(atualizada);
 				}
 
 				await carregarPendencias();
@@ -576,7 +581,7 @@ function NovaBuscaContent() {
 					setErro(
 						error instanceof Error
 							? error.message
-							: "Erro desconhecido ao atualizar prévia"
+              : "Erro desconhecido ao atualizar prévia",
 					);
 				}
 			}
@@ -613,7 +618,7 @@ function NovaBuscaContent() {
 					setErro(
 						error instanceof Error
 							? error.message
-							: "Erro desconhecido ao buscar progresso"
+              : "Erro desconhecido ao buscar progresso",
 					);
 				}
 			}
@@ -637,106 +642,6 @@ function NovaBuscaContent() {
 		<>
 			<AppHeader />
 
-			{avisoExcedente?.excedente && (
-				<ModalOverlay>
-					<ModalCard>
-						<ModalEyebrow>Autorização individual</ModalEyebrow>
-
-						<ModalTitle>Esta busca pode gerar cobrança adicional</ModalTitle>
-
-						<ModalText>
-							{avisoExcedente.previa.tipoBusca === "CODIGOS_CADASTRAIS" ? (
-								<>
-									Você informou{" "}
-									{formatQuantidadePrevia(
-										avisoExcedente.previa.quantidadeRegistros,
-										avisoExcedente.previa.tipoBusca
-									)}{" "}
-									{avisoExcedente.previa.quantidadeRegistros === 1
-										? "válido"
-										: "válidos"}
-									. Seu plano ainda possui{" "}
-									{formatNumberBR(
-										avisoExcedente.excedente.consultasDisponiveisNoMomento
-									)}{" "}
-									consulta(s) inclusas disponíveis neste momento.
-								</>
-							) : (
-								<>
-									O 1RIBH encontrou{" "}
-									{formatQuantidadePrevia(
-										avisoExcedente.previa.quantidadeRegistros,
-										avisoExcedente.previa.tipoBusca
-									)}{" "}
-									para este endereço. Seu plano ainda possui{" "}
-									{formatNumberBR(
-										avisoExcedente.excedente.consultasDisponiveisNoMomento
-									)}{" "}
-									consulta(s) inclusas disponíveis neste momento.
-								</>
-							)}
-						</ModalText>
-
-						<ModalGrid>
-							<ModalInfo>
-								<strong>
-									{avisoExcedente.previa.tipoBusca === "CODIGOS_CADASTRAIS"
-										? "Códigos válidos"
-										: "Registros encontrados"}
-								</strong>
-								<span>{formatNumberBR(avisoExcedente.previa.quantidadeRegistros)}</span>
-							</ModalInfo>
-
-							<ModalInfo>
-								<strong>Consultas disponíveis</strong>
-								<span>
-									{formatNumberBR(avisoExcedente.excedente.consultasDisponiveisNoMomento)}
-								</span>
-							</ModalInfo>
-
-							<ModalInfo>
-								<strong>Consultas excedentes</strong>
-								<span>
-									{formatNumberBR(avisoExcedente.excedente.consultasExcedentesEstimadas)}
-								</span>
-							</ModalInfo>
-
-							<ModalInfo>
-								<strong>Valor adicional estimado</strong>
-								<span>
-									{formatCurrencyFromCents(
-										avisoExcedente.excedente.valorExcedenteEstimadoCentavos
-									)}
-								</span>
-							</ModalInfo>
-						</ModalGrid>
-
-						<ModalText>
-							Esta autorização vale somente para esta busca. As outras pendências precisam
-							ser revisadas individualmente.
-						</ModalText>
-
-						<ModalActions>
-							<ModalCancelButton
-								type="button"
-								disabled={isLoading}
-								onClick={() => cancelarPreviaPorId(avisoExcedente.previa.id)}
-							>
-								Cancelar esta busca
-							</ModalCancelButton>
-
-							<ModalConfirmButton
-								type="button"
-								disabled={isLoading}
-								onClick={() => criarTarefaComPrevia(avisoExcedente.previa.id, true)}
-							>
-								{isLoading ? "Autorizando..." : "Autorizar esta busca"}
-							</ModalConfirmButton>
-						</ModalActions>
-					</ModalCard>
-				</ModalOverlay>
-			)}
-
 			<PageShell>
 				<PageContainer>
 					<HeroGrid>
@@ -747,9 +652,10 @@ function NovaBuscaContent() {
 								<HeroTitle>Escolha a rota certa para cada captação.</HeroTitle>
 
 								<HeroSubtitle>
-									Localize imóveis por endereço com descoberta automática no 1RIBH ou
-									informe códigos cadastrais diretamente. Em ambos os casos, você revisa
-									a prévia e o eventual excedente antes do processamento.
+                  Localize imóveis por endereço com descoberta automática no
+                  1RIBH ou informe códigos cadastrais diretamente. Em ambos os
+                  casos, você revisa a prévia e o eventual excedente antes do
+                  processamento.
 								</HeroSubtitle>
 
 								<HeaderActions>
@@ -768,7 +674,9 @@ function NovaBuscaContent() {
 							<HeroPanelGrid>
 								<HeroPanelItem>
 									<HeroPanelLabel>Plano</HeroPanelLabel>
-									<HeroPanelValue>{assinatura?.plano.nome ?? "-"}</HeroPanelValue>
+                  <HeroPanelValue>
+                    {assinatura?.plano.nome ?? "-"}
+                  </HeroPanelValue>
 								</HeroPanelItem>
 
 								<HeroPanelItem>
@@ -804,20 +712,23 @@ function NovaBuscaContent() {
 										</OperationDescription>
 									</div>
 
-									{progresso?.status && <StatusBadge status={progresso.status} />}
+                  {progresso?.status && (
+                    <StatusBadge status={progresso.status} />
+                  )}
 								</OperationCardHeader>
 
 								<OperationCardBody>
 									{buscaBloqueada && assinatura && (
 										<ErrorBox>
-											Seu acesso está bloqueado por status operacional, plano inativo ou
-											pendência financeira.
+                      Seu acesso está bloqueado por status operacional, plano
+                      inativo ou pendência financeira.
 										</ErrorBox>
 									)}
 
 									{!assinatura && (
 										<EmptyState>
-											Carregando dados da assinatura antes de liberar novas buscas.
+                      Carregando dados da assinatura antes de liberar novas
+                      buscas.
 										</EmptyState>
 									)}
 
@@ -864,7 +775,9 @@ function NovaBuscaContent() {
 												<Input
 													label="Logradouro"
 													value={logradouro}
-													onChange={(event) => setLogradouro(event.target.value)}
+                          onChange={(event) =>
+                            setLogradouro(event.target.value)
+                          }
 													placeholder="Ex: Rua Desembargador Jorge Fontana"
 													required
 												/>
@@ -898,10 +811,11 @@ function NovaBuscaContent() {
 														required
 													/>
 													<CodigosHint id="codigos-cadastrais-ajuda">
-														Use uma linha por código ou separe por vírgula ou ponto e
-														vírgula. Espaços internos são removidos e letras são
-														convertidas para maiúsculas. Limite de{" "}
-														{formatNumberBR(MAX_CODIGOS_POR_PREVIA)} códigos por prévia.
+                            Use uma linha por código ou separe por vírgula ou
+                            ponto e vírgula. Espaços internos são removidos e
+                            letras são convertidas para maiúsculas. Limite de{" "}
+                            {formatNumberBR(MAX_CODIGOS_POR_PREVIA)} códigos por
+                            prévia.
 													</CodigosHint>
 												</CodigosField>
 
@@ -957,10 +871,10 @@ function NovaBuscaContent() {
 												{codigosAcimaDoLimite && (
 													<ErrorBox>
 														A entrada possui{" "}
-														{formatNumberBR(analiseCodigos.totalRecebidos)} códigos.
-														Reduza para no máximo{" "}
-														{formatNumberBR(MAX_CODIGOS_POR_PREVIA)} antes de criar a
-														prévia.
+                            {formatNumberBR(analiseCodigos.totalRecebidos)}{" "}
+                            códigos. Reduza para no máximo{" "}
+                            {formatNumberBR(MAX_CODIGOS_POR_PREVIA)} antes de
+                            criar a prévia.
 													</ErrorBox>
 												)}
 
@@ -979,7 +893,9 @@ function NovaBuscaContent() {
 																		{analiseCodigos.codigosDuplicados
 																			.slice(0, 5)
 																			.map((codigo, index) => (
-																				<li key={`${codigo}-${index}`}>{codigo}</li>
+                                        <li key={`${codigo}-${index}`}>
+                                          {codigo}
+                                        </li>
 																			))}
 																	</CodeFeedbackList>
 																</>
@@ -1007,8 +923,8 @@ function NovaBuscaContent() {
 																analiseCodigos.totalInvalidos >
 																10 && (
 																<span>
-																	Mostrando apenas os primeiros itens para manter a
-																	leitura objetiva.
+                                  Mostrando apenas os primeiros itens para
+                                  manter a leitura objetiva.
 																</span>
 															)}
 														</CodeFeedback>
@@ -1063,7 +979,9 @@ function NovaBuscaContent() {
 
 													<PreviewStatus>
 														<PreviewStatusBadge
-															$variant={getPreviaStatusVariant(previaBusca.previa.status)}
+                              $variant={getPreviaStatusVariant(
+                                previaBusca.previa.status,
+                              )}
 														>
 															{getPreviaStatusLabel(previaBusca.previa.status)}
 														</PreviewStatusBadge>
@@ -1073,7 +991,7 @@ function NovaBuscaContent() {
 												<PreviewBadge>
 													{formatQuantidadePrevia(
 														previaBusca.previa.quantidadeRegistros,
-														previaBusca.previa.tipoBusca
+                            previaBusca.previa.tipoBusca,
 													)}
 												</PreviewBadge>
 											</PreviewHeader>
@@ -1090,7 +1008,7 @@ function NovaBuscaContent() {
 															<strong>Códigos válidos</strong>
 															<span>
 																{formatNumberBR(
-																	previaBusca.previa.quantidadeRegistros
+                                  previaBusca.previa.quantidadeRegistros,
 																)}
 															</span>
 														</PreviewInfo>
@@ -1110,10 +1028,19 @@ function NovaBuscaContent() {
 												)}
 
 												<PreviewInfo>
-													<strong>Excedente estimado</strong>
+                          <strong>Saldo disponível</strong>
 													<span>
-														{formatCurrencyFromCents(
-															previaBusca.excedente.valorExcedenteEstimadoCentavos
+                            {formatNumberBR(
+                              previaBusca.limite.consultasRestantes,
+                            )}
+                          </span>
+                        </PreviewInfo>
+
+                        <PreviewInfo>
+                          <strong>Consultas solicitadas</strong>
+                          <span>
+                            {formatNumberBR(
+                              previaBusca.limite.consultasSolicitadas,
 														)}
 													</span>
 												</PreviewInfo>
@@ -1121,10 +1048,12 @@ function NovaBuscaContent() {
 											{previaPorCodigos && previaBusca.validacaoCodigos && (
 												<CodeSummaryGrid aria-label="Validação confirmada pela API">
 													<CodeSummaryItem>
-														<CodeSummaryLabel>Recebidos pela API</CodeSummaryLabel>
+                            <CodeSummaryLabel>
+                              Recebidos pela API
+                            </CodeSummaryLabel>
 														<CodeSummaryValue>
 															{formatNumberBR(
-																previaBusca.validacaoCodigos.totalRecebidos
+                                previaBusca.validacaoCodigos.totalRecebidos,
 															)}
 														</CodeSummaryValue>
 													</CodeSummaryItem>
@@ -1133,7 +1062,7 @@ function NovaBuscaContent() {
 														<CodeSummaryLabel>Válidos únicos</CodeSummaryLabel>
 														<CodeSummaryValue>
 															{formatNumberBR(
-																previaBusca.validacaoCodigos.totalValidos
+                                previaBusca.validacaoCodigos.totalValidos,
 															)}
 														</CodeSummaryValue>
 													</CodeSummaryItem>
@@ -1145,10 +1074,12 @@ function NovaBuscaContent() {
 																: "neutral"
 														}
 													>
-														<CodeSummaryLabel>Duplicados removidos</CodeSummaryLabel>
+                            <CodeSummaryLabel>
+                              Duplicados removidos
+                            </CodeSummaryLabel>
 														<CodeSummaryValue>
 															{formatNumberBR(
-																previaBusca.validacaoCodigos.totalDuplicados
+                                previaBusca.validacaoCodigos.totalDuplicados,
 															)}
 														</CodeSummaryValue>
 													</CodeSummaryItem>
@@ -1160,16 +1091,17 @@ function NovaBuscaContent() {
 																: "neutral"
 														}
 													>
-														<CodeSummaryLabel>Inválidos removidos</CodeSummaryLabel>
+                            <CodeSummaryLabel>
+                              Inválidos removidos
+                            </CodeSummaryLabel>
 														<CodeSummaryValue>
 															{formatNumberBR(
-																previaBusca.validacaoCodigos.totalInvalidos
+                                previaBusca.validacaoCodigos.totalInvalidos,
 															)}
 														</CodeSummaryValue>
 													</CodeSummaryItem>
 												</CodeSummaryGrid>
 											)}
-
 
 											{previaBusca.previa.erro && (
 												<ErrorBox>{previaBusca.previa.erro}</ErrorBox>
@@ -1193,57 +1125,63 @@ function NovaBuscaContent() {
 
 											{previaProcessando && (
 												<EmptyState>
-													A prévia ainda está sendo processada. Assim que estiver pronta,
-													esta tela será atualizada automaticamente.
+                          A prévia ainda está sendo processada. Assim que
+                          estiver pronta, esta tela será atualizada
+                          automaticamente.
 												</EmptyState>
 											)}
 
 											{previaBusca.previa.registros.length > 0 && (
 												<PreviewList>
-													{previaBusca.previa.registros.map((registro, index) => (
-														<PreviewListItem key={`${registro.indiceCadastral}-${index}`}>
+                          {previaBusca.previa.registros.map(
+                            (registro, index) => (
+                              <PreviewListItem
+                                key={`${registro.indiceCadastral}-${index}`}
+                              >
 															<strong>{registro.indiceCadastral}</strong>
 															<span>
 																{previaPorCodigos
 																	? "Entrada direta"
-																	: registro.complemento ?? "Sem complemento"}
+                                    : (registro.complemento ??
+                                      "Sem complemento")}
 															</span>
 														</PreviewListItem>
-													))}
+                            ),
+                          )}
 												</PreviewList>
 											)}
 
+                      {previaLimiteInsuficiente && (
+                        <ErrorBox>
+                          {formatarMensagemLimitePlano(previaBusca.limite)}
+                        </ErrorBox>
+                      )}
+
 											<PreviewActions>
-												{previaProntaSemExcedente && (
+                        {previaPodeConfirmar && (
 													<Button
 														type="button"
 														disabled={isLoading}
 														onClick={() =>
-															criarTarefaComPrevia(previaBusca.previa.id, false)
+                              criarTarefaComPrevia(previaBusca.previa.id)
 														}
 													>
-														{isLoading ? "Iniciando..." : "Iniciar processamento"}
-													</Button>
-												)}
-
-												{previaAguardandoExcedente && (
-													<Button
-														type="button"
-														disabled={isLoading}
-														onClick={() => setAvisoExcedente(previaBusca)}
-													>
-														Revisar autorização
+                            {isLoading
+                              ? "Iniciando..."
+                              : "Iniciar processamento"}
 													</Button>
 												)}
 
 												{!["CONFIRMADA", "CANCELADA", "EXPIRADA"].includes(
-													previaBusca.previa.status
+                          previaBusca.previa.status,
 												) && (
 													<Button
 														type="button"
 														variant="danger"
 														disabled={isLoading}
-														onClick={() => cancelarPreviaPorId(previaBusca.previa.id)}
+                            onClick={() =>
+                              cancelarPreviaPorId(previaBusca.previa.id)
+                            }
 													>
 														Cancelar prévia
 													</Button>
@@ -1269,8 +1207,8 @@ function NovaBuscaContent() {
 
 									{jobId && !progresso && !erro && (
 										<EmptyState>
-											Carregando progresso da tarefa. Assim que o processamento iniciar,
-											os resultados aparecerão aqui.
+                      Carregando progresso da tarefa. Assim que o processamento
+                      iniciar, os resultados aparecerão aqui.
 										</EmptyState>
 									)}
 								</OperationCardBody>
@@ -1303,9 +1241,9 @@ function NovaBuscaContent() {
 								<SidebarTitle>Central de pendências</SidebarTitle>
 
 								<SidebarDescription>
-									Pendências precisam ser revisadas uma por uma. O sistema não permite
-									autorizar todas de uma vez, porque o excedente é recalculado a cada
-									confirmação.
+                  Pendências precisam ser revisadas uma por uma. O sistema não
+                  permite autorizar todas de uma vez, porque o excedente é
+                  recalculado a cada confirmação.
 								</SidebarDescription>
 
 								{isLoadingPendencias && (
@@ -1314,7 +1252,9 @@ function NovaBuscaContent() {
 
 								{!isLoadingPendencias && pendencias.length === 0 && (
 									<SidebarList>
-										<SidebarListItem>Nenhuma prévia pendente no momento.</SidebarListItem>
+                    <SidebarListItem>
+                      Nenhuma prévia pendente no momento.
+                    </SidebarListItem>
 									</SidebarList>
 								)}
 
@@ -1342,12 +1282,10 @@ function NovaBuscaContent() {
 																{getPreviaStatusLabel(item.previa.status)} ·{" "}
 																{formatQuantidadePrevia(
 																	item.previa.quantidadeRegistros,
-																	item.previa.tipoBusca
+                                  item.previa.tipoBusca,
 																)}{" "}
-																· Excedente estimado:{" "}
-																{formatCurrencyFromCents(
-																	item.excedente.valorExcedenteEstimadoCentavos
-																)}
+                                · Saldo disponível:{" "}
+                                {formatNumberBR(item.limite.consultasRestantes)}
 															</>
 														)}
 													</span>
@@ -1366,7 +1304,9 @@ function NovaBuscaContent() {
 														<SmallDangerButton
 															type="button"
 															disabled={isLoading}
-															onClick={() => cancelarPreviaPorId(item.previa.id)}
+                              onClick={() =>
+                                cancelarPreviaPorId(item.previa.id)
+                              }
 														>
 															{itemSemRegistros ? "Descartar" : "Cancelar"}
 														</SmallDangerButton>
@@ -1382,22 +1322,24 @@ function NovaBuscaContent() {
 								<SidebarTitle>Fluxo protegido</SidebarTitle>
 
 								<SidebarDescription>
-									A prévia protege o fluxo financeiro e garante que a mesma lista revisada
-									seja usada no processamento.
+                  A prévia protege o fluxo financeiro e garante que a mesma
+                  lista revisada seja usada no processamento.
 								</SidebarDescription>
 
 								<SidebarList>
 									<SidebarListItem>
-										Por endereço, o sistema descobre os códigos no 1RIBH em fila.
+                    Por endereço, o sistema descobre os códigos no 1RIBH em
+                    fila.
 									</SidebarListItem>
 
 									<SidebarListItem>
-										Na entrada direta, os códigos são normalizados sem consultar o 1RIBH.
+                    Na entrada direta, os códigos são normalizados sem consultar
+                    o 1RIBH.
 									</SidebarListItem>
 
 									<SidebarListItem>
-										Antes da confirmação, a API calcula as consultas e o possível
-										excedente.
+                    Antes da confirmação, a API calcula as consultas e o
+                    possível excedente.
 									</SidebarListItem>
 
 									<SidebarListItem>

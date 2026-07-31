@@ -28,8 +28,6 @@ export type RealtimeEvent =
       previaId: string;
       status: BuscaPreviaRealtimeStatus;
       quantidadeRegistros: number;
-      consultasExcedentesEstimadas: number;
-      valorExcedenteEstimadoCentavos: number;
       updatedAt: string;
     }
   | {

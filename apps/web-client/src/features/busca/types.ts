@@ -50,14 +50,6 @@ export type BuscaPreviaResumo = {
   updatedAt: string;
 };
 
-export type ExcedenteResumo = {
-  consultasEstimadas: number;
-  consultasDisponiveisNoMomento: number;
-  consultasExcedentesEstimadas: number;
-  valorConsultaAdicionalCentavos: number;
-  valorExcedenteEstimadoCentavos: number;
-};
-
 export type PreverBuscaRequest = {
   logradouro: string;
   numero: string;
@@ -71,17 +63,25 @@ export type UsoResumo = {
   consultasUsadas: number;
   limiteMensal: number;
   consultasRestantes: number;
-  consultasExcedentes: number;
-  valorConsultaAdicionalCentavos: number;
-  valorExcedenteCentavos: number;
   totalEstimadoCentavos: number;
   percentualUsado: number;
+  inicioMes?: string;
+  fimMes?: string;
+};
+
+export type LimitePreviaResumo = {
+  limiteMensalConsultas: number;
+  consultasUsadas: number;
+  consultasRestantes: number;
+  consultasSolicitadas: number;
+  consultasRestantesAposReserva: number;
+  podeConfirmar: boolean;
+  renovacaoEm: string | null;
 };
 
 export type PreverBuscaResponse = {
   previa: BuscaPreviaResumo;
-  precisaConfirmarExcedente: boolean;
-  excedente: ExcedenteResumo;
+  limite: LimitePreviaResumo;
   uso?: UsoResumo;
   validacaoCodigos?: ResumoCodigosCadastrais;
   message?: string;
@@ -93,7 +93,6 @@ export type ListarPreviasPendentesResponse = {
 
 export type CriarTarefaRequest = {
   previaId: string;
-  confirmarExcedente?: boolean;
   forceRefresh?: boolean;
 };
 
@@ -151,15 +150,6 @@ export type ProgressoTarefaResponse = {
     total: number;
     current: number;
     percentage: number;
-  };
-  excedente?: {
-    autorizado: boolean;
-    autorizadoEm: string | null;
-    consultasEstimadas: number | null;
-    consultasDisponiveisNoMomento: number | null;
-    consultasExcedentesEstimadas: number | null;
-    valorConsultaAdicionalCentavos: number | null;
-    valorExcedenteEstimadoCentavos: number | null;
   };
   erro: string | null;
   resultados: ResultadoBusca[];
@@ -255,7 +245,6 @@ export type MinhaAssinaturaResponse = {
     limiteMensalConsultas: number;
     intervaloSegundos: number;
     precoCentavos: number;
-    valorConsultaAdicionalCentavos: number;
     limiteCorretores: number | null;
     status: "ATIVO" | "INATIVO";
   };
@@ -263,9 +252,6 @@ export type MinhaAssinaturaResponse = {
     consultasUsadas: number;
     limiteMensal: number;
     consultasRestantes: number;
-    consultasExcedentes: number;
-    valorConsultaAdicionalCentavos: number;
-    valorExcedenteCentavos: number;
     totalEstimadoCentavos: number;
     percentualUsado: number;
     inicioMes: string;
