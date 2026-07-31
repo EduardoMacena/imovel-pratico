@@ -42,28 +42,16 @@ function normalizarRegistrosPrevia(value: unknown) {
 		.filter(item => item.indiceCadastral.length > 0);
 }
 
-async function validarLimiteMensalAntesDeSalvarResultado(clienteId: string, tarefaId: string) {
+async function validarLimiteMensalAntesDeSalvarResultado(
+	clienteId: string,
+	_tarefaId: string
+) {
 	const inicioMes = new Date();
-
-	inicioMes.setDate(1);
-	inicioMes.setHours(0, 0, 0, 0);
+	inicioMes.setUTCDate(1);
+	inicioMes.setUTCHours(0, 0, 0, 0);
 
 	const fimMes = new Date(inicioMes);
-
-	fimMes.setMonth(fimMes.getMonth() + 1);
-
-	const tarefa = await prisma.tarefa.findUnique({
-		where: {
-			id: tarefaId,
-		},
-		select: {
-			excedenteAutorizado: true,
-		},
-	});
-
-	if (tarefa?.excedenteAutorizado) {
-		return;
-	}
+	fimMes.setUTCMonth(fimMes.getUTCMonth() + 1);
 
 	const cliente = await prisma.cliente.findUnique({
 		where: {
@@ -74,29 +62,33 @@ async function validarLimiteMensalAntesDeSalvarResultado(clienteId: string, tare
 		},
 	});
 
-	if (!cliente) {
-		throw new Error("CLIENTE_NAO_ENCONTRADO");
+	if (!cliente?.plano) {
+		throw new Error(
+			"Cliente sem plano para validar o limite mensal"
+		);
 	}
 
-	if (!cliente.plano) {
-		throw new Error("CLIENTE_SEM_PLANO");
-	}
-
-	const consultasUsadas = await prisma.tarefaResultado.count({
-		where: {
-			status: "SUCCESS",
-      tarefa: {
-				clienteId,
+	const consultasUsadas =
+		await prisma.tarefaResultado.count({
+			where: {
+				status: "SUCCESS",
+				tarefa: {
+					clienteId,
+				},
+				createdAt: {
+					gte: inicioMes,
+					lt: fimMes,
+				},
 			},
-			createdAt: {
-				gte: inicioMes,
-				lt: fimMes,
-			},
-		},
-	});
+		});
 
-	if (consultasUsadas >= cliente.plano.limiteMensalConsultas) {
-		throw new Error("LIMITE_MENSAL_ATINGIDO");
+	if (
+		consultasUsadas >=
+		cliente.plano.limiteMensalConsultas
+	) {
+		throw new Error(
+			"Limite mensal de consultas do plano atingido"
+		);
 	}
 }
 
