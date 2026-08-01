@@ -77,11 +77,9 @@ function criarTransporter() {
 
 async function enviarEmail({ to, subject, html, text }: EnviarEmailParams) {
   if (!smtpEstaConfigurado()) {
-    console.log("[EMAIL_SIMULADO]", {
-      to,
-      subject,
-      text,
-    });
+    console.info(
+      "[EMAIL_SIMULADO] SMTP não configurado; conteúdo do e-mail omitido.",
+    );
 
     return {
       id: null,

@@ -1,4 +1,9 @@
 import type { FastifyInstance } from "fastify";
+import {
+  atualizarClienteOnboardingController,
+  criarClienteOnboardingController,
+  listarMunicipiosElegiveisController,
+} from "../clientes-admin/clientes-admin.controller.js";
 import { authMiddleware } from "../auth/auth.middleware.js";
 import { adminMiddleware } from "./admin.middleware.js";
 import { exportarResultadosTarefaAdminPdfController } from "./admin-exportacao-pdf.controller.js";
@@ -89,6 +94,16 @@ export async function adminRoutes(app: FastifyInstance) {
 
 	app.post("/admin/tarefas/:id/cancelar", cancelarTarefaAdminController);
 	app.post("/admin/tarefas/:id/reprocessar", reprocessarTarefaAdminController);
+
+	app.get("/admin/municipios", listarMunicipiosElegiveisController);
+	app.post(
+		"/admin/clientes/onboarding",
+		criarClienteOnboardingController
+	);
+	app.patch(
+		"/admin/clientes/:id/onboarding",
+		atualizarClienteOnboardingController
+	);
 
 	app.get("/admin/clientes", listarClientesController);
 	app.post("/admin/clientes", criarClienteController);
