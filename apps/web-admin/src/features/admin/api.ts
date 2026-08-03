@@ -8,12 +8,15 @@ import type {
 	BuscarClienteResponse,
 	BuscarTarefaAdminResponse,
 	BuscarUsuarioResponse,
+	CriarClienteOnboardingRequest,
+	CriarClienteOnboardingResponse,
 	CriarClienteRequest,
 	CriarClienteResponse,
 	CriarUsuarioRequest,
 	CriarUsuarioResponse,
 	DashboardAdminResponse,
 	ListarClientesResponse,
+	ListarMunicipiosElegiveisResponse,
 	ListarTarefasDoClienteResponse,
 	ListarUsuariosResponse,
 	AtualizarPlanoRequest,
@@ -50,6 +53,20 @@ export function criarCliente(data: CriarClienteRequest) {
 		method: "POST",
 		body: JSON.stringify(data),
 	});
+}
+
+export function listarMunicipiosElegiveis() {
+	return apiRequest<ListarMunicipiosElegiveisResponse>("/admin/municipios");
+}
+
+export function criarClienteOnboarding(data: CriarClienteOnboardingRequest) {
+	return apiRequest<CriarClienteOnboardingResponse>(
+		"/admin/clientes/onboarding",
+		{
+			method: "POST",
+			body: JSON.stringify(data),
+		}
+	);
 }
 
 export function listarUsuariosDoCliente(clienteId: string) {

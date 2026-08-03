@@ -50,6 +50,65 @@ export type CriarClienteResponse = {
 	cliente: ClienteResumo;
 };
 
+export type MunicipioElegivel = {
+	id: string;
+	codigoIbge: string;
+	nome: string;
+	uf: string;
+	status: "ATIVO";
+};
+
+export type ListarMunicipiosElegiveisResponse = {
+	municipios: MunicipioElegivel[];
+};
+
+export type CriarClienteOnboardingRequest = {
+	nome: string;
+	slug?: string;
+	status: ClienteStatus;
+	modoProcessamento: ClienteModoProcessamento;
+	workerUrl?: string | null;
+	limiteDiario: number;
+	planoId: string;
+	municipioId: string;
+	pagamentoStatus: PagamentoStatus;
+	pagamentoVenceEm?: string | null;
+	administradorInicial: {
+		nome: string;
+		email: string;
+		senha: string;
+	};
+};
+
+export type ClienteOnboardingResumo = {
+	id: string;
+	nome: string;
+	slug: string;
+	status: ClienteStatus;
+	modoProcessamento: ClienteModoProcessamento;
+	workerUrl: string | null;
+	intervaloSegundos: number;
+	limiteDiario: number;
+	limiteMensalConsultas: number;
+	pagamentoStatus: PagamentoStatus;
+	pagamentoVenceEm: string | null;
+	plano: PlanoResumo | null;
+	municipioPrincipal: MunicipioElegivel | null;
+	totalUsuarios: number;
+	totalTarefas: number;
+	createdAt: string;
+	updatedAt: string;
+};
+
+export type CriarClienteOnboardingResponse = {
+	cliente: ClienteOnboardingResumo;
+	administradorInicial: UsuarioResumo;
+	avisoEmail: {
+		code: "EMAIL_BOAS_VINDAS_NAO_ENVIADO";
+		message: string;
+	} | null;
+};
+
 export type UsuarioResumo = {
 	id: string;
 	clienteId: string;
