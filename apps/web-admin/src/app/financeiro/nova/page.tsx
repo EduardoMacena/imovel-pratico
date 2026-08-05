@@ -153,7 +153,7 @@ export default function NovaFaturaPage() {
               <Subtitle>
                 Selecione o cliente, a referência e o vencimento. O sistema
                 calcula automaticamente a mensalidade, as consultas usadas e o
-                excedente do mês.
+                mensalidade fixa do plano.
               </Subtitle>
 
               <Actions>

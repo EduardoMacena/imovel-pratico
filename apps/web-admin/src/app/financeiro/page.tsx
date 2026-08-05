@@ -93,16 +93,11 @@ export default function FinanceiroPage() {
       .filter(fatura => fatura.status === "PAGA")
       .reduce((total, fatura) => total + fatura.valorTotalCentavos, 0);
 
-    const totalExcedente = faturas.reduce((total, fatura) => {
-      return total + fatura.valorExcedenteCentavos;
-    }, 0);
-
     const abertas = faturas.filter(fatura => fatura.status === "ABERTA").length;
 
     return {
       totalAberto,
       totalPago,
-      totalExcedente,
       abertas,
     };
   }, [faturas]);
@@ -198,8 +193,7 @@ export default function FinanceiroPage() {
               <Title>Faturas</Title>
 
               <Subtitle>
-                Acompanhe faturas geradas, mensalidade, consumo excedente,
-                vencimento e pagamento dos clientes.
+                Acompanhe faturas geradas, mensalidades fixas, vencimentos e pagamentos dos clientes.
               </Subtitle>
             </HeaderContent>
 
@@ -223,10 +217,6 @@ export default function FinanceiroPage() {
             <StatValue>{formatCurrencyFromCents(resumo.totalPago)}</StatValue>
           </StatCard>
 
-          <StatCard>
-            <StatLabel>Excedente faturado</StatLabel>
-            <StatValue>{formatCurrencyFromCents(resumo.totalExcedente)}</StatValue>
-          </StatCard>
 
           <StatCard>
             <StatLabel>Faturas abertas</StatLabel>
@@ -325,22 +315,12 @@ export default function FinanceiroPage() {
                     </InfoValue>
                   </InfoBox>
 
-                  <InfoBox>
-                    <InfoLabel>Excedente</InfoLabel>
-                    <InfoValue>
-                      {formatCurrencyFromCents(fatura.valorExcedenteCentavos)}
-                    </InfoValue>
-                  </InfoBox>
 
                   <InfoBox>
                     <InfoLabel>Consultas usadas</InfoLabel>
                     <InfoValue>{fatura.consultasUsadas}</InfoValue>
                   </InfoBox>
 
-                  <InfoBox>
-                    <InfoLabel>Excedentes</InfoLabel>
-                    <InfoValue>{fatura.consultasExcedentes}</InfoValue>
-                  </InfoBox>
 
                   <InfoBox>
                     <InfoLabel>Vencimento</InfoLabel>

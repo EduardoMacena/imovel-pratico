@@ -7,6 +7,10 @@ import type {
   GerarFaturaInput,
   ListarFaturasQuery,
 } from "./admin-faturas.schemas.js";
+import {
+  calcularValoresFaturaPlanoFixo,
+  normalizarItemFaturaHistorica,
+} from "./admin-planos-fixos.js";
 
 function getPeriodoReferencia(referenciaMes: number, referenciaAno: number) {
   const inicio = new Date(
@@ -28,7 +32,7 @@ function getVencimentoPadrao(referenciaMes: number, referenciaAno: number) {
 }
 
 type ItemFaturaCalculado = {
-  tipo: "MENSALIDADE" | "CONSULTA_EXCEDENTE" | "AJUSTE" | "DESCONTO";
+  tipo: "MENSALIDADE";
   descricao: string;
   quantidade: number;
   valorUnitarioCentavos: number;
@@ -48,33 +52,36 @@ function serializarFatura(fatura: any) {
 
     referenciaMes: fatura.referenciaMes,
     referenciaAno: fatura.referenciaAno,
-    referenciaLabel: formatReferencia(fatura.referenciaMes, fatura.referenciaAno),
+    referenciaLabel: formatReferencia(
+      fatura.referenciaMes,
+      fatura.referenciaAno,
+    ),
 
     planoId: fatura.planoId,
     planoNome: fatura.planoNome,
 
     consultasInclusas: fatura.consultasInclusas,
     consultasUsadas: fatura.consultasUsadas,
-    consultasExcedentes: fatura.consultasExcedentes,
 
     valorMensalidadeCentavos: fatura.valorMensalidadeCentavos,
-    valorConsultaAdicionalCentavos: fatura.valorConsultaAdicionalCentavos,
-    valorExcedenteCentavos: fatura.valorExcedenteCentavos,
     valorTotalCentavos: fatura.valorTotalCentavos,
 
     vencimentoEm: formatDateOnlyFromDate(fatura.vencimentoEm),
     pagaEm: fatura.pagaEm,
     observacao: fatura.observacao,
 
-    itens: fatura.itens?.map((item: any) => ({
-      id: item.id,
-      tipo: item.tipo,
-      descricao: item.descricao,
-      quantidade: item.quantidade,
-      valorUnitarioCentavos: item.valorUnitarioCentavos,
-      valorTotalCentavos: item.valorTotalCentavos,
-      createdAt: item.createdAt,
-    })) ?? [],
+    itens:
+      fatura.itens?.map((item: any) =>
+        normalizarItemFaturaHistorica({
+          id: item.id,
+          tipo: item.tipo,
+          descricao: item.descricao,
+          quantidade: item.quantidade,
+          valorUnitarioCentavos: item.valorUnitarioCentavos,
+          valorTotalCentavos: item.valorTotalCentavos,
+          createdAt: item.createdAt,
+        }),
+      ) ?? [],
 
     createdAt: fatura.createdAt,
     updatedAt: fatura.updatedAt,
@@ -107,7 +114,10 @@ async function calcularDadosFatura({
     throw new Error("Cliente sem plano contratado");
   }
 
-  const { inicio, fim } = getPeriodoReferencia(referenciaMes, referenciaAno);
+  const { inicio, fim } = getPeriodoReferencia(
+    referenciaMes,
+    referenciaAno,
+  );
 
   const consultasUsadas = await prisma.tarefaResultado.count({
     where: {
@@ -122,56 +132,29 @@ async function calcularDadosFatura({
     },
   });
 
-  const consultasInclusas = cliente.plano.limiteMensalConsultas;
-  const consultasExcedentes = Math.max(consultasUsadas - consultasInclusas, 0);
-
-  const valorMensalidadeCentavos = cliente.plano.precoCentavos;
-  const valorConsultaAdicionalCentavos =
-    cliente.plano.valorConsultaAdicionalCentavos ?? 0;
-
-  const valorExcedenteCentavos =
-    consultasExcedentes * valorConsultaAdicionalCentavos;
+  const valores = calcularValoresFaturaPlanoFixo({
+    consultasInclusas: cliente.plano.limiteMensalConsultas,
+    consultasUsadas,
+    valorMensalidadeCentavos: cliente.plano.precoCentavos,
+  });
 
   const itens: ItemFaturaCalculado[] = [
     {
       tipo: "MENSALIDADE",
       descricao: `Mensalidade ${cliente.plano.nome} - ${formatReferencia(
         referenciaMes,
-        referenciaAno
+        referenciaAno,
       )}`,
       quantidade: 1,
-      valorUnitarioCentavos: valorMensalidadeCentavos,
-      valorTotalCentavos: valorMensalidadeCentavos,
+      valorUnitarioCentavos: valores.valorMensalidadeCentavos,
+      valorTotalCentavos: valores.valorMensalidadeCentavos,
     },
   ];
-
-  if (consultasExcedentes > 0) {
-    itens.push({
-      tipo: "CONSULTA_EXCEDENTE",
-      descricao: `${consultasExcedentes} consulta(s) excedente(s) - ${formatReferencia(
-        referenciaMes,
-        referenciaAno
-      )}`,
-      quantidade: consultasExcedentes,
-      valorUnitarioCentavos: valorConsultaAdicionalCentavos,
-      valorTotalCentavos: valorExcedenteCentavos,
-    });
-  }
-
-  const valorTotalCentavos = itens.reduce((total, item) => {
-    return total + item.valorTotalCentavos;
-  }, 0);
 
   return {
     cliente,
     plano: cliente.plano,
-    consultasInclusas,
-    consultasUsadas,
-    consultasExcedentes,
-    valorMensalidadeCentavos,
-    valorConsultaAdicionalCentavos,
-    valorExcedenteCentavos,
-    valorTotalCentavos,
+    ...valores,
     itens,
   };
 }

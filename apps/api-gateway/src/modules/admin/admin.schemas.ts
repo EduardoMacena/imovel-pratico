@@ -82,8 +82,6 @@ export const criarPlanoSchema = z.object({
 
   limiteMensalConsultas: z.coerce.number().min(1),
 
-  valorConsultaAdicionalCentavos: z.coerce.number().min(0).default(0),
-
   limiteCorretores: z.coerce.number().min(1).optional().nullable(),
 
   intervaloSegundos: z.coerce
@@ -102,8 +100,6 @@ export const atualizarPlanoSchema = z.object({
   descricao: z.string().optional().nullable(),
 
   limiteMensalConsultas: z.coerce.number().min(1).optional(),
-
-  valorConsultaAdicionalCentavos: z.coerce.number().min(0).optional(),
 
   limiteCorretores: z.coerce.number().min(1).optional().nullable(),
 
