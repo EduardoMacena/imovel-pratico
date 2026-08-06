@@ -94,7 +94,7 @@ function extrairCamposRestricaoUnica(error: unknown) {
   const message =
     error instanceof Error ? error.message : JSON.stringify(error);
 
-  for (const match of message.matchAll(/\b(email|slug)\b/gi)) {
+  for (const match of message.matchAll(/\b(email|slug|cnpj)\b/gi)) {
     fields.add(match[1].toLowerCase());
   }
 
@@ -105,6 +105,14 @@ function mapearErroRestricaoUnica(error: unknown) {
   const fields = extrairCamposRestricaoUnica(error);
 
   if (!fields) return null;
+
+  if (fields.some((field) => field.includes("cnpj"))) {
+    return new ClienteAdminError(
+      "Já existe um cliente com esse CNPJ",
+      "CNPJ_CLIENTE_DUPLICADO",
+      409,
+    );
+  }
 
   if (fields.some((field) => field.includes("email"))) {
     return new ClienteAdminError(
@@ -146,6 +154,18 @@ function mapearCliente<
     id: string;
     nome: string;
     slug: string;
+    cnpj: string | null;
+    razaoSocial: string | null;
+    nomeFantasia: string | null;
+    emailComercial: string | null;
+    telefoneComercial: string | null;
+    enderecoCep: string | null;
+    enderecoLogradouro: string | null;
+    enderecoNumero: string | null;
+    enderecoComplemento: string | null;
+    enderecoBairro: string | null;
+    enderecoCidade: string | null;
+    enderecoUf: string | null;
     status: string;
     modoProcessamento: string;
     workerUrl: string | null;
@@ -173,6 +193,18 @@ function mapearCliente<
     id: cliente.id,
     nome: cliente.nome,
     slug: cliente.slug,
+    cnpj: cliente.cnpj,
+    razaoSocial: cliente.razaoSocial,
+    nomeFantasia: cliente.nomeFantasia,
+    emailComercial: cliente.emailComercial,
+    telefoneComercial: cliente.telefoneComercial,
+    enderecoCep: cliente.enderecoCep,
+    enderecoLogradouro: cliente.enderecoLogradouro,
+    enderecoNumero: cliente.enderecoNumero,
+    enderecoComplemento: cliente.enderecoComplemento,
+    enderecoBairro: cliente.enderecoBairro,
+    enderecoCidade: cliente.enderecoCidade,
+    enderecoUf: cliente.enderecoUf,
     status: cliente.status,
     modoProcessamento: cliente.modoProcessamento,
     workerUrl: cliente.workerUrl,
@@ -215,25 +247,32 @@ export async function criarClienteOnboarding(
 
   try {
     resultado = await prisma.$transaction(async (tx) => {
-      const [plano, municipio, emailExistente] = await Promise.all([
-        tx.plano.findUnique({
-          where: { id: data.planoId },
-          select: {
-            id: true,
-            status: true,
-            limiteMensalConsultas: true,
-            intervaloSegundos: true,
-          },
-        }),
-        tx.municipio.findUnique({
-          where: { id: data.municipioId },
-          select: { id: true, status: true },
-        }),
-        tx.usuario.findUnique({
-          where: { email: emailAdministrador },
-          select: { id: true },
-        }),
-      ]);
+      const [plano, municipio, emailExistente, cnpjExistente] =
+        await Promise.all([
+          tx.plano.findUnique({
+            where: { id: data.planoId },
+            select: {
+              id: true,
+              status: true,
+              limiteMensalConsultas: true,
+              intervaloSegundos: true,
+            },
+          }),
+          tx.municipio.findUnique({
+            where: { id: data.municipioId },
+            select: { id: true, status: true },
+          }),
+          tx.usuario.findUnique({
+            where: { email: emailAdministrador },
+            select: { id: true },
+          }),
+          data.cnpj
+            ? tx.cliente.findUnique({
+                where: { cnpj: data.cnpj },
+                select: { id: true },
+              })
+            : Promise.resolve(null),
+        ]);
 
       if (!plano) {
         throw new ClienteAdminError(
@@ -278,6 +317,15 @@ export async function criarClienteOnboarding(
         );
       }
 
+      if (cnpjExistente) {
+        throw new ClienteAdminError(
+          "Já existe um cliente com esse CNPJ",
+          "CNPJ_CLIENTE_DUPLICADO",
+          409,
+          { cnpj: data.cnpj },
+        );
+      }
+
       const slugBase = validarSlugNormalizado(data.slug || data.nome);
       let slug = slugBase;
 
@@ -312,6 +360,18 @@ export async function criarClienteOnboarding(
         data: {
           nome: data.nome,
           slug,
+          cnpj: data.cnpj,
+          razaoSocial: data.razaoSocial,
+          nomeFantasia: data.nomeFantasia,
+          emailComercial: data.emailComercial,
+          telefoneComercial: data.telefoneComercial,
+          enderecoCep: data.enderecoCep,
+          enderecoLogradouro: data.enderecoLogradouro,
+          enderecoNumero: data.enderecoNumero,
+          enderecoComplemento: data.enderecoComplemento,
+          enderecoBairro: data.enderecoBairro,
+          enderecoCidade: data.enderecoCidade,
+          enderecoUf: data.enderecoUf,
           status: data.status,
           modoProcessamento: data.modoProcessamento,
           workerUrl: data.workerUrl ?? null,
@@ -521,6 +581,25 @@ export async function atualizarClienteOnboarding(
         );
       }
 
+      if (data.cnpj) {
+        const cnpjExistente = await tx.cliente.findFirst({
+          where: {
+            cnpj: data.cnpj,
+            NOT: { id },
+          },
+          select: { id: true },
+        });
+
+        if (cnpjExistente) {
+          throw new ClienteAdminError(
+            "Já existe um cliente com esse CNPJ",
+            "CNPJ_CLIENTE_DUPLICADO",
+            409,
+            { cnpj: data.cnpj },
+          );
+        }
+      }
+
       let slug: string | undefined;
 
       if (data.slug) {
@@ -568,6 +647,18 @@ export async function atualizarClienteOnboarding(
         data: {
           nome: data.nome,
           slug,
+          cnpj: data.cnpj,
+          razaoSocial: data.razaoSocial,
+          nomeFantasia: data.nomeFantasia,
+          emailComercial: data.emailComercial,
+          telefoneComercial: data.telefoneComercial,
+          enderecoCep: data.enderecoCep,
+          enderecoLogradouro: data.enderecoLogradouro,
+          enderecoNumero: data.enderecoNumero,
+          enderecoComplemento: data.enderecoComplemento,
+          enderecoBairro: data.enderecoBairro,
+          enderecoCidade: data.enderecoCidade,
+          enderecoUf: data.enderecoUf,
           status: data.status,
           modoProcessamento: data.modoProcessamento,
           workerUrl: data.workerUrl,

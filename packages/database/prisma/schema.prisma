@@ -214,6 +214,20 @@ model Cliente {
   slug   String        @unique
   status ClienteStatus @default(ATIVO)
 
+  cnpj              String? @unique(map: "clientes_cnpj_key")
+  razaoSocial       String?
+  nomeFantasia      String?
+  emailComercial    String?
+  telefoneComercial String?
+
+  enderecoCep         String?
+  enderecoLogradouro  String?
+  enderecoNumero      String?
+  enderecoComplemento String?
+  enderecoBairro      String?
+  enderecoCidade      String?
+  enderecoUf          String?
+
   modoProcessamento ClienteModoProcessamento @default(QUEUE)
 
   planoId String?
