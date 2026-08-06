@@ -1,4 +1,8 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
+import {
+  normalizarRoleAuditoria,
+  type AuditoriaAdministrativaContexto,
+} from "./clientes-admin.audit.js";
 import { ClienteAdminError } from "./clientes-admin.errors.js";
 import {
   atualizarClienteOnboardingSchema,
@@ -10,6 +14,20 @@ import {
   criarClienteOnboarding,
   listarMunicipiosElegiveisParaCliente,
 } from "./clientes-admin.service.js";
+
+function montarContextoAuditoriaAdministrativa(
+  request: FastifyRequest,
+): AuditoriaAdministrativaContexto {
+  const userAgent = request.headers["user-agent"];
+  return {
+    usuarioId: request.auth.usuarioId,
+    executorEmail: request.auth.email,
+    executorRole: normalizarRoleAuditoria(request.auth.role),
+    requestId: request.id,
+    ipAddress: request.ip,
+    userAgent: typeof userAgent === "string" ? userAgent : null,
+  };
+}
 
 function responderErroClienteAdmin(
   error: unknown,
@@ -52,7 +70,10 @@ export async function criarClienteOnboardingController(
   const body = criarClienteOnboardingSchema.parse(request.body);
 
   try {
-    const resultado = await criarClienteOnboarding(body);
+    const resultado = await criarClienteOnboarding(
+      body,
+      montarContextoAuditoriaAdministrativa(request),
+    );
     return reply.status(201).send(resultado);
   } catch (error) {
     return responderErroClienteAdmin(
@@ -71,7 +92,11 @@ export async function atualizarClienteOnboardingController(
   const body = atualizarClienteOnboardingSchema.parse(request.body);
 
   try {
-    const resultado = await atualizarClienteOnboarding(id, body);
+    const resultado = await atualizarClienteOnboarding(
+      id,
+      body,
+      montarContextoAuditoriaAdministrativa(request),
+    );
     return reply.status(200).send(resultado);
   } catch (error) {
     return responderErroClienteAdmin(

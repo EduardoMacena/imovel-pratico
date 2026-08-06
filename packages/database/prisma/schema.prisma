@@ -242,13 +242,14 @@ model Cliente {
   pagamentoStatus       PagamentoStatus @default(PENDENTE)
   pagamentoVenceEm      DateTime?
 
-  usuarios         Usuario[]
-  tarefas          Tarefa[]
-  consultasLogs    ConsultaLog[]
-  operacaoEventos  OperacaoEvento[]
-  workerHeartbeats WorkerHeartbeat[]
-  workerAgents     WorkerAgent[]
-  municipios       ClienteMunicipio[]
+  usuarios                  Usuario[]
+  tarefas                   Tarefa[]
+  consultasLogs             ConsultaLog[]
+  operacaoEventos           OperacaoEvento[]
+  auditoriasAdministrativas AuditoriaAdministrativa[]
+  workerHeartbeats          WorkerHeartbeat[]
+  workerAgents              WorkerAgent[]
+  municipios                ClienteMunicipio[]
 
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
@@ -277,7 +278,8 @@ model Usuario {
   resetSenhaExpiraEm  DateTime?
   resetSenhaUsadoEm   DateTime?
 
-  cliente Cliente @relation(fields: [clienteId], references: [id])
+  cliente                   Cliente                   @relation(fields: [clienteId], references: [id])
+  auditoriasAdministrativas AuditoriaAdministrativa[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -566,6 +568,36 @@ model OperacaoEvento {
   @@index([tipo])
   @@index([createdAt])
   @@map("operacao_eventos")
+}
+
+model AuditoriaAdministrativa {
+  id String @id @default(uuid())
+
+  clienteId       String?
+  usuarioId       String?
+  acao            String
+  entidade        String
+  entidadeId      String?
+  mensagem        String
+  executorEmail   String
+  executorRole    UsuarioRole
+  requestId       String?
+  ipAddress       String?
+  userAgent       String?
+  dadosAntes      Json?
+  dadosDepois     Json?
+  camposAlterados Json?
+  metadata        Json?
+  cliente         Cliente?    @relation(fields: [clienteId], references: [id], onDelete: SetNull)
+  usuario         Usuario?    @relation(fields: [usuarioId], references: [id], onDelete: SetNull)
+  createdAt       DateTime    @default(now())
+
+  @@index([clienteId])
+  @@index([usuarioId])
+  @@index([acao])
+  @@index([entidade, entidadeId])
+  @@index([createdAt])
+  @@map("auditorias_administrativas")
 }
 
 model WorkerHeartbeat {

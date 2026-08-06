@@ -255,6 +255,7 @@ export type UsuarioWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Usuario"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Usuario"> | Date | string
   cliente?: Prisma.XOR<Prisma.ClienteScalarRelationFilter, Prisma.ClienteWhereInput>
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaListRelationFilter
 }
 
 export type UsuarioOrderByWithRelationInput = {
@@ -273,6 +274,7 @@ export type UsuarioOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   cliente?: Prisma.ClienteOrderByWithRelationInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaOrderByRelationAggregateInput
 }
 
 export type UsuarioWhereUniqueInput = Prisma.AtLeast<{
@@ -294,6 +296,7 @@ export type UsuarioWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Usuario"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Usuario"> | Date | string
   cliente?: Prisma.XOR<Prisma.ClienteScalarRelationFilter, Prisma.ClienteWhereInput>
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaListRelationFilter
 }, "id" | "email" | "resetSenhaTokenHash">
 
 export type UsuarioOrderByWithAggregationInput = {
@@ -351,6 +354,7 @@ export type UsuarioCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   cliente: Prisma.ClienteCreateNestedOneWithoutUsuariosInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaCreateNestedManyWithoutUsuarioInput
 }
 
 export type UsuarioUncheckedCreateInput = {
@@ -368,6 +372,7 @@ export type UsuarioUncheckedCreateInput = {
   resetSenhaUsadoEm?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUncheckedCreateNestedManyWithoutUsuarioInput
 }
 
 export type UsuarioUpdateInput = {
@@ -385,6 +390,7 @@ export type UsuarioUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cliente?: Prisma.ClienteUpdateOneRequiredWithoutUsuariosNestedInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUpdateManyWithoutUsuarioNestedInput
 }
 
 export type UsuarioUncheckedUpdateInput = {
@@ -402,6 +408,7 @@ export type UsuarioUncheckedUpdateInput = {
   resetSenhaUsadoEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUncheckedUpdateManyWithoutUsuarioNestedInput
 }
 
 export type UsuarioCreateManyInput = {
@@ -515,6 +522,11 @@ export type UsuarioMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
+export type UsuarioNullableScalarRelationFilter = {
+  is?: Prisma.UsuarioWhereInput | null
+  isNot?: Prisma.UsuarioWhereInput | null
+}
+
 export type UsuarioCreateNestedManyWithoutClienteInput = {
   create?: Prisma.XOR<Prisma.UsuarioCreateWithoutClienteInput, Prisma.UsuarioUncheckedCreateWithoutClienteInput> | Prisma.UsuarioCreateWithoutClienteInput[] | Prisma.UsuarioUncheckedCreateWithoutClienteInput[]
   connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutClienteInput | Prisma.UsuarioCreateOrConnectWithoutClienteInput[]
@@ -561,6 +573,22 @@ export type EnumUsuarioRoleFieldUpdateOperationsInput = {
   set?: $Enums.UsuarioRole
 }
 
+export type UsuarioCreateNestedOneWithoutAuditoriasAdministrativasInput = {
+  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutAuditoriasAdministrativasInput, Prisma.UsuarioUncheckedCreateWithoutAuditoriasAdministrativasInput>
+  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutAuditoriasAdministrativasInput
+  connect?: Prisma.UsuarioWhereUniqueInput
+}
+
+export type UsuarioUpdateOneWithoutAuditoriasAdministrativasNestedInput = {
+  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutAuditoriasAdministrativasInput, Prisma.UsuarioUncheckedCreateWithoutAuditoriasAdministrativasInput>
+  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutAuditoriasAdministrativasInput
+  upsert?: Prisma.UsuarioUpsertWithoutAuditoriasAdministrativasInput
+  disconnect?: Prisma.UsuarioWhereInput | boolean
+  delete?: Prisma.UsuarioWhereInput | boolean
+  connect?: Prisma.UsuarioWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UsuarioUpdateToOneWithWhereWithoutAuditoriasAdministrativasInput, Prisma.UsuarioUpdateWithoutAuditoriasAdministrativasInput>, Prisma.UsuarioUncheckedUpdateWithoutAuditoriasAdministrativasInput>
+}
+
 export type UsuarioCreateWithoutClienteInput = {
   id?: string
   nome: string
@@ -575,6 +603,7 @@ export type UsuarioCreateWithoutClienteInput = {
   resetSenhaUsadoEm?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaCreateNestedManyWithoutUsuarioInput
 }
 
 export type UsuarioUncheckedCreateWithoutClienteInput = {
@@ -591,6 +620,7 @@ export type UsuarioUncheckedCreateWithoutClienteInput = {
   resetSenhaUsadoEm?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUncheckedCreateNestedManyWithoutUsuarioInput
 }
 
 export type UsuarioCreateOrConnectWithoutClienteInput = {
@@ -639,6 +669,90 @@ export type UsuarioScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Usuario"> | Date | string
 }
 
+export type UsuarioCreateWithoutAuditoriasAdministrativasInput = {
+  id?: string
+  nome: string
+  email: string
+  senha: string
+  role?: $Enums.UsuarioRole
+  ativo?: boolean
+  precisaTrocarSenha?: boolean
+  senhaAlteradaEm?: Date | string | null
+  resetSenhaTokenHash?: string | null
+  resetSenhaExpiraEm?: Date | string | null
+  resetSenhaUsadoEm?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  cliente: Prisma.ClienteCreateNestedOneWithoutUsuariosInput
+}
+
+export type UsuarioUncheckedCreateWithoutAuditoriasAdministrativasInput = {
+  id?: string
+  clienteId: string
+  nome: string
+  email: string
+  senha: string
+  role?: $Enums.UsuarioRole
+  ativo?: boolean
+  precisaTrocarSenha?: boolean
+  senhaAlteradaEm?: Date | string | null
+  resetSenhaTokenHash?: string | null
+  resetSenhaExpiraEm?: Date | string | null
+  resetSenhaUsadoEm?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type UsuarioCreateOrConnectWithoutAuditoriasAdministrativasInput = {
+  where: Prisma.UsuarioWhereUniqueInput
+  create: Prisma.XOR<Prisma.UsuarioCreateWithoutAuditoriasAdministrativasInput, Prisma.UsuarioUncheckedCreateWithoutAuditoriasAdministrativasInput>
+}
+
+export type UsuarioUpsertWithoutAuditoriasAdministrativasInput = {
+  update: Prisma.XOR<Prisma.UsuarioUpdateWithoutAuditoriasAdministrativasInput, Prisma.UsuarioUncheckedUpdateWithoutAuditoriasAdministrativasInput>
+  create: Prisma.XOR<Prisma.UsuarioCreateWithoutAuditoriasAdministrativasInput, Prisma.UsuarioUncheckedCreateWithoutAuditoriasAdministrativasInput>
+  where?: Prisma.UsuarioWhereInput
+}
+
+export type UsuarioUpdateToOneWithWhereWithoutAuditoriasAdministrativasInput = {
+  where?: Prisma.UsuarioWhereInput
+  data: Prisma.XOR<Prisma.UsuarioUpdateWithoutAuditoriasAdministrativasInput, Prisma.UsuarioUncheckedUpdateWithoutAuditoriasAdministrativasInput>
+}
+
+export type UsuarioUpdateWithoutAuditoriasAdministrativasInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  nome?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  senha?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUsuarioRoleFieldUpdateOperationsInput | $Enums.UsuarioRole
+  ativo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  precisaTrocarSenha?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  senhaAlteradaEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resetSenhaTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetSenhaExpiraEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resetSenhaUsadoEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cliente?: Prisma.ClienteUpdateOneRequiredWithoutUsuariosNestedInput
+}
+
+export type UsuarioUncheckedUpdateWithoutAuditoriasAdministrativasInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  clienteId?: Prisma.StringFieldUpdateOperationsInput | string
+  nome?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  senha?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUsuarioRoleFieldUpdateOperationsInput | $Enums.UsuarioRole
+  ativo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  precisaTrocarSenha?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  senhaAlteradaEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resetSenhaTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetSenhaExpiraEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resetSenhaUsadoEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type UsuarioCreateManyClienteInput = {
   id?: string
   nome: string
@@ -669,6 +783,7 @@ export type UsuarioUpdateWithoutClienteInput = {
   resetSenhaUsadoEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUpdateManyWithoutUsuarioNestedInput
 }
 
 export type UsuarioUncheckedUpdateWithoutClienteInput = {
@@ -685,6 +800,7 @@ export type UsuarioUncheckedUpdateWithoutClienteInput = {
   resetSenhaUsadoEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUncheckedUpdateManyWithoutUsuarioNestedInput
 }
 
 export type UsuarioUncheckedUpdateManyWithoutClienteInput = {
@@ -704,6 +820,35 @@ export type UsuarioUncheckedUpdateManyWithoutClienteInput = {
 }
 
 
+/**
+ * Count Type UsuarioCountOutputType
+ */
+
+export type UsuarioCountOutputType = {
+  auditoriasAdministrativas: number
+}
+
+export type UsuarioCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  auditoriasAdministrativas?: boolean | UsuarioCountOutputTypeCountAuditoriasAdministrativasArgs
+}
+
+/**
+ * UsuarioCountOutputType without action
+ */
+export type UsuarioCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the UsuarioCountOutputType
+   */
+  select?: Prisma.UsuarioCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * UsuarioCountOutputType without action
+ */
+export type UsuarioCountOutputTypeCountAuditoriasAdministrativasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AuditoriaAdministrativaWhereInput
+}
+
 
 export type UsuarioSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -721,6 +866,8 @@ export type UsuarioSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   createdAt?: boolean
   updatedAt?: boolean
   cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
+  auditoriasAdministrativas?: boolean | Prisma.Usuario$auditoriasAdministrativasArgs<ExtArgs>
+  _count?: boolean | Prisma.UsuarioCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["usuario"]>
 
 export type UsuarioSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -779,6 +926,8 @@ export type UsuarioSelectScalar = {
 export type UsuarioOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "clienteId" | "nome" | "email" | "senha" | "role" | "ativo" | "precisaTrocarSenha" | "senhaAlteradaEm" | "resetSenhaTokenHash" | "resetSenhaExpiraEm" | "resetSenhaUsadoEm" | "createdAt" | "updatedAt", ExtArgs["result"]["usuario"]>
 export type UsuarioInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
+  auditoriasAdministrativas?: boolean | Prisma.Usuario$auditoriasAdministrativasArgs<ExtArgs>
+  _count?: boolean | Prisma.UsuarioCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UsuarioIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
@@ -791,6 +940,7 @@ export type $UsuarioPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   name: "Usuario"
   objects: {
     cliente: Prisma.$ClientePayload<ExtArgs>
+    auditoriasAdministrativas: Prisma.$AuditoriaAdministrativaPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1202,6 +1352,7 @@ readonly fields: UsuarioFieldRefs;
 export interface Prisma__UsuarioClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   cliente<T extends Prisma.ClienteDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClienteDefaultArgs<ExtArgs>>): Prisma.Prisma__ClienteClient<runtime.Types.Result.GetResult<Prisma.$ClientePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  auditoriasAdministrativas<T extends Prisma.Usuario$auditoriasAdministrativasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$auditoriasAdministrativasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditoriaAdministrativaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1643,6 +1794,30 @@ export type UsuarioDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Limit how many Usuarios to delete.
    */
   limit?: number
+}
+
+/**
+ * Usuario.auditoriasAdministrativas
+ */
+export type Usuario$auditoriasAdministrativasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AuditoriaAdministrativa
+   */
+  select?: Prisma.AuditoriaAdministrativaSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AuditoriaAdministrativa
+   */
+  omit?: Prisma.AuditoriaAdministrativaOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AuditoriaAdministrativaInclude<ExtArgs> | null
+  where?: Prisma.AuditoriaAdministrativaWhereInput
+  orderBy?: Prisma.AuditoriaAdministrativaOrderByWithRelationInput | Prisma.AuditoriaAdministrativaOrderByWithRelationInput[]
+  cursor?: Prisma.AuditoriaAdministrativaWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AuditoriaAdministrativaScalarFieldEnum | Prisma.AuditoriaAdministrativaScalarFieldEnum[]
 }
 
 /**
