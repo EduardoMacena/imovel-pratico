@@ -178,8 +178,7 @@ export default function PlanosPage() {
               <Title>Planos comerciais</Title>
 
               <Subtitle>
-                Gerencie os planos disponíveis, limites mensais, valores fixos,
-                consulta adicional e quantidade de corretores recomendada.
+                Gerencie os planos disponíveis, limites mensais, valores fixos e quantidade de corretores recomendada.
               </Subtitle>
             </HeaderContent>
 
@@ -228,8 +227,7 @@ export default function PlanosPage() {
           <div>
             <ListTitle>Planos cadastrados</ListTitle>
             <ListSubtitle>
-              Lista limpa para análise comercial. Use a edição para ajustar
-              preço, limite, excedente e status.
+              Lista limpa para análise comercial. Use a edição para ajustar mensalidade, limite e status.
             </ListSubtitle>
           </div>
 
@@ -282,14 +280,6 @@ export default function PlanosPage() {
                     </InfoValue>
                   </InfoBox>
 
-                  <InfoBox>
-                    <InfoLabel>Consulta adicional</InfoLabel>
-                    <InfoValue>
-                      {formatCurrencyFromCents(
-                        plano.valorConsultaAdicionalCentavos
-                      )}
-                    </InfoValue>
-                  </InfoBox>
 
                   <InfoBox>
                     <InfoLabel>Corretores</InfoLabel>

@@ -88,7 +88,6 @@ export default function EditarPlanoPage() {
   const [limiteMensalConsultas, setLimiteMensalConsultas] = useState("");
   const [intervaloSegundos, setIntervaloSegundos] = useState("");
   const [precoMensal, setPrecoMensal] = useState("");
-  const [valorConsultaAdicional, setValorConsultaAdicional] = useState("");
   const [limiteCorretores, setLimiteCorretores] = useState("");
   const [status, setStatus] = useState<PlanoStatus>("ATIVO");
 
@@ -111,9 +110,6 @@ export default function EditarPlanoPage() {
       setLimiteMensalConsultas(String(data.plano.limiteMensalConsultas));
       setIntervaloSegundos(String(data.plano.intervaloSegundos));
       setPrecoMensal(centsToMoneyInput(data.plano.precoCentavos));
-      setValorConsultaAdicional(
-        centsToMoneyInput(data.plano.valorConsultaAdicionalCentavos)
-      );
       setLimiteCorretores(String(data.plano.limiteCorretores ?? ""));
       setPrecoOriginalCentavos(data.plano.precoCentavos);
       setStatus(data.plano.status as PlanoStatus);
@@ -143,7 +139,6 @@ export default function EditarPlanoPage() {
         limiteMensalConsultas: Number(limiteMensalConsultas),
         intervaloSegundos: Number(intervaloSegundos),
         precoCentavos: moneyToCents(precoMensal),
-        valorConsultaAdicionalCentavos: moneyToCents(valorConsultaAdicional),
         limiteCorretores: limiteCorretores ? Number(limiteCorretores) : null,
         status,
       });
@@ -297,14 +292,6 @@ export default function EditarPlanoPage() {
                     required
                   />
 
-                  <Input
-                    label="Valor da consulta adicional"
-                    value={valorConsultaAdicional}
-                    onChange={event =>
-                  setValorConsultaAdicional(formatMoneyInput(event.target.value))
-                }
-                    required
-                  />
 
                   <Input
                     label="Quantidade de corretores"

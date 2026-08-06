@@ -21,6 +21,10 @@ import type {
 	CriarUsuarioInput,
 	CriarWorkerAgentInput,
 } from "./admin.schemas.js";
+import {
+  calcularResumoUsoAdminPlanoFixo,
+  serializarPlanoFixoAdmin,
+} from "./admin-planos-fixos.js";
 import { buildCsv } from "../../utils/csv.js";
 import { buildExcelBuffer } from "../../utils/excel.js";
 import { formatDateOnlyFromDate, parseDateOnlyToUtcNoon } from "../../utils/date-only.js";
@@ -647,19 +651,6 @@ export async function buscarTarefaAdminPorId(id: string) {
 			current: tarefa.current,
 			percentage,
 		},
-		excedente: {
-			autorizado: tarefa.excedenteAutorizado,
-			autorizadoEm: tarefa.excedenteAutorizadoEm,
-			consultasEstimadas: tarefa.consultasEstimadas,
-			consultasDisponiveisNoMomento:
-				tarefa.consultasDisponiveisNoMomento,
-			consultasExcedentesEstimadas:
-				tarefa.consultasExcedentesEstimadas,
-			valorConsultaAdicionalCentavos:
-				tarefa.valorConsultaAdicionalCentavos,
-			valorExcedenteEstimadoCentavos:
-				tarefa.valorExcedenteEstimadoCentavos,
-		},
 		erro: tarefa.erro,
 		resultados: tarefa.resultados.map((resultado) => ({
 			id: resultado.id,
@@ -889,19 +880,23 @@ export async function exportarResultadosTarefaAdminExcel(id: string) {
 }
 
 export async function listarPlanos() {
-  return prisma.plano.findMany({
+  const planos = await prisma.plano.findMany({
     orderBy: {
       limiteMensalConsultas: "asc",
     },
   });
+
+  return planos.map(serializarPlanoFixoAdmin);
 }
 
 export async function buscarPlanoPorId(id: string) {
-  return prisma.plano.findUnique({
+  const plano = await prisma.plano.findUnique({
     where: {
       id,
     },
   });
+
+  return plano ? serializarPlanoFixoAdmin(plano) : null;
 }
 
 async function gerarSlugPlanoUnico(nome: string, slugInformado?: string) {
@@ -932,7 +927,7 @@ async function gerarSlugPlanoUnico(nome: string, slugInformado?: string) {
 export async function criarPlano(data: CriarPlanoInput) {
   const slug = await gerarSlugPlanoUnico(data.nome, data.slug);
 
-  return prisma.plano.create({
+  const plano = await prisma.plano.create({
     data: {
       nome: data.nome,
       slug,
@@ -940,15 +935,19 @@ export async function criarPlano(data: CriarPlanoInput) {
       limiteMensalConsultas: data.limiteMensalConsultas,
       intervaloSegundos: data.intervaloSegundos,
       precoCentavos: data.precoCentavos,
-      valorConsultaAdicionalCentavos:
-        data.valorConsultaAdicionalCentavos ?? 0,
+      valorConsultaAdicionalCentavos: 0,
       limiteCorretores: data.limiteCorretores ?? null,
       status: data.status,
     },
   });
+
+  return serializarPlanoFixoAdmin(plano);
 }
 
-export async function atualizarPlano(id: string, data: AtualizarPlanoInput) {
+export async function atualizarPlano(
+  id: string,
+  data: AtualizarPlanoInput,
+) {
   let slug = data.slug;
 
   if (slug) {
@@ -973,7 +972,7 @@ export async function atualizarPlano(id: string, data: AtualizarPlanoInput) {
     slug = slugNormalizado;
   }
 
-  return prisma.plano.update({
+  const plano = await prisma.plano.update({
     where: {
       id,
     },
@@ -984,12 +983,13 @@ export async function atualizarPlano(id: string, data: AtualizarPlanoInput) {
       limiteMensalConsultas: data.limiteMensalConsultas,
       intervaloSegundos: data.intervaloSegundos,
       precoCentavos: data.precoCentavos,
-      valorConsultaAdicionalCentavos:
-        data.valorConsultaAdicionalCentavos,
+      valorConsultaAdicionalCentavos: 0,
       limiteCorretores: data.limiteCorretores,
       status: data.status,
     },
   });
+
+  return serializarPlanoFixoAdmin(plano);
 }
 
 function calcularPagamentoVencido(pagamentoVenceEm: Date | null) {
@@ -1016,32 +1016,14 @@ function calcularPagamentoVencido(pagamentoVenceEm: Date | null) {
 function calcularResumoUsoAdmin({
   consultasUsadas,
   limiteMensal,
-  precoCentavos,
-  valorConsultaAdicionalCentavos,
 }: {
   consultasUsadas: number;
   limiteMensal: number;
-  precoCentavos: number;
-  valorConsultaAdicionalCentavos: number;
 }) {
-  const consultasRestantes = Math.max(limiteMensal - consultasUsadas, 0);
-  const consultasExcedentes = Math.max(consultasUsadas - limiteMensal, 0);
-  const valorExcedenteCentavos =
-    consultasExcedentes * valorConsultaAdicionalCentavos;
-
-  return {
+  return calcularResumoUsoAdminPlanoFixo({
     consultasUsadas,
     limiteMensal,
-    consultasRestantes,
-    consultasExcedentes,
-    valorConsultaAdicionalCentavos,
-    valorExcedenteCentavos,
-    totalEstimadoCentavos: precoCentavos + valorExcedenteCentavos,
-    percentualUsado:
-      limiteMensal > 0
-        ? Math.min(Math.round((consultasUsadas / limiteMensal) * 100), 100)
-        : 0,
-  };
+  });
 }
 
 function getInicioMesAtual() {
@@ -1084,7 +1066,7 @@ export async function buscarConsumoClienteAdmin(clienteId: string) {
     prisma.tarefaResultado.count({
       where: {
         status: "SUCCESS",
-      tarefa: {
+        tarefa: {
           clienteId,
         },
         createdAt: {
@@ -1101,12 +1083,8 @@ export async function buscarConsumoClienteAdmin(clienteId: string) {
   ]);
 
   const limiteMensal =
-    cliente.plano?.limiteMensalConsultas ?? cliente.limiteMensalConsultas;
-
-  const precoCentavos = cliente.plano?.precoCentavos ?? 0;
-
-  const valorConsultaAdicionalCentavos =
-    cliente.plano?.valorConsultaAdicionalCentavos ?? 0;
+    cliente.plano?.limiteMensalConsultas ??
+    cliente.limiteMensalConsultas;
 
   return {
     cliente: {
@@ -1115,16 +1093,20 @@ export async function buscarConsumoClienteAdmin(clienteId: string) {
       slug: cliente.slug,
       status: cliente.status,
       pagamentoStatus: cliente.pagamentoStatus,
-      pagamentoVenceEm: formatDateOnlyFromDate(cliente.pagamentoVenceEm),
-      pagamentoVencido: calcularPagamentoVencido(cliente.pagamentoVenceEm),
+      pagamentoVenceEm: formatDateOnlyFromDate(
+        cliente.pagamentoVenceEm,
+      ),
+      pagamentoVencido: calcularPagamentoVencido(
+        cliente.pagamentoVenceEm,
+      ),
     },
-    plano: cliente.plano,
+    plano: cliente.plano
+      ? serializarPlanoFixoAdmin(cliente.plano)
+      : null,
     uso: {
       ...calcularResumoUsoAdmin({
         consultasUsadas,
         limiteMensal,
-        precoCentavos,
-        valorConsultaAdicionalCentavos,
       }),
       inicioMes,
       fimMes,

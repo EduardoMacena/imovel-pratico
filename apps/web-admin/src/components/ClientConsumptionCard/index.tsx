@@ -98,41 +98,9 @@ export function ClientConsumptionCard({
           </Item>
         )}
 
-        {!compact && (
-          <Item>
-            <Label>Consulta adicional</Label>
-            <Value>
-              {formatCurrencyFromCents(
-                consumo.plano?.valorConsultaAdicionalCentavos
-              )}
-            </Value>
-          </Item>
-        )}
 
-        {!compact && (
-          <Item>
-            <Label>Excedentes</Label>
-            <Value>{consumo.uso.consultasExcedentes}</Value>
-          </Item>
-        )}
 
-        {!compact && (
-          <Item>
-            <Label>Valor excedente</Label>
-            <Value>
-              {formatCurrencyFromCents(consumo.uso.valorExcedenteCentavos)}
-            </Value>
-          </Item>
-        )}
 
-        {!compact && (
-          <Item>
-            <Label>Total estimado</Label>
-            <Value>
-              {formatCurrencyFromCents(consumo.uso.totalEstimadoCentavos)}
-            </Value>
-          </Item>
-        )}
 
         {!compact && (
           <Item>

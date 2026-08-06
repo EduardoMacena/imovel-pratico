@@ -378,7 +378,6 @@ export type PlanoResumo = {
 	limiteMensalConsultas: number;
 	intervaloSegundos: number;
 	precoCentavos: number;
-	valorConsultaAdicionalCentavos: number;
 	limiteCorretores: number | null;
 	status: PlanoStatus;
 	createdAt: string;
@@ -400,7 +399,6 @@ export type CriarPlanoRequest = {
 	limiteMensalConsultas: number;
 	intervaloSegundos: number;
 	precoCentavos: number;
-	valorConsultaAdicionalCentavos: number;
 	limiteCorretores: number | null;
 	status: PlanoStatus;
 };
@@ -430,10 +428,6 @@ export type ConsumoClienteResumo = {
 		consultasUsadas: number;
 		limiteMensal: number;
 		consultasRestantes: number;
-		consultasExcedentes: number;
-		valorConsultaAdicionalCentavos: number;
-		valorExcedenteCentavos: number;
-		totalEstimadoCentavos: number;
 		percentualUsado: number;
 		inicioMes: string;
 		fimMes: string;
@@ -459,7 +453,9 @@ export type FaturaStatus =
 	"ABERTA" | "FECHADA" | "PAGA" | "VENCIDA" | "CANCELADA";
 
 export type FaturaItemTipo =
-	"MENSALIDADE" | "CONSULTA_EXCEDENTE" | "AJUSTE" | "DESCONTO";
+  | "MENSALIDADE"
+  | "AJUSTE"
+  | "DESCONTO";
 
 export type FaturaItemResumo = {
 	id: string;
@@ -488,10 +484,7 @@ export type FaturaResumo = {
 	planoNome: string | null;
 	consultasInclusas: number;
 	consultasUsadas: number;
-	consultasExcedentes: number;
 	valorMensalidadeCentavos: number;
-	valorConsultaAdicionalCentavos: number;
-	valorExcedenteCentavos: number;
 	valorTotalCentavos: number;
 	vencimentoEm: string | null;
 	pagaEm: string | null;

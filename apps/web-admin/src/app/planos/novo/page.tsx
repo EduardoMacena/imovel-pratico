@@ -71,7 +71,6 @@ export default function NovoPlanoPage() {
   const [limiteMensalConsultas, setLimiteMensalConsultas] = useState("1000");
   const [intervaloSegundos, setIntervaloSegundos] = useState("60");
   const [precoMensal, setPrecoMensal] = useState("1.497,00");
-  const [valorConsultaAdicional, setValorConsultaAdicional] = useState("1,80");
   const [limiteCorretores, setLimiteCorretores] = useState("26");
   const [status, setStatus] = useState<PlanoStatus>("ATIVO");
 
@@ -93,7 +92,6 @@ export default function NovoPlanoPage() {
         limiteMensalConsultas: Number(limiteMensalConsultas),
         intervaloSegundos: Number(intervaloSegundos),
         precoCentavos: moneyToCents(precoMensal),
-        valorConsultaAdicionalCentavos: moneyToCents(valorConsultaAdicional),
         limiteCorretores: Number(limiteCorretores),
         status,
       });
@@ -141,13 +139,13 @@ export default function NovoPlanoPage() {
             <HeaderPanel>
               <HeaderPanelItem>
                 <HeaderPanelLabel>Regra comercial</HeaderPanelLabel>
-                <HeaderPanelValue>Mensalidade + excedente</HeaderPanelValue>
+                <HeaderPanelValue>Mensalidade fixa</HeaderPanelValue>
               </HeaderPanelItem>
 
               <HeaderPanelItem>
                 <HeaderPanelLabel>Proteção comercial</HeaderPanelLabel>
                 <HeaderPanelValue>
-                  O cliente será avisado antes de autorizar excedente.
+                  Ao atingir o limite mensal, novas buscas ficam bloqueadas até a renovação ou mudança de plano.
                 </HeaderPanelValue>
               </HeaderPanelItem>
             </HeaderPanel>
@@ -231,7 +229,7 @@ export default function NovoPlanoPage() {
             </FormSection>
 
             <FormSection>
-              <FormSectionTitle>Preço e excedente</FormSectionTitle>
+              <FormSectionTitle>Preço fixo</FormSectionTitle>
 
               <FormGrid>
                 <Input
@@ -242,15 +240,6 @@ export default function NovoPlanoPage() {
                   required
                 />
 
-                <Input
-                  label="Valor da consulta adicional"
-                  value={valorConsultaAdicional}
-                  onChange={event =>
-                  setValorConsultaAdicional(formatMoneyInput(event.target.value))
-                }
-                  placeholder="1,80"
-                  required
-                />
               </FormGrid>
             </FormSection>
 
