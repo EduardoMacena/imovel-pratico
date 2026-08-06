@@ -6,6 +6,12 @@ import {
   formatDateOnlyFromDate,
   parseDateOnlyToUtcNoon,
 } from "../../utils/date-only.js";
+import {
+  CAMPOS_AUDITADOS_CRIACAO_CLIENTE,
+  listarCamposAlteradosCliente,
+  montarSnapshotClienteAuditoria,
+  type AuditoriaAdministrativaContexto,
+} from "./clientes-admin.audit.js";
 import { ClienteAdminError } from "./clientes-admin.errors.js";
 import type {
   AtualizarClienteOnboardingInput,
@@ -238,6 +244,7 @@ export async function listarMunicipiosElegiveisParaCliente() {
 
 export async function criarClienteOnboarding(
   data: CriarClienteOnboardingInput,
+  contextoAuditoria: AuditoriaAdministrativaContexto,
 ) {
   const emailAdministrador = normalizarEmail(data.administradorInicial.email);
   const senhaHash = await bcrypt.hash(data.administradorInicial.senha, 10);
@@ -356,7 +363,7 @@ export async function criarClienteOnboarding(
         }
       }
 
-      return tx.cliente.create({
+      const cliente = await tx.cliente.create({
         data: {
           nome: data.nome,
           slug,
@@ -418,6 +425,30 @@ export async function criarClienteOnboarding(
           },
         },
       });
+
+      await tx.auditoriaAdministrativa.create({
+        data: {
+          clienteId: cliente.id,
+          usuarioId: contextoAuditoria.usuarioId,
+          acao: "CLIENTE_CRIADO",
+          entidade: "CLIENTE",
+          entidadeId: cliente.id,
+          mensagem: `Cliente ${cliente.nome} criado pelo onboarding administrativo`,
+          executorEmail: contextoAuditoria.executorEmail,
+          executorRole: contextoAuditoria.executorRole,
+          requestId: contextoAuditoria.requestId,
+          ipAddress: contextoAuditoria.ipAddress,
+          userAgent: contextoAuditoria.userAgent,
+          dadosDepois: montarSnapshotClienteAuditoria(cliente),
+          camposAlterados: [...CAMPOS_AUDITADOS_CRIACAO_CLIENTE],
+          metadata: {
+            origem: "ONBOARDING_ADMINISTRATIVO",
+            administradorInicialId: cliente.usuarios[0]?.id ?? null,
+          },
+        },
+      });
+
+      return cliente;
     });
   } catch (error) {
     if (error instanceof ClienteAdminError) throw error;
@@ -468,6 +499,7 @@ export async function criarClienteOnboarding(
 export async function atualizarClienteOnboarding(
   id: string,
   data: AtualizarClienteOnboardingInput,
+  contextoAuditoria: AuditoriaAdministrativaContexto,
 ) {
   const pagamentoVenceEm = parsePagamentoVenceEm(data.pagamentoVenceEm);
 
@@ -642,7 +674,7 @@ export async function atualizarClienteOnboarding(
         });
       }
 
-      return tx.cliente.update({
+      const clienteAtualizado = await tx.cliente.update({
         where: { id },
         data: {
           nome: data.nome,
@@ -675,6 +707,35 @@ export async function atualizarClienteOnboarding(
         },
         include: clienteOnboardingInclude,
       });
+
+      const camposAlterados = listarCamposAlteradosCliente(
+        Object.keys(data),
+        atual,
+        clienteAtualizado,
+      );
+      await tx.auditoriaAdministrativa.create({
+        data: {
+          clienteId: clienteAtualizado.id,
+          usuarioId: contextoAuditoria.usuarioId,
+          acao: "CLIENTE_ATUALIZADO",
+          entidade: "CLIENTE",
+          entidadeId: clienteAtualizado.id,
+          mensagem: `Cliente ${clienteAtualizado.nome} atualizado pelo onboarding administrativo`,
+          executorEmail: contextoAuditoria.executorEmail,
+          executorRole: contextoAuditoria.executorRole,
+          requestId: contextoAuditoria.requestId,
+          ipAddress: contextoAuditoria.ipAddress,
+          userAgent: contextoAuditoria.userAgent,
+          dadosAntes: montarSnapshotClienteAuditoria(atual),
+          dadosDepois: montarSnapshotClienteAuditoria(clienteAtualizado),
+          camposAlterados,
+          metadata: {
+            origem: "ONBOARDING_ADMINISTRATIVO",
+            alteracaoSemEfeito: camposAlterados.length === 0,
+          },
+        },
+      });
+      return clienteAtualizado;
     });
 
     return { cliente: mapearCliente(cliente) };

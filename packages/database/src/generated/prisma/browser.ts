@@ -83,6 +83,11 @@ export type ConsultaLog = Prisma.ConsultaLogModel
  */
 export type OperacaoEvento = Prisma.OperacaoEventoModel
 /**
+ * Model AuditoriaAdministrativa
+ *
+ */
+export type AuditoriaAdministrativa = Prisma.AuditoriaAdministrativaModel
+/**
  * Model WorkerHeartbeat
  *
  */

@@ -398,6 +398,7 @@ export type ClienteWhereInput = {
   tarefas?: Prisma.TarefaListRelationFilter
   consultasLogs?: Prisma.ConsultaLogListRelationFilter
   operacaoEventos?: Prisma.OperacaoEventoListRelationFilter
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaListRelationFilter
   workerHeartbeats?: Prisma.WorkerHeartbeatListRelationFilter
   workerAgents?: Prisma.WorkerAgentListRelationFilter
   municipios?: Prisma.ClienteMunicipioListRelationFilter
@@ -438,6 +439,7 @@ export type ClienteOrderByWithRelationInput = {
   tarefas?: Prisma.TarefaOrderByRelationAggregateInput
   consultasLogs?: Prisma.ConsultaLogOrderByRelationAggregateInput
   operacaoEventos?: Prisma.OperacaoEventoOrderByRelationAggregateInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaOrderByRelationAggregateInput
   workerHeartbeats?: Prisma.WorkerHeartbeatOrderByRelationAggregateInput
   workerAgents?: Prisma.WorkerAgentOrderByRelationAggregateInput
   municipios?: Prisma.ClienteMunicipioOrderByRelationAggregateInput
@@ -481,6 +483,7 @@ export type ClienteWhereUniqueInput = Prisma.AtLeast<{
   tarefas?: Prisma.TarefaListRelationFilter
   consultasLogs?: Prisma.ConsultaLogListRelationFilter
   operacaoEventos?: Prisma.OperacaoEventoListRelationFilter
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaListRelationFilter
   workerHeartbeats?: Prisma.WorkerHeartbeatListRelationFilter
   workerAgents?: Prisma.WorkerAgentListRelationFilter
   municipios?: Prisma.ClienteMunicipioListRelationFilter
@@ -586,6 +589,7 @@ export type ClienteCreateInput = {
   tarefas?: Prisma.TarefaCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogCreateNestedManyWithoutClienteInput
   operacaoEventos?: Prisma.OperacaoEventoCreateNestedManyWithoutClienteInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaCreateNestedManyWithoutClienteInput
   workerHeartbeats?: Prisma.WorkerHeartbeatCreateNestedManyWithoutClienteInput
   workerAgents?: Prisma.WorkerAgentCreateNestedManyWithoutClienteInput
   municipios?: Prisma.ClienteMunicipioCreateNestedManyWithoutClienteInput
@@ -625,6 +629,7 @@ export type ClienteUncheckedCreateInput = {
   tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogUncheckedCreateNestedManyWithoutClienteInput
   operacaoEventos?: Prisma.OperacaoEventoUncheckedCreateNestedManyWithoutClienteInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUncheckedCreateNestedManyWithoutClienteInput
   workerHeartbeats?: Prisma.WorkerHeartbeatUncheckedCreateNestedManyWithoutClienteInput
   workerAgents?: Prisma.WorkerAgentUncheckedCreateNestedManyWithoutClienteInput
   municipios?: Prisma.ClienteMunicipioUncheckedCreateNestedManyWithoutClienteInput
@@ -664,6 +669,7 @@ export type ClienteUpdateInput = {
   tarefas?: Prisma.TarefaUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUpdateManyWithoutClienteNestedInput
   operacaoEventos?: Prisma.OperacaoEventoUpdateManyWithoutClienteNestedInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUpdateManyWithoutClienteNestedInput
   workerHeartbeats?: Prisma.WorkerHeartbeatUpdateManyWithoutClienteNestedInput
   workerAgents?: Prisma.WorkerAgentUpdateManyWithoutClienteNestedInput
   municipios?: Prisma.ClienteMunicipioUpdateManyWithoutClienteNestedInput
@@ -703,6 +709,7 @@ export type ClienteUncheckedUpdateInput = {
   tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUncheckedUpdateManyWithoutClienteNestedInput
   operacaoEventos?: Prisma.OperacaoEventoUncheckedUpdateManyWithoutClienteNestedInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUncheckedUpdateManyWithoutClienteNestedInput
   workerHeartbeats?: Prisma.WorkerHeartbeatUncheckedUpdateManyWithoutClienteNestedInput
   workerAgents?: Prisma.WorkerAgentUncheckedUpdateManyWithoutClienteNestedInput
   municipios?: Prisma.ClienteMunicipioUncheckedUpdateManyWithoutClienteNestedInput
@@ -1075,6 +1082,22 @@ export type ClienteUpdateOneWithoutOperacaoEventosNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ClienteUpdateToOneWithWhereWithoutOperacaoEventosInput, Prisma.ClienteUpdateWithoutOperacaoEventosInput>, Prisma.ClienteUncheckedUpdateWithoutOperacaoEventosInput>
 }
 
+export type ClienteCreateNestedOneWithoutAuditoriasAdministrativasInput = {
+  create?: Prisma.XOR<Prisma.ClienteCreateWithoutAuditoriasAdministrativasInput, Prisma.ClienteUncheckedCreateWithoutAuditoriasAdministrativasInput>
+  connectOrCreate?: Prisma.ClienteCreateOrConnectWithoutAuditoriasAdministrativasInput
+  connect?: Prisma.ClienteWhereUniqueInput
+}
+
+export type ClienteUpdateOneWithoutAuditoriasAdministrativasNestedInput = {
+  create?: Prisma.XOR<Prisma.ClienteCreateWithoutAuditoriasAdministrativasInput, Prisma.ClienteUncheckedCreateWithoutAuditoriasAdministrativasInput>
+  connectOrCreate?: Prisma.ClienteCreateOrConnectWithoutAuditoriasAdministrativasInput
+  upsert?: Prisma.ClienteUpsertWithoutAuditoriasAdministrativasInput
+  disconnect?: Prisma.ClienteWhereInput | boolean
+  delete?: Prisma.ClienteWhereInput | boolean
+  connect?: Prisma.ClienteWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ClienteUpdateToOneWithWhereWithoutAuditoriasAdministrativasInput, Prisma.ClienteUpdateWithoutAuditoriasAdministrativasInput>, Prisma.ClienteUncheckedUpdateWithoutAuditoriasAdministrativasInput>
+}
+
 export type ClienteCreateNestedOneWithoutWorkerHeartbeatsInput = {
   create?: Prisma.XOR<Prisma.ClienteCreateWithoutWorkerHeartbeatsInput, Prisma.ClienteUncheckedCreateWithoutWorkerHeartbeatsInput>
   connectOrCreate?: Prisma.ClienteCreateOrConnectWithoutWorkerHeartbeatsInput
@@ -1149,6 +1172,7 @@ export type ClienteCreateWithoutMunicipiosInput = {
   tarefas?: Prisma.TarefaCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogCreateNestedManyWithoutClienteInput
   operacaoEventos?: Prisma.OperacaoEventoCreateNestedManyWithoutClienteInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaCreateNestedManyWithoutClienteInput
   workerHeartbeats?: Prisma.WorkerHeartbeatCreateNestedManyWithoutClienteInput
   workerAgents?: Prisma.WorkerAgentCreateNestedManyWithoutClienteInput
   buscasPrevias?: Prisma.BuscaPreviaCreateNestedManyWithoutClienteInput
@@ -1187,6 +1211,7 @@ export type ClienteUncheckedCreateWithoutMunicipiosInput = {
   tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogUncheckedCreateNestedManyWithoutClienteInput
   operacaoEventos?: Prisma.OperacaoEventoUncheckedCreateNestedManyWithoutClienteInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUncheckedCreateNestedManyWithoutClienteInput
   workerHeartbeats?: Prisma.WorkerHeartbeatUncheckedCreateNestedManyWithoutClienteInput
   workerAgents?: Prisma.WorkerAgentUncheckedCreateNestedManyWithoutClienteInput
   buscasPrevias?: Prisma.BuscaPreviaUncheckedCreateNestedManyWithoutClienteInput
@@ -1241,6 +1266,7 @@ export type ClienteUpdateWithoutMunicipiosInput = {
   tarefas?: Prisma.TarefaUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUpdateManyWithoutClienteNestedInput
   operacaoEventos?: Prisma.OperacaoEventoUpdateManyWithoutClienteNestedInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUpdateManyWithoutClienteNestedInput
   workerHeartbeats?: Prisma.WorkerHeartbeatUpdateManyWithoutClienteNestedInput
   workerAgents?: Prisma.WorkerAgentUpdateManyWithoutClienteNestedInput
   buscasPrevias?: Prisma.BuscaPreviaUpdateManyWithoutClienteNestedInput
@@ -1279,6 +1305,7 @@ export type ClienteUncheckedUpdateWithoutMunicipiosInput = {
   tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUncheckedUpdateManyWithoutClienteNestedInput
   operacaoEventos?: Prisma.OperacaoEventoUncheckedUpdateManyWithoutClienteNestedInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUncheckedUpdateManyWithoutClienteNestedInput
   workerHeartbeats?: Prisma.WorkerHeartbeatUncheckedUpdateManyWithoutClienteNestedInput
   workerAgents?: Prisma.WorkerAgentUncheckedUpdateManyWithoutClienteNestedInput
   buscasPrevias?: Prisma.BuscaPreviaUncheckedUpdateManyWithoutClienteNestedInput
@@ -1316,6 +1343,7 @@ export type ClienteCreateWithoutPlanoInput = {
   tarefas?: Prisma.TarefaCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogCreateNestedManyWithoutClienteInput
   operacaoEventos?: Prisma.OperacaoEventoCreateNestedManyWithoutClienteInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaCreateNestedManyWithoutClienteInput
   workerHeartbeats?: Prisma.WorkerHeartbeatCreateNestedManyWithoutClienteInput
   workerAgents?: Prisma.WorkerAgentCreateNestedManyWithoutClienteInput
   municipios?: Prisma.ClienteMunicipioCreateNestedManyWithoutClienteInput
@@ -1354,6 +1382,7 @@ export type ClienteUncheckedCreateWithoutPlanoInput = {
   tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogUncheckedCreateNestedManyWithoutClienteInput
   operacaoEventos?: Prisma.OperacaoEventoUncheckedCreateNestedManyWithoutClienteInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUncheckedCreateNestedManyWithoutClienteInput
   workerHeartbeats?: Prisma.WorkerHeartbeatUncheckedCreateNestedManyWithoutClienteInput
   workerAgents?: Prisma.WorkerAgentUncheckedCreateNestedManyWithoutClienteInput
   municipios?: Prisma.ClienteMunicipioUncheckedCreateNestedManyWithoutClienteInput
@@ -1450,6 +1479,7 @@ export type ClienteCreateWithoutUsuariosInput = {
   tarefas?: Prisma.TarefaCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogCreateNestedManyWithoutClienteInput
   operacaoEventos?: Prisma.OperacaoEventoCreateNestedManyWithoutClienteInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaCreateNestedManyWithoutClienteInput
   workerHeartbeats?: Prisma.WorkerHeartbeatCreateNestedManyWithoutClienteInput
   workerAgents?: Prisma.WorkerAgentCreateNestedManyWithoutClienteInput
   municipios?: Prisma.ClienteMunicipioCreateNestedManyWithoutClienteInput
@@ -1488,6 +1518,7 @@ export type ClienteUncheckedCreateWithoutUsuariosInput = {
   tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogUncheckedCreateNestedManyWithoutClienteInput
   operacaoEventos?: Prisma.OperacaoEventoUncheckedCreateNestedManyWithoutClienteInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUncheckedCreateNestedManyWithoutClienteInput
   workerHeartbeats?: Prisma.WorkerHeartbeatUncheckedCreateNestedManyWithoutClienteInput
   workerAgents?: Prisma.WorkerAgentUncheckedCreateNestedManyWithoutClienteInput
   municipios?: Prisma.ClienteMunicipioUncheckedCreateNestedManyWithoutClienteInput
@@ -1542,6 +1573,7 @@ export type ClienteUpdateWithoutUsuariosInput = {
   tarefas?: Prisma.TarefaUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUpdateManyWithoutClienteNestedInput
   operacaoEventos?: Prisma.OperacaoEventoUpdateManyWithoutClienteNestedInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUpdateManyWithoutClienteNestedInput
   workerHeartbeats?: Prisma.WorkerHeartbeatUpdateManyWithoutClienteNestedInput
   workerAgents?: Prisma.WorkerAgentUpdateManyWithoutClienteNestedInput
   municipios?: Prisma.ClienteMunicipioUpdateManyWithoutClienteNestedInput
@@ -1580,6 +1612,7 @@ export type ClienteUncheckedUpdateWithoutUsuariosInput = {
   tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUncheckedUpdateManyWithoutClienteNestedInput
   operacaoEventos?: Prisma.OperacaoEventoUncheckedUpdateManyWithoutClienteNestedInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUncheckedUpdateManyWithoutClienteNestedInput
   workerHeartbeats?: Prisma.WorkerHeartbeatUncheckedUpdateManyWithoutClienteNestedInput
   workerAgents?: Prisma.WorkerAgentUncheckedUpdateManyWithoutClienteNestedInput
   municipios?: Prisma.ClienteMunicipioUncheckedUpdateManyWithoutClienteNestedInput
@@ -1618,6 +1651,7 @@ export type ClienteCreateWithoutTarefasInput = {
   usuarios?: Prisma.UsuarioCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogCreateNestedManyWithoutClienteInput
   operacaoEventos?: Prisma.OperacaoEventoCreateNestedManyWithoutClienteInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaCreateNestedManyWithoutClienteInput
   workerHeartbeats?: Prisma.WorkerHeartbeatCreateNestedManyWithoutClienteInput
   workerAgents?: Prisma.WorkerAgentCreateNestedManyWithoutClienteInput
   municipios?: Prisma.ClienteMunicipioCreateNestedManyWithoutClienteInput
@@ -1656,6 +1690,7 @@ export type ClienteUncheckedCreateWithoutTarefasInput = {
   usuarios?: Prisma.UsuarioUncheckedCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogUncheckedCreateNestedManyWithoutClienteInput
   operacaoEventos?: Prisma.OperacaoEventoUncheckedCreateNestedManyWithoutClienteInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUncheckedCreateNestedManyWithoutClienteInput
   workerHeartbeats?: Prisma.WorkerHeartbeatUncheckedCreateNestedManyWithoutClienteInput
   workerAgents?: Prisma.WorkerAgentUncheckedCreateNestedManyWithoutClienteInput
   municipios?: Prisma.ClienteMunicipioUncheckedCreateNestedManyWithoutClienteInput
@@ -1710,6 +1745,7 @@ export type ClienteUpdateWithoutTarefasInput = {
   usuarios?: Prisma.UsuarioUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUpdateManyWithoutClienteNestedInput
   operacaoEventos?: Prisma.OperacaoEventoUpdateManyWithoutClienteNestedInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUpdateManyWithoutClienteNestedInput
   workerHeartbeats?: Prisma.WorkerHeartbeatUpdateManyWithoutClienteNestedInput
   workerAgents?: Prisma.WorkerAgentUpdateManyWithoutClienteNestedInput
   municipios?: Prisma.ClienteMunicipioUpdateManyWithoutClienteNestedInput
@@ -1748,6 +1784,7 @@ export type ClienteUncheckedUpdateWithoutTarefasInput = {
   usuarios?: Prisma.UsuarioUncheckedUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUncheckedUpdateManyWithoutClienteNestedInput
   operacaoEventos?: Prisma.OperacaoEventoUncheckedUpdateManyWithoutClienteNestedInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUncheckedUpdateManyWithoutClienteNestedInput
   workerHeartbeats?: Prisma.WorkerHeartbeatUncheckedUpdateManyWithoutClienteNestedInput
   workerAgents?: Prisma.WorkerAgentUncheckedUpdateManyWithoutClienteNestedInput
   municipios?: Prisma.ClienteMunicipioUncheckedUpdateManyWithoutClienteNestedInput
@@ -1787,6 +1824,7 @@ export type ClienteCreateWithoutBuscasPreviasInput = {
   tarefas?: Prisma.TarefaCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogCreateNestedManyWithoutClienteInput
   operacaoEventos?: Prisma.OperacaoEventoCreateNestedManyWithoutClienteInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaCreateNestedManyWithoutClienteInput
   workerHeartbeats?: Prisma.WorkerHeartbeatCreateNestedManyWithoutClienteInput
   workerAgents?: Prisma.WorkerAgentCreateNestedManyWithoutClienteInput
   municipios?: Prisma.ClienteMunicipioCreateNestedManyWithoutClienteInput
@@ -1825,6 +1863,7 @@ export type ClienteUncheckedCreateWithoutBuscasPreviasInput = {
   tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogUncheckedCreateNestedManyWithoutClienteInput
   operacaoEventos?: Prisma.OperacaoEventoUncheckedCreateNestedManyWithoutClienteInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUncheckedCreateNestedManyWithoutClienteInput
   workerHeartbeats?: Prisma.WorkerHeartbeatUncheckedCreateNestedManyWithoutClienteInput
   workerAgents?: Prisma.WorkerAgentUncheckedCreateNestedManyWithoutClienteInput
   municipios?: Prisma.ClienteMunicipioUncheckedCreateNestedManyWithoutClienteInput
@@ -1879,6 +1918,7 @@ export type ClienteUpdateWithoutBuscasPreviasInput = {
   tarefas?: Prisma.TarefaUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUpdateManyWithoutClienteNestedInput
   operacaoEventos?: Prisma.OperacaoEventoUpdateManyWithoutClienteNestedInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUpdateManyWithoutClienteNestedInput
   workerHeartbeats?: Prisma.WorkerHeartbeatUpdateManyWithoutClienteNestedInput
   workerAgents?: Prisma.WorkerAgentUpdateManyWithoutClienteNestedInput
   municipios?: Prisma.ClienteMunicipioUpdateManyWithoutClienteNestedInput
@@ -1917,6 +1957,7 @@ export type ClienteUncheckedUpdateWithoutBuscasPreviasInput = {
   tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUncheckedUpdateManyWithoutClienteNestedInput
   operacaoEventos?: Prisma.OperacaoEventoUncheckedUpdateManyWithoutClienteNestedInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUncheckedUpdateManyWithoutClienteNestedInput
   workerHeartbeats?: Prisma.WorkerHeartbeatUncheckedUpdateManyWithoutClienteNestedInput
   workerAgents?: Prisma.WorkerAgentUncheckedUpdateManyWithoutClienteNestedInput
   municipios?: Prisma.ClienteMunicipioUncheckedUpdateManyWithoutClienteNestedInput
@@ -1955,6 +1996,7 @@ export type ClienteCreateWithoutFaturasInput = {
   tarefas?: Prisma.TarefaCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogCreateNestedManyWithoutClienteInput
   operacaoEventos?: Prisma.OperacaoEventoCreateNestedManyWithoutClienteInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaCreateNestedManyWithoutClienteInput
   workerHeartbeats?: Prisma.WorkerHeartbeatCreateNestedManyWithoutClienteInput
   workerAgents?: Prisma.WorkerAgentCreateNestedManyWithoutClienteInput
   municipios?: Prisma.ClienteMunicipioCreateNestedManyWithoutClienteInput
@@ -1993,6 +2035,7 @@ export type ClienteUncheckedCreateWithoutFaturasInput = {
   tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogUncheckedCreateNestedManyWithoutClienteInput
   operacaoEventos?: Prisma.OperacaoEventoUncheckedCreateNestedManyWithoutClienteInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUncheckedCreateNestedManyWithoutClienteInput
   workerHeartbeats?: Prisma.WorkerHeartbeatUncheckedCreateNestedManyWithoutClienteInput
   workerAgents?: Prisma.WorkerAgentUncheckedCreateNestedManyWithoutClienteInput
   municipios?: Prisma.ClienteMunicipioUncheckedCreateNestedManyWithoutClienteInput
@@ -2047,6 +2090,7 @@ export type ClienteUpdateWithoutFaturasInput = {
   tarefas?: Prisma.TarefaUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUpdateManyWithoutClienteNestedInput
   operacaoEventos?: Prisma.OperacaoEventoUpdateManyWithoutClienteNestedInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUpdateManyWithoutClienteNestedInput
   workerHeartbeats?: Prisma.WorkerHeartbeatUpdateManyWithoutClienteNestedInput
   workerAgents?: Prisma.WorkerAgentUpdateManyWithoutClienteNestedInput
   municipios?: Prisma.ClienteMunicipioUpdateManyWithoutClienteNestedInput
@@ -2085,6 +2129,7 @@ export type ClienteUncheckedUpdateWithoutFaturasInput = {
   tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUncheckedUpdateManyWithoutClienteNestedInput
   operacaoEventos?: Prisma.OperacaoEventoUncheckedUpdateManyWithoutClienteNestedInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUncheckedUpdateManyWithoutClienteNestedInput
   workerHeartbeats?: Prisma.WorkerHeartbeatUncheckedUpdateManyWithoutClienteNestedInput
   workerAgents?: Prisma.WorkerAgentUncheckedUpdateManyWithoutClienteNestedInput
   municipios?: Prisma.ClienteMunicipioUncheckedUpdateManyWithoutClienteNestedInput
@@ -2122,6 +2167,7 @@ export type ClienteCreateWithoutConsultasLogsInput = {
   usuarios?: Prisma.UsuarioCreateNestedManyWithoutClienteInput
   tarefas?: Prisma.TarefaCreateNestedManyWithoutClienteInput
   operacaoEventos?: Prisma.OperacaoEventoCreateNestedManyWithoutClienteInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaCreateNestedManyWithoutClienteInput
   workerHeartbeats?: Prisma.WorkerHeartbeatCreateNestedManyWithoutClienteInput
   workerAgents?: Prisma.WorkerAgentCreateNestedManyWithoutClienteInput
   municipios?: Prisma.ClienteMunicipioCreateNestedManyWithoutClienteInput
@@ -2160,6 +2206,7 @@ export type ClienteUncheckedCreateWithoutConsultasLogsInput = {
   usuarios?: Prisma.UsuarioUncheckedCreateNestedManyWithoutClienteInput
   tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutClienteInput
   operacaoEventos?: Prisma.OperacaoEventoUncheckedCreateNestedManyWithoutClienteInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUncheckedCreateNestedManyWithoutClienteInput
   workerHeartbeats?: Prisma.WorkerHeartbeatUncheckedCreateNestedManyWithoutClienteInput
   workerAgents?: Prisma.WorkerAgentUncheckedCreateNestedManyWithoutClienteInput
   municipios?: Prisma.ClienteMunicipioUncheckedCreateNestedManyWithoutClienteInput
@@ -2214,6 +2261,7 @@ export type ClienteUpdateWithoutConsultasLogsInput = {
   usuarios?: Prisma.UsuarioUpdateManyWithoutClienteNestedInput
   tarefas?: Prisma.TarefaUpdateManyWithoutClienteNestedInput
   operacaoEventos?: Prisma.OperacaoEventoUpdateManyWithoutClienteNestedInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUpdateManyWithoutClienteNestedInput
   workerHeartbeats?: Prisma.WorkerHeartbeatUpdateManyWithoutClienteNestedInput
   workerAgents?: Prisma.WorkerAgentUpdateManyWithoutClienteNestedInput
   municipios?: Prisma.ClienteMunicipioUpdateManyWithoutClienteNestedInput
@@ -2252,6 +2300,7 @@ export type ClienteUncheckedUpdateWithoutConsultasLogsInput = {
   usuarios?: Prisma.UsuarioUncheckedUpdateManyWithoutClienteNestedInput
   tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutClienteNestedInput
   operacaoEventos?: Prisma.OperacaoEventoUncheckedUpdateManyWithoutClienteNestedInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUncheckedUpdateManyWithoutClienteNestedInput
   workerHeartbeats?: Prisma.WorkerHeartbeatUncheckedUpdateManyWithoutClienteNestedInput
   workerAgents?: Prisma.WorkerAgentUncheckedUpdateManyWithoutClienteNestedInput
   municipios?: Prisma.ClienteMunicipioUncheckedUpdateManyWithoutClienteNestedInput
@@ -2290,6 +2339,7 @@ export type ClienteCreateWithoutOperacaoEventosInput = {
   usuarios?: Prisma.UsuarioCreateNestedManyWithoutClienteInput
   tarefas?: Prisma.TarefaCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogCreateNestedManyWithoutClienteInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaCreateNestedManyWithoutClienteInput
   workerHeartbeats?: Prisma.WorkerHeartbeatCreateNestedManyWithoutClienteInput
   workerAgents?: Prisma.WorkerAgentCreateNestedManyWithoutClienteInput
   municipios?: Prisma.ClienteMunicipioCreateNestedManyWithoutClienteInput
@@ -2328,6 +2378,7 @@ export type ClienteUncheckedCreateWithoutOperacaoEventosInput = {
   usuarios?: Prisma.UsuarioUncheckedCreateNestedManyWithoutClienteInput
   tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogUncheckedCreateNestedManyWithoutClienteInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUncheckedCreateNestedManyWithoutClienteInput
   workerHeartbeats?: Prisma.WorkerHeartbeatUncheckedCreateNestedManyWithoutClienteInput
   workerAgents?: Prisma.WorkerAgentUncheckedCreateNestedManyWithoutClienteInput
   municipios?: Prisma.ClienteMunicipioUncheckedCreateNestedManyWithoutClienteInput
@@ -2382,6 +2433,7 @@ export type ClienteUpdateWithoutOperacaoEventosInput = {
   usuarios?: Prisma.UsuarioUpdateManyWithoutClienteNestedInput
   tarefas?: Prisma.TarefaUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUpdateManyWithoutClienteNestedInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUpdateManyWithoutClienteNestedInput
   workerHeartbeats?: Prisma.WorkerHeartbeatUpdateManyWithoutClienteNestedInput
   workerAgents?: Prisma.WorkerAgentUpdateManyWithoutClienteNestedInput
   municipios?: Prisma.ClienteMunicipioUpdateManyWithoutClienteNestedInput
@@ -2420,6 +2472,179 @@ export type ClienteUncheckedUpdateWithoutOperacaoEventosInput = {
   usuarios?: Prisma.UsuarioUncheckedUpdateManyWithoutClienteNestedInput
   tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUncheckedUpdateManyWithoutClienteNestedInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUncheckedUpdateManyWithoutClienteNestedInput
+  workerHeartbeats?: Prisma.WorkerHeartbeatUncheckedUpdateManyWithoutClienteNestedInput
+  workerAgents?: Prisma.WorkerAgentUncheckedUpdateManyWithoutClienteNestedInput
+  municipios?: Prisma.ClienteMunicipioUncheckedUpdateManyWithoutClienteNestedInput
+  buscasPrevias?: Prisma.BuscaPreviaUncheckedUpdateManyWithoutClienteNestedInput
+  faturas?: Prisma.FaturaUncheckedUpdateManyWithoutClienteNestedInput
+}
+
+export type ClienteCreateWithoutAuditoriasAdministrativasInput = {
+  id?: string
+  nome: string
+  slug: string
+  status?: $Enums.ClienteStatus
+  cnpj?: string | null
+  razaoSocial?: string | null
+  nomeFantasia?: string | null
+  emailComercial?: string | null
+  telefoneComercial?: string | null
+  enderecoCep?: string | null
+  enderecoLogradouro?: string | null
+  enderecoNumero?: string | null
+  enderecoComplemento?: string | null
+  enderecoBairro?: string | null
+  enderecoCidade?: string | null
+  enderecoUf?: string | null
+  modoProcessamento?: $Enums.ClienteModoProcessamento
+  workerUrl?: string | null
+  intervaloSegundos?: number
+  limiteDiario?: number
+  limiteMensalConsultas?: number
+  pagamentoStatus?: $Enums.PagamentoStatus
+  pagamentoVenceEm?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  plano?: Prisma.PlanoCreateNestedOneWithoutClientesInput
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkCreateNestedManyWithoutClienteInput
+  usuarios?: Prisma.UsuarioCreateNestedManyWithoutClienteInput
+  tarefas?: Prisma.TarefaCreateNestedManyWithoutClienteInput
+  consultasLogs?: Prisma.ConsultaLogCreateNestedManyWithoutClienteInput
+  operacaoEventos?: Prisma.OperacaoEventoCreateNestedManyWithoutClienteInput
+  workerHeartbeats?: Prisma.WorkerHeartbeatCreateNestedManyWithoutClienteInput
+  workerAgents?: Prisma.WorkerAgentCreateNestedManyWithoutClienteInput
+  municipios?: Prisma.ClienteMunicipioCreateNestedManyWithoutClienteInput
+  buscasPrevias?: Prisma.BuscaPreviaCreateNestedManyWithoutClienteInput
+  faturas?: Prisma.FaturaCreateNestedManyWithoutClienteInput
+}
+
+export type ClienteUncheckedCreateWithoutAuditoriasAdministrativasInput = {
+  id?: string
+  nome: string
+  slug: string
+  status?: $Enums.ClienteStatus
+  cnpj?: string | null
+  razaoSocial?: string | null
+  nomeFantasia?: string | null
+  emailComercial?: string | null
+  telefoneComercial?: string | null
+  enderecoCep?: string | null
+  enderecoLogradouro?: string | null
+  enderecoNumero?: string | null
+  enderecoComplemento?: string | null
+  enderecoBairro?: string | null
+  enderecoCidade?: string | null
+  enderecoUf?: string | null
+  modoProcessamento?: $Enums.ClienteModoProcessamento
+  planoId?: string | null
+  workerUrl?: string | null
+  intervaloSegundos?: number
+  limiteDiario?: number
+  limiteMensalConsultas?: number
+  pagamentoStatus?: $Enums.PagamentoStatus
+  pagamentoVenceEm?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkUncheckedCreateNestedManyWithoutClienteInput
+  usuarios?: Prisma.UsuarioUncheckedCreateNestedManyWithoutClienteInput
+  tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutClienteInput
+  consultasLogs?: Prisma.ConsultaLogUncheckedCreateNestedManyWithoutClienteInput
+  operacaoEventos?: Prisma.OperacaoEventoUncheckedCreateNestedManyWithoutClienteInput
+  workerHeartbeats?: Prisma.WorkerHeartbeatUncheckedCreateNestedManyWithoutClienteInput
+  workerAgents?: Prisma.WorkerAgentUncheckedCreateNestedManyWithoutClienteInput
+  municipios?: Prisma.ClienteMunicipioUncheckedCreateNestedManyWithoutClienteInput
+  buscasPrevias?: Prisma.BuscaPreviaUncheckedCreateNestedManyWithoutClienteInput
+  faturas?: Prisma.FaturaUncheckedCreateNestedManyWithoutClienteInput
+}
+
+export type ClienteCreateOrConnectWithoutAuditoriasAdministrativasInput = {
+  where: Prisma.ClienteWhereUniqueInput
+  create: Prisma.XOR<Prisma.ClienteCreateWithoutAuditoriasAdministrativasInput, Prisma.ClienteUncheckedCreateWithoutAuditoriasAdministrativasInput>
+}
+
+export type ClienteUpsertWithoutAuditoriasAdministrativasInput = {
+  update: Prisma.XOR<Prisma.ClienteUpdateWithoutAuditoriasAdministrativasInput, Prisma.ClienteUncheckedUpdateWithoutAuditoriasAdministrativasInput>
+  create: Prisma.XOR<Prisma.ClienteCreateWithoutAuditoriasAdministrativasInput, Prisma.ClienteUncheckedCreateWithoutAuditoriasAdministrativasInput>
+  where?: Prisma.ClienteWhereInput
+}
+
+export type ClienteUpdateToOneWithWhereWithoutAuditoriasAdministrativasInput = {
+  where?: Prisma.ClienteWhereInput
+  data: Prisma.XOR<Prisma.ClienteUpdateWithoutAuditoriasAdministrativasInput, Prisma.ClienteUncheckedUpdateWithoutAuditoriasAdministrativasInput>
+}
+
+export type ClienteUpdateWithoutAuditoriasAdministrativasInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  nome?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumClienteStatusFieldUpdateOperationsInput | $Enums.ClienteStatus
+  cnpj?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  razaoSocial?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nomeFantasia?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailComercial?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telefoneComercial?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  enderecoCep?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  enderecoLogradouro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  enderecoNumero?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  enderecoComplemento?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  enderecoBairro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  enderecoCidade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  enderecoUf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  modoProcessamento?: Prisma.EnumClienteModoProcessamentoFieldUpdateOperationsInput | $Enums.ClienteModoProcessamento
+  workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
+  limiteDiario?: Prisma.IntFieldUpdateOperationsInput | number
+  limiteMensalConsultas?: Prisma.IntFieldUpdateOperationsInput | number
+  pagamentoStatus?: Prisma.EnumPagamentoStatusFieldUpdateOperationsInput | $Enums.PagamentoStatus
+  pagamentoVenceEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  plano?: Prisma.PlanoUpdateOneWithoutClientesNestedInput
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkUpdateManyWithoutClienteNestedInput
+  usuarios?: Prisma.UsuarioUpdateManyWithoutClienteNestedInput
+  tarefas?: Prisma.TarefaUpdateManyWithoutClienteNestedInput
+  consultasLogs?: Prisma.ConsultaLogUpdateManyWithoutClienteNestedInput
+  operacaoEventos?: Prisma.OperacaoEventoUpdateManyWithoutClienteNestedInput
+  workerHeartbeats?: Prisma.WorkerHeartbeatUpdateManyWithoutClienteNestedInput
+  workerAgents?: Prisma.WorkerAgentUpdateManyWithoutClienteNestedInput
+  municipios?: Prisma.ClienteMunicipioUpdateManyWithoutClienteNestedInput
+  buscasPrevias?: Prisma.BuscaPreviaUpdateManyWithoutClienteNestedInput
+  faturas?: Prisma.FaturaUpdateManyWithoutClienteNestedInput
+}
+
+export type ClienteUncheckedUpdateWithoutAuditoriasAdministrativasInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  nome?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumClienteStatusFieldUpdateOperationsInput | $Enums.ClienteStatus
+  cnpj?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  razaoSocial?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nomeFantasia?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailComercial?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telefoneComercial?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  enderecoCep?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  enderecoLogradouro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  enderecoNumero?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  enderecoComplemento?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  enderecoBairro?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  enderecoCidade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  enderecoUf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  modoProcessamento?: Prisma.EnumClienteModoProcessamentoFieldUpdateOperationsInput | $Enums.ClienteModoProcessamento
+  planoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workerUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  intervaloSegundos?: Prisma.IntFieldUpdateOperationsInput | number
+  limiteDiario?: Prisma.IntFieldUpdateOperationsInput | number
+  limiteMensalConsultas?: Prisma.IntFieldUpdateOperationsInput | number
+  pagamentoStatus?: Prisma.EnumPagamentoStatusFieldUpdateOperationsInput | $Enums.PagamentoStatus
+  pagamentoVenceEm?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workerAgentInstallLinks?: Prisma.WorkerAgentInstallLinkUncheckedUpdateManyWithoutClienteNestedInput
+  usuarios?: Prisma.UsuarioUncheckedUpdateManyWithoutClienteNestedInput
+  tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutClienteNestedInput
+  consultasLogs?: Prisma.ConsultaLogUncheckedUpdateManyWithoutClienteNestedInput
+  operacaoEventos?: Prisma.OperacaoEventoUncheckedUpdateManyWithoutClienteNestedInput
   workerHeartbeats?: Prisma.WorkerHeartbeatUncheckedUpdateManyWithoutClienteNestedInput
   workerAgents?: Prisma.WorkerAgentUncheckedUpdateManyWithoutClienteNestedInput
   municipios?: Prisma.ClienteMunicipioUncheckedUpdateManyWithoutClienteNestedInput
@@ -2459,6 +2684,7 @@ export type ClienteCreateWithoutWorkerHeartbeatsInput = {
   tarefas?: Prisma.TarefaCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogCreateNestedManyWithoutClienteInput
   operacaoEventos?: Prisma.OperacaoEventoCreateNestedManyWithoutClienteInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaCreateNestedManyWithoutClienteInput
   workerAgents?: Prisma.WorkerAgentCreateNestedManyWithoutClienteInput
   municipios?: Prisma.ClienteMunicipioCreateNestedManyWithoutClienteInput
   buscasPrevias?: Prisma.BuscaPreviaCreateNestedManyWithoutClienteInput
@@ -2497,6 +2723,7 @@ export type ClienteUncheckedCreateWithoutWorkerHeartbeatsInput = {
   tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogUncheckedCreateNestedManyWithoutClienteInput
   operacaoEventos?: Prisma.OperacaoEventoUncheckedCreateNestedManyWithoutClienteInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUncheckedCreateNestedManyWithoutClienteInput
   workerAgents?: Prisma.WorkerAgentUncheckedCreateNestedManyWithoutClienteInput
   municipios?: Prisma.ClienteMunicipioUncheckedCreateNestedManyWithoutClienteInput
   buscasPrevias?: Prisma.BuscaPreviaUncheckedCreateNestedManyWithoutClienteInput
@@ -2551,6 +2778,7 @@ export type ClienteUpdateWithoutWorkerHeartbeatsInput = {
   tarefas?: Prisma.TarefaUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUpdateManyWithoutClienteNestedInput
   operacaoEventos?: Prisma.OperacaoEventoUpdateManyWithoutClienteNestedInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUpdateManyWithoutClienteNestedInput
   workerAgents?: Prisma.WorkerAgentUpdateManyWithoutClienteNestedInput
   municipios?: Prisma.ClienteMunicipioUpdateManyWithoutClienteNestedInput
   buscasPrevias?: Prisma.BuscaPreviaUpdateManyWithoutClienteNestedInput
@@ -2589,6 +2817,7 @@ export type ClienteUncheckedUpdateWithoutWorkerHeartbeatsInput = {
   tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUncheckedUpdateManyWithoutClienteNestedInput
   operacaoEventos?: Prisma.OperacaoEventoUncheckedUpdateManyWithoutClienteNestedInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUncheckedUpdateManyWithoutClienteNestedInput
   workerAgents?: Prisma.WorkerAgentUncheckedUpdateManyWithoutClienteNestedInput
   municipios?: Prisma.ClienteMunicipioUncheckedUpdateManyWithoutClienteNestedInput
   buscasPrevias?: Prisma.BuscaPreviaUncheckedUpdateManyWithoutClienteNestedInput
@@ -2627,6 +2856,7 @@ export type ClienteCreateWithoutWorkerAgentsInput = {
   tarefas?: Prisma.TarefaCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogCreateNestedManyWithoutClienteInput
   operacaoEventos?: Prisma.OperacaoEventoCreateNestedManyWithoutClienteInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaCreateNestedManyWithoutClienteInput
   workerHeartbeats?: Prisma.WorkerHeartbeatCreateNestedManyWithoutClienteInput
   municipios?: Prisma.ClienteMunicipioCreateNestedManyWithoutClienteInput
   buscasPrevias?: Prisma.BuscaPreviaCreateNestedManyWithoutClienteInput
@@ -2665,6 +2895,7 @@ export type ClienteUncheckedCreateWithoutWorkerAgentsInput = {
   tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogUncheckedCreateNestedManyWithoutClienteInput
   operacaoEventos?: Prisma.OperacaoEventoUncheckedCreateNestedManyWithoutClienteInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUncheckedCreateNestedManyWithoutClienteInput
   workerHeartbeats?: Prisma.WorkerHeartbeatUncheckedCreateNestedManyWithoutClienteInput
   municipios?: Prisma.ClienteMunicipioUncheckedCreateNestedManyWithoutClienteInput
   buscasPrevias?: Prisma.BuscaPreviaUncheckedCreateNestedManyWithoutClienteInput
@@ -2719,6 +2950,7 @@ export type ClienteUpdateWithoutWorkerAgentsInput = {
   tarefas?: Prisma.TarefaUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUpdateManyWithoutClienteNestedInput
   operacaoEventos?: Prisma.OperacaoEventoUpdateManyWithoutClienteNestedInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUpdateManyWithoutClienteNestedInput
   workerHeartbeats?: Prisma.WorkerHeartbeatUpdateManyWithoutClienteNestedInput
   municipios?: Prisma.ClienteMunicipioUpdateManyWithoutClienteNestedInput
   buscasPrevias?: Prisma.BuscaPreviaUpdateManyWithoutClienteNestedInput
@@ -2757,6 +2989,7 @@ export type ClienteUncheckedUpdateWithoutWorkerAgentsInput = {
   tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUncheckedUpdateManyWithoutClienteNestedInput
   operacaoEventos?: Prisma.OperacaoEventoUncheckedUpdateManyWithoutClienteNestedInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUncheckedUpdateManyWithoutClienteNestedInput
   workerHeartbeats?: Prisma.WorkerHeartbeatUncheckedUpdateManyWithoutClienteNestedInput
   municipios?: Prisma.ClienteMunicipioUncheckedUpdateManyWithoutClienteNestedInput
   buscasPrevias?: Prisma.BuscaPreviaUncheckedUpdateManyWithoutClienteNestedInput
@@ -2794,6 +3027,7 @@ export type ClienteCreateWithoutWorkerAgentInstallLinksInput = {
   tarefas?: Prisma.TarefaCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogCreateNestedManyWithoutClienteInput
   operacaoEventos?: Prisma.OperacaoEventoCreateNestedManyWithoutClienteInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaCreateNestedManyWithoutClienteInput
   workerHeartbeats?: Prisma.WorkerHeartbeatCreateNestedManyWithoutClienteInput
   workerAgents?: Prisma.WorkerAgentCreateNestedManyWithoutClienteInput
   municipios?: Prisma.ClienteMunicipioCreateNestedManyWithoutClienteInput
@@ -2832,6 +3066,7 @@ export type ClienteUncheckedCreateWithoutWorkerAgentInstallLinksInput = {
   tarefas?: Prisma.TarefaUncheckedCreateNestedManyWithoutClienteInput
   consultasLogs?: Prisma.ConsultaLogUncheckedCreateNestedManyWithoutClienteInput
   operacaoEventos?: Prisma.OperacaoEventoUncheckedCreateNestedManyWithoutClienteInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUncheckedCreateNestedManyWithoutClienteInput
   workerHeartbeats?: Prisma.WorkerHeartbeatUncheckedCreateNestedManyWithoutClienteInput
   workerAgents?: Prisma.WorkerAgentUncheckedCreateNestedManyWithoutClienteInput
   municipios?: Prisma.ClienteMunicipioUncheckedCreateNestedManyWithoutClienteInput
@@ -2886,6 +3121,7 @@ export type ClienteUpdateWithoutWorkerAgentInstallLinksInput = {
   tarefas?: Prisma.TarefaUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUpdateManyWithoutClienteNestedInput
   operacaoEventos?: Prisma.OperacaoEventoUpdateManyWithoutClienteNestedInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUpdateManyWithoutClienteNestedInput
   workerHeartbeats?: Prisma.WorkerHeartbeatUpdateManyWithoutClienteNestedInput
   workerAgents?: Prisma.WorkerAgentUpdateManyWithoutClienteNestedInput
   municipios?: Prisma.ClienteMunicipioUpdateManyWithoutClienteNestedInput
@@ -2924,6 +3160,7 @@ export type ClienteUncheckedUpdateWithoutWorkerAgentInstallLinksInput = {
   tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUncheckedUpdateManyWithoutClienteNestedInput
   operacaoEventos?: Prisma.OperacaoEventoUncheckedUpdateManyWithoutClienteNestedInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUncheckedUpdateManyWithoutClienteNestedInput
   workerHeartbeats?: Prisma.WorkerHeartbeatUncheckedUpdateManyWithoutClienteNestedInput
   workerAgents?: Prisma.WorkerAgentUncheckedUpdateManyWithoutClienteNestedInput
   municipios?: Prisma.ClienteMunicipioUncheckedUpdateManyWithoutClienteNestedInput
@@ -2990,6 +3227,7 @@ export type ClienteUpdateWithoutPlanoInput = {
   tarefas?: Prisma.TarefaUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUpdateManyWithoutClienteNestedInput
   operacaoEventos?: Prisma.OperacaoEventoUpdateManyWithoutClienteNestedInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUpdateManyWithoutClienteNestedInput
   workerHeartbeats?: Prisma.WorkerHeartbeatUpdateManyWithoutClienteNestedInput
   workerAgents?: Prisma.WorkerAgentUpdateManyWithoutClienteNestedInput
   municipios?: Prisma.ClienteMunicipioUpdateManyWithoutClienteNestedInput
@@ -3028,6 +3266,7 @@ export type ClienteUncheckedUpdateWithoutPlanoInput = {
   tarefas?: Prisma.TarefaUncheckedUpdateManyWithoutClienteNestedInput
   consultasLogs?: Prisma.ConsultaLogUncheckedUpdateManyWithoutClienteNestedInput
   operacaoEventos?: Prisma.OperacaoEventoUncheckedUpdateManyWithoutClienteNestedInput
+  auditoriasAdministrativas?: Prisma.AuditoriaAdministrativaUncheckedUpdateManyWithoutClienteNestedInput
   workerHeartbeats?: Prisma.WorkerHeartbeatUncheckedUpdateManyWithoutClienteNestedInput
   workerAgents?: Prisma.WorkerAgentUncheckedUpdateManyWithoutClienteNestedInput
   municipios?: Prisma.ClienteMunicipioUncheckedUpdateManyWithoutClienteNestedInput
@@ -3074,6 +3313,7 @@ export type ClienteCountOutputType = {
   tarefas: number
   consultasLogs: number
   operacaoEventos: number
+  auditoriasAdministrativas: number
   workerHeartbeats: number
   workerAgents: number
   municipios: number
@@ -3087,6 +3327,7 @@ export type ClienteCountOutputTypeSelect<ExtArgs extends runtime.Types.Extension
   tarefas?: boolean | ClienteCountOutputTypeCountTarefasArgs
   consultasLogs?: boolean | ClienteCountOutputTypeCountConsultasLogsArgs
   operacaoEventos?: boolean | ClienteCountOutputTypeCountOperacaoEventosArgs
+  auditoriasAdministrativas?: boolean | ClienteCountOutputTypeCountAuditoriasAdministrativasArgs
   workerHeartbeats?: boolean | ClienteCountOutputTypeCountWorkerHeartbeatsArgs
   workerAgents?: boolean | ClienteCountOutputTypeCountWorkerAgentsArgs
   municipios?: boolean | ClienteCountOutputTypeCountMunicipiosArgs
@@ -3137,6 +3378,13 @@ export type ClienteCountOutputTypeCountConsultasLogsArgs<ExtArgs extends runtime
  */
 export type ClienteCountOutputTypeCountOperacaoEventosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.OperacaoEventoWhereInput
+}
+
+/**
+ * ClienteCountOutputType without action
+ */
+export type ClienteCountOutputTypeCountAuditoriasAdministrativasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AuditoriaAdministrativaWhereInput
 }
 
 /**
@@ -3208,6 +3456,7 @@ export type ClienteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   tarefas?: boolean | Prisma.Cliente$tarefasArgs<ExtArgs>
   consultasLogs?: boolean | Prisma.Cliente$consultasLogsArgs<ExtArgs>
   operacaoEventos?: boolean | Prisma.Cliente$operacaoEventosArgs<ExtArgs>
+  auditoriasAdministrativas?: boolean | Prisma.Cliente$auditoriasAdministrativasArgs<ExtArgs>
   workerHeartbeats?: boolean | Prisma.Cliente$workerHeartbeatsArgs<ExtArgs>
   workerAgents?: boolean | Prisma.Cliente$workerAgentsArgs<ExtArgs>
   municipios?: boolean | Prisma.Cliente$municipiosArgs<ExtArgs>
@@ -3313,6 +3562,7 @@ export type ClienteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   tarefas?: boolean | Prisma.Cliente$tarefasArgs<ExtArgs>
   consultasLogs?: boolean | Prisma.Cliente$consultasLogsArgs<ExtArgs>
   operacaoEventos?: boolean | Prisma.Cliente$operacaoEventosArgs<ExtArgs>
+  auditoriasAdministrativas?: boolean | Prisma.Cliente$auditoriasAdministrativasArgs<ExtArgs>
   workerHeartbeats?: boolean | Prisma.Cliente$workerHeartbeatsArgs<ExtArgs>
   workerAgents?: boolean | Prisma.Cliente$workerAgentsArgs<ExtArgs>
   municipios?: boolean | Prisma.Cliente$municipiosArgs<ExtArgs>
@@ -3336,6 +3586,7 @@ export type $ClientePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     tarefas: Prisma.$TarefaPayload<ExtArgs>[]
     consultasLogs: Prisma.$ConsultaLogPayload<ExtArgs>[]
     operacaoEventos: Prisma.$OperacaoEventoPayload<ExtArgs>[]
+    auditoriasAdministrativas: Prisma.$AuditoriaAdministrativaPayload<ExtArgs>[]
     workerHeartbeats: Prisma.$WorkerHeartbeatPayload<ExtArgs>[]
     workerAgents: Prisma.$WorkerAgentPayload<ExtArgs>[]
     municipios: Prisma.$ClienteMunicipioPayload<ExtArgs>[]
@@ -3769,6 +4020,7 @@ export interface Prisma__ClienteClient<T, Null = never, ExtArgs extends runtime.
   tarefas<T extends Prisma.Cliente$tarefasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cliente$tarefasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TarefaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   consultasLogs<T extends Prisma.Cliente$consultasLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cliente$consultasLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ConsultaLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   operacaoEventos<T extends Prisma.Cliente$operacaoEventosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cliente$operacaoEventosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OperacaoEventoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  auditoriasAdministrativas<T extends Prisma.Cliente$auditoriasAdministrativasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cliente$auditoriasAdministrativasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditoriaAdministrativaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   workerHeartbeats<T extends Prisma.Cliente$workerHeartbeatsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cliente$workerHeartbeatsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkerHeartbeatPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   workerAgents<T extends Prisma.Cliente$workerAgentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cliente$workerAgentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkerAgentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   municipios<T extends Prisma.Cliente$municipiosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cliente$municipiosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClienteMunicipioPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -4366,6 +4618,30 @@ export type Cliente$operacaoEventosArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.OperacaoEventoScalarFieldEnum | Prisma.OperacaoEventoScalarFieldEnum[]
+}
+
+/**
+ * Cliente.auditoriasAdministrativas
+ */
+export type Cliente$auditoriasAdministrativasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AuditoriaAdministrativa
+   */
+  select?: Prisma.AuditoriaAdministrativaSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AuditoriaAdministrativa
+   */
+  omit?: Prisma.AuditoriaAdministrativaOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AuditoriaAdministrativaInclude<ExtArgs> | null
+  where?: Prisma.AuditoriaAdministrativaWhereInput
+  orderBy?: Prisma.AuditoriaAdministrativaOrderByWithRelationInput | Prisma.AuditoriaAdministrativaOrderByWithRelationInput[]
+  cursor?: Prisma.AuditoriaAdministrativaWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AuditoriaAdministrativaScalarFieldEnum | Prisma.AuditoriaAdministrativaScalarFieldEnum[]
 }
 
 /**

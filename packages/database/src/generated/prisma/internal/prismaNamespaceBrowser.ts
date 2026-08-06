@@ -64,6 +64,7 @@ export const ModelName = {
   ImovelCache: 'ImovelCache',
   ConsultaLog: 'ConsultaLog',
   OperacaoEvento: 'OperacaoEvento',
+  AuditoriaAdministrativa: 'AuditoriaAdministrativa',
   WorkerHeartbeat: 'WorkerHeartbeat',
   WorkerAgent: 'WorkerAgent',
   WorkerAgentInstallLink: 'WorkerAgentInstallLink'
@@ -360,6 +361,29 @@ export const OperacaoEventoScalarFieldEnum = {
 } as const
 
 export type OperacaoEventoScalarFieldEnum = (typeof OperacaoEventoScalarFieldEnum)[keyof typeof OperacaoEventoScalarFieldEnum]
+
+
+export const AuditoriaAdministrativaScalarFieldEnum = {
+  id: 'id',
+  clienteId: 'clienteId',
+  usuarioId: 'usuarioId',
+  acao: 'acao',
+  entidade: 'entidade',
+  entidadeId: 'entidadeId',
+  mensagem: 'mensagem',
+  executorEmail: 'executorEmail',
+  executorRole: 'executorRole',
+  requestId: 'requestId',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  dadosAntes: 'dadosAntes',
+  dadosDepois: 'dadosDepois',
+  camposAlterados: 'camposAlterados',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+} as const
+
+export type AuditoriaAdministrativaScalarFieldEnum = (typeof AuditoriaAdministrativaScalarFieldEnum)[keyof typeof AuditoriaAdministrativaScalarFieldEnum]
 
 
 export const WorkerHeartbeatScalarFieldEnum = {

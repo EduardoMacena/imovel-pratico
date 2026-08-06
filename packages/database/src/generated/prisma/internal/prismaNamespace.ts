@@ -410,6 +410,7 @@ export const ModelName = {
   ImovelCache: 'ImovelCache',
   ConsultaLog: 'ConsultaLog',
   OperacaoEvento: 'OperacaoEvento',
+  AuditoriaAdministrativa: 'AuditoriaAdministrativa',
   WorkerHeartbeat: 'WorkerHeartbeat',
   WorkerAgent: 'WorkerAgent',
   WorkerAgentInstallLink: 'WorkerAgentInstallLink'
@@ -428,7 +429,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "municipio" | "clienteMunicipio" | "plano" | "cliente" | "usuario" | "tarefa" | "buscaPrevia" | "fatura" | "faturaItem" | "tarefaResultado" | "imovelCache" | "consultaLog" | "operacaoEvento" | "workerHeartbeat" | "workerAgent" | "workerAgentInstallLink"
+    modelProps: "municipio" | "clienteMunicipio" | "plano" | "cliente" | "usuario" | "tarefa" | "buscaPrevia" | "fatura" | "faturaItem" | "tarefaResultado" | "imovelCache" | "consultaLog" | "operacaoEvento" | "auditoriaAdministrativa" | "workerHeartbeat" | "workerAgent" | "workerAgentInstallLink"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1394,6 +1395,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    AuditoriaAdministrativa: {
+      payload: Prisma.$AuditoriaAdministrativaPayload<ExtArgs>
+      fields: Prisma.AuditoriaAdministrativaFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AuditoriaAdministrativaFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuditoriaAdministrativaPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AuditoriaAdministrativaFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuditoriaAdministrativaPayload>
+        }
+        findFirst: {
+          args: Prisma.AuditoriaAdministrativaFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuditoriaAdministrativaPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AuditoriaAdministrativaFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuditoriaAdministrativaPayload>
+        }
+        findMany: {
+          args: Prisma.AuditoriaAdministrativaFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuditoriaAdministrativaPayload>[]
+        }
+        create: {
+          args: Prisma.AuditoriaAdministrativaCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuditoriaAdministrativaPayload>
+        }
+        createMany: {
+          args: Prisma.AuditoriaAdministrativaCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AuditoriaAdministrativaCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuditoriaAdministrativaPayload>[]
+        }
+        delete: {
+          args: Prisma.AuditoriaAdministrativaDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuditoriaAdministrativaPayload>
+        }
+        update: {
+          args: Prisma.AuditoriaAdministrativaUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuditoriaAdministrativaPayload>
+        }
+        deleteMany: {
+          args: Prisma.AuditoriaAdministrativaDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AuditoriaAdministrativaUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AuditoriaAdministrativaUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuditoriaAdministrativaPayload>[]
+        }
+        upsert: {
+          args: Prisma.AuditoriaAdministrativaUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuditoriaAdministrativaPayload>
+        }
+        aggregate: {
+          args: Prisma.AuditoriaAdministrativaAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAuditoriaAdministrativa>
+        }
+        groupBy: {
+          args: Prisma.AuditoriaAdministrativaGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AuditoriaAdministrativaGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AuditoriaAdministrativaCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AuditoriaAdministrativaCountAggregateOutputType> | number
+        }
+      }
+    }
     WorkerHeartbeat: {
       payload: Prisma.$WorkerHeartbeatPayload<ExtArgs>
       fields: Prisma.WorkerHeartbeatFieldRefs
@@ -1930,6 +2005,29 @@ export const OperacaoEventoScalarFieldEnum = {
 } as const
 
 export type OperacaoEventoScalarFieldEnum = (typeof OperacaoEventoScalarFieldEnum)[keyof typeof OperacaoEventoScalarFieldEnum]
+
+
+export const AuditoriaAdministrativaScalarFieldEnum = {
+  id: 'id',
+  clienteId: 'clienteId',
+  usuarioId: 'usuarioId',
+  acao: 'acao',
+  entidade: 'entidade',
+  entidadeId: 'entidadeId',
+  mensagem: 'mensagem',
+  executorEmail: 'executorEmail',
+  executorRole: 'executorRole',
+  requestId: 'requestId',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  dadosAntes: 'dadosAntes',
+  dadosDepois: 'dadosDepois',
+  camposAlterados: 'camposAlterados',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+} as const
+
+export type AuditoriaAdministrativaScalarFieldEnum = (typeof AuditoriaAdministrativaScalarFieldEnum)[keyof typeof AuditoriaAdministrativaScalarFieldEnum]
 
 
 export const WorkerHeartbeatScalarFieldEnum = {
@@ -2542,6 +2640,7 @@ export type GlobalOmitConfig = {
   imovelCache?: Prisma.ImovelCacheOmit
   consultaLog?: Prisma.ConsultaLogOmit
   operacaoEvento?: Prisma.OperacaoEventoOmit
+  auditoriaAdministrativa?: Prisma.AuditoriaAdministrativaOmit
   workerHeartbeat?: Prisma.WorkerHeartbeatOmit
   workerAgent?: Prisma.WorkerAgentOmit
   workerAgentInstallLink?: Prisma.WorkerAgentInstallLinkOmit
