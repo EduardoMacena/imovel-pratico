@@ -208,8 +208,13 @@ export type ListarTarefasDoClienteResponse = {
 	tarefas: TarefaClienteResumo[];
 };
 
+export type ClienteDetalheResumo = ClienteResumo & {
+	limiteMensalConsultas: number;
+	municipioPrincipal: MunicipioElegivel | null;
+};
+
 export type BuscarClienteResponse = {
-	cliente: ClienteResumo;
+	cliente: ClienteDetalheResumo;
 };
 
 export type AtualizarClienteRequest = {

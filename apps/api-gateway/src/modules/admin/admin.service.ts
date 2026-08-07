@@ -401,6 +401,27 @@ export async function buscarClientePorId(id: string) {
 		},
 		include: {
 			plano: true,
+			municipios: {
+				where: {
+					ativo: true,
+					principal: true,
+					municipio: {
+						status: "ATIVO",
+					},
+				},
+				take: 1,
+				include: {
+					municipio: {
+						select: {
+							id: true,
+							codigoIbge: true,
+							nome: true,
+							uf: true,
+							status: true,
+						},
+					},
+				},
+			},
 			_count: {
 				select: {
 					usuarios: true,
@@ -435,10 +456,14 @@ export async function buscarClientePorId(id: string) {
 		workerUrl: cliente.workerUrl,
 		intervaloSegundos: cliente.intervaloSegundos,
 		limiteDiario: cliente.limiteDiario,
+		limiteMensalConsultas: cliente.limiteMensalConsultas,
 		totalUsuarios: cliente._count.usuarios,
 		totalTarefas: cliente._count.tarefas,
 		planoId: cliente.planoId,
 		plano: cliente.plano,
+		pagamentoStatus: cliente.pagamentoStatus,
+		pagamentoVenceEm: formatDateOnlyFromDate(cliente.pagamentoVenceEm),
+		municipioPrincipal: cliente.municipios[0]?.municipio ?? null,
 		createdAt: cliente.createdAt,
 		updatedAt: cliente.updatedAt,
 	};
