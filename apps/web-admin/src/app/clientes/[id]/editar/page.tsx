@@ -25,6 +25,14 @@ import type {
 } from "../../../../features/admin/types";
 import { useRequireSuperAdmin } from "../../../../hooks/useRequireSuperAdmin";
 import {
+	formatarCep,
+	formatarCnpj,
+	formatarTelefone,
+	formatarUf,
+	valorNullable,
+	valorNullableUf,
+} from "../../../../features/admin/clientes-formatters";
+import {
 	Actions,
 	BackLink,
 	EmptyState,
@@ -73,6 +81,18 @@ export default function EditarClientePage() {
 	const [revogandoAgentId, setRevogandoAgentId] = useState<string | null>(null);
 
 	const [nome, setNome] = useState("");
+	const [cnpj, setCnpj] = useState("");
+	const [razaoSocial, setRazaoSocial] = useState("");
+	const [nomeFantasia, setNomeFantasia] = useState("");
+	const [emailComercial, setEmailComercial] = useState("");
+	const [telefoneComercial, setTelefoneComercial] = useState("");
+	const [enderecoCep, setEnderecoCep] = useState("");
+	const [enderecoLogradouro, setEnderecoLogradouro] = useState("");
+	const [enderecoNumero, setEnderecoNumero] = useState("");
+	const [enderecoComplemento, setEnderecoComplemento] = useState("");
+	const [enderecoBairro, setEnderecoBairro] = useState("");
+	const [enderecoCidade, setEnderecoCidade] = useState("");
+	const [enderecoUf, setEnderecoUf] = useState("");
 	const [slug, setSlug] = useState("");
 	const [status, setStatus] = useState<ClienteStatus>("ATIVO");
 	const [workerUrl, setWorkerUrl] = useState("");
@@ -99,6 +119,20 @@ export default function EditarClientePage() {
 			const cliente = data.cliente;
 
 			setNome(cliente.nome);
+			setCnpj(formatarCnpj(cliente.cnpj ?? ""));
+			setRazaoSocial(cliente.razaoSocial ?? "");
+			setNomeFantasia(cliente.nomeFantasia ?? "");
+			setEmailComercial(cliente.emailComercial ?? "");
+			setTelefoneComercial(
+				formatarTelefone(cliente.telefoneComercial ?? "")
+			);
+			setEnderecoCep(formatarCep(cliente.enderecoCep ?? ""));
+			setEnderecoLogradouro(cliente.enderecoLogradouro ?? "");
+			setEnderecoNumero(cliente.enderecoNumero ?? "");
+			setEnderecoComplemento(cliente.enderecoComplemento ?? "");
+			setEnderecoBairro(cliente.enderecoBairro ?? "");
+			setEnderecoCidade(cliente.enderecoCidade ?? "");
+			setEnderecoUf(formatarUf(cliente.enderecoUf ?? ""));
 			setSlug(cliente.slug);
 			setStatus(cliente.status);
 			setModoProcessamento(cliente.modoProcessamento ?? "AGENT");
@@ -125,17 +159,31 @@ export default function EditarClientePage() {
 		setIsSaving(true);
 
 		try {
-			await atualizarCliente(clienteId, {
+			const resultado = await atualizarCliente(clienteId, {
 				nome,
+				cnpj: valorNullable(cnpj),
+				razaoSocial: valorNullable(razaoSocial),
+				nomeFantasia: valorNullable(nomeFantasia),
+				emailComercial: valorNullable(emailComercial),
+				telefoneComercial: valorNullable(telefoneComercial),
+				enderecoCep: valorNullable(enderecoCep),
+				enderecoLogradouro: valorNullable(enderecoLogradouro),
+				enderecoNumero: valorNullable(enderecoNumero),
+				enderecoComplemento: valorNullable(enderecoComplemento),
+				enderecoBairro: valorNullable(enderecoBairro),
+				enderecoCidade: valorNullable(enderecoCidade),
+				enderecoUf: valorNullableUf(enderecoUf),
 				slug,
 				status,
 				modoProcessamento,
 				workerUrl: workerUrl.trim() || null,
-				intervaloSegundos: Number(intervaloSegundos),
 				limiteDiario: Number(limiteDiario),
 				planoId,
 			});
 
+			setIntervaloSegundos(
+				String(resultado.cliente.intervaloSegundos)
+			);
 			setSucesso("Cliente atualizado com sucesso.");
 		} catch (error) {
 			setErro(
@@ -372,6 +420,126 @@ export default function EditarClientePage() {
 										</Select>
 									</FormGrid>
 								</FormSection>
+								<FormSection>
+									<FormSectionTitle>Identidade empresarial</FormSectionTitle>
+
+									<Subtitle>
+										Dados opcionais de identificação e contato da empresa. A
+										validação oficial permanece na API.
+									</Subtitle>
+
+									<FormGrid>
+										<Input
+											label="CNPJ"
+											value={cnpj}
+											onChange={(event) =>
+												setCnpj(formatarCnpj(event.target.value))
+											}
+											placeholder="00.000.000/0000-00"
+											maxLength={18}
+										/>
+
+										<Input
+											label="Razão social"
+											value={razaoSocial}
+											onChange={(event) => setRazaoSocial(event.target.value)}
+										/>
+
+										<Input
+											label="Nome fantasia"
+											value={nomeFantasia}
+											onChange={(event) => setNomeFantasia(event.target.value)}
+										/>
+
+										<Input
+											label="E-mail comercial"
+											type="email"
+											value={emailComercial}
+											onChange={(event) =>
+												setEmailComercial(event.target.value)
+											}
+										/>
+
+										<Input
+											label="Telefone comercial"
+											value={telefoneComercial}
+											onChange={(event) =>
+												setTelefoneComercial(
+													formatarTelefone(event.target.value)
+												)
+											}
+											placeholder="(43) 99999-1234"
+											inputMode="tel"
+										/>
+									</FormGrid>
+								</FormSection>
+
+								<FormSection>
+									<FormSectionTitle>Endereço comercial</FormSectionTitle>
+
+									<FormGrid>
+										<Input
+											label="CEP"
+											value={enderecoCep}
+											onChange={(event) =>
+												setEnderecoCep(formatarCep(event.target.value))
+											}
+											placeholder="00000-000"
+											inputMode="numeric"
+										/>
+
+										<Input
+											label="Logradouro"
+											value={enderecoLogradouro}
+											onChange={(event) =>
+												setEnderecoLogradouro(event.target.value)
+											}
+										/>
+
+										<Input
+											label="Número"
+											value={enderecoNumero}
+											onChange={(event) =>
+												setEnderecoNumero(event.target.value)
+											}
+										/>
+
+										<Input
+											label="Complemento"
+											value={enderecoComplemento}
+											onChange={(event) =>
+												setEnderecoComplemento(event.target.value)
+											}
+										/>
+
+										<Input
+											label="Bairro"
+											value={enderecoBairro}
+											onChange={(event) =>
+												setEnderecoBairro(event.target.value)
+											}
+										/>
+
+										<Input
+											label="Cidade"
+											value={enderecoCidade}
+											onChange={(event) =>
+												setEnderecoCidade(event.target.value)
+											}
+										/>
+
+										<Input
+											label="UF"
+											value={enderecoUf}
+											onChange={(event) =>
+												setEnderecoUf(formatarUf(event.target.value))
+											}
+											maxLength={2}
+											placeholder="PR"
+										/>
+									</FormGrid>
+								</FormSection>
+
 
 								<FormSection>
 									<FormSectionTitle>Worker e operação</FormSectionTitle>
@@ -385,14 +553,10 @@ export default function EditarClientePage() {
 										/>
 
 										<Input
-											label="Intervalo entre consultas"
+											label="Intervalo entre consultas (definido pelo plano)"
 											type="number"
-											min={1}
 											value={intervaloSegundos}
-											onChange={(event) =>
-												setIntervaloSegundos(event.target.value)
-											}
-											required
+											disabled
 										/>
 
 										<Input

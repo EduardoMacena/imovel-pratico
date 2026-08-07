@@ -276,6 +276,22 @@ export const Full = styled.div`
   grid-column: 1 / -1;
 `;
 
+export const FormSectionTitle = styled.h3`
+  margin: ${({ theme }) => theme.spacing.sm} 0 0;
+  color: ${({ theme }) => theme.colors.primary};
+  font-size: 18px;
+  line-height: 1.2;
+  letter-spacing: -0.035em;
+`;
+
+export const FormSectionHint = styled.p`
+  max-width: 760px;
+  margin: 6px 0 0;
+  color: ${({ theme }) => theme.colors.textMuted};
+  font-size: 12px;
+  line-height: 1.6;
+`;
+
 export const Hint = styled.p`
   margin: 8px 0 0;
   color: ${({ theme }) => theme.colors.textMuted};
