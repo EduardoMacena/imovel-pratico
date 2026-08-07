@@ -222,6 +222,9 @@ export default function ClientesPage() {
                 </InfoGrid>
 
                 <Actions>
+                  <DetailsLink href={`/clientes/${cliente.id}`}>
+                    Visão geral
+                  </DetailsLink>
                   <DetailsLink href={`/clientes/${cliente.id}/editar`}>
                     Configurações
                   </DetailsLink>

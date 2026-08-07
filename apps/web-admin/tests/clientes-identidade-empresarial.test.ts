@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 
 function read(relativePath: string) {
@@ -121,11 +121,6 @@ test("formatação visual não replica validação de domínio", () => {
   );
 });
 
-test("mantém detalhe premium e histórico fora do C2B-3A", () => {
-  assert.equal(
-    existsSync(new URL("../src/app/clientes/[id]/page.tsx", import.meta.url)),
-    false,
-  );
-
+test("mantém histórico administrativo fora do C2B-3A", () => {
   assert.doesNotMatch(api, /auditoriaAdministrativa|\/auditoria/i);
 });
