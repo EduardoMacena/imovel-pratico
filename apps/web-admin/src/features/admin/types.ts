@@ -16,6 +16,18 @@ export type PagamentoStatus = "PAGO" | "PENDENTE" | "VENCIDO" | "CANCELADO";
 export type ClienteResumo = {
 	id: string;
 	nome: string;
+	cnpj: string | null;
+	razaoSocial: string | null;
+	nomeFantasia: string | null;
+	emailComercial: string | null;
+	telefoneComercial: string | null;
+	enderecoCep: string | null;
+	enderecoLogradouro: string | null;
+	enderecoNumero: string | null;
+	enderecoComplemento: string | null;
+	enderecoBairro: string | null;
+	enderecoCidade: string | null;
+	enderecoUf: string | null;
 	slug: string;
 	status: ClienteStatus;
 	modoProcessamento: ClienteModoProcessamento;
@@ -64,6 +76,18 @@ export type ListarMunicipiosElegiveisResponse = {
 
 export type CriarClienteOnboardingRequest = {
 	nome: string;
+	cnpj?: string | null;
+	razaoSocial?: string | null;
+	nomeFantasia?: string | null;
+	emailComercial?: string | null;
+	telefoneComercial?: string | null;
+	enderecoCep?: string | null;
+	enderecoLogradouro?: string | null;
+	enderecoNumero?: string | null;
+	enderecoComplemento?: string | null;
+	enderecoBairro?: string | null;
+	enderecoCidade?: string | null;
+	enderecoUf?: string | null;
 	slug?: string;
 	status: ClienteStatus;
 	modoProcessamento: ClienteModoProcessamento;
@@ -83,6 +107,18 @@ export type CriarClienteOnboardingRequest = {
 export type ClienteOnboardingResumo = {
 	id: string;
 	nome: string;
+	cnpj: string | null;
+	razaoSocial: string | null;
+	nomeFantasia: string | null;
+	emailComercial: string | null;
+	telefoneComercial: string | null;
+	enderecoCep: string | null;
+	enderecoLogradouro: string | null;
+	enderecoNumero: string | null;
+	enderecoComplemento: string | null;
+	enderecoBairro: string | null;
+	enderecoCidade: string | null;
+	enderecoUf: string | null;
 	slug: string;
 	status: ClienteStatus;
 	modoProcessamento: ClienteModoProcessamento;
@@ -178,17 +214,31 @@ export type BuscarClienteResponse = {
 
 export type AtualizarClienteRequest = {
 	nome?: string;
+	cnpj?: string | null;
+	razaoSocial?: string | null;
+	nomeFantasia?: string | null;
+	emailComercial?: string | null;
+	telefoneComercial?: string | null;
+	enderecoCep?: string | null;
+	enderecoLogradouro?: string | null;
+	enderecoNumero?: string | null;
+	enderecoComplemento?: string | null;
+	enderecoBairro?: string | null;
+	enderecoCidade?: string | null;
+	enderecoUf?: string | null;
 	slug?: string;
 	status?: ClienteStatus;
 	modoProcessamento?: ClienteModoProcessamento;
 	workerUrl?: string | null;
-	intervaloSegundos?: number;
 	limiteDiario?: number;
 	planoId?: string;
+	municipioId?: string;
+	pagamentoStatus?: PagamentoStatus;
+	pagamentoVenceEm?: string | null;
 };
 
 export type AtualizarClienteResponse = {
-	cliente: ClienteResumo;
+	cliente: ClienteOnboardingResumo;
 };
 
 export type BuscarUsuarioResponse = {

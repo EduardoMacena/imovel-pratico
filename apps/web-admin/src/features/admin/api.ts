@@ -99,10 +99,13 @@ export function atualizarCliente(
 	clienteId: string,
 	data: AtualizarClienteRequest
 ) {
-	return apiRequest<AtualizarClienteResponse>(`/admin/clientes/${clienteId}`, {
-		method: "PATCH",
-		body: JSON.stringify(data),
-	});
+	return apiRequest<AtualizarClienteResponse>(
+		`/admin/clientes/${clienteId}/onboarding`,
+		{
+			method: "PATCH",
+			body: JSON.stringify(data),
+		}
+	);
 }
 
 export function buscarUsuario(usuarioId: string) {

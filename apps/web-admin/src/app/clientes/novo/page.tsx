@@ -21,6 +21,14 @@ import type {
 import { useRequireSuperAdmin } from "../../../hooks/useRequireSuperAdmin";
 import { formatCurrencyFromCents } from "../../../lib/formatters";
 import {
+  formatarCep,
+  formatarCnpj,
+  formatarTelefone,
+  formatarUf,
+  valorNullable,
+  valorNullableUf,
+} from "../../../features/admin/clientes-formatters";
+import {
   ActionLink,
   Actions,
   BackLink,
@@ -28,6 +36,8 @@ import {
   ErrorBox,
   Eyebrow,
   FormGrid,
+  FormSectionHint,
+  FormSectionTitle,
   Full,
   Hero,
   HeroMain,
@@ -76,6 +86,8 @@ const MENSAGENS: Record<string, string> = {
     "Esse slug já pertence a outro cliente. Informe outro ou deixe vazio.",
   "Já existe um usuário com esse e-mail":
     "Esse e-mail já está associado a outro usuário.",
+  "Já existe um cliente com esse CNPJ":
+    "Esse CNPJ já está associado a outro cliente.",
   "O slug deve conter letras ou números":
     "O slug precisa conter pelo menos uma letra ou número.",
   "A data de vencimento informada não existe":
@@ -123,6 +135,18 @@ export default function NovoClientePage() {
   const [municipios, setMunicipios] = useState<MunicipioElegivel[]>([]);
 
   const [nome, setNome] = useState("");
+  const [cnpj, setCnpj] = useState("");
+  const [razaoSocial, setRazaoSocial] = useState("");
+  const [nomeFantasia, setNomeFantasia] = useState("");
+  const [emailComercial, setEmailComercial] = useState("");
+  const [telefoneComercial, setTelefoneComercial] = useState("");
+  const [enderecoCep, setEnderecoCep] = useState("");
+  const [enderecoLogradouro, setEnderecoLogradouro] = useState("");
+  const [enderecoNumero, setEnderecoNumero] = useState("");
+  const [enderecoComplemento, setEnderecoComplemento] = useState("");
+  const [enderecoBairro, setEnderecoBairro] = useState("");
+  const [enderecoCidade, setEnderecoCidade] = useState("");
+  const [enderecoUf, setEnderecoUf] = useState("");
   const [slug, setSlug] = useState("");
   const [status, setStatus] = useState<ClienteStatus>("ATIVO");
   const [modo, setModo] = useState<ClienteModoProcessamento>("AGENT");
@@ -191,6 +215,9 @@ export default function NovoClientePage() {
       if (Number(limiteDiario) < 1 || !Number.isInteger(Number(limiteDiario))) {
         return "Informe um limite diário válido.";
       }
+      if (emailComercial.trim() && !emailValido(emailComercial)) {
+        return "Informe um e-mail comercial válido.";
+      }
       if (workerUrl.trim()) {
         try {
           new URL(workerUrl.trim());
@@ -255,6 +282,18 @@ export default function NovoClientePage() {
     try {
       const response = await criarClienteOnboarding({
         nome: nome.trim(),
+        cnpj: valorNullable(cnpj),
+        razaoSocial: valorNullable(razaoSocial),
+        nomeFantasia: valorNullable(nomeFantasia),
+        emailComercial: valorNullable(emailComercial),
+        telefoneComercial: valorNullable(telefoneComercial),
+        enderecoCep: valorNullable(enderecoCep),
+        enderecoLogradouro: valorNullable(enderecoLogradouro),
+        enderecoNumero: valorNullable(enderecoNumero),
+        enderecoComplemento: valorNullable(enderecoComplemento),
+        enderecoBairro: valorNullable(enderecoBairro),
+        enderecoCidade: valorNullable(enderecoCidade),
+        enderecoUf: valorNullableUf(enderecoUf),
         slug: slug.trim() || undefined,
         status,
         modoProcessamento: modo,
@@ -479,6 +518,116 @@ export default function NovoClientePage() {
                       onChange={(event) => setSlug(event.target.value)}
                       placeholder="Gerado automaticamente quando vazio"
                     />
+
+                    <Full>
+                      <FormSectionTitle>Identidade empresarial</FormSectionTitle>
+                      <FormSectionHint>
+                        Dados opcionais. A API permanece responsável pela
+                        normalização e validação oficial do CNPJ.
+                      </FormSectionHint>
+                    </Full>
+
+                    <Input
+                      label="CNPJ"
+                      value={cnpj}
+                      onChange={(event) =>
+                        setCnpj(formatarCnpj(event.target.value))
+                      }
+                      placeholder="00.000.000/0000-00"
+                      maxLength={18}
+                    />
+                    <Input
+                      label="Razão social"
+                      value={razaoSocial}
+                      onChange={(event) => setRazaoSocial(event.target.value)}
+                    />
+                    <Input
+                      label="Nome fantasia"
+                      value={nomeFantasia}
+                      onChange={(event) => setNomeFantasia(event.target.value)}
+                    />
+                    <Input
+                      label="E-mail comercial"
+                      type="email"
+                      value={emailComercial}
+                      onChange={(event) => setEmailComercial(event.target.value)}
+                    />
+                    <Input
+                      label="Telefone comercial"
+                      value={telefoneComercial}
+                      onChange={(event) =>
+                        setTelefoneComercial(
+                          formatarTelefone(event.target.value),
+                        )
+                      }
+                      placeholder="(43) 99999-1234"
+                      inputMode="tel"
+                    />
+
+                    <Full>
+                      <FormSectionTitle>Endereço comercial</FormSectionTitle>
+                      <FormSectionHint>
+                        Informe somente quando fizer parte do cadastro
+                        empresarial do cliente.
+                      </FormSectionHint>
+                    </Full>
+
+                    <Input
+                      label="CEP"
+                      value={enderecoCep}
+                      onChange={(event) =>
+                        setEnderecoCep(formatarCep(event.target.value))
+                      }
+                      placeholder="00000-000"
+                      inputMode="numeric"
+                    />
+                    <Input
+                      label="Logradouro"
+                      value={enderecoLogradouro}
+                      onChange={(event) =>
+                        setEnderecoLogradouro(event.target.value)
+                      }
+                    />
+                    <Input
+                      label="Número"
+                      value={enderecoNumero}
+                      onChange={(event) => setEnderecoNumero(event.target.value)}
+                    />
+                    <Input
+                      label="Complemento"
+                      value={enderecoComplemento}
+                      onChange={(event) =>
+                        setEnderecoComplemento(event.target.value)
+                      }
+                    />
+                    <Input
+                      label="Bairro"
+                      value={enderecoBairro}
+                      onChange={(event) => setEnderecoBairro(event.target.value)}
+                    />
+                    <Input
+                      label="Cidade"
+                      value={enderecoCidade}
+                      onChange={(event) => setEnderecoCidade(event.target.value)}
+                    />
+                    <Input
+                      label="UF"
+                      value={enderecoUf}
+                      onChange={(event) =>
+                        setEnderecoUf(formatarUf(event.target.value))
+                      }
+                      maxLength={2}
+                      placeholder="PR"
+                    />
+
+                    <Full>
+                      <FormSectionTitle>Operação</FormSectionTitle>
+                      <FormSectionHint>
+                        Plano e limites continuam sendo a fonte de verdade para
+                        a capacidade mensal e o intervalo entre consultas.
+                      </FormSectionHint>
+                    </Full>
+
                     <Select
                       label="Status inicial"
                       value={status}
@@ -697,6 +846,44 @@ export default function NovoClientePage() {
                         <dd>{modo}</dd>
                         <dt>Limite diário</dt>
                         <dd>{Number(limiteDiario).toLocaleString("pt-BR")}</dd>
+                      </dl>
+                    </ReviewCard>
+
+                    <ReviewCard>
+                      <h3>Identidade empresarial</h3>
+                      <dl>
+                        <dt>CNPJ</dt>
+                        <dd>{cnpj || "Não informado"}</dd>
+                        <dt>Razão social</dt>
+                        <dd>{razaoSocial.trim() || "Não informada"}</dd>
+                        <dt>Nome fantasia</dt>
+                        <dd>{nomeFantasia.trim() || "Não informado"}</dd>
+                        <dt>E-mail</dt>
+                        <dd>{emailComercial.trim() || "Não informado"}</dd>
+                        <dt>Telefone</dt>
+                        <dd>{telefoneComercial || "Não informado"}</dd>
+                      </dl>
+                    </ReviewCard>
+
+                    <ReviewCard>
+                      <h3>Endereço comercial</h3>
+                      <dl>
+                        <dt>CEP</dt>
+                        <dd>{enderecoCep || "Não informado"}</dd>
+                        <dt>Logradouro</dt>
+                        <dd>{enderecoLogradouro.trim() || "Não informado"}</dd>
+                        <dt>Número</dt>
+                        <dd>{enderecoNumero.trim() || "Não informado"}</dd>
+                        <dt>Complemento</dt>
+                        <dd>{enderecoComplemento.trim() || "Não informado"}</dd>
+                        <dt>Bairro</dt>
+                        <dd>{enderecoBairro.trim() || "Não informado"}</dd>
+                        <dt>Cidade / UF</dt>
+                        <dd>
+                          {[enderecoCidade.trim(), enderecoUf]
+                            .filter(Boolean)
+                            .join(" — ") || "Não informado"}
+                        </dd>
                       </dl>
                     </ReviewCard>
 
