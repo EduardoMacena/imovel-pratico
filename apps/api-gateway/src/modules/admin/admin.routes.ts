@@ -7,6 +7,7 @@ import {
 import { authMiddleware } from "../auth/auth.middleware.js";
 import { adminMiddleware } from "./admin.middleware.js";
 import { exportarResultadosTarefaAdminPdfController } from "./admin-exportacao-pdf.controller.js";
+import { listarAuditoriaAdministrativaClienteController } from "./admin-auditoria.controller.js";
 import {
 	atualizarClienteController,
 	atualizarUsuarioController,
@@ -108,6 +109,10 @@ export async function adminRoutes(app: FastifyInstance) {
 	app.get("/admin/clientes", listarClientesController);
 	app.post("/admin/clientes", criarClienteController);
 	app.get("/admin/clientes/:id", buscarClienteController);
+	app.get(
+		"/admin/clientes/:id/auditoria",
+		listarAuditoriaAdministrativaClienteController
+	);
 	app.patch("/admin/clientes/:id", atualizarClienteController);
 
 	app.get(
